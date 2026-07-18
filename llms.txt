@@ -1,50 +1,84 @@
-# ARC-20
+# Atomicals + ARC-20 | Independent protocol reference
 
-> One-satoshi-backed token units managed through Atomicals UTXOs.
+> Docs home: index.html
+> Detailed reference: reference.html
+> Build and product scope: guide.html
+> Compatibility specification: specification.md
+> Source ledger: sources.md
+> Review date: 2026-07-18
 
-## Chain and carrier
+## Scope
 
-- Chain: Bitcoin
-- Carrier: Atomicals and colored sat UTXOs
+ARC-20 means the Atomicals fungible-token model on Bitcoin. One ARC-20 unit corresponds to one colored satoshi. It is a UTXO allocation model, not an ERC-20 contract or account-balance model.
 
-## Overview
+The Atomicals specification guide says the specification is defined in code. This documentation is a secondary guide. Source-dependent statements are pinned to Atomicals ElectrumX commit 8df23747835c20230fc8b8097d469e7a1d97c3e0 in sources.md.
 
-ARC-20 assets use Atomicals semantics and colored satoshis. Each unit is backed by a satoshi, so ownership and transfer follow the UTXO that holds the colored sats.
+## Core model
 
-## State model
+- Durable identity: Atomical ID in the form <txid>i<output-index>.
+- Ticker: a globally allocated Atomicals name, not proof of project authenticity.
+- Ownership: a recipient controls units only when Atomicals rules validly allocate the colored quantity to a UTXO they control.
+- Unit: one colored satoshi equals one token unit. Native quantities are integers.
+- Bitcoin confirmation alone is not a complete ARC-20 result. Verify the Atomicals allocation and indexer recognition after broadcast.
 
-ARC-20 emphasizes direct ownership. An indexer can make balances convenient to browse, but the spend history of the relevant UTXOs is the core ownership trail.
+## Envelope
 
-## Lifecycle
+Atomicals mint and update workflows use Taproot commit and reveal. The conceptual reveal envelope is:
 
-1. Select or register a ticker under the Atomicals naming rules.
-2. Issue units through direct mint or decentralized mint rules.
-3. Track the UTXOs that contain the colored satoshis.
-4. Split, combine, or move those UTXOs while preserving colored output accounting.
+OP_FALSE
+OP_IF
+  "atom"
+  <operation>
+  <CBOR payload>
+OP_ENDIF
 
-## Rules
+The actual operation and payload must match the active Atomicals validator.
 
-- Each ARC-20 unit is backed by one satoshi.
-- Mint and update workflows use Atomicals commit and reveal mechanics.
-- P2TR is required by the documented Atomicals mint and update workflows.
-- A recipient owns units by controlling the destination UTXO.
-- Token-aware coin selection must avoid accidentally spending colored UTXOs as fees.
-- Direct mints and decentralized mints have different issuer and supply mechanics.
+## Issuance
 
-## Field reference
+- Direct FT: guide CLI form is `yarn cli mint-ft <tick> <total_supply> metadata.json`. The entire direct supply is in output 0, one unit per satoshi.
+- Fixed DFT: guide CLI form is `yarn cli init-dft <tick> <per_mint_amt> <mint_count> <start_height> metadata.json`. Nominal maximum issuance is `mint_amount * max_mints`.
+- DFT claim: guide CLI form is `yarn cli mint-dft <tick>`. In the pinned validator, a valid DMT claim uses output 0 equal to the deployment's exact `mint_amount` and must satisfy timing, quota, and optional Bitwork rules.
+- Perpetual DFT is a separate activation-gated mode. Do not display a fixed cap unless the actual deployment and active implementation establish one.
 
-- ticker (Atomicals name, required: yes): Follow the active Atomicals naming and availability rules.
-- mint mode (direct / decentralized, required: yes): Choose before issuing.
-- commit (P2TR preparation, required: yes): Creates the required Atomicals commit phase.
-- reveal (P2TR transaction, required: yes): Publishes and binds the Atomical data.
-- colored UTXO (satoshi-bearing output, required: yes): The unit-bearing output to preserve and spend deliberately.
-- destination (Bitcoin output, required: transfer): The recipient controls the resulting colored UTXO.
+## Metadata
+
+Metadata is optional arbitrary valid JSON. Common fields are name, desc, image, decimals, links, and legal. Treat all metadata as untrusted presentation content. `decimals` does not create sub-satoshi token units.
+
+## Transfers
+
+Normal FT allocation is version-sensitive. Under the pinned reference builder, eligible outputs are considered in order. An output receives colored units only while its full BTC sat value fits in the remaining colored amount. If the next output is too large, the remaining colored amount can be burned. Input order, output order, output values, active rules, and advanced operations matter.
+
+Never infer a safe ARC-20 transfer from a send amount alone. Before signing, inspect colored input outpoints, input order, every output position and sat value, expected colored amounts, and burns. Validate the exact PSBT or transaction blueprint through a compatible Atomicals validator or indexer.
+
+- `y` is the pinned FT split operation.
+- `z` custom coloring is activation-gated and must not be assumed universal.
+- `x` splat is not a general ARC-20 transfer feature in the pinned builder.
+- Colored output total cannot exceed colored input total. Burns can still occur.
+
+## Security
+
+1. Use an Atomicals-aware wallet and explicit UTXO selection.
+2. Keep protected colored UTXOs separate from cardinal fee UTXOs.
+3. Verify Atomical ID, source transaction, deployment rules, and current output allocation. Do not trust ticker, image, metadata, or marketplace labels alone.
+4. Wait for confirmation and indexer recognition before treating a ticker claim, mint, or balance as final.
+5. Never provide a seed phrase, private key, or wallet-export file to verify ARC-20 state.
+
+## Current Universe product boundary
+
+As audited in this repository on 2026-07-18:
+
+- Token discovery and portfolio are Atomicals ElectrumX proxy-backed convenience views. They are not canonical proof.
+- The product has DFT-oriented `deploy` and `mint` flows.
+- Protocol direct FT `mint-ft` issuance is not exposed by Universe.
+- Do not use the visible Universe ARC-20 transfer UI. It does not supply the colored outpoints required by its backend builder, and it is not partial-transfer, split, or combine support.
+- Service `confirmed` means a product reveal/broadcast state, not an independent Bitcoin confirmation-depth or indexer-finality statement.
 
 ## Primary sources
 
 - Atomicals ARC-20 guide: https://atomicals-community.github.io/atomicals-guide/arc20-tokens/
-- Atomicals guide source: https://github.com/atomicals-community/atomicals-guide
-
-## Operational caution
-
-Treat colored UTXOs as protected inventory. A wallet that does not understand their provenance can destroy the intended token movement.
+- Atomicals specification guide: https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html
+- Atomicals JavaScript CLI: https://github.com/atomicals/atomicals-js
+- Pinned ElectrumX mint parser: https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/util_atomicals.py
+- Pinned ElectrumX transfer builder: https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/atomicals_blueprint_builder.py
+- Full source ledger: sources.md

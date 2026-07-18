@@ -1,10 +1,288 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Field reference for ARC-20."><meta name="theme-color" content="#071016"><title>ARC-20 reference | Bitcoin Universe Docs</title><style>
-:root{--accent:hsl(43 88% 60%);--ink:#edf4f8;--muted:#9bb0bd;--paper:#071016;--panel:#0d1921;--line:rgba(214,239,247,.13);--soft:rgba(255,255,255,.045)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:radial-gradient(900px 480px at 82% -80px,hsla(43,90%,56%,.25),transparent 64%),radial-gradient(680px 540px at -12% 38%,hsla(121,82%,48%,.12),transparent 70%),var(--paper);font:16px/1.62 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.top{height:74px;display:flex;gap:22px;align-items:center;max-width:1200px;margin:auto;padding:0 26px;border-bottom:1px solid var(--line);position:relative;z-index:4}.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:760;letter-spacing:-.02em}.brand b{display:grid;place-items:center;width:30px;height:30px;border:1px solid color-mix(in srgb,var(--accent),white 25%);border-radius:9px;color:#081115;background:var(--accent);font-size:11px;box-shadow:0 0 30px color-mix(in srgb,var(--accent),transparent 65%)}nav{display:flex;gap:3px;margin-left:18px}nav a,.repo{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;font-size:14px}nav a:hover,nav a.active{color:var(--ink);background:var(--soft)}.repo{margin-left:auto;border:1px solid var(--line);color:var(--ink)}.wrap{max-width:1200px;margin:auto;padding:0 26px}.hero{min-height:520px;padding:82px 0 56px;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:55px;align-items:center}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800}.hero h1{font-size:clamp(48px,7.7vw,94px);letter-spacing:-.078em;line-height:.94;margin:13px 0 22px;max-width:720px}.hero p{color:#bed0da;font-size:20px;line-height:1.55;max-width:690px;margin:0}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}.chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:#c3d1d8;background:rgba(255,255,255,.025);font-size:12px}.cta{display:inline-flex;align-items:center;gap:9px;margin-top:29px;padding:11px 15px;background:var(--accent);color:#061118;text-decoration:none;font-weight:800;border-radius:10px;box-shadow:0 12px 32px color-mix(in srgb,var(--accent),transparent 77%)}.orbit{height:380px;position:relative;display:grid;place-items:center;isolation:isolate}.orbit:before,.orbit:after{content:"";position:absolute;border:1px solid color-mix(in srgb,var(--accent),transparent 55%);border-radius:50%;z-index:-1}.orbit:before{width:310px;height:310px;transform:rotate(24deg) scaleY(.58)}.orbit:after{width:365px;height:365px;border-color:var(--line);transform:rotate(-39deg) scaleY(.33)}.core{width:168px;height:168px;border-radius:34px;display:grid;place-items:center;background:linear-gradient(140deg,color-mix(in srgb,var(--accent),white 22%),var(--accent));color:#051014;font-size:58px;font-weight:900;letter-spacing:-.11em;box-shadow:0 0 0 17px rgba(255,255,255,.028),0 0 60px color-mix(in srgb,var(--accent),transparent 58%);transform:rotate(-10deg)}.node{position:absolute;border:1px solid var(--line);background:#0b1922;color:#c8d9e1;padding:7px 9px;border-radius:8px;font-size:12px}.node.one{top:42px;right:0}.node.two{bottom:42px;left:8px}.node.three{right:22px;bottom:104px}.divider{height:1px;background:var(--line)}section{padding:82px 0}.section-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:50px;margin-bottom:34px}.section-head h2{letter-spacing:-.052em;font-size:clamp(29px,4.1vw,51px);line-height:1.03;margin:6px 0 0}.section-head p{color:var(--muted);align-self:end;margin:0;font-size:17px}.grid{display:grid;gap:16px}.four{grid-template-columns:repeat(4,1fr)}.three{grid-template-columns:repeat(3,1fr)}.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border-radius:15px;padding:20px;min-width:0}.card .number{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.11em}.card h3{font-size:18px;letter-spacing:-.025em;line-height:1.2;margin:15px 0 8px}.card p{color:var(--muted);font-size:14px;margin:0}.steps{counter-reset:step}.step{counter-increment:step;position:relative;padding:22px 17px 18px 29px;border-left:1px solid var(--line)}.step:before{content:counter(step,decimal-leading-zero);position:absolute;top:22px;left:-11px;color:var(--accent);font-size:10px;font-weight:900;background:var(--paper);padding:3px}.step h3{margin:0 0 7px;font-size:17px;line-height:1.25}.step p{margin:0;color:var(--muted);font-size:14px}.callout{border-left:3px solid var(--accent);border-radius:0 12px 12px 0;background:color-mix(in srgb,var(--accent),transparent 91%);padding:20px 22px;color:#ccdae0}.callout b{display:block;color:var(--ink);margin-bottom:5px}.packet{padding:0;overflow:hidden}.packet header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line);font-size:13px;font-weight:800}.packet button{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:4px 7px;cursor:pointer;font:inherit;font-size:11px}.packet button:hover{color:var(--ink)}pre{white-space:pre-wrap;overflow:auto;padding:18px;margin:0;color:#c5e7f3;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;background:#071219}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:690px;background:rgba(255,255,255,.018)}th,td{text-align:left;padding:14px 15px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:rgba(255,255,255,.025)}td{font-size:14px;color:#c0d0d8}td:first-child{font-family:ui-monospace,monospace;color:#ecf5f8;font-weight:700}tr:last-child td{border-bottom:0}.checklist{list-style:none;padding:0;margin:0;display:grid;gap:10px}.checklist li{display:flex;gap:11px;padding:13px 14px;border:1px solid var(--line);border-radius:10px;color:#c9d8de;background:rgba(255,255,255,.025)}.checklist li:before{content:'✓';display:grid;place-items:center;flex:0 0 20px;width:20px;height:20px;border-radius:50%;background:color-mix(in srgb,var(--accent),transparent 80%);color:var(--accent);font-weight:900}.sources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.source{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 16px;border:1px solid var(--line);border-radius:11px;color:var(--ink);text-decoration:none;background:rgba(255,255,255,.025)}.source small{color:var(--muted);white-space:nowrap}.footer{padding:34px 0 48px;border-top:1px solid var(--line);color:#78909e;font-size:13px}.footer a{color:#b9cad0}.guide-list{display:grid;gap:0;counter-reset:guide}.guide-list article{counter-increment:guide;display:grid;grid-template-columns:62px 1fr;gap:18px;padding:24px 0;border-bottom:1px solid var(--line)}.guide-list article:before{content:counter(guide,decimal-leading-zero);color:var(--accent);font-weight:900;font-size:14px}.guide-list h3{margin:0 0 5px;font-size:19px;letter-spacing:-.025em}.guide-list p{margin:0;color:var(--muted)}.mini{font-size:13px;color:var(--muted)}@media(max-width:800px){.top{padding:0 16px;height:auto;min-height:66px;flex-wrap:wrap;gap:8px}.brand{margin-right:auto}nav{order:3;margin:0 -8px 7px;width:100%;overflow:auto}.repo{margin:0}.wrap{padding:0 17px}.hero{grid-template-columns:1fr;padding:56px 0 26px;gap:5px;min-height:0}.hero h1{font-size:58px}.orbit{height:230px;transform:scale(.72);margin:-28px}.section-head{grid-template-columns:1fr;gap:15px}.four,.three{grid-template-columns:1fr}.sources{grid-template-columns:1fr}section{padding:55px 0}}
-</style></head><body><header class="top"><a class="brand" href="index.html"><b>ARC</b><span>ARC-20</span></a><nav><a class="" href="index.html">Overview</a><a class="active" href="reference.html">Reference</a><a class="" href="guide.html">Build & verify</a><a href="#sources">Sources</a></nav><a class="repo" href="https://github.com/bitcoinuniverse/arc-20-docs">GitHub ↗</a></header><main><div class="wrap hero" style="min-height:410px"><div><div class="eyebrow">Reference / field and payload level</div><h1 style="font-size:clamp(46px,7vw,82px)">ARC-20<br><i style="font-style:normal;color:var(--accent)">packets.</i></h1><p>Payload shapes, field meaning, and validation boundaries for builders and indexers.</p><div class="chips"><span class="chip">Copyable examples</span><span class="chip">Field-level rules</span></div></div><div class="orbit" aria-hidden="true"><div class="core">{ }</div><span class="node one">schema</span><span class="node two">carrier</span><span class="node three">state</span></div></div><div class="divider"></div><section><div class="wrap"><div class="section-head"><div><div class="eyebrow">Payload gallery</div><h2>Start with a valid shape.</h2></div><p>Examples communicate field placement and transaction intent. Apply the active deployment state and source rules before you broadcast.</p></div><div class="grid three"><article class="card packet"><header><span>Ownership model</span><button type="button" data-copy="ARC-20 units = colored satoshis
-owner = controller of the UTXO">Copy</button></header><pre><code>ARC-20 units = colored satoshis
-owner = controller of the UTXO</code></pre><p style="padding:14px 16px">The spendable UTXO, not a separate account balance, carries the units.</p></article><article class="card packet"><header><span>Direct mint</span><button type="button" data-copy="issuer defines supply
-issuer mints the colored-sat allocation">Copy</button></header><pre><code>issuer defines supply
-issuer mints the colored-sat allocation</code></pre><p style="padding:14px 16px">Useful when one issuer controls issuance.</p></article><article class="card packet"><header><span>Decentralized mint</span><button type="button" data-copy="rules define mintable units
-participants claim valid mints">Copy</button></header><pre><code>rules define mintable units
-participants claim valid mints</code></pre><p style="padding:14px 16px">Useful when issuance is open under defined constraints.</p></article></div></div></section><section><div class="wrap"><div class="section-head"><div><div class="eyebrow">Field ledger</div><h2>What every value means.</h2></div><p>Required status is contextual: a field can be mandatory for one operation and absent from another.</p></div><div class="table-wrap"><table><thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Validation and intent</th></tr></thead><tbody><tr><td>ticker</td><td>Atomicals name</td><td>yes</td><td>Follow the active Atomicals naming and availability rules.</td></tr><tr><td>mint mode</td><td>direct / decentralized</td><td>yes</td><td>Choose before issuing.</td></tr><tr><td>commit</td><td>P2TR preparation</td><td>yes</td><td>Creates the required Atomicals commit phase.</td></tr><tr><td>reveal</td><td>P2TR transaction</td><td>yes</td><td>Publishes and binds the Atomical data.</td></tr><tr><td>colored UTXO</td><td>satoshi-bearing output</td><td>yes</td><td>The unit-bearing output to preserve and spend deliberately.</td></tr><tr><td>destination</td><td>Bitcoin output</td><td>transfer</td><td>The recipient controls the resulting colored UTXO.</td></tr></tbody></table></div></div></section><section><div class="wrap"><div class="section-head"><div><div class="eyebrow">Validation wall</div><h2>Reject before signing.</h2></div><p>Put these checks in preflight. A wallet confirmation screen should surface any condition that changes the asset result.</p></div><ul class="checklist"><li>Each ARC-20 unit is backed by one satoshi.</li><li>Mint and update workflows use Atomicals commit and reveal mechanics.</li><li>P2TR is required by the documented Atomicals mint and update workflows.</li><li>A recipient owns units by controlling the destination UTXO.</li><li>Token-aware coin selection must avoid accidentally spending colored UTXOs as fees.</li><li>Direct mints and decentralized mints have different issuer and supply mechanics.</li></ul></div></section><section id="sources"><div class="wrap"><div class="section-head"><div><div class="eyebrow">Source trail</div><h2>Read the active implementation.</h2></div><p>These links are the starting point for release-aware rules and reference behavior. Check them again before production use.</p></div><div class="sources"><a class="source" href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/" target="_blank" rel="noreferrer"><span>Atomicals ARC-20 guide</span><small>Open ↗</small></a><a class="source" href="https://github.com/atomicals-community/atomicals-guide" target="_blank" rel="noreferrer"><span>Atomicals guide source</span><small>Open ↗</small></a></div></div></section></main><footer class="footer"><div class="wrap">Built by <a href="https://github.com/bitcoinuniverse">Bitcoin Universe</a>. Review live protocol implementations before signing a transaction.</div></footer><script>for(const b of document.querySelectorAll('[data-copy]'))b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);const t=b.textContent;b.textContent='Copied';setTimeout(()=>b.textContent=t,1200)}catch{b.textContent='Select text'}})</script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ARC-20 protocol reference: envelope, issuance, transfer allocation, metadata, and validation boundaries.">
+  <meta name="theme-color" content="#0a0a09">
+  <title>ARC-20 reference | Atomicals independent documentation</title>
+  <link rel="stylesheet" href="theme.css">
+  <script defer src="site.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="protocol-strip">
+      <div class="shell"><span><strong>Bitcoin mainnet</strong></span><span>Atomicals ElectrumX pin: 8df2374</span><span>Independent guide, reviewed 2026-07-18</span></div>
+    </div>
+    <div class="shell topbar">
+      <a class="brand" href="index.html"><span class="brand-word">ATOMICALS</span><span class="brand-slash">/</span><span class="brand-arc">ARC-20</span></a>
+      <nav class="site-nav" aria-label="Documentation">
+        <a href="index.html">Overview</a>
+        <a aria-current="page" href="reference.html">Reference</a>
+        <a href="guide.html">Build and verify</a>
+        <a href="specification.md">Specification</a>
+        <a href="sources.md">Sources</a>
+      </nav>
+      <a class="header-link" href="https://github.com/atomicals/atomicals-js" target="_blank" rel="noreferrer">Atomicals CLI</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="shell hero">
+      <div>
+        <p class="eyebrow">Integration reference</p>
+        <h1>Build to<br><span class="accent">the rules.</span></h1>
+        <p class="lede">This reference separates stable concepts from source-revision behavior. It is designed to stop a common mistake: treating a human-readable ticker or a wallet amount field as a complete ARC-20 instruction.</p>
+        <div class="badge-row">
+          <span class="badge">Pinned ElectrumX: 8df2374</span>
+          <span class="badge">Guide checked: 2026-07-18</span>
+          <span class="badge">No handwritten validator guarantee</span>
+        </div>
+        <div class="hero-actions">
+          <a class="button primary" href="#envelope">Start at the envelope</a>
+          <a class="button" href="#transfers">Review transfer allocation</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <figure class="official-lockup">
+          <img src="assets/atomicals-cli-lockup.jpg" width="960" height="540" alt="Atomicals lockup on a dark textured field, with a white mark and wordmark.">
+          <figcaption>Unmodified source-pinned asset from the Atomicals CLI repository. This is independent documentation, not an official protocol site.</figcaption>
+        </figure>
+        <div class="allocation-trace" aria-label="Illustrative Atomicals operation trace from a selected input through a Taproot reveal to a validator-checked output allocation.">
+          <div class="trace-title">Validator-oriented transaction trace</div>
+          <div class="trace-flow">
+            <div class="trace-stage"><span class="trace-kicker">Select</span><strong>Colored input</strong><div class="trace-bars"><span class="trace-bar"><i style="width: 100%"></i></span></div><small>Record every relevant outpoint and asset amount.</small></div>
+            <span class="trace-arrow" aria-hidden="true">&rarr;</span>
+            <div class="trace-stage envelope"><span class="trace-kicker">Reveal</span><strong>atom · CBOR</strong><small>Read the exact operation, compact IDs, and activation conditions.</small></div>
+            <span class="trace-arrow" aria-hidden="true">&rarr;</span>
+            <div class="trace-stage"><span class="trace-kicker">Validate</span><strong>Output map</strong><div class="trace-bars"><span class="trace-bar"><i style="width: 68%"></i></span><span class="trace-bar"><i class="pale" style="width: 32%"></i></span></div><small>Check the active builder before signing or reporting balance.</small></div>
+          </div>
+          <p class="trace-caption">The diagram teaches inspection order, not a substitute for a validator or an exact transaction recipe.</p>
+        </div>
+      </div>
+    </div>
+
+    <section id="envelope">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">1. Envelope and identity</p>
+            <h2>Atomicals operations are carried in a Taproot reveal.</h2>
+          </div>
+          <p>The Atomicals guide describes a commit and reveal construction. The reveal witness script carries a non-executed envelope marked with <code>atom</code>, an operation code, and a CBOR payload. The guide says its actual specification is defined in code.</p>
+        </div>
+        <div class="split">
+          <article class="code-card">
+            <div class="code-bar"><span>Conceptual Atomicals envelope</span><button class="copy" type="button" data-copy="OP_FALSE&#10;OP_IF&#10;  atom&#10;  &lt;operation&gt;&#10;  &lt;CBOR payload&gt;&#10;OP_ENDIF">Copy</button></div>
+            <pre><code>OP_FALSE
+OP_IF
+  "atom"
+  &lt;operation&gt;
+  &lt;CBOR payload&gt;
+OP_ENDIF</code></pre>
+          </article>
+          <article class="card">
+            <p class="label">Important boundary</p>
+            <h3>This is not a JSON inscription protocol.</h3>
+            <p>Atomicals uses CBOR inside a Taproot witness-script envelope. A UI may collect familiar fields, but a builder must serialize the exact operation and payload the active validator expects.</p>
+            <h4>Atomical ID</h4>
+            <p>Use the transaction-based identifier <code>&lt;txid&gt;i&lt;output-index&gt;</code> to identify an Atomical. Keep it beside a display ticker in your data model and verification screens.</p>
+          </article>
+        </div>
+        <div class="note caution" style="margin-top: 16px;">
+          <h3>Ticker is a locator, not proof of authenticity</h3>
+          <p>The ARC-20 guide describes globally unique ticker registration and says the claim becomes available after three confirmations. Verify ticker resolution, Atomical ID, source transaction, mint configuration, and current history. Do not validate a project from a ticker, image, metadata link, or exchange label alone.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="operations">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">2. Operation map</p>
+            <h2>Do not mix protocol operations with UI labels.</h2>
+          </div>
+          <p>The guide exposes CLI commands while the validator processes envelope operations. The table keeps the terms separate and labels advanced behavior as version-dependent.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Operation or concept</th><th>Purpose</th><th>Source status</th><th>Integration note</th></tr></thead>
+            <tbody>
+              <tr><td>ft</td><td>Direct fungible-token mint</td><td><span class="status supported">Core</span></td><td>Guide CLI form: <code>mint-ft &lt;tick&gt; &lt;total_supply&gt; metadata.json</code>. The direct supply is created in output 0.</td></tr>
+              <tr><td>dft</td><td>Decentralized FT deployment</td><td><span class="status supported">Core</span></td><td>Sets a mint schedule. Fixed DFT has a per-mint amount, maximum mints, and start height.</td></tr>
+              <tr><td>dmt</td><td>Decentralized mint claim</td><td><span class="status supported">Core</span></td><td>For the pinned reference behavior, the claim output 0 must equal the deployed <code>mint_amount</code> exactly.</td></tr>
+              <tr><td>y</td><td>FT split</td><td><span class="status caveat">Reference-code detail</span></td><td>Split behavior is an advanced operation. Build it only with a validator-aware implementation and its compact Atomical-ID payload conventions.</td></tr>
+              <tr><td>z</td><td>Custom coloring</td><td><span class="status caveat">Activation-gated</span></td><td>Newer reference behavior supports custom coloring. It is not safe to assume universal network or indexer support without checking activation and version.</td></tr>
+              <tr><td>x</td><td>Splat allocation</td><td><span class="status unavailable">Not an FT feature</span></td><td>The pinned builder uses this in the NFT branch. Do not describe it as a general ARC-20 transfer path.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="issuance">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">3. Issuance reference</p>
+            <h2>Direct FT and DFT answer different supply questions.</h2>
+          </div>
+          <p>Direct mint puts all units in one colored output. Fixed DFT sets a rules-based mint campaign. Perpetual DFT is a separate, activation-dependent variant and must be evaluated from its own configuration.</p>
+        </div>
+        <div class="cards two">
+          <article class="code-card">
+            <div class="code-bar"><span>Direct FT CLI form from the Atomicals guide</span><button class="copy" type="button" data-copy="yarn cli mint-ft &lt;tick&gt; &lt;total_supply&gt; metadata.json">Copy</button></div>
+            <pre><code>yarn cli mint-ft &lt;tick&gt; &lt;total_supply&gt; metadata.json</code></pre>
+            <div class="card" style="border: 0; border-radius: 0; background: transparent;"><p>Illustration from the guide: a 100,000,000-unit direct mint has a 100,000,000-satoshi output, or 1 BTC. This is an issuance and allocation fact, not a price guarantee, redeemability promise, or collateral claim.</p></div>
+          </article>
+          <article class="code-card">
+            <div class="code-bar"><span>Fixed DFT CLI forms from the Atomicals guide</span><button class="copy" type="button" data-copy="yarn cli init-dft &lt;tick&gt; &lt;per_mint_amt&gt; &lt;mint_count&gt; &lt;start_height&gt; metadata.json&#10;yarn cli mint-dft &lt;tick&gt;">Copy</button></div>
+            <pre><code>yarn cli init-dft &lt;tick&gt; &lt;per_mint_amt&gt; \
+  &lt;mint_count&gt; &lt;start_height&gt; metadata.json
+
+yarn cli mint-dft &lt;tick&gt;</code></pre>
+            <div class="card" style="border: 0; border-radius: 0; background: transparent;"><p>For a fixed deployment, nominal maximum issuance is <code>per_mint_amt * mint_count</code>. A claim is valid only when its deployment rules, timing, amount, and current quota are satisfied.</p></div>
+          </article>
+        </div>
+        <div class="cards three" style="margin-top: 16px;">
+          <article class="card"><p class="label">Before mint</p><h3>Check availability and context</h3><p>Confirm the exact ticker state with a capable indexer. A pending or competing claim is not a safe basis for issuing or branding a token.</p></article>
+          <article class="card"><p class="label">At deployment</p><h3>Preserve the configuration</h3><p>Store the deployment Atomical ID, exact start height, mint amount, maximum mints, optional Bitwork rule, metadata digest, and source revision used to build it.</p></article>
+          <article class="card"><p class="label">At claim</p><h3>Check output 0 precisely</h3><p>The pinned validator requires a DMT's output 0 to equal the deployment's mint amount. Do not substitute a generic amount entry for this transaction rule.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="metadata">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">4. Metadata</p>
+            <h2>Display data is optional and untrusted.</h2>
+          </div>
+          <p>The ARC-20 guide describes metadata as any valid JSON object and recommends informative fields. Treat it as content for presentation, not authority for supply, legitimacy, fractional units, legal rights, or project identity.</p>
+        </div>
+        <div class="split">
+          <article class="code-card">
+            <div class="code-bar"><span>Guide-shaped metadata example</span><button class="copy" type="button" data-copy="{&#10;  &quot;name&quot;: &quot;Example&quot;,&#10;  &quot;desc&quot;: &quot;Display text&quot;,&#10;  &quot;image&quot;: &quot;atom:btc:dat:&lt;file&gt;/image.png&quot;,&#10;  &quot;decimals&quot;: 0,&#10;  &quot;links&quot;: {},&#10;  &quot;legal&quot;: { &quot;terms&quot;: &quot;&quot; }&#10;}">Copy</button></div>
+            <pre><code>{
+  "name": "Example",
+  "desc": "Display text",
+  "image": "atom:btc:dat:&lt;file&gt;/image.png",
+  "decimals": 0,
+  "links": {},
+  "legal": { "terms": "" }
+}</code></pre>
+          </article>
+          <dl class="definition-list">
+            <div><dt>name, desc, image</dt><dd>Common display conventions. Sanitise rendering and do not infer provenance from a URL or media asset.</dd></div>
+            <div><dt>decimals</dt><dd>Presentation metadata. ARC-20 native quantities remain integer satoshi units, so this field does not authorize sub-satoshi fractions.</dd></div>
+            <div><dt>links, legal</dt><dd>Optional assertions supplied by the creator. Validate terms, branding, identity, and jurisdictional claims outside the protocol.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section id="transfers">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">5. Transfers</p>
+            <h2>Normal coloring is sequential and value-sensitive.</h2>
+          </div>
+          <p>For the pinned reference implementation, normal FT allocation considers eligible outputs in order. An output receives units only when its full BTC value fits into the remaining colored amount. If it does not fit, the remaining units can be recorded as burned.</p>
+        </div>
+        <div class="cards two">
+          <article class="card">
+            <p class="label">Clean allocation illustration</p>
+            <h3>1,200 colored units in, 1,200 colored units out</h3>
+            <p><code>input: 1,200 sats / 1,200 units</code></p>
+            <p><code>output 0: 700 sats / 700 units to recipient</code></p>
+            <p><code>output 1: 500 sats / 500 units to sender</code></p>
+            <p>Both output values fit the sequential remainder, so the full 1,200-unit amount can be allocated. Fee inputs and outputs are omitted here for clarity.</p>
+          </article>
+          <article class="card">
+            <p class="label">Burn-risk illustration</p>
+            <h3>An oversized next output breaks the remainder</h3>
+            <p><code>input: 1,200 sats / 1,200 units</code></p>
+            <p><code>output 0: 700 sats / 700 units</code></p>
+            <p><code>output 1: 546 sats / 0 units</code></p>
+            <p>After output 0, only 500 units remain. Because the next 546-sat output is too large for the remainder under normal allocation, the remaining 500 units are not automatically protected by a generic change output.</p>
+          </article>
+        </div>
+        <div class="note warning" style="margin-top: 16px;">
+          <h3>Never derive allocation from a send amount alone</h3>
+          <p>Inputs, their ordering, every output's BTC value and position, activation set, and any advanced coloring operation determine the result. Ask the active indexer to decode or validate the exact PSBT or transaction blueprint before broadcast, then verify its post-broadcast report.</p>
+        </div>
+        <div class="split" style="margin-top: 16px;">
+          <article class="card"><p class="label">No inflation</p><h3>Colored output total cannot exceed colored input total.</h3><p>The pinned validator rejects allocation that would create more units than are present in the relevant colored inputs. It can still record burns when the transaction does not allocate a remainder cleanly.</p></article>
+          <article class="card"><p class="label">Advanced allocation</p><h3>Split and custom coloring require version checks.</h3><p>Use <code>y</code> or activation-gated <code>z</code> only through software that validates the precise payload and network rules. Do not reconstruct their behavior from this overview.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="rule-ledger">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">6. Rule-to-source ledger</p>
+            <h2>Every high-risk claim has a scope and a source.</h2>
+          </div>
+          <p>Use this compact ledger when implementing, reviewing, or explaining ARC-20 behavior. A guide statement, a pinned code path, and a product feature are different kinds of evidence.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Claim</th><th>Scope</th><th>Evidence</th><th>Integration handling</th></tr></thead>
+            <tbody>
+              <tr><td>Specification is defined in code</td><td>Protocol authority</td><td><a href="https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html" target="_blank" rel="noreferrer">Atomicals specification guide</a></td><td>Do not turn this secondary reference into a validator. Re-check source before changing transaction behavior.</td></tr>
+              <tr><td>One ARC-20 unit maps to one satoshi</td><td>Protocol model</td><td><a href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/" target="_blank" rel="noreferrer">ARC-20 guide</a></td><td>Keep amounts as integer satoshi quantities. Treat display decimals as metadata, not new units.</td></tr>
+              <tr><td>DMT output 0 must equal the deployment mint amount</td><td>Pinned validator behavior</td><td><a href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/server/block_processor.py#L3244-L3488" target="_blank" rel="noreferrer">ElectrumX 8df2374, DFT mint validation</a></td><td>Validate the exact output, activation state, deployment rules, and source revision. Do not infer this from a generic form amount.</td></tr>
+              <tr><td>Normal FT allocation can leave an unfit remainder burned</td><td>Pinned validator behavior</td><td><a href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/atomicals_blueprint_builder.py#L643-L718" target="_blank" rel="noreferrer">ElectrumX 8df2374, allocation builder</a></td><td>Preview every input and output. A recipient amount field cannot establish a safe color allocation by itself.</td></tr>
+              <tr><td>Universe visible transfer UI is not safe to use</td><td>Current product scope</td><td><a href="guide.html#universe-scope">Local code audit, 2026-07-18</a></td><td>Keep the flow unavailable until selected colored outpoints, exact preview, validation, and post-broadcast verification are supplied.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="preflight">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">7. Preflight</p>
+            <h2>Minimum evidence before a signature.</h2>
+          </div>
+          <p>A production builder should turn these checks into testable constraints, retain the decoded blueprint with the user intent, and fail closed when an indexer cannot report a safe allocation.</p>
+        </div>
+        <ul class="checklist">
+          <li>Resolve the ticker to the expected Atomical ID and inspect the mint configuration, not only its display metadata.</li>
+          <li>Confirm the network, activation set, indexer version, and source revision used to generate the preview.</li>
+          <li>List colored inputs separately from cardinal fee inputs, then show their order and exact sat values.</li>
+          <li>Show every output's position, BTC value, expected colored quantity, recipient, and whether any colored quantity is burned.</li>
+          <li>For DFT claims, verify start height, remaining mint quota, required Bitwork, and exact output 0 amount.</li>
+          <li>After broadcast, wait for the required confirmation and indexer recognition before treating a ticker claim, mint, or balance as final.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Source links</p><h2>Pin behavior before implementing it.</h2></div>
+          <p>This reference uses a pinned Atomicals ElectrumX revision for code-dependent claims. The source ledger records precise URLs and the reason each source is included.</p>
+        </div>
+        <div class="source-grid">
+          <a class="source-link" href="https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html" target="_blank" rel="noreferrer"><span><strong>Envelope and CBOR guide</strong><span>Commit-reveal envelope model</span></span><em>Open</em></a>
+          <a class="source-link" href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/" target="_blank" rel="noreferrer"><span><strong>ARC-20 issuance guide</strong><span>CLI forms, DFT, metadata, ticker note</span></span><em>Open</em></a>
+          <a class="source-link" href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/atomicals_blueprint_builder.py#L643-L718" target="_blank" rel="noreferrer"><span><strong>Pinned transfer builder</strong><span>Normal FT allocation and burn behavior</span></span><em>Open</em></a>
+          <a class="source-link" href="sources.md"><span><strong>Full source ledger</strong><span>Pin, scope, and review notes</span></span><em>Local</em></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-row"><span>Atomicals + ARC-20 independent documentation</span><span><a href="index.html">Overview</a> | <a href="guide.html">Build and verify</a> | <a href="llms.txt">llms.txt</a></span></div>
+  </footer>
+</body>
+</html>
