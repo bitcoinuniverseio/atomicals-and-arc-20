@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The source ledger for Atomicals and ARC-20 documentation, including authority hierarchy, pinned validator behavior, and visual asset provenance.">
+  <meta name="theme-color" content="#0a0a09">
+  <title>Source ledger | Atomicals + ARC-20 independent documentation</title>
+  <link rel="stylesheet" href="theme.css">
+  <script defer src="site.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="protocol-strip">
+      <div class="shell"><span><strong>Bitcoin mainnet</strong></span><span>Atomicals ElectrumX pin: 8df2374</span><span>Independent guide, reviewed 2026-07-18</span></div>
+    </div>
+    <div class="shell topbar">
+      <a class="brand" href="index.html"><span class="brand-word">ATOMICALS</span><span class="brand-slash">/</span><span class="brand-arc">ARC-20</span></a>
+      <nav class="site-nav" aria-label="Documentation">
+        <a href="index.html">Overview</a>
+        <a href="reference.html">Reference</a>
+        <a href="guide.html">Build and verify</a>
+        <a href="specification.html">Specification</a>
+        <a aria-current="page" href="sources.html">Sources</a>
+      </nav>
+      <a class="header-link" href="https://github.com/atomicals/atomicals-electrumx/releases" target="_blank" rel="noreferrer">Release history</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="shell hero">
+      <div>
+        <p class="eyebrow">Source ledger</p>
+        <h1>Every rule<br><span class="accent">has a trail.</span></h1>
+        <p class="lede">A readable evidence map for the claims in this documentation. It separates explanatory guides, pinned validator behavior, current product facts, and visual-asset provenance.</p>
+        <div class="badge-row">
+          <span class="badge">Review date: 2026-07-18</span>
+          <span class="badge">ElectrumX: 8df2374</span>
+          <span class="badge">Protocol source first</span>
+        </div>
+        <div class="hero-actions">
+          <a class="button primary" href="#ledger">Browse exact sources</a>
+          <a class="button" href="specification.html">Read compatibility requirements</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <figure class="official-lockup">
+          <img src="assets/atomicals-cli-lockup.jpg" width="960" height="540" alt="Atomicals lockup on a dark textured field, with a white mark and wordmark.">
+          <figcaption>Unmodified source-pinned asset from the Atomicals CLI repository. This is independent documentation, not an official protocol site.</figcaption>
+        </figure>
+        <div class="allocation-trace" aria-label="Source hierarchy from protocol guides through pinned validator code to documentation claims.">
+          <div class="trace-title">Evidence hierarchy</div>
+          <div class="trace-flow">
+            <div class="trace-stage"><span class="trace-kicker">Explain</span><strong>Protocol guides</strong><div class="trace-bars"><span class="trace-bar"><i style="width: 100%"></i></span></div><small>Vocabulary, envelope model, issuance forms, and public guidance.</small></div>
+            <span class="trace-arrow" aria-hidden="true">&rarr;</span>
+            <div class="trace-stage envelope"><span class="trace-kicker">Decide</span><strong>Pinned code</strong><small>Exact validation, activation, parsing, and allocation behavior.</small></div>
+            <span class="trace-arrow" aria-hidden="true">&rarr;</span>
+            <div class="trace-stage"><span class="trace-kicker">Scope</span><strong>Independent docs</strong><div class="trace-bars"><span class="trace-bar"><i style="width: 70%"></i></span><span class="trace-bar"><i class="pale" style="width: 30%"></i></span></div><small>Explain evidence without replacing it or promising product support.</small></div>
+          </div>
+          <p class="trace-caption">When sources conflict or change, update the pin and re-run behavioral validation instead of relying on this page alone.</p>
+        </div>
+      </div>
+    </div>
+
+    <section id="authority">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Authority model</p><h2>Source order matters more than page confidence.</h2></div>
+          <p>ARC-20 allocation and DFT behavior are version-sensitive. This ledger makes the authority boundary visible whenever a reader needs to trace a claim back to its source.</p>
+        </div>
+        <div class="timeline">
+          <article><h3>Atomicals specification guide</h3><p>The <a href="https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html" target="_blank" rel="noreferrer">guide</a> states that the protocol specification is defined in code.</p></article>
+          <article><h3>ARC-20 explanatory guide</h3><p>The <a href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/" target="_blank" rel="noreferrer">ARC-20 guide</a> explains mint modes, ticker timing, CLI forms, and metadata conventions.</p></article>
+          <article><h3>Selected validator or indexer</h3><p>The active Atomicals implementation determines the transaction behavior actually applied to a concrete context.</p></article>
+          <article><h3>This independent documentation</h3><p>It summarizes and scopes these materials. It does not replace them or create an independent protocol authority.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="pin">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Pinned implementation baseline</p><h2>Code-specific claims name their revision.</h2></div>
+          <p>This documentation ties validator-specific statements to Atomicals ElectrumX commit <code>8df23747835c20230fc8b8097d469e7a1d97c3e0</code>, released as v1.5.2.0 on 2025-03-27.</p>
+        </div>
+        <div class="split">
+          <article class="note caution"><h3>What the pin controls</h3><p>Direct FT and DFT parser behavior, ticker rules, DFT mint output checks, normal allocation, burn handling, split behavior, and no-inflation checks.</p></article>
+          <article class="note warning"><h3>What it does not guarantee</h3><p>Universal cross-indexer behavior, future releases, active network activation state, wallet support, market authenticity, or product availability.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="visual-provenance">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Visual asset provenance</p><h2>Brand references are explicit and limited.</h2></div>
+          <p>The interface keeps visual attribution as visible as protocol attribution. It uses a source-pinned asset without presenting this independent documentation as an official Atomicals site.</p>
+        </div>
+        <div class="split">
+          <article class="card"><p class="label">Bundled source asset</p><h3>Unchanged Atomicals CLI lockup</h3><p>The site contains an unchanged copy of <a href="https://github.com/atomicals/atomicals-js/blob/1333565efbfe5ca4bdb8443a94d72e9f8534c2c4/atomicals.jpg" target="_blank" rel="noreferrer">atomicals.jpg</a> from the Atomicals CLI repository at commit <a href="https://github.com/atomicals/atomicals-js/commit/1333565efbfe5ca4bdb8443a94d72e9f8534c2c4" target="_blank" rel="noreferrer">1333565</a>.</p></article>
+          <article class="card"><p class="label">Color and affiliation boundary</p><h3>No canonical palette claim</h3><p>The black and white treatment follows the asset. The rust accent is a documentation interface color, not an asserted Atomicals brand color. No official status, endorsement, affiliation, or trademark license is implied.</p></article>
+        </div>
+        <p class="muted" style="margin-top: 16px;">The source repository declares an <a href="https://github.com/atomicals/atomicals-js/blob/1333565efbfe5ca4bdb8443a94d72e9f8534c2c4/LICENSE" target="_blank" rel="noreferrer">MIT License</a>. No separate logo-use policy or canonical color palette was located during review.</p>
+      </div>
+    </section>
+
+    <section id="ledger">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Exact source ledger</p><h2>Open the primary material before changing behavior.</h2></div>
+          <p>These links are deliberately specific. Each row states why the source is used, so a future update can trace claims to their appropriate authority.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Source</th><th>Why it is used</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://atomicals-community.github.io/atomicals-guide/" target="_blank" rel="noreferrer">Atomicals protocol guide</a></td><td>Protocol overview, P2TR positioning, and distinction between fungible tokens, Realms, and Containers.</td></tr>
+              <tr><td><a href="https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html" target="_blank" rel="noreferrer">Atomicals specification guide</a></td><td>Commit-reveal envelope, <code>atom</code> marker, operation, CBOR payload, and code-defined-specification warning.</td></tr>
+              <tr><td><a href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/" target="_blank" rel="noreferrer">ARC-20 guide</a></td><td>Direct and decentralized mint overview, <code>mint-ft</code>, <code>init-dft</code>, <code>mint-dft</code>, ticker timing, Bitwork, and metadata example.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-js" target="_blank" rel="noreferrer">Atomicals JavaScript CLI</a></td><td>Reference CLI and practical command surface.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-js/blob/1333565efbfe5ca4bdb8443a94d72e9f8534c2c4/atomicals.jpg" target="_blank" rel="noreferrer">Pinned Atomicals CLI visual asset</a></td><td>Unchanged source-pinned lockup used in the site shell with provenance and an independence notice.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/util_atomicals.py#L459-L932" target="_blank" rel="noreferrer">Pinned mint parser</a></td><td>Direct FT and DFT parser rules, tickers, mint fields, operation classification, and perpetual DFT behavior.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/util_atomicals.py#L997-L1004" target="_blank" rel="noreferrer">Pinned ticker and operation helpers</a></td><td>Current ticker regular expression at the pinned revision.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/server/block_processor.py#L3244-L3488" target="_blank" rel="noreferrer">Pinned DFT mint validation</a></td><td>DFT mint timing, output 0 amount, and deployment validation behavior.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/atomicals_blueprint_builder.py#L643-L718" target="_blank" rel="noreferrer">Pinned normal FT allocation</a></td><td>Normal allocation order, output fitting, and burn behavior.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/atomicals_blueprint_builder.py#L902-L946" target="_blank" rel="noreferrer">Pinned split and no-inflation checks</a></td><td>FT split behavior and related allocation mechanics.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/atomicals_blueprint_builder.py#L1052-L1074" target="_blank" rel="noreferrer">Pinned allocation validation</a></td><td>No-inflation validation.</td></tr>
+              <tr><td><a href="https://atomicals-community.github.io/atomicals-guide/bitwork-mining.html" target="_blank" rel="noreferrer">Bitwork guide</a></td><td>Bitwork terminology and purpose.</td></tr>
+              <tr><td><a href="https://github.com/atomicals/atomicals-electrumx/releases" target="_blank" rel="noreferrer">ElectrumX releases</a></td><td>Release and activation changes to review before relying on behavior.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="update-process">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Update process</p><h2>Change sources and documentation together.</h2></div>
+          <p>Protocol-facing language must remain pinned, traceable, and testable. Avoid silently expanding a product claim from an explanatory source or inactive code path.</p>
+        </div>
+        <ul class="checklist">
+          <li>Select and record an ElectrumX release or commit.</li>
+          <li>Check the active network and activation conditions relevant to the behavior.</li>
+          <li>Re-run behavioral vectors for direct FT, fixed DFT, DMT, normal allocation, burn handling, split, and custom coloring as applicable.</li>
+          <li>Update the HTML specification, reference, guide, machine-readable file, and source ledger together.</li>
+          <li>Do not turn a metadata convention, third-party feature, or inactive code path into a protocol-wide claim.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="scope">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Product source and exclusions</p><h2>Scope is as important as evidence.</h2></div>
+          <p>Current Universe product notes come from its ARC-20 controller, service, monitor, frontend view, and configuration. They document repository behavior rather than a public API promise.</p>
+        </div>
+        <div class="split">
+          <article class="card"><p class="label">Current product source</p><h3>Read product facts in their audited context.</h3><p><a href="guide.html#universe-scope">Guide.html</a> contains the current product-scope matrix and transfer guardrail.</p></article>
+          <article class="card"><p class="label">Out of scope</p><h3>Not financial or legal advice.</h3><p>Price, market-cap, liquidity, legal, tax, investment claims, third-party endorsements, and a canonical standalone ARC-721 standard are outside this documentation.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-row"><span>Atomicals + ARC-20 independent documentation</span><span><a href="index.html">Overview</a> | <a href="specification.html">Specification</a> | <a href="about.html">About</a></span></div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="About the independent Atomicals and ARC-20 documentation site, its scope, accuracy policy, and source boundaries.">
+  <meta name="theme-color" content="#0a0a09">
+  <title>About this documentation | Atomicals + ARC-20</title>
+  <link rel="stylesheet" href="theme.css">
+  <script defer src="site.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="protocol-strip">
+      <div class="shell"><span><strong>Bitcoin mainnet</strong></span><span>Atomicals ElectrumX pin: 8df2374</span><span>Independent guide, reviewed 2026-07-18</span></div>
+    </div>
+    <div class="shell topbar">
+      <a class="brand" href="index.html"><span class="brand-word">ATOMICALS</span><span class="brand-slash">/</span><span class="brand-arc">ARC-20</span></a>
+      <nav class="site-nav" aria-label="Documentation">
+        <a href="index.html">Overview</a>
+        <a href="reference.html">Reference</a>
+        <a href="guide.html">Build and verify</a>
+        <a href="specification.html">Specification</a>
+        <a href="sources.html">Sources</a>
+      </nav>
+      <a class="header-link" href="https://github.com/bitcoinuniverse/atomicals-and-arc-20" target="_blank" rel="noreferrer">Repository</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="shell hero">
+      <div>
+        <p class="eyebrow">About this site</p>
+        <h1>Useful without<br><span class="accent">pretending.</span></h1>
+        <p class="lede">An independent static documentation site for the Atomicals ARC-20 fungible-token model on Bitcoin. It makes version boundaries, source provenance, and known product limitations easy to see before anyone signs a transaction.</p>
+        <div class="badge-row">
+          <span class="badge">Static site</span>
+          <span class="badge">No build step</span>
+          <span class="badge">Source-pinned claims</span>
+        </div>
+        <div class="hero-actions">
+          <a class="button primary" href="reference.html">Open the reference</a>
+          <a class="button" href="sources.html">Read source policy</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <figure class="official-lockup">
+          <img src="assets/atomicals-cli-lockup.jpg" width="960" height="540" alt="Atomicals lockup on a dark textured field, with a white mark and wordmark.">
+          <figcaption>Unmodified source-pinned asset from the Atomicals CLI repository. This is independent documentation, not an official protocol site.</figcaption>
+        </figure>
+        <div class="allocation-trace" aria-label="Documentation workflow from primary sources through pinned implementation behavior to a reader-facing guide.">
+          <div class="trace-title">Documentation workflow</div>
+          <div class="trace-flow">
+            <div class="trace-stage"><span class="trace-kicker">Research</span><strong>Primary sources</strong><div class="trace-bars"><span class="trace-bar"><i style="width: 100%"></i></span></div><small>Guides, CLI, releases, and validator source.</small></div>
+            <span class="trace-arrow" aria-hidden="true">&rarr;</span>
+            <div class="trace-stage envelope"><span class="trace-kicker">Pin</span><strong>Exact revision</strong><small>State which source-dependent behavior is being described.</small></div>
+            <span class="trace-arrow" aria-hidden="true">&rarr;</span>
+            <div class="trace-stage"><span class="trace-kicker">Explain</span><strong>Human guide</strong><div class="trace-bars"><span class="trace-bar"><i style="width: 72%"></i></span><span class="trace-bar"><i class="pale" style="width: 28%"></i></span></div><small>Keep protocol facts separate from product availability.</small></div>
+          </div>
+          <p class="trace-caption">The aim is clear integration evidence, not an alternative source of protocol authority.</p>
+        </div>
+      </div>
+    </div>
+
+    <section id="scope">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Scope</p><h2>ARC-20 is a UTXO coloring model.</h2></div>
+          <p>One ARC-20 unit maps to one satoshi. A recipient controls units only when Atomicals allocation rules validly assign the colored quantity to a Bitcoin UTXO they control.</p>
+        </div>
+        <div class="split">
+          <article class="note caution"><h3>What this documentation is</h3><p>A field guide for understanding the protocol, validating implementation ideas, tracing source-dependent rules, and separating the current Universe product scope from protocol capabilities.</p></article>
+          <article class="note warning"><h3>What it is not</h3><p>Not an ERC-20 account-balance protocol, price guarantee, redemption mechanism, investment thesis, validator substitute, or official Atomicals protocol site.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contents">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">What is here</p><h2>Choose the page that matches the question.</h2></div>
+          <p>Every visitor-facing destination is a styled HTML page. The Markdown and text files remain in the repository as source and machine-friendly artifacts rather than browser navigation targets.</p>
+        </div>
+        <div class="cards three">
+          <article class="card"><p class="label">Orientation</p><h3><a href="index.html">Overview</a></h3><p>Protocol model, mental model, issuance paths, transfer-risk orientation, and first-read boundaries.</p></article>
+          <article class="card"><p class="label">Integration</p><h3><a href="reference.html">Reference</a></h3><p>Envelope, operations, issuance, metadata, allocation, source ledger, and preflight checks.</p></article>
+          <article class="card"><p class="label">Product</p><h3><a href="guide.html">Build and verify</a></h3><p>Current Universe product scope, operational sequencing, and explicit transfer guardrails.</p></article>
+          <article class="card"><p class="label">Requirements</p><h3><a href="specification.html">Compatibility specification</a></h3><p>Normative integration language, DFT rules, transfer test vectors, and security requirements.</p></article>
+          <article class="card"><p class="label">Evidence</p><h3><a href="sources.html">Source ledger</a></h3><p>Authority hierarchy, pinned code paths, visual asset provenance, and update process.</p></article>
+          <article class="card"><p class="label">AI and tooling</p><h3><a href="llms.html">Machine reference</a></h3><p>Human landing page for the raw LLM context file, with safe usage notes and raw-text access.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="accuracy">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Accuracy policy</p><h2>Useful claims have an explicit boundary.</h2></div>
+          <p>The Atomicals specification guide says the specification is defined in code. This site therefore treats human-readable protocol material and active validator behavior as different evidence layers.</p>
+        </div>
+        <ul class="checklist">
+          <li>Explanatory statements link to Atomicals guide material.</li>
+          <li>Source-dependent behavior is pinned to an ElectrumX revision in the <a href="sources.html">source ledger</a>.</li>
+          <li>Protocol capability is separated from current Universe feature availability.</li>
+          <li>Activation-gated behavior is labeled instead of presented as universal support.</li>
+          <li>Metadata, tickers, and generic confirmations are not presented as authenticity proof.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="product-boundary">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Important product boundary</p><h2>Do not sell a protocol feature as a current product feature.</h2></div>
+          <p>The site documents the local ARC-20 product path as an audited snapshot, not a roadmap or public API stability promise.</p>
+        </div>
+        <div class="note warning"><h3>Current safety note</h3><p>Direct <code>mint-ft</code> issuance and the visible ARC-20 transfer path must not be described as supported today. The visible transfer flow does not supply the colored outpoints its backend builder requires, and is not partial-transfer, split, or combine support.</p></div>
+        <div class="link-row" style="margin-top: 16px;"><a class="button primary" href="guide.html#universe-scope">Read current Universe scope</a><a class="button" href="specification.html#security">Read compatibility requirements</a></div>
+      </div>
+    </section>
+
+    <section id="repository">
+      <div class="shell">
+        <div class="section-head">
+          <div><p class="eyebrow">Repository artifacts</p><h2>Source files remain available without breaking visitor flow.</h2></div>
+          <p>Markdown maintains a compact repository source, while the static site provides designed HTML equivalents. Raw text remains intentionally available only where it is useful for machines or source review.</p>
+        </div>
+        <div class="source-grid">
+          <a class="source-link" href="https://github.com/bitcoinuniverse/atomicals-and-arc-20" target="_blank" rel="noreferrer"><span><strong>GitHub repository</strong><span>Source history, raw Markdown, license, and static assets</span></span><em>Open</em></a>
+          <a class="source-link" href="llms.html"><span><strong>Machine reference</strong><span>Read the LLM context purpose before opening raw text</span></span><em>Open</em></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-row"><span>Atomicals + ARC-20 independent documentation</span><span><a href="index.html">Overview</a> | <a href="specification.html">Specification</a> | <a href="sources.html">Sources</a></span></div>
+  </footer>
+</body>
+</html>

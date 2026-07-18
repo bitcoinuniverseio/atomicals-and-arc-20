@@ -44,7 +44,7 @@ When updating source-dependent text:
 1. Select and record an ElectrumX release or commit.
 2. Check the active network and activation conditions relevant to the behavior.
 3. Re-run behavioral test vectors for direct FT, fixed DFT, DMT, normal allocation, burn handling, split, and custom coloring as applicable.
-4. Update `specification.md`, `reference.html`, `guide.html`, `llms.txt`, and this ledger together.
+4. Update `specification.md`, `specification.html`, `sources.md`, `sources.html`, `reference.html`, `guide.html`, `llms.txt`, and `llms.html` together.
 5. Do not turn a metadata convention, third-party product feature, or inactive code path into a protocol-wide claim.
 
 ## Universe repository sources

@@ -3,15 +3,15 @@
 > Docs home: index.html
 > Detailed reference: reference.html
 > Build and product scope: guide.html
-> Compatibility specification: specification.md
-> Source ledger: sources.md
+> Compatibility specification: specification.html
+> Source ledger: sources.html
 > Review date: 2026-07-18
 
 ## Scope
 
 ARC-20 means the Atomicals fungible-token model on Bitcoin. One ARC-20 unit corresponds to one colored satoshi. It is a UTXO allocation model, not an ERC-20 contract or account-balance model.
 
-The Atomicals specification guide says the specification is defined in code. This documentation is a secondary guide. Source-dependent statements are pinned to Atomicals ElectrumX commit 8df23747835c20230fc8b8097d469e7a1d97c3e0 in sources.md.
+The Atomicals specification guide says the specification is defined in code. This documentation is a secondary guide. Source-dependent statements are pinned to Atomicals ElectrumX commit 8df23747835c20230fc8b8097d469e7a1d97c3e0 in sources.html.
 
 ## Core model
 
@@ -81,4 +81,4 @@ As audited in this repository on 2026-07-18:
 - Atomicals JavaScript CLI: https://github.com/atomicals/atomicals-js
 - Pinned ElectrumX mint parser: https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/util_atomicals.py
 - Pinned ElectrumX transfer builder: https://github.com/atomicals/atomicals-electrumx/blob/8df23747835c20230fc8b8097d469e7a1d97c3e0/electrumx/lib/atomicals_blueprint_builder.py
-- Full source ledger: sources.md
+- Full source ledger: sources.html

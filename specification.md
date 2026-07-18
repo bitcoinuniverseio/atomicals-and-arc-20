@@ -178,4 +178,4 @@ See [guide.html](guide.html) for the audited product-scope matrix and operationa
 
 ## 10. Source set
 
-Read [sources.md](sources.md) before implementing any behavior in this document. It records the guide pages, CLI, exact pinned validator paths, and review boundary.
+Read [sources.html](sources.html) before implementing any behavior in this document. It records the guide pages, CLI, exact pinned validator paths, and review boundary.

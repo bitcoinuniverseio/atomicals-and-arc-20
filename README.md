@@ -7,9 +7,10 @@ An independent static documentation bundle for the Atomicals ARC-20 fungible-tok
 - [index.html](index.html): protocol overview, mental model, issuance modes, and transfer-risk orientation.
 - [reference.html](reference.html): envelope, identifiers, CLI forms, DFT lifecycle, metadata, transfer allocation, and preflight checks.
 - [guide.html](guide.html): build and verification playbook, plus the current Universe product-scope matrix and transfer guardrail.
-- [specification.md](specification.md): source-pinned compatibility specification and behavioral test vectors.
-- [sources.md](sources.md): authority hierarchy, implementation pin, exact source links, and update process.
-- [llms.txt](llms.txt): compact machine-readable summary.
+- [specification.html](specification.html): source-pinned compatibility specification and behavioral test vectors.
+- [sources.html](sources.html): authority hierarchy, implementation pin, exact source links, and update process.
+- [llms.html](llms.html): human landing page for the compact machine-readable summary in [llms.txt](llms.txt).
+- [about.html](about.html): site scope, accuracy policy, visitor page map, and product boundary.
 - [theme.css](theme.css) and [site.js](site.js): shared, dependency-free static-site assets.
 - [assets/atomicals-cli-lockup.jpg](assets/atomicals-cli-lockup.jpg): unchanged source-pinned Atomicals CLI visual used with attribution in the site shell.
 
@@ -26,7 +27,7 @@ This is also not an official Atomicals protocol site. It uses an unchanged asset
 The Atomicals specification guide says the specification is defined in code. This documentation therefore:
 
 - links explanatory material to the Atomicals guide;
-- pins source-dependent behavior to an ElectrumX revision in [sources.md](sources.md);
+- pins source-dependent behavior to an ElectrumX revision in [sources.html](sources.html);
 - separates protocol capabilities from the features currently exposed by Universe; and
 - marks activation-gated behavior instead of presenting it as universal support.
 
@@ -44,4 +45,4 @@ The local static bundle is a documentation artifact. Check [guide.html](guide.ht
 - [Atomicals specification guide](https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html)
 - [Atomicals JavaScript CLI](https://github.com/atomicals/atomicals-js)
 - [Pinned Atomicals CLI lockup asset](https://github.com/atomicals/atomicals-js/blob/1333565efbfe5ca4bdb8443a94d72e9f8534c2c4/atomicals.jpg)
-- [Pinned ElectrumX source ledger](sources.md)
+- [Pinned ElectrumX source ledger](sources.html)

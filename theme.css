@@ -367,6 +367,11 @@ details {
 .card h4 { margin: 16px 0 7px; font-size: 0.86rem; }
 .card p { margin: 0; color: var(--muted); font-size: 0.88rem; }
 .card p + p { margin-top: 10px; }
+.card a,
+.note a,
+.timeline a,
+.section-head a,
+.muted a { color: var(--accent-strong); }
 
 .label {
   color: var(--accent-strong);
