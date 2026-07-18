@@ -1,0 +1,39 @@
+# ARC-20 | Bitcoin Universe Protocol Reference
+
+> Human docs: index.html
+> Field reference: reference.html
+> Network: Bitcoin
+> Classification: Atomicals colored-satoshi fungibles
+
+## Summary
+
+A fungible token standard in the Atomicals ecosystem where units are represented by satoshis and follow Bitcoin's UTXO model.
+
+## State model
+
+Atomicals digital-object history plus satoshi-backed colored coin behavior for direct or decentralized minting.
+
+## Lifecycle
+
+1. Register ticker
+2. Direct or dmint
+3. Colored UTXO
+4. Split or combine
+
+## Operations
+
+- Direct mint: Creates the full supply in a creator-controlled mint flow.
+- Decentralized mint: Opens a rules-based mint campaign for participants.
+- Transfer: Moves the UTXO-backed units with normal Bitcoin transaction construction.
+- Verify: Replays Atomical history and UTXO ownership to verify the object.
+
+## Safety
+
+1. ARC-20 handling depends on precise UTXO selection. Use a wallet that understands Atomicals assets.
+2. Do not infer token ownership from a ticker alone. Verify the Atomical history and the active UTXO.
+3. Atomicals are a separate protocol family from Ordinals. Tooling that is safe for one may not correctly preserve the other.
+
+## Sources
+
+- Atomicals ARC-20 guide: https://atomicals-community.github.io/atomicals-guide/arc20-tokens/
+- Atomicals developer guide: https://github.com/atomicals-community/atomicals-guide
