@@ -1,39 +1,50 @@
-# ARC-20 | Bitcoin Universe Protocol Reference
+# ARC-20
 
-> Human docs: index.html
-> Field reference: reference.html
-> Network: Bitcoin
-> Classification: Atomicals colored-satoshi fungibles
+> One-satoshi-backed token units managed through Atomicals UTXOs.
 
-## Summary
+## Chain and carrier
 
-A fungible token standard in the Atomicals ecosystem where units are represented by satoshis and follow Bitcoin's UTXO model.
+- Chain: Bitcoin
+- Carrier: Atomicals and colored sat UTXOs
+
+## Overview
+
+ARC-20 assets use Atomicals semantics and colored satoshis. Each unit is backed by a satoshi, so ownership and transfer follow the UTXO that holds the colored sats.
 
 ## State model
 
-Atomicals digital-object history plus satoshi-backed colored coin behavior for direct or decentralized minting.
+ARC-20 emphasizes direct ownership. An indexer can make balances convenient to browse, but the spend history of the relevant UTXOs is the core ownership trail.
 
 ## Lifecycle
 
-1. Register ticker
-2. Direct or dmint
-3. Colored UTXO
-4. Split or combine
+1. Select or register a ticker under the Atomicals naming rules.
+2. Issue units through direct mint or decentralized mint rules.
+3. Track the UTXOs that contain the colored satoshis.
+4. Split, combine, or move those UTXOs while preserving colored output accounting.
 
-## Operations
+## Rules
 
-- Direct mint: Creates the full supply in a creator-controlled mint flow.
-- Decentralized mint: Opens a rules-based mint campaign for participants.
-- Transfer: Moves the UTXO-backed units with normal Bitcoin transaction construction.
-- Verify: Replays Atomical history and UTXO ownership to verify the object.
+- Each ARC-20 unit is backed by one satoshi.
+- Mint and update workflows use Atomicals commit and reveal mechanics.
+- P2TR is required by the documented Atomicals mint and update workflows.
+- A recipient owns units by controlling the destination UTXO.
+- Token-aware coin selection must avoid accidentally spending colored UTXOs as fees.
+- Direct mints and decentralized mints have different issuer and supply mechanics.
 
-## Safety
+## Field reference
 
-1. ARC-20 handling depends on precise UTXO selection. Use a wallet that understands Atomicals assets.
-2. Do not infer token ownership from a ticker alone. Verify the Atomical history and the active UTXO.
-3. Atomicals are a separate protocol family from Ordinals. Tooling that is safe for one may not correctly preserve the other.
+- ticker (Atomicals name, required: yes): Follow the active Atomicals naming and availability rules.
+- mint mode (direct / decentralized, required: yes): Choose before issuing.
+- commit (P2TR preparation, required: yes): Creates the required Atomicals commit phase.
+- reveal (P2TR transaction, required: yes): Publishes and binds the Atomical data.
+- colored UTXO (satoshi-bearing output, required: yes): The unit-bearing output to preserve and spend deliberately.
+- destination (Bitcoin output, required: transfer): The recipient controls the resulting colored UTXO.
 
-## Sources
+## Primary sources
 
 - Atomicals ARC-20 guide: https://atomicals-community.github.io/atomicals-guide/arc20-tokens/
-- Atomicals developer guide: https://github.com/atomicals-community/atomicals-guide
+- Atomicals guide source: https://github.com/atomicals-community/atomicals-guide
+
+## Operational caution
+
+Treat colored UTXOs as protected inventory. A wallet that does not understand their provenance can destroy the intended token movement.
