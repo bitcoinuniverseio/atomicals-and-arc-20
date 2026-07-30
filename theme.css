@@ -1,6 +1,5 @@
 :root {
-  /* Documentation palette inspired by the source-pinned Atomicals lockup.
-     It is not presented as a canonical Atomicals brand palette. */
+  /* Warm, Bitcoin-inspired presentation palette. */
   --accent: #b48132;
   --accent-strong: #dfb76f;
   --accent-soft: rgba(180, 129, 50, 0.14);
@@ -28,7 +27,9 @@ html { scroll-behavior: smooth; }
 
 body {
   min-width: 320px;
+  max-width: 100%;
   margin: 0;
+  overflow-x: hidden;
   color: var(--ink);
   background:
     radial-gradient(780px 380px at 92% -90px, rgba(180, 129, 50, 0.12), transparent 68%),
@@ -168,6 +169,8 @@ kbd { font-family: var(--mono); }
   align-items: center;
   padding: 72px 0 64px;
 }
+
+.hero > * { min-width: 0; }
 
 .eyebrow {
   margin: 0 0 13px;
@@ -563,7 +566,7 @@ details ul { padding-bottom: 10px; }
   .site-nav { order: 3; width: 100%; flex-wrap: nowrap; padding-bottom: 8px; overflow-x: auto; }
   .site-nav a { white-space: nowrap; }
   .header-link { margin-bottom: 8px; }
-  h1 { font-size: clamp(3rem, 17vw, 4.8rem); }
+  h1 { font-size: clamp(2.7rem, 12.5vw, 3.35rem); overflow-wrap: anywhere; }
   section { padding: 55px 0; }
   .definition-list > div { grid-template-columns: 1fr; gap: 5px; }
   .footer-row { display: block; }

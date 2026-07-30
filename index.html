@@ -2,217 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A version-aware ARC-20 reference for Bitcoin, Atomicals, and safe UTXO handling.">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Discover ARC-20, where every fungible unit maps directly to a satoshi on Bitcoin.">
   <meta name="theme-color" content="#0a0a09">
-  <title>Atomicals + ARC-20 | Independent documentation</title>
+  <meta property="og:title" content="Atomicals + ARC-20 | Own the satoshi">
+  <meta property="og:description" content="Fungible digital assets with a clear home in Bitcoin's UTXO landscape.">
+  <title>Atomicals + ARC-20 | Own the satoshi</title>
   <link rel="stylesheet" href="theme.css">
-  <script defer src="site.js"></script>
 </head>
 <body>
   <header class="site-header">
-    <div class="protocol-strip">
-      <div class="shell"><span><strong>Bitcoin mainnet</strong></span><span>Atomicals ElectrumX pin: 8df2374</span><span>Independent guide, reviewed 2026-07-18</span></div>
-    </div>
+    <div class="protocol-strip"><div class="shell"><strong>ATOMICALS</strong><span>ONE UNIT</span><span>ONE SATOSHI</span><span>BITCOIN NATIVE</span></div></div>
     <div class="shell topbar">
-      <a class="brand" href="index.html"><span class="brand-word">ATOMICALS</span><span class="brand-slash">/</span><span class="brand-arc">ARC-20</span></a>
-      <nav class="site-nav" aria-label="Documentation">
-        <a aria-current="page" href="index.html">Overview</a>
-        <a href="reference.html">Reference</a>
-        <a href="guide.html">Build and verify</a>
-        <a href="specification.html">Specification</a>
-        <a href="sources.html">Sources</a>
-      </nav>
-      <a class="header-link" href="https://github.com/atomicals/atomicals-electrumx" target="_blank" rel="noreferrer">Reference code</a>
+      <a class="brand" href="./"><span class="brand-word">ATOMICALS</span><span class="brand-slash">/</span><span class="brand-arc">ARC-20</span></a>
+      <nav class="site-nav" aria-label="Primary"><a href="#why">Why ARC-20</a><a href="#journey">The journey</a><a href="#control">Stay in control</a></nav>
+      <a class="header-link" href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/">Explore Atomicals ↗</a>
     </div>
   </header>
-
   <main>
     <div class="shell hero">
       <div>
-        <p class="eyebrow">Bitcoin, Atomicals, colored satoshis</p>
-        <h1>ARC-20<br><span class="accent">mapped.</span></h1>
-        <p class="lede">A field guide to fungible Atomicals units on Bitcoin. ARC-20 is a UTXO coloring model: one token unit maps to one satoshi, and a valid token movement depends on the transaction outputs as well as the Bitcoin spend.</p>
-        <div class="badge-row" aria-label="Protocol traits">
-          <span class="badge">Bitcoin UTXOs</span>
-          <span class="badge">1 unit = 1 sat</span>
-          <span class="badge">Taproot commit and reveal</span>
-          <span class="badge">Version-sensitive validation</span>
-        </div>
-        <div class="hero-actions">
-          <a class="button primary" href="reference.html">Open the integration reference</a>
-          <a class="button" href="guide.html#universe-scope">Check Universe support</a>
-        </div>
+        <p class="eyebrow">Fungible ownership, grounded in Bitcoin</p>
+        <h1>Own the satoshi.<br><span class="accent">Carry the story.</span></h1>
+        <p class="lede">ARC-20 maps every fungible unit directly to a satoshi. That simple connection gives digital ownership a clear home inside Bitcoin's UTXO landscape.</p>
+        <div class="badge-row"><span class="badge">1 unit = 1 satoshi</span><span class="badge">UTXO ownership</span><span class="badge">Open participation</span></div>
+        <div class="hero-actions"><a class="button primary" href="#why">Discover ARC-20</a><a class="button" href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/">Visit Atomicals ↗</a></div>
       </div>
       <div class="hero-visual">
-        <figure class="official-lockup">
-          <img src="assets/atomicals-cli-lockup.jpg" width="960" height="540" alt="Atomicals lockup on a dark textured field, with a white mark and wordmark.">
-          <figcaption>Unmodified source-pinned asset from the Atomicals CLI repository. This is independent documentation, not an official protocol site.</figcaption>
-        </figure>
-        <div class="allocation-trace" aria-label="Illustrative ARC-20 allocation trace from an input UTXO, through an Atomicals envelope, to two output allocations.">
-          <div class="trace-title">Illustrative allocation trace</div>
-          <div class="trace-flow">
-            <div class="trace-stage"><span class="trace-kicker">Input UTXO</span><strong>10,000 colored sats</strong><div class="trace-bars"><span class="trace-bar"><i style="width: 100%"></i></span></div><small>One Bitcoin input carries the colored units.</small></div>
-            <span class="trace-arrow" aria-hidden="true">&rarr;</span>
-            <div class="trace-stage envelope"><span class="trace-kicker">Reveal</span><strong>atom · ft</strong><small>Operation and CBOR payload are evaluated with the transaction.</small></div>
-            <span class="trace-arrow" aria-hidden="true">&rarr;</span>
-            <div class="trace-stage"><span class="trace-kicker">Outputs</span><strong>6,000 + 4,000</strong><div class="trace-bars"><span class="trace-bar"><i style="width: 60%"></i></span><span class="trace-bar"><i class="pale" style="width: 40%"></i></span></div><small>Output values and order determine allocation.</small></div>
-          </div>
-          <p class="trace-caption">Illustration only. The active Atomicals implementation decides whether a real transaction is valid.</p>
-        </div>
+        <figure class="official-lockup"><img src="assets/atomicals-cli-lockup.jpg" alt="Atomicals ecosystem artwork"><figcaption>Atomicals CLI artwork, presented with credit to the Atomicals JavaScript project.</figcaption></figure>
+        <div class="allocation-trace" aria-label="ARC-20 ownership journey"><div class="trace-title">A SATOSHI WITH A STORY</div><div class="trace-flow"><div class="trace-stage"><span class="trace-kicker">CREATE</span><strong>Units enter Bitcoin</strong><small>A clear on-chain origin</small></div><span class="trace-arrow">→</span><div class="trace-stage"><span class="trace-kicker">OWN</span><strong>UTXOs carry value</strong><small>Control follows allocation</small></div><span class="trace-arrow">→</span><div class="trace-stage"><span class="trace-kicker">MOVE</span><strong>Outputs tell the story</strong><small>Every destination matters</small></div></div></div>
       </div>
     </div>
 
-    <section>
-      <div class="shell">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Read this first</p>
-            <h2>The specification is code-defined.</h2>
-          </div>
-          <p>The Atomicals guide explicitly directs implementers to the code for the specification. This site is a researched secondary guide, not an alternative validator. It pins implementation-dependent statements to a source revision and calls out places where a newer indexer can change the outcome.</p>
-        </div>
-        <div class="split">
-          <article class="note caution">
-            <h3>Authority order</h3>
-            <p>Use the Atomicals protocol guide for orientation, the active Atomicals ElectrumX validation code for rule behavior, then a compatible wallet or indexer for building and checking a particular transaction.</p>
-          </article>
-          <article class="note warning">
-            <h3>A confirmed Bitcoin transaction is not enough</h3>
-            <p>A Bitcoin transaction can confirm while its ARC-20 allocation burns units or differs from the intended recipient split. Treat an indexer blueprint check and the post-broadcast allocation as part of the transaction result.</p>
-          </article>
-        </div>
-        <div class="link-row" style="margin-top: 16px;">
-          <a class="button" href="specification.html">Read the compatibility specification</a>
-          <a class="button" href="sources.html">See pinned sources and review date</a>
-        </div>
+    <section id="why"><div class="shell">
+      <div class="section-head"><h2>Bitcoin's smallest unit becomes a creative building block.</h2><p>ARC-20 makes the relationship between an asset and Bitcoin tangible. Units are not floating account entries: they travel through valid UTXO allocation and remain connected to real satoshis.</p></div>
+      <div class="cards three">
+        <article class="card"><p class="label">Direct connection</p><h3>One unit, one satoshi</h3><p>A memorable model that ties each ARC-20 unit to the smallest part of bitcoin.</p></article>
+        <article class="card"><p class="label">Bitcoin ownership</p><h3>Held where Bitcoin is held</h3><p>Control follows the UTXO that validly carries the units, making transaction outputs part of the experience.</p></article>
+        <article class="card"><p class="label">Community energy</p><h3>Multiple ways to begin</h3><p>Direct issuance and decentralized mint paths make room for distinct launches and communities.</p></article>
       </div>
-    </section>
+    </div></section>
 
-    <section>
-      <div class="shell">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Mental model</p>
-            <h2>Token balance is not an account field.</h2>
-          </div>
-          <p>ARC-20 does not use an ERC-20 contract or a ledger balance stored in an account. A compatible reader interprets Atomicals history and transaction allocation rules to determine which spendable outputs carry a particular token's colored satoshis.</p>
-        </div>
-        <div class="metric-grid">
-          <div class="metric"><strong>1 unit</strong><span>One ARC-20 unit corresponds to one colored satoshi. Native quantities are integers.</span></div>
-          <div class="metric"><strong>txid i vout</strong><span>An Atomical ID identifies a minted Atomical by transaction ID and output index, for example <code>&lt;txid&gt;i0</code>.</span></div>
-          <div class="metric"><strong>UTXO control</strong><span>Control of a validly allocated destination UTXO determines current control of its units.</span></div>
-        </div>
-        <div class="timeline" style="margin-top: 28px;">
-          <article>
-            <h3>Identify the asset precisely</h3>
-            <p>Use the Atomical ID, ticker resolution, mint mode, and history. A ticker, image, project name, or marketplace label does not independently authenticate an asset.</p>
-          </article>
-          <article>
-            <h3>Identify protected inputs</h3>
-            <p>Locate the colored outpoints and distinguish them from ordinary, or cardinal, BTC used to pay transaction fees.</p>
-          </article>
-          <article>
-            <h3>Construct the intended allocation</h3>
-            <p>Output order and output values affect normal coloring. Preview the exact allocation instead of trusting a generic send amount.</p>
-          </article>
-          <article>
-            <h3>Verify the resulting outputs</h3>
-            <p>After broadcast, verify the recognized destination outpoints, any burn result, and the current indexer or implementation version that evaluated them.</p>
-          </article>
-        </div>
+    <section id="journey"><div class="shell">
+      <div class="section-head"><h2>From discovery to a Bitcoin-native collection.</h2><p>People find an ARC-20, participate through a compatible wallet, and carry their units in Bitcoin UTXOs. Each confirmed movement continues the asset's public history.</p></div>
+      <div class="timeline">
+        <article><h3>Discover</h3><p>Explore the ticker, supply story, and community behind an ARC-20.</p></article>
+        <article><h3>Participate</h3><p>Take part through its chosen issuance path and review the complete Bitcoin transaction.</p></article>
+        <article><h3>Hold</h3><p>Keep the colored UTXO under your control in a wallet that understands Atomicals allocation.</p></article>
+        <article><h3>Move</h3><p>Send intentionally, with the asset amount and destination reflected in the transaction outputs.</p></article>
       </div>
-    </section>
+    </div></section>
 
-    <section>
-      <div class="shell">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Issuance paths</p>
-            <h2>Two core models, different trust surfaces.</h2>
-          </div>
-          <p>ARC-20's official guide describes direct and decentralized issuance. They should never be treated as interchangeable when evaluating supply, issuer authority, or whether a particular product supports the transaction.</p>
-        </div>
-        <div class="cards two">
-          <article class="card">
-            <p class="label">Protocol path A</p>
-            <h3>Direct FT mint</h3>
-            <p>The reference CLI form is <code>mint-ft &lt;tick&gt; &lt;total_supply&gt; metadata.json</code>. The full supply is placed in one output, where each satoshi represents a unit. This is a protocol capability, not a claim that every wallet or app offers it.</p>
-            <h4>Use when</h4>
-            <p>An issuer needs to create the complete supply at once and distribute it later from the initial colored output.</p>
-          </article>
-          <article class="card">
-            <p class="label">Protocol path B</p>
-            <h3>Fixed decentralized mint</h3>
-            <p>The guide's <code>init-dft</code> creates rules for a public mint. A fixed campaign has <code>mint_amount</code>, <code>max_mints</code>, and <code>mint_height</code>, with nominal maximum issuance <code>mint_amount * max_mints</code>.</p>
-            <h4>Use when</h4>
-            <p>Participants can claim individual valid mints after the configured start height, subject to the deployment's quota and any applicable Bitwork rule.</p>
-          </article>
-        </div>
-        <div class="note caution" style="margin-top: 16px;">
-          <h3>Perpetual DFT is separate</h3>
-          <p>Current reference code also has activation-gated perpetual DFT behavior. Do not infer a fixed supply from the word "decentralized". Read the deployment parameters and the indexer version before displaying a cap.</p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="shell">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Transfer safety</p>
-            <h2>Output values can burn units.</h2>
-          </div>
-          <p>Normal FT allocation walks eligible transaction outputs in order. Under the pinned reference behavior, an output is colored only while its full BTC value fits in the remaining colored amount. A too-large next output or exhausted output list can burn the remainder.</p>
-        </div>
-        <div class="cards three">
-          <article class="card">
-            <p class="label">Do</p>
-            <h3>Use a token-aware builder</h3>
-            <p>Protect Atomicals outpoints from automatic coin selection, and fund miner fees with separate cardinal UTXOs whenever the builder requires it.</p>
-          </article>
-          <article class="card">
-            <p class="label">Check</p>
-            <h3>Preview values and ordering</h3>
-            <p>Inspect inputs, output positions, output sat values, token values, and any allocation or burn report before signing.</p>
-          </article>
-          <article class="card">
-            <p class="label">Avoid</p>
-            <h3>Generic Bitcoin sends</h3>
-            <p>A wallet that does not understand Atomicals can create a Bitcoin-valid spend that does not preserve the intended ARC-20 allocation.</p>
-          </article>
-        </div>
-        <div class="link-row" style="margin-top: 20px;">
-          <a class="button primary" href="reference.html#transfers">See the transfer reference</a>
-          <a class="button" href="guide.html#transfer-guardrail">Read the current Universe guardrail</a>
-        </div>
-      </div>
-    </section>
-
-    <section id="sources">
-      <div class="shell">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Primary material</p>
-            <h2>Start from the source trail.</h2>
-          </div>
-          <p>Use the guide for concepts and the pinned implementation sources for the behavior this documentation describes. Recheck both before shipping a wallet, indexer, or transaction builder.</p>
-        </div>
-        <div class="source-grid">
-          <a class="source-link" href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/" target="_blank" rel="noreferrer"><span><strong>ARC-20 guide</strong><span>Mint modes, ticker guidance, metadata example</span></span><em>Open</em></a>
-          <a class="source-link" href="https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html" target="_blank" rel="noreferrer"><span><strong>Atomicals specification guide</strong><span>Envelope, CBOR, and code-defined warning</span></span><em>Open</em></a>
-          <a class="source-link" href="https://github.com/atomicals/atomicals-js" target="_blank" rel="noreferrer"><span><strong>Atomicals CLI</strong><span>Reference command-line implementation</span></span><em>Open</em></a>
-          <a class="source-link" href="sources.html"><span><strong>Pinned implementation sources</strong><span>ElectrumX revision and exact rule links</span></span><em>Local</em></a>
-        </div>
-      </div>
-    </section>
+    <section id="control"><div class="shell">
+      <div class="note caution"><h3>Your keys. Your outputs. Your decision.</h3><p>ARC-20 movements depend on Bitcoin outputs as well as the spend itself. Before signing, check the asset, amount, destination, output values, and miner fee in a compatible wallet. Keep a colored UTXO intact unless you understand how the transaction allocates its units.</p></div>
+      <div class="source-grid" style="margin-top:16px"><a class="source-link" href="https://atomicals-community.github.io/atomicals-guide/arc20-tokens/"><span><strong>Explore ARC-20</strong><span>Enter the wider Atomicals world.</span></span><em>OPEN ↗</em></a><a class="source-link" href="https://github.com/bitcoinuniverse"><span><strong>Bitcoin Universe</strong><span>Discover more experiences built around Bitcoin.</span></span><em>OPEN ↗</em></a></div>
+    </div></section>
   </main>
-
-  <footer class="footer">
-    <div class="shell footer-row">
-      <span>Atomicals + ARC-20 independent documentation</span>
-      <span><a href="about.html">About</a> | <a href="llms.html">Machine reference</a> | <a href="sources.html">Source ledger</a></span>
-    </div>
-  </footer>
+  <footer class="footer"><div class="shell footer-row"><span>Atomicals + ARC-20, presented by Bitcoin Universe.</span><span>Artwork credited to the Atomicals JavaScript project.</span></div></footer>
 </body>
 </html>
