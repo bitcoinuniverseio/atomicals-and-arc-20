@@ -6,6 +6,7 @@ ARC-20 brings fungible digital assets to Bitcoin through the Atomicals model. Ea
 
 ## Explore
 
+- [Open ARC-20 in Bitcoin Inscribe](https://inscribe.bitcoinuniverse.io/arc20)
 - [Discover ARC-20](https://bitcoinuniverse.github.io/atomicals-and-arc-20/)
 - [Visit the Atomicals guide](https://atomicals-community.github.io/atomicals-guide/arc20-tokens/)
 - [Discover Bitcoin Universe](https://github.com/bitcoinuniverse)
@@ -15,6 +16,10 @@ ARC-20 brings fungible digital assets to Bitcoin through the Atomicals model. Ea
 - **One unit, one satoshi.** ARC-20 connects every fungible unit to the smallest piece of bitcoin.
 - **Ownership you can trace.** Asset control follows valid Bitcoin UTXO allocation.
 - **Open ways to participate.** Direct issuance and decentralized mint paths support different community stories.
+
+Bitcoin Inscribe connects ARC-20 discovery to live Atomicals index data. You
+can inspect canonical tickers and token details, then prepare deploy, mint, and
+transfer actions for review in a compatible Bitcoin wallet.
 
 ## Stay in control
 
