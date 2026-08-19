@@ -17,9 +17,17 @@ ARC-20 brings fungible digital assets to Bitcoin through the Atomicals model. Ea
 - **Ownership you can trace.** Asset control follows valid Bitcoin UTXO allocation.
 - **Open ways to participate.** Direct issuance and decentralized mint paths support different community stories.
 
-Bitcoin Inscribe connects ARC-20 discovery to live Atomicals index data. You
-can inspect canonical tickers and token details, then prepare deploy, mint, and
-transfer actions for review in a compatible Bitcoin wallet.
+Bitcoin Inscribe connects ARC-20 discovery to live Atomicals index data produced
+by Universe-operated Bitcoin Core and Atomicals infrastructure. You can inspect
+verified tickers and token details, then prepare deploy, mint, and transfer
+actions for review in a compatible Bitcoin wallet.
+
+## Production data
+
+Universe services index Atomicals directly from a Universe-operated Bitcoin
+node. Private indexer connectivity keeps administrative and Bitcoin RPC ports
+off the public internet while applications receive current ARC-20 ownership,
+history, and token details through stable product APIs.
 
 ## Stay in control
 
