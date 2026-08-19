@@ -29,6 +29,12 @@ node. Private indexer connectivity keeps administrative and Bitcoin RPC ports
 off the public internet while applications receive current ARC-20 ownership,
 history, and token details through stable product APIs.
 
+The production read service runs on the dedicated Universe indexer host and
+binds only to its local interface. A supervised private compatibility tunnel
+keeps existing application routes available during infrastructure changes,
+while automatic restart and health checks restore both the indexer and its
+private route without manual intervention.
+
 ## Stay in control
 
 ARC-20 movements depend on Bitcoin outputs as well as the spend itself. Before signing, check the asset, amount, destination, output values, and miner fee in a compatible wallet. Keep the UTXO intact unless you understand how the transaction allocates its units.
