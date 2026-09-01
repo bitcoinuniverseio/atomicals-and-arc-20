@@ -6,8 +6,8 @@
     "id": "universe-index-atomicals",
     "path": "electrumx/token_explorer/server.py",
     "revision": "670030e500710aaef77410540768a87a138d8134",
-    "exportedBy": "scripts/export-public-routes.py in the runtime repository",
-    "note": "Sanitized inventory. No hostname, credential, or internal topology is included."
+    "note": "Sanitized inventory. No hostname, credential, or internal topology is included.",
+    "derivation": "Derived by reading the pinned runtime source named above, then reviewed by hand. Drift against the runtime repository is detected by scripts/check-source-drift.mjs --scope private on the trusted scheduled path."
   },
   "coverage": {
     "declared": "partial",
@@ -15,11 +15,36 @@
     "appliesTo": "pending activity only"
   },
   "routes": [
-    { "method": "GET", "path": "/live", "auth": "none", "summary": "Process liveness" },
-    { "method": "GET", "path": "/ready", "auth": "none", "summary": "Migrations and initial snapshot readiness" },
-    { "method": "GET", "path": "/token-explorer/status", "auth": "none", "summary": "Source status and counts" },
-    { "method": "GET", "path": "/token-explorer/arc20", "auth": "bearer", "summary": "Immutable feed page with a signed cursor" },
-    { "method": "POST", "path": "/indexer/atomicals/poll", "auth": "admin-token", "summary": "Operator triggered scan" }
+    {
+      "method": "GET",
+      "path": "/live",
+      "auth": "none",
+      "summary": "Process liveness"
+    },
+    {
+      "method": "GET",
+      "path": "/ready",
+      "auth": "none",
+      "summary": "Migrations and initial snapshot readiness"
+    },
+    {
+      "method": "GET",
+      "path": "/token-explorer/status",
+      "auth": "none",
+      "summary": "Source status and counts"
+    },
+    {
+      "method": "GET",
+      "path": "/token-explorer/arc20",
+      "auth": "bearer",
+      "summary": "Immutable feed page with a signed cursor"
+    },
+    {
+      "method": "POST",
+      "path": "/indexer/atomicals/poll",
+      "auth": "admin-token",
+      "summary": "Operator triggered scan"
+    }
   ],
   "guarantees": [
     "Every ticker candidate is discovered without an upstream verified-only filter, then resolved to its verified winning Atomical ID.",
