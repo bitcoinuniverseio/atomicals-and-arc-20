@@ -34,8 +34,8 @@
     "divergenceSummary": "Documents the Atomicals protocol and its ARC-20 fungible token model as indexed by Bitcoin Universe, whose indexer is a pinned fork of atomicals-electrumx. Universe-specific indexing decisions (AVM def and new operations, split-transaction payment refusal, envelope prefix tolerance, the split of fungible and NFT serving surfaces) are listed separately on the reference page rather than presented as upstream protocol rules."
   },
   "lastVerified": {
-    "commit": "31bb02caf397dfa34f388de6e3128168fef4944e",
-    "timestamp": "2026-09-01T00:00:00Z"
+    "commit": "dcba89ece875f822cc4f5f90c6a074200fac2230",
+    "timestamp": "2026-09-01T02:00:00Z"
   },
   "securityClassification": "public"
 }
