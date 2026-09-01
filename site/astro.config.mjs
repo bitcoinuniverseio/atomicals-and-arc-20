@@ -46,7 +46,15 @@ export default defineConfig({
       defaultLocale: 'root',
       locales: localeEntries,
       credits: false,
-      lastUpdated: true,
+      // Off deliberately. Starlight derives this from the git commit date, which makes
+      // the built HTML a function of the commit history rather than of the working
+      // tree. Since the built site is committed to the repository root, that would
+      // leave every page one commit stale and could never converge.
+      //
+      // The date readers need is in the source panel: `verified` is the day a person
+      // last checked the claim against the pinned revision. A commit that fixes a typo
+      // does not re-verify a protocol claim, and should not look as though it did.
+      lastUpdated: false,
       pagination: true,
       titleDelimiter: '|',
       favicon: '/favicon.svg',
