@@ -9,6 +9,13 @@ rather than a public issue.
 Please include what you found, how to reproduce it, and what you think the impact is. Do not
 include a credential or any private data in the report.
 
+We aim to acknowledge a report within 7 days.
+
+A documentation defect is a security issue here. This repository ships no service, but a wrong
+coloring, splitting, or validity rule leads someone to build a transaction that destroys their own
+tokens. Report those privately too, rather than in a public issue, so the correction lands before
+someone acts on the error.
+
 ## What is in scope
 
 This repository publishes documentation, contracts, and two small packages. In scope:
@@ -21,8 +28,10 @@ This repository publishes documentation, contracts, and two small packages. In s
 
 Out of scope here, and better reported to the owning repository:
 
-- A defect in a Universe runtime service.
-- A defect in the upstream Atomicals implementation.
+- A defect in a Universe runtime service. Use the product security contact listed at
+  https://docs.bitcoinuniverse.io.
+- A defect in the upstream Atomicals implementation. That belongs with the upstream project at
+  https://github.com/atomicals.
 - A defect in a third-party product listed in the ecosystem registry.
 
 ## What the published artefacts must never contain
