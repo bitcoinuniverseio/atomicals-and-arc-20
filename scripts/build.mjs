@@ -96,6 +96,27 @@ const ALREADY_AT_ROOT = new Set([
   'LICENSE',
 ])
 
+/**
+ * Pagefind writes its language map in hash order, so the same index serialises
+ * with a different key order on every run. Nothing about the index differs: the
+ * per-language hash and page count are identical. Sorting the keys makes the
+ * published file byte identical between builds, which is what lets CI require a
+ * build to leave the tree clean.
+ */
+function normalizePagefindEntry() {
+  const entryPath = resolve(distDir, 'pagefind/pagefind-entry.json')
+  if (!existsSync(entryPath)) return
+  const entry = JSON.parse(readFileSync(entryPath, 'utf8'))
+  if (entry.languages) {
+    entry.languages = Object.fromEntries(
+      Object.entries(entry.languages).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+    )
+  }
+  writeFileSync(entryPath, JSON.stringify(entry))
+}
+
+normalizePagefindEntry()
+
 const built = walk(distDir)
   .map((file) => relative(distDir, file).split('\\').join('/'))
   .filter((file) => file !== '.generated-artifacts.json')
