@@ -1,0 +1,13 @@
+# Generated artefacts must round-trip byte for byte, so line endings never convert.
+* text=auto eol=lf
+
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.woff binary
+*.woff2 binary
+*.ico binary
+*.pdf binary
