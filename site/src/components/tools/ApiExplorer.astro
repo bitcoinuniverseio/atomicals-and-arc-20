@@ -72,6 +72,8 @@ const documents = [
   { id: 'atomicals-nfts-realms', title: nftsRealms.info.title },
   { id: 'marketplace-v1', title: marketplace.info.title },
 ]
+import { docHref } from '../../lib/href'
+const locale = Astro.locals.starlightRoute?.locale
 ---
 
 <div class="bu-tool">
@@ -84,7 +86,7 @@ const documents = [
     <div class="bu-tool-body">
       <p class="bu-noscript">
         This tool needs JavaScript. Every operation is listed on the API reference pages, and the
-        <a href="/reference/openapi/">OpenAPI documents</a> are downloadable, both without it.
+        <a href={docHref("/reference/openapi/", locale)}>OpenAPI documents</a> are downloadable, both without it.
       </p>
     </div>
   </noscript>

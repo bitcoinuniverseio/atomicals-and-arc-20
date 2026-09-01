@@ -9,7 +9,7 @@
  *
  * Usage: node scripts/generate-artifacts.mjs --out <directory>
  */
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import {
   root,
@@ -20,7 +20,7 @@ import {
   urlFor,
   absoluteUrlFor,
 } from './lib/content.mjs'
-import { renderMarkdown, escapeHtml } from './lib/markdown.mjs'
+import { renderMarkdown, escapeHtml, setLinkBase } from './lib/markdown.mjs'
 
 const args = process.argv.slice(2)
 const outIndex = args.indexOf('--out')
@@ -34,6 +34,10 @@ const cliInventory = JSON.parse(readFileSync(resolve(root, 'contracts/cli-invent
 const vectors = JSON.parse(
   readFileSync(resolve(root, 'conformance/vectors/arc20-allocation.json'), 'utf8'),
 )
+
+// Generated compatibility pages are served from the same base as the site, so
+// root-relative content links need the same prefix the site applies.
+setLinkBase(BASE)
 
 const written = []
 
@@ -740,12 +744,20 @@ const CONTRACT_FILES = [
   'contracts/routes/marketplace-v1.json',
   'conformance/allocation.mjs',
   'conformance/vectors/arc20-allocation.json',
+  // Served from the repository root on the deployed site. Copied here so the
+  // built directory is a complete preview and the link checks are meaningful.
+  'theme.css',
+  'assets/atomicals-cli-lockup.jpg',
+  'LICENSE',
 ]
 
 for (const file of CONTRACT_FILES) {
   const source = resolve(root, file)
   if (!existsSync(source)) throw new Error(`missing contract artefact: ${file}`)
-  write(file, readFileSync(source, 'utf8'))
+  const target = resolve(outDir, file)
+  mkdirSync(dirname(target), { recursive: true })
+  copyFileSync(source, target)
+  written.push(file)
 }
 
 // ------------------------------------------------------------------------- report

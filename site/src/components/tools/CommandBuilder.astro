@@ -17,6 +17,8 @@ const SAFETY_FLAGS = [
   '--satsbyte',
   '--rbf',
 ]
+import { docHref } from '../../lib/href'
+const locale = Astro.locals.starlightRoute?.locale
 ---
 
 <div class="bu-tool">
@@ -31,7 +33,7 @@ const SAFETY_FLAGS = [
     <div class="bu-tool-body">
       <p class="bu-noscript">
         This tool needs JavaScript. Every command, argument, and option is published on the
-        <a href="/reference/cli/">CLI reference</a>, which works without it.
+        <a href={docHref("/reference/cli/", locale)}>CLI reference</a>, which works without it.
       </p>
     </div>
   </noscript>

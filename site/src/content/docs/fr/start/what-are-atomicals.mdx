@@ -1,0 +1,101 @@
+---
+title: Que sont les Atomicals ?
+description: Des objets numeriques qui vivent dans des sorties Bitcoin ordinaires, identifies par la transaction qui les a crees et interpretes par un validateur Atomicals.
+sidebar:
+  order: 1
+provenance:
+  pageId: start/what-are-atomicals
+  area: start
+  audience: [everyone]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: constants
+    - id: atomicals-guide
+      path: home
+  verified: '2026-08-31'
+  tags: [concepts, identity]
+  translationSourceHash: ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d
+  limitations:
+    - La revision de reference epinglee est une implementation parmi d autres. Une autre version du validateur peut interpreter la meme transaction differemment.
+---
+
+import Figure from '../../../../components/Figure.astro'
+import CommitReveal from '../../../../components/diagrams/CommitReveal.astro'
+import AtomicalIdentity from '../../../../components/diagrams/AtomicalIdentity.astro'
+import FactStrip from '../../../../components/FactStrip.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../../components/EntryCards.astro'
+
+Un **Atomical** est un objet numerique cree par une transaction Bitcoin et porte par une sortie
+Bitcoin. Il n y a pas de chaine laterale, pas de registre de jetons separe, pas de compte de
+contrat intelligent. L objet existe parce qu un validateur lit votre transaction et lui applique
+les regles Atomicals.
+
+<FactStrip
+  facts={[
+    { label: 'Ou il vit', value: 'Une UTXO Bitcoin' },
+    { label: 'Ce qui le nomme', value: 'La transaction qui l a cree' },
+    { label: 'Ce qui decide du vrai', value: 'Une revision epinglee du validateur' },
+  ]}
+/>
+
+## Les trois parties d un Atomical
+
+<AtomicalIdentity />
+
+**Identite** est l Atomical ID, ecrit `<txid>i<index-de-sortie>`. Il est attribue une seule fois et
+ne change jamais. Un numero est aussi attribue dans l ordre de frappe, mais l ID est l identite
+durable a conserver.
+
+**Emplacement** est l UTXO qui porte l objet en ce moment. Depenser cette UTXO deplace l objet, ou
+le detruit, selon la disposition des sorties.
+
+**Historique** est l ensemble ordonne des operations appliquees a l objet : la frappe, chaque mise
+a jour d etat et chaque deplacement.
+
+## Comment une operation est ecrite
+
+<CommitReveal />
+
+Bitcoin n execute pas l enveloppe. Ce sont des donnees dans un chemin de script Taproot. Bitcoin ne
+sait pas ce que `atom` signifie. Un validateur Atomicals, si.
+
+<Aside type="caution" title="Confirmation n est pas achevement">
+Une transaction Bitcoin confirmee dit seulement que les octets sont dans un bloc. Savoir si l
+operation etait valide, quelle sortie a recu l objet et si quelque chose a brule sont des reponses
+que donne un validateur. Verifiez toujours les deux.
+</Aside>
+
+## La famille de protocoles
+
+| Type | Ce que c est | A lire |
+| --- | --- | --- |
+| Atomicals NFT | Un objet non fongible unique avec metadonnees et media | [Vue d ensemble des NFT](/protocol/nft/overview/) |
+| ARC-20 | Jetons fongibles ou une unite est un satoshi colore | [Vue d ensemble ARC-20](/protocol/arc20/overview/) |
+| Container | Une collection nommee dont les items peuvent prouver l appartenance | [Containers](/protocol/containers/overview/) |
+| DMINT | Frappe decentralisee d items de Container contre un manifeste scelle | [DMINT](/protocol/containers/dmint/) |
+| Realm | Un nom de premier niveau detenu comme un Atomical | [Realms](/protocol/realms/overview/) |
+| Subrealm | Un nom enfant reclame sous les regles d un Realm | [Subrealms](/protocol/realms/subrealms/) |
+| Payname | Un Realm utilise comme destination de paiement | [Paynames](/protocol/realms/paynames/) |
+| AVM | Un interpreteur de scripts isole, en beta et de portee distincte | [AVM](/protocol/avm/overview/) |
+
+## Ce qu un Atomical n est pas
+
+- Ce n est pas une preuve de qui a cree quelque chose. Un ticker ou un nom de Realm est une
+  attribution, pas une verification d identite.
+- Ce n est pas un compte de contrat. Il n y a pas de ligne de solde a debiter.
+- Il n est pas sur d en deduire quoi que ce soit depuis les metadonnees. Les metadonnees sont des
+  donnees arbitraires fournies par celui qui a frappe.
+- Ce n est pas definitif parce que Bitcoin a confirme. Voir
+  [confirmation et reorganisations](/protocol/core/confirmation-and-reorgs/).
+
+<EntryCards
+  cards={[
+    { title: "Qu est-ce que ARC-20 ?", body: "Le modele fongible, et pourquoi une unite est un satoshi.", href: "/start/what-is-arc-20/" },
+    { title: "Fondamentaux de securite", body: "Les verifications a faire avant de signer quoi que ce soit.", href: "/start/safety-fundamentals/" },
+  ]}
+/>
+

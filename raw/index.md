@@ -8,7 +8,7 @@ Authority: none
 Networks: mainnet
 Verified: 2026-08-31
 Locale: en
-URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/index/
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/
 
 ---
 ## Start where you are

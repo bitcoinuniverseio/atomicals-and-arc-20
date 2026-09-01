@@ -1,4 +1,6 @@
 ---
+import { docHref } from '../../lib/href'
+const locale = Astro.locals.starlightRoute?.locale
 ---
 
 <div class="bu-tool">
@@ -11,7 +13,7 @@
     <div class="bu-tool-body">
       <p class="bu-noscript">
         This tool needs JavaScript. The checks it performs are written out in full on
-        <a href="/guides/verify-a-transaction/">verify a transaction</a>, which works without it.
+        <a href={docHref("/guides/verify-a-transaction/", locale)}>verify a transaction</a>, which works without it.
       </p>
     </div>
   </noscript>

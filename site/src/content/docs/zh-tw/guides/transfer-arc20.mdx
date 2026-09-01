@@ -1,0 +1,94 @@
+---
+title: 轉移 ARC-20
+description: 建構一筆把每個單位都放到你預期位置、且不銷毀任何價值的轉移。
+sidebar:
+  order: 20
+provenance:
+  pageId: guides/transfer-arc20
+  area: guides
+  audience: [everyone, holder]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-js-cli
+      path: commandIndex
+  verified: '2026-08-31'
+  tags: [transfers, safety]
+  translationSourceHash: bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c
+  limitations:
+    - Universe 的可見轉移介面不會依金額欄位建構面向收款人的部分配置或著色找零。請使用以 outpoint 與輸出面額運作的相容建構器。
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+import VectorTable from '../../../../components/VectorTable.astro'
+
+## 開始之前
+
+- 支援的網路：mainnet。
+- 狀態：協定行為。
+- 你需要一個以 outpoint 與聰面額運作的錢包或建構器，而不是一個金額輸入框。
+
+<Aside type="danger" title="全部風險都在輸出大小上">
+大小以聰為單位，而不是代幣金額框。寫錯一個，餘額就會被銷毀。
+</Aside>
+
+## 可行的結構
+
+| 位置 | 內容 |
+| --- | --- |
+| 輸入 0 | 著色批次 |
+| 輸入 1 及之後 | 用於手續費的基數輸入 |
+| 輸出 0 | 收款方，大小精確等於你要傳送的單位數 |
+| 輸出 1 | 著色找零，大小精確等於餘額 |
+| 輸出 2 | 基數找零，如果有的話 |
+
+## 操作步驟
+
+<Steps>
+
+1. 列出你的著色 outpoint，並選擇要花費的批次。
+2. 決定傳送數量。這個數字同時也是輸出 0 的聰面額。
+3. 計算餘額：批次面額減去傳送數量，就是輸出 1 的聰面額。
+4. 在[配置視覺化工具](/tools/allocation-visualizer/)中建立確切的輸入與輸出組合模型。
+5. 確認銷毀數量為零。
+6. 加入用於手續費的基數輸入，並在最後加入基數找零輸出。
+7. 在包含手續費輸入與輸出的情況下重新建立模型。銷毀數量必須仍為零。
+8. 建構交易，並保持輸入與輸出的順序。
+9. 將錢包提示與你的模型逐行比對。
+10. 簽署並廣播。
+
+</Steps>
+
+## 為什麼需要第七步
+
+加入手續費輸入或找零輸出會改變輸出集合，而配置是依序走訪輸出的。在錢包加入找零之前乾淨的轉移，
+之後可能就會銷毀價值。
+
+## 呈現風險的兩個向量
+
+<VectorTable only={["dust-remainder-burns", "change-output-too-large"]} />
+
+意圖相同、批次相同、傳送數量相同。唯一的差別是找零輸出的大小，而其中一種會銷毀 200 個單位。
+
+## 成本
+
+一筆比特幣手續費，從基數輸入支付。一般轉移不需要 commit 與 reveal 組合，也不需要運算。
+
+## 如果失敗
+
+- 錢包不允許以聰設定輸出面額：換一個建構器。
+- 錢包會重排輸出：換一個建構器。順序即含義。
+- 銷毀數量不為零：調整輸出大小，不要繼續。
+
+## 廣播之後
+
+確認、等待索引、讀取資產位置，並檢查記錄的銷毀數量。
+參見[驗證一筆交易](/guides/verify-a-transaction/)。
+
+## 來源
+
+[配置](/protocol/arc20/allocation/)與[銷毀](/protocol/arc20/burns/)。
+

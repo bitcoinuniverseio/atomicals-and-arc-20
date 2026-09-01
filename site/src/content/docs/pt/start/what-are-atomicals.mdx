@@ -1,0 +1,101 @@
+---
+title: O que sao Atomicals?
+description: Objetos digitais que vivem dentro de saidas comuns do Bitcoin, identificados pela transacao que os criou e interpretados por um validador Atomicals.
+sidebar:
+  order: 1
+provenance:
+  pageId: start/what-are-atomicals
+  area: start
+  audience: [everyone]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: constants
+    - id: atomicals-guide
+      path: home
+  verified: '2026-08-31'
+  tags: [concepts, identity]
+  translationSourceHash: ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d
+  limitations:
+    - A revisao de referencia fixada e uma implementacao entre outras. Outra versao do validador pode interpretar a mesma transacao de forma diferente.
+---
+
+import Figure from '../../../../components/Figure.astro'
+import CommitReveal from '../../../../components/diagrams/CommitReveal.astro'
+import AtomicalIdentity from '../../../../components/diagrams/AtomicalIdentity.astro'
+import FactStrip from '../../../../components/FactStrip.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../../components/EntryCards.astro'
+
+Um **Atomical** e um objeto digital criado por uma transacao Bitcoin e carregado por uma saida
+Bitcoin. Nao existe cadeia paralela, nem livro-razao separado de tokens, nem conta de contrato
+inteligente. O objeto existe porque um validador le a sua transacao e aplica as regras Atomicals a
+ela.
+
+<FactStrip
+  facts={[
+    { label: 'Onde vive', value: 'Uma UTXO do Bitcoin' },
+    { label: 'O que o identifica', value: 'A transacao que o criou' },
+    { label: 'O que decide a verdade', value: 'Uma revisao fixada do validador' },
+  ]}
+/>
+
+## As tres partes de um Atomical
+
+<AtomicalIdentity />
+
+**Identidade** e o Atomical ID, escrito como `<txid>i<indice-da-saida>`. E atribuido uma unica vez
+e nunca muda. Um numero tambem e atribuido na ordem de emissao, mas o ID e a identidade duravel
+que voce deve guardar.
+
+**Localizacao** e a UTXO que carrega o objeto neste momento. Gastar essa UTXO move o objeto, ou o
+destroi, conforme o arranjo das saidas.
+
+**Historico** e o conjunto ordenado de operacoes aplicadas ao objeto: a emissao, cada atualizacao
+de estado e cada movimento.
+
+## Como uma operacao e escrita
+
+<CommitReveal />
+
+O envelope nao e executado pelo Bitcoin. Sao dados dentro de um caminho de script Taproot. O
+Bitcoin nao sabe o que `atom` significa. Um validador Atomicals sabe.
+
+<Aside type="caution" title="Confirmacao nao e conclusao">
+Uma transacao Bitcoin confirmada apenas diz que os bytes estao num bloco. Se a operacao foi valida,
+qual saida recebeu o objeto e se algo foi queimado sao respostas que um validador da. Verifique
+sempre as duas coisas.
+</Aside>
+
+## A familia de protocolos
+
+| Tipo | O que e | Leia |
+| --- | --- | --- |
+| Atomicals NFT | Um objeto nao fungivel unico com metadados e midia | [Visao geral dos NFTs](/protocol/nft/overview/) |
+| ARC-20 | Tokens fungiveis onde uma unidade e um satoshi colorido | [Visao geral do ARC-20](/protocol/arc20/overview/) |
+| Container | Uma colecao nomeada cuja pertenca os itens conseguem provar | [Containers](/protocol/containers/overview/) |
+| DMINT | Emissao descentralizada de itens de Container contra um manifesto selado | [DMINT](/protocol/containers/dmint/) |
+| Realm | Um nome de primeiro nivel detido como um Atomical | [Realms](/protocol/realms/overview/) |
+| Subrealm | Um nome filho reivindicado sob as regras de um Realm | [Subrealms](/protocol/realms/subrealms/) |
+| Payname | Um Realm usado como destino de pagamento | [Paynames](/protocol/realms/paynames/) |
+| AVM | Um interpretador de scripts em ambiente isolado, em beta e com escopo separado | [AVM](/protocol/avm/overview/) |
+
+## O que um Atomical nao e
+
+- Nao e prova de quem criou algo. Um ticker ou um nome de Realm e uma alocacao, nao uma verificacao
+  de identidade.
+- Nao e uma conta de contrato. Nao existe linha de saldo a debitar.
+- Nao e seguro deduzir a partir dos metadados. Metadados sao dados arbitrarios fornecidos por quem
+  emitiu.
+- Nao esta final porque o Bitcoin confirmou. Veja
+  [confirmacao e reorganizacoes](/protocol/core/confirmation-and-reorgs/).
+
+<EntryCards
+  cards={[
+    { title: "O que e ARC-20?", body: "O modelo fungivel, e por que uma unidade e um satoshi.", href: "/start/what-is-arc-20/" },
+    { title: "Fundamentos de seguranca", body: "As verificacoes a fazer antes de assinar qualquer coisa.", href: "/start/safety-fundamentals/" },
+  ]}
+/>
+

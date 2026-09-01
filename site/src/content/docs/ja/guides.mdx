@@ -1,0 +1,105 @@
+---
+title: ガイド
+description: Atomicals を安全に保有、確認、発行、移動、取引するための、作業単位の手順書。
+sidebar:
+  order: 1
+  label: すべてのガイド
+provenance:
+  pageId: guides/index
+  area: guides
+  audience: [everyone]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  verified: '2026-08-31'
+  tags: [navigation]
+  translationSourceHash: 372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244
+---
+
+import EntryCards from '../../../components/EntryCards.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+ここにあるガイドはすべて同じ構成です。実行する前に、これから何をするのかが必ず分かります。
+
+| 節 | 内容 |
+| --- | --- |
+| 始める前に | 前提条件、対応ネットワーク、現在のサポート状況 |
+| 必要なもの | 正確な入力 |
+| 何が起きるか | 想定される出力と、ウォレットが尋ねてくる内容 |
+| 費用 | この操作に固有の手数料の挙動 |
+| 署名前の確認 | この操作の安全確認 |
+| 失敗した場合 | 名前の付いた失敗ケースと、それぞれの意味 |
+| ブロードキャスト後 | 結果の確認方法と、再編成に関する注意 |
+| 出典 | 手順の根拠となる規範ページ |
+
+<Aside type="danger" title="決して変わらない二つの規則">
+シードフレーズ、秘密鍵、ウォレットのエクスポートファイルを共有しないでください。色付きの出力を含む
+集合から、汎用の Bitcoin ウォレットに手数料用の入力を選ばせないでください。
+</Aside>
+
+## 準備
+
+<EntryCards
+  cards={[
+    { title: "ウォレットを選ぶ", body: "Atomicals に安全なウォレットの条件と、その確かめ方。", href: "/guides/choose-a-wallet/" },
+    { title: "BTC と UTXO の準備", body: "手数料用のカーディナルプールを作り、色付き出力が誤って選ばれないようにします。", href: "/guides/prepare-utxos/" },
+    { title: "色付き出力を守る", body: "資産の資金と手数料の資金を実務的に分離します。", href: "/guides/protect-colored-outputs/" },
+    { title: "手数料と費用", body: "実際に支払うもの。commit、reveal、Bitwork の探索、市場手数料。", href: "/guides/fees-and-costs/" },
+  ]}
+/>
+
+## 確認
+
+<EntryCards
+  cards={[
+    { title: "アドレスを調べる", body: "合計ではなくアウトポイントを読み、合計が隠すものを理解します。", href: "/guides/inspect-an-address/" },
+    { title: "Atomical を調べる", body: "識別子、所在、履歴、封印の状態。", href: "/guides/inspect-an-atomical/" },
+    { title: "ティッカーを調べる", body: "名前を、実際にそれを保持する Atomical に解決します。", href: "/guides/inspect-a-ticker/" },
+    { title: "トランザクションを検証する", body: "ブロードキャストの前後で、そのトランザクションが何をしたか確認します。", href: "/guides/verify-a-transaction/" },
+    { title: "確認と再編成", body: "結果に基づいて行動してよいのはいつか。", href: "/guides/confirmations-and-reorgs/" },
+    { title: "インデックス利用不可か残高ゼロか", body: "誤報の大半を生む違い。", href: "/guides/unavailable-indexer-vs-empty-balance/" },
+  ]}
+/>
+
+## 発行
+
+<EntryCards
+  cards={[
+    { title: "直接 FT 発行", body: "1 トランザクションで供給量全体。プロトコルの挙動であり、Universe は公開していません。", href: "/guides/direct-ft-issuance/" },
+    { title: "固定 DFT をデプロイ", body: "他者が請求する発行ルールを定めます。", href: "/guides/deploy-fixed-dft/" },
+    { title: "恒久 DFT をデプロイ", body: "有効化に依存し、Bitwork が進行します。", href: "/guides/deploy-perpetual-dft/" },
+    { title: "ARC-20 を発行", body: "手数料を無駄にせずデプロイに対して請求します。", href: "/guides/mint-arc20/" },
+    { title: "NFT を発行", body: "ペイロード、メディア、そして取り消せない決定。", href: "/guides/mint-an-nft/" },
+    { title: "Container を作る", body: "アイテムが所属を証明できるコレクションの識別子。", href: "/guides/create-a-container/" },
+    { title: "DMINT アイテムを作る", body: "先にマニフェストを封印し、それから発行を開きます。", href: "/guides/create-dmint-items/" },
+    { title: "Realm を請求する", body: "最上位の名前を申請し、解決されたことを確認します。", href: "/guides/claim-a-realm/" },
+    { title: "Subrealm を請求する", body: "支払いを含め、親のルールを満たします。", href: "/guides/claim-a-subrealm/" },
+    { title: "Unicode 名を解決する", body: "正規化し、比較し、紛らわしい名前を検出します。", href: "/guides/resolve-unicode-names/" },
+  ]}
+/>
+
+## 移動と回復
+
+<EntryCards
+  cards={[
+    { title: "ARC-20 を送付する", body: "すべての単位を置き、何も焼失させない送付を組み立てます。", href: "/guides/transfer-arc20/" },
+    { title: "分割と結合", body: "ロット構成を意図的に組み替えます。", href: "/guides/split-and-combine-arc20/" },
+    { title: "焼失を避ける", body: "すべての焼失の形を防ぐ手順。", href: "/guides/avoid-burns/" },
+    { title: "拒否からの回復", body: "拒否されたトランザクションは回復できます。その方法。", href: "/guides/recover-from-a-rejection/" },
+    { title: "ウォレットの署名失敗", body: "機能、符号化、署名範囲の問題を切り分けます。", href: "/guides/wallet-signing-failures/" },
+  ]}
+/>
+
+## 取引
+
+<EntryCards
+  cards={[
+    { title: "ARC-20 ロットを出品する", body: "所有権を証明し、準備し、署名し、確定します。", href: "/guides/list-an-arc20-lot/" },
+    { title: "NFT や Realm を出品する", body: "名前に必要な追加の確認。", href: "/guides/list-an-nft-or-realm/" },
+    { title: "出品の更新と取り下げ", body: "価格の変更や取り下げを安全に行います。", href: "/guides/update-or-remove-a-listing/" },
+    { title: "オファー", body: "オファーの作成、取り消し、受諾。", href: "/guides/offers/" },
+    { title: "マーケットプレイスで購入する", body: "予約し、準備し、署名し、ブロードキャストします。", href: "/guides/buy-on-marketplace/" },
+    { title: "決済を検証する", body: "取引が本当に完了したことを確認します。", href: "/guides/verify-settlement/" },
+  ]}
+/>
+

@@ -1,0 +1,93 @@
+---
+title: 安全基础
+description: 区分一笔干净的 Atomicals 交易与永久损失的八项检查，以及绝不能当作证据的四种说法。
+sidebar:
+  order: 4
+provenance:
+  pageId: start/safety-fundamentals
+  area: start
+  audience: [everyone, holder, creator]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-electrumx-1.5.2.0
+      path: allocationValidation
+  verified: '2026-08-31'
+  tags: [safety, wallets]
+  translationSourceHash: 29f6e08933cd4c773abaea5d350d276fbaa132a129626c1e4462b4b4a7b74abc
+  limitations:
+    - 这些检查能减少可避免的损失。它们不能替代针对交易对手所运行的验证器版本，对具体交易进行验证。
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+import BurnDiagram from '../../../../components/diagrams/BurnDiagram.astro'
+
+Atomicals 中的多数损失并非漏洞利用，而是普通的比特币交易，用普通钱包的方式花掉了一个着色输出。
+
+## 绝对不要做的事
+
+- 绝不要把助记词、私钥或钱包导出文件交给任何对象，包括我们。任何正当的验证都不需要它们。
+- 绝不要让通用比特币钱包从包含你着色输出的集合中挑选手续费输入。
+- 绝不要把代号、图片、名称或市场挂单当作谁创建了某物的证明。
+- 绝不要把索引器的响应当作最终真相。那是某个版本在某一时刻的看法。
+
+## 签署前的八项检查
+
+<Steps>
+
+1. **哪些输出是着色的。** 找出承载资产的确切 outpoint。如果钱包无法告诉你，就停下。
+2. **输入的顺序是什么。** 分配按顺序遍历输入与输出。顺序会改变结果。
+3. **每个输出以聪计是多少。** 不是代币单位，是聪。
+4. **输出的顺序是什么。** 对于铸造以及多数转移形态，第零个输出是特殊的。
+5. **多少落到哪里。** 签署前，每个输出都应有一个预期的单位数。
+6. **什么会被销毁。** 如果有价值无法放置，它会被销毁。除非你有意为之，否则应当为零。
+7. **手续费从哪里来。** 来自单独的基数输入，绝不来自着色输入。
+8. **钱包提示实际写了什么。** 与你的预期逐行比对。
+
+</Steps>
+
+<Aside type="danger" title="代价最高的错误">
+把着色输出发送到交易所充值地址、普通比特币钱包，或任何不理解 Atomicals 的服务，意味着这份价值会
+被当作普通比特币花掉。单位就此消失，没有任何恢复途径。
+</Aside>
+
+## 销毁是什么样子
+
+<BurnDiagram />
+
+销毁不是错误。比特币交易有效、被打包并确认。只是这些单位无处可去，于是验证器把它们记录为已销毁。
+确切规则见[销毁](/protocol/arc20/burns/)，实际操作步骤见
+[避免销毁](/guides/avoid-burns/)。
+
+## 四种什么都证明不了的说法
+
+| 说法 | 它实际证明了什么 |
+| --- | --- |
+| 代号一致 | 某个 Atomical 被分配了一个名称。关于是谁，什么都没说明。 |
+| 元数据这么写 | 有人在 payload 中写入了任意数据。 |
+| 它在市场上挂单 | 有人提交了一个挂单。所有权在结算时另行验证。 |
+| 索引器显示有余额 | 某个实现在某个世代这样认为。请检查版本与新鲜度。 |
+
+## 广播之后
+
+1. 等待比特币确认。
+2. 等待索引到达该高度并报告一个稳定的世代。
+3. 重新读取资产位置，确认与你预期的输出一致。
+4. 检查交易中记录的销毁。
+
+确认与索引是两个不同的答案。
+参见[确认与重组](/guides/confirmations-and-reorgs/)。
+
+## 如果已经出错
+
+- 在广播前被拒绝的交易是可以挽回的：
+  [从拒绝中恢复](/guides/recover-from-a-rejection/)。
+- 钱包不肯签名，通常是能力或编码问题：
+  [钱包签名失败](/guides/wallet-signing-failures/)。
+- 余额显示为零，往往是索引不可用而不是损失：
+  [索引不可用还是余额为空](/guides/unavailable-indexer-vs-empty-balance/)。
+- 已确认的销毁无法撤销。本站的任何内容都改变不了这一点。
+

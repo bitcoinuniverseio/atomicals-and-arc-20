@@ -1,0 +1,107 @@
+---
+title: Guias
+description: Procedimientos orientados a tareas para tener, inspeccionar, emitir, mover y negociar Atomicals con seguridad.
+sidebar:
+  order: 1
+  label: Todas las guias
+provenance:
+  pageId: guides/index
+  area: guides
+  audience: [everyone]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  verified: '2026-08-31'
+  tags: [navigation]
+  translationSourceHash: 372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244
+---
+
+import EntryCards from '../../../components/EntryCards.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+Todas las guias aqui siguen la misma estructura, para que siempre sepas que vas a hacer antes de
+hacerlo.
+
+| Seccion | Que te dice |
+| --- | --- |
+| Antes de empezar | Requisitos previos, redes soportadas y estado de soporte actual |
+| Que necesitas | Entradas exactas |
+| Que ocurre | Salidas esperadas y que te va a preguntar tu billetera |
+| Coste | Comportamiento de las comisiones para esta accion concreta |
+| Comprueba antes de firmar | Las comprobaciones de seguridad para esta accion |
+| Si falla | Casos de fallo nombrados y que significa cada uno |
+| Despues de difundir | Como verificar el resultado, y consideraciones de reorganizacion |
+| Fuente | La pagina normativa detras del procedimiento |
+
+<Aside type="danger" title="Dos reglas que nunca cambian">
+Nunca compartas una frase semilla, una clave privada o un archivo de exportacion de billetera.
+Nunca dejes que una billetera Bitcoin generica elija entradas de comision de un conjunto que
+incluya tus salidas coloreadas.
+</Aside>
+
+## Preparar
+
+<EntryCards
+  cards={[
+    { title: "Elegir una billetera", body: "Las capacidades que hacen una billetera segura para Atomicals, y como probarlas.", href: "/guides/choose-a-wallet/" },
+    { title: "Preparar BTC y UTXOs", body: "Construye una reserva cardinal para comisiones para que una salida coloreada nunca se elija por accidente.", href: "/guides/prepare-utxos/" },
+    { title: "Proteger salidas coloreadas", body: "La separacion practica entre dinero de activos y dinero de comisiones.", href: "/guides/protect-colored-outputs/" },
+    { title: "Comisiones y costes", body: "Lo que pagas de verdad: commit, reveal, mineria de Bitwork, comisiones de mercado.", href: "/guides/fees-and-costs/" },
+  ]}
+/>
+
+## Inspeccionar
+
+<EntryCards
+  cards={[
+    { title: "Inspeccionar una direccion", body: "Lee outpoints, no totales, y entiende lo que un total oculta.", href: "/guides/inspect-an-address/" },
+    { title: "Inspeccionar un Atomical", body: "Identidad, ubicacion, historial y estado de sellado.", href: "/guides/inspect-an-atomical/" },
+    { title: "Inspeccionar un ticker", body: "Resuelve un nombre al Atomical que realmente lo tiene.", href: "/guides/inspect-a-ticker/" },
+    { title: "Verificar una transaccion", body: "Confirma lo que hizo una transaccion, antes y despues de difundir.", href: "/guides/verify-a-transaction/" },
+    { title: "Confirmaciones y reorganizaciones", body: "Cuando un resultado esta bastante asentado para actuar sobre el.", href: "/guides/confirmations-and-reorgs/" },
+    { title: "Indice no disponible o saldo vacio", body: "La diferencia que causa la mayoria de las falsas alarmas.", href: "/guides/unavailable-indexer-vs-empty-balance/" },
+  ]}
+/>
+
+## Emitir
+
+<EntryCards
+  cards={[
+    { title: "Emision directa de FT", body: "Una transaccion, un suministro completo. Comportamiento de protocolo, no expuesto por Universe.", href: "/guides/direct-ft-issuance/" },
+    { title: "Desplegar un DFT fijo", body: "Fija las reglas de acunacion contra las que otros reclamaran.", href: "/guides/deploy-fixed-dft/" },
+    { title: "Desplegar un DFT perpetuo", body: "Condicionado a activacion, con Bitwork progresivo.", href: "/guides/deploy-perpetual-dft/" },
+    { title: "Acunar ARC-20", body: "Reclama contra un despliegue sin desperdiciar una comision.", href: "/guides/mint-arc20/" },
+    { title: "Acunar un NFT", body: "Payload, medios y las decisiones que son permanentes.", href: "/guides/mint-an-nft/" },
+    { title: "Crear un Container", body: "Una identidad de coleccion cuya pertenencia los items pueden demostrar.", href: "/guides/create-a-container/" },
+    { title: "Crear items DMINT", body: "Sella el manifiesto primero, luego abre la acunacion.", href: "/guides/create-dmint-items/" },
+    { title: "Reclamar un Realm", body: "Pide un nombre de primer nivel y confirma que se resolvio.", href: "/guides/claim-a-realm/" },
+    { title: "Reclamar un Subrealm", body: "Satisface las reglas del padre, incluido el pago.", href: "/guides/claim-a-subrealm/" },
+    { title: "Resolver nombres Unicode", body: "Normaliza, compara y detecta nombres confundibles.", href: "/guides/resolve-unicode-names/" },
+  ]}
+/>
+
+## Mover y recuperar
+
+<EntryCards
+  cards={[
+    { title: "Transferir ARC-20", body: "Construye una transferencia que coloca cada unidad y no quema nada.", href: "/guides/transfer-arc20/" },
+    { title: "Dividir y combinar", body: "Reestructura tus lotes deliberadamente.", href: "/guides/split-and-combine-arc20/" },
+    { title: "Evitar quemas", body: "El procedimiento que evita todas las formas de quema.", href: "/guides/avoid-burns/" },
+    { title: "Recuperar de un rechazo", body: "Una transaccion rechazada es recuperable. Asi se hace.", href: "/guides/recover-from-a-rejection/" },
+    { title: "Fallos de firma de la billetera", body: "Problemas de capacidad, codificacion y alcance, diagnosticados.", href: "/guides/wallet-signing-failures/" },
+  ]}
+/>
+
+## Negociar
+
+<EntryCards
+  cards={[
+    { title: "Anunciar un lote ARC-20", body: "Demuestra la propiedad, prepara, firma, finaliza.", href: "/guides/list-an-arc20-lot/" },
+    { title: "Anunciar un NFT o Realm", body: "La comprobacion adicional que exigen los nombres.", href: "/guides/list-an-nft-or-realm/" },
+    { title: "Actualizar o retirar un anuncio", body: "Cambia un precio o retira con seguridad.", href: "/guides/update-or-remove-a-listing/" },
+    { title: "Ofertas", body: "Haz, cancela y acepta una oferta.", href: "/guides/offers/" },
+    { title: "Comprar en el mercado", body: "Reserva, prepara, firma, difunde.", href: "/guides/buy-on-marketplace/" },
+    { title: "Verificar la liquidacion", body: "Confirma que la operacion se completo de verdad.", href: "/guides/verify-settlement/" },
+  ]}
+/>
+

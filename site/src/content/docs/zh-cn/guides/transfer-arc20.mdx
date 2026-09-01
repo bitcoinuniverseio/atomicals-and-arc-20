@@ -1,0 +1,94 @@
+---
+title: 转移 ARC-20
+description: 构建一笔把每个单位都放到你预期位置、且不销毁任何价值的转移。
+sidebar:
+  order: 20
+provenance:
+  pageId: guides/transfer-arc20
+  area: guides
+  audience: [everyone, holder]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-js-cli
+      path: commandIndex
+  verified: '2026-08-31'
+  tags: [transfers, safety]
+  translationSourceHash: bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c
+  limitations:
+    - Universe 的可见转移界面不会根据金额字段构建面向收款人的部分分配或着色找零。请使用以 outpoint 和输出面值工作的兼容构建器。
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+import VectorTable from '../../../../components/VectorTable.astro'
+
+## 开始之前
+
+- 支持的网络：mainnet。
+- 状态：协议行为。
+- 你需要一个以 outpoint 和聪面值工作的钱包或构建器，而不是一个金额输入框。
+
+<Aside type="danger" title="全部风险都在输出大小上">
+大小以聪为单位，而不是代币金额框。写错一个，余额就会被销毁。
+</Aside>
+
+## 可行的结构
+
+| 位置 | 内容 |
+| --- | --- |
+| 输入 0 | 着色批次 |
+| 输入 1 及之后 | 用于手续费的基数输入 |
+| 输出 0 | 收款方，大小精确等于你要发送的单位数 |
+| 输出 1 | 着色找零，大小精确等于余额 |
+| 输出 2 | 基数找零，如果有的话 |
+
+## 操作步骤
+
+<Steps>
+
+1. 列出你的着色 outpoint，并选择要花费的批次。
+2. 确定发送数量。这个数字同时也是输出 0 的聪面值。
+3. 计算余额：批次面值减去发送数量，就是输出 1 的聪面值。
+4. 在[分配可视化工具](/tools/allocation-visualizer/)中建模确切的输入与输出组合。
+5. 确认销毁数量为零。
+6. 添加用于手续费的基数输入，并在末尾添加基数找零输出。
+7. 在包含手续费输入与输出的情况下重新建模。销毁数量必须仍为零。
+8. 构建交易，并保持输入与输出的顺序。
+9. 将钱包提示与你的模型逐行比对。
+10. 签署并广播。
+
+</Steps>
+
+## 为什么需要第七步
+
+添加手续费输入或找零输出会改变输出集合，而分配是按顺序遍历输出的。在钱包添加找零之前干净的转移，
+之后可能就会销毁价值。
+
+## 展示风险的两个向量
+
+<VectorTable only={["dust-remainder-burns", "change-output-too-large"]} />
+
+意图相同、批次相同、发送数量相同。唯一的差别是找零输出的大小，而其中一种会销毁 200 个单位。
+
+## 成本
+
+一笔比特币手续费，从基数输入支付。普通转移不需要 commit 与 reveal 组合，也不需要计算。
+
+## 如果失败
+
+- 钱包不允许以聪设定输出面值：换一个构建器。
+- 钱包会重排输出：换一个构建器。顺序即含义。
+- 销毁数量不为零：调整输出大小，不要继续。
+
+## 广播之后
+
+确认、等待索引、读取资产位置，并检查记录的销毁数量。
+参见[验证一笔交易](/guides/verify-a-transaction/)。
+
+## 来源
+
+[分配](/protocol/arc20/allocation/)与[销毁](/protocol/arc20/burns/)。
+

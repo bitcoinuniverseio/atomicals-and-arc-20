@@ -1,4 +1,4 @@
-import { defineHastPlugin } from 'satteri'
+import { defineMdastPlugin } from 'satteri'
 import siteMeta from '../data/site.json' with { type: 'json' }
 
 const BASE = siteMeta.base.replace(/\/$/, '')
@@ -13,6 +13,10 @@ const LOCALES = new Set(siteMeta.locales.map((locale) => locale.code))
  *
  * Starlight generates a fallback route for every page in every configured locale,
  * so a localised href always resolves even before that translation exists.
+ *
+ * JSX component props are not Markdown links, so components resolve their own
+ * hrefs through `src/lib/href.ts`. The two paths are checked together by
+ * `tests/links.test.mjs`, which walks the built HTML.
  */
 export function localePrefixFor(fileUrl) {
   const path = String(fileUrl ?? '').replace(/\\/g, '/')
@@ -32,17 +36,17 @@ export function rewriteHref(href, prefix) {
   return `${prefix}${href}`
 }
 
+function visitLink(node, ctx) {
+  const prefix = localePrefixFor(ctx.fileURL?.pathname ?? ctx.fileURL)
+  const next = rewriteHref(node.url, prefix)
+  if (next) ctx.setProperty(node, 'url', next)
+}
+
 export const docLinksPlugin = () =>
-  defineHastPlugin({
+  defineMdastPlugin({
     name: 'bu-doc-links',
-    element: {
-      filter: ['a'],
-      visit(node, ctx) {
-        const prefix = localePrefixFor(ctx.fileURL?.pathname ?? ctx.fileURL)
-        const next = rewriteHref(node.properties?.href, prefix)
-        if (next) ctx.setProperty(node, 'properties', { ...node.properties, href: next })
-      },
-    },
+    link: visitLink,
+    definition: visitLink,
   })
 
 export default docLinksPlugin

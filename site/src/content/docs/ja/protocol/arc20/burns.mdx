@@ -1,0 +1,89 @@
+---
+title: 焼失
+description: ARC-20 の価値がどのように破棄されるか、それを引き起こす四つの形、そしてそれぞれを防ぐ確認事項。
+sidebar:
+  order: 12
+provenance:
+  pageId: protocol/arc20/burns
+  area: protocol
+  audience: [everyone, holder, developer]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+  verified: '2026-08-31'
+  tags: [burns, safety]
+  translationSourceHash: 642aa44e0f9eb84af25bfb564c5eb831aecce03b08b862e66ae24df3a295a3cb
+  limitations:
+    - 確認済みの焼失は恒久的です。このドキュメントの何もそれを取り消せません。
+---
+
+import VectorTable from '../../../../../components/VectorTable.astro'
+import BurnDiagram from '../../../../../components/diagrams/BurnDiagram.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+焼失とは、バリデータが対象となるどの出力にも置けなかった色付きの価値です。破棄として記録されます。
+それを引き起こした Bitcoin トランザクションは有効で、採掘され、確認されています。
+
+<Aside type="danger" title="回復はありません">
+焼失した単位はどこにも行きません。それを保持するアドレスも、返す手続きもありません。防止だけが
+唯一の対策です。
+</Aside>
+
+<BurnDiagram />
+
+## 焼失を引き起こす四つの形
+
+### 1. 次の出力が大きすぎる
+
+最も多い形です。置くべき単位が 500 残っていて、次の出力が 546 サトシの場合、収まらないため 500
+単位が破棄されます。
+
+**防止策。** おつりの出力は、残したい残りの額に正確に合わせてください。
+
+### 2. 出力が足りない
+
+すべての出力が埋まり、まだ価値が残っています。置く場所がありません。
+
+**防止策。** ロットが送付額を超えるときは、必ず色付きのおつり出力を含めてください。
+
+### 3. 最初の出力がロット全体より大きい
+
+何も置けないため、ロット全体が焼失します。
+
+**防止策。** 最初の出力が大きなカーディナル支払いであるトランザクションに、小さな色付きロットを
+送らないでください。
+
+### 4. フォールバックが複数トークンのトランザクションを再構成した
+
+あるトークンをきれいに置けなかったため、ビルダーがすべてのトークンを出力ゼロから再開し、別の
+トークンが枠を失いました。
+
+**防止策。** 複数トークンの場合をモデル化していない限り、1 トランザクションにつき 1 トークンに
+してください。
+
+## 実行済みのケース
+
+<VectorTable only={["oversized-next-output", "too-few-outputs", "first-output-too-large", "change-output-too-large", "two-tokens-non-clean-fallback"]} />
+
+## 四つすべてを防ぐ確認事項
+
+1. 想定される割り当てを、署名の後ではなく前に計算します。
+2. 焼失量がゼロであることを確認します。
+3. 各色付き出力の大きさを、サトシ単位で意図的に決めます。
+4. 手数料の入力はカーディナルのまま分離しておきます。
+5. 理由がない限り、1 トランザクションにつき 1 トークンにします。
+6. ウォレットが追加したおつりを含め、出力の集合が変わったら再確認します。
+
+手順 1 と 2 には [割り当てビジュアライザ](/tools/allocation-visualizer/) を使ってください。
+
+## 事後に焼失を検出する
+
+バリデータはトランザクションごとに焼失を記録します。それを報告する情報源からトランザクションを
+読み、色付きの入力合計と色付きの出力合計を比較してください。差分はすべて焼失です。
+
+Universe の ARC-20 アクティビティフィードは、確認済みアクティビティの中に焼失レコードを公開します。
+[ARC-20 API](/reference/api/arc20/) を参照してください。
+

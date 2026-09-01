@@ -1,0 +1,38 @@
+name: Translation defect
+description: A wrong, unclear, or stale translation.
+labels: [translation-defect]
+body:
+  - type: input
+    id: page-id
+    attributes:
+      label: Page ID
+      placeholder: start/safety-fundamentals
+    validations:
+      required: true
+  - type: dropdown
+    id: locale
+    attributes:
+      label: Locale
+      options: [pt, es, fr, ja, ru, zh-cn, zh-tw]
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of defect
+      options:
+        - A term is translated inconsistently with the glossary
+        - A safety warning is weaker than the English one
+        - A prohibited mistranslation was used
+        - Code or an identifier was translated
+        - The wording is unclear or reads as machine produced
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: The passage, and what it should say
+    validations:
+      required: true
+

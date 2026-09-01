@@ -25,6 +25,9 @@
   /* Lines */
   --bu-line: #e2ddd3;
   --bu-line-strong: #c8c1b4;
+  /* Boundary of an interactive control. Meets 3:1 against every surface, because
+     a control the reader cannot find is a control they cannot use. */
+  --bu-line-control: #8b857a;
 
   /* Accent */
   --bu-accent: #8a5a12;
@@ -64,6 +67,7 @@
 
   --bu-line: #2c2925;
   --bu-line-strong: #433f38;
+  --bu-line-control: #6f6a60;
 
   --bu-accent: #e0b269;
   --bu-accent-strong: #f0cd95;

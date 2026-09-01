@@ -1,0 +1,99 @@
+---
+title: Что такое Atomicals
+description: Цифровые объекты, которые живут внутри обычных выходов Bitcoin, определяются создавшей их транзакцией и интерпретируются валидатором Atomicals.
+sidebar:
+  order: 1
+provenance:
+  pageId: start/what-are-atomicals
+  area: start
+  audience: [everyone]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: constants
+    - id: atomicals-guide
+      path: home
+  verified: '2026-08-31'
+  tags: [concepts, identity]
+  translationSourceHash: ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d
+  limitations:
+    - Закреплённая эталонная ревизия это одна из реализаций. Другая версия валидатора может интерпретировать ту же транзакцию иначе.
+---
+
+import Figure from '../../../../components/Figure.astro'
+import CommitReveal from '../../../../components/diagrams/CommitReveal.astro'
+import AtomicalIdentity from '../../../../components/diagrams/AtomicalIdentity.astro'
+import FactStrip from '../../../../components/FactStrip.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../../components/EntryCards.astro'
+
+**Atomical** это цифровой объект, созданный транзакцией Bitcoin и переносимый выходом Bitcoin.
+Нет ни отдельной цепочки, ни отдельного реестра токенов, ни счёта смарт-контракта. Объект
+существует потому, что валидатор читает вашу транзакцию и применяет к ней правила Atomicals.
+
+<FactStrip
+  facts={[
+    { label: 'Где он находится', value: 'UTXO в Bitcoin' },
+    { label: 'Что его именует', value: 'Транзакция, которая его создала' },
+    { label: 'Что определяет истину', value: 'Закреплённая ревизия валидатора' },
+  ]}
+/>
+
+## Три части Atomical
+
+<AtomicalIdentity />
+
+**Идентификатор** это Atomical ID вида `<txid>i<индекс-выхода>`. Он назначается один раз и никогда
+не меняется. Также присваивается номер в порядке выпуска, но хранить следует именно ID.
+
+**Расположение** это UTXO, которая сейчас несёт объект. Трата этой UTXO перемещает объект или
+уничтожает его, в зависимости от того, как устроены выходы.
+
+**История** это упорядоченный набор операций, применённых к объекту: выпуск, каждое обновление
+состояния и каждое перемещение.
+
+## Как записывается операция
+
+<CommitReveal />
+
+Оболочка не исполняется Bitcoin. Это данные внутри скриптового пути Taproot. Bitcoin не знает, что
+означает `atom`. Валидатор Atomicals знает.
+
+<Aside type="caution" title="Подтверждение это не завершение">
+Подтверждённая транзакция Bitcoin говорит лишь о том, что байты попали в блок. Была ли операция
+корректной, какой выход получил объект и сгорело ли что-нибудь, отвечает валидатор. Всегда
+проверяйте оба ответа.
+</Aside>
+
+## Семейство протоколов
+
+| Тип | Что это | Читать |
+| --- | --- | --- |
+| Atomicals NFT | Единичный невзаимозаменяемый объект с метаданными и медиа | [Обзор NFT](/protocol/nft/overview/) |
+| ARC-20 | Взаимозаменяемые токены, где одна единица это один окрашенный сатоши | [Обзор ARC-20](/protocol/arc20/overview/) |
+| Container | Именованная коллекция, принадлежность к которой элементы могут доказать | [Containers](/protocol/containers/overview/) |
+| DMINT | Децентрализованный выпуск элементов Container по запечатанному манифесту | [DMINT](/protocol/containers/dmint/) |
+| Realm | Имя верхнего уровня, которым владеют как Atomical | [Realms](/protocol/realms/overview/) |
+| Subrealm | Дочернее имя, запрошенное по правилам Realm | [Subrealms](/protocol/realms/subrealms/) |
+| Payname | Realm, используемый как адрес получения платежа | [Paynames](/protocol/realms/paynames/) |
+| AVM | Изолированный интерпретатор скриптов, бета и с отдельной областью применения | [AVM](/protocol/avm/overview/) |
+
+## Чем Atomical не является
+
+- Это не доказательство того, кто что создал. Тикер или имя Realm это распределение, а не проверка
+  личности.
+- Это не счёт контракта. Нет строки баланса, которую можно списать.
+- Из метаданных нельзя делать безопасных выводов. Метаданные это произвольные данные, внесённые
+  выпускающим.
+- Это не окончательно только потому, что Bitcoin подтвердил транзакцию. См.
+  [подтверждение и реорганизации](/protocol/core/confirmation-and-reorgs/).
+
+<EntryCards
+  cards={[
+    { title: "Что такое ARC-20", body: "Модель взаимозаменяемости и почему одна единица это один сатоши.", href: "/start/what-is-arc-20/" },
+    { title: "Основы безопасности", body: "Проверки, которые нужно выполнить перед любой подписью.", href: "/start/safety-fundamentals/" },
+  ]}
+/>
+

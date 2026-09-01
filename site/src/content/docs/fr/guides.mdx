@@ -1,0 +1,107 @@
+---
+title: Guides
+description: Procedures orientees taches pour detenir, inspecter, emettre, deplacer et echanger des Atomicals en toute securite.
+sidebar:
+  order: 1
+  label: Tous les guides
+provenance:
+  pageId: guides/index
+  area: guides
+  audience: [everyone]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  verified: '2026-08-31'
+  tags: [navigation]
+  translationSourceHash: 372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244
+---
+
+import EntryCards from '../../../components/EntryCards.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+Tous les guides ici suivent la meme structure, pour que vous sachiez toujours ce que vous allez
+faire avant de le faire.
+
+| Section | Ce qu elle vous dit |
+| --- | --- |
+| Avant de commencer | Prerequis, reseaux pris en charge et etat du support actuel |
+| Ce dont vous avez besoin | Entrees exactes |
+| Ce qui se passe | Sorties attendues et ce que votre portefeuille va demander |
+| Cout | Comportement des frais pour cette action precise |
+| Verifiez avant de signer | Les verifications de securite pour cette action |
+| En cas d echec | Cas d echec nommes et ce que chacun signifie |
+| Apres diffusion | Comment verifier le resultat, et considerations de reorganisation |
+| Source | La page normative derriere la procedure |
+
+<Aside type="danger" title="Deux regles qui ne changent jamais">
+Ne partagez jamais de phrase de recuperation, de cle privee ou de fichier d export de portefeuille.
+Ne laissez jamais un portefeuille Bitcoin generique choisir des entrees de frais dans un ensemble
+qui contient vos sorties colorees.
+</Aside>
+
+## Preparer
+
+<EntryCards
+  cards={[
+    { title: "Choisir un portefeuille", body: "Les capacites qui rendent un portefeuille sur pour Atomicals, et comment les tester.", href: "/guides/choose-a-wallet/" },
+    { title: "Preparer BTC et UTXO", body: "Constituez une reserve cardinale pour les frais afin qu une sortie coloree ne soit jamais choisie par accident.", href: "/guides/prepare-utxos/" },
+    { title: "Proteger les sorties colorees", body: "La separation pratique entre argent d actifs et argent de frais.", href: "/guides/protect-colored-outputs/" },
+    { title: "Frais et couts", body: "Ce que vous payez vraiment : commit, reveal, minage Bitwork, frais de marche.", href: "/guides/fees-and-costs/" },
+  ]}
+/>
+
+## Inspecter
+
+<EntryCards
+  cards={[
+    { title: "Inspecter une adresse", body: "Lisez des outpoints, pas des totaux, et comprenez ce qu un total cache.", href: "/guides/inspect-an-address/" },
+    { title: "Inspecter un Atomical", body: "Identite, emplacement, historique et etat de scellement.", href: "/guides/inspect-an-atomical/" },
+    { title: "Inspecter un ticker", body: "Resolvez un nom vers l Atomical qui le detient reellement.", href: "/guides/inspect-a-ticker/" },
+    { title: "Verifier une transaction", body: "Confirmez ce qu une transaction a fait, avant et apres diffusion.", href: "/guides/verify-a-transaction/" },
+    { title: "Confirmations et reorganisations", body: "Quand un resultat est assez etabli pour agir dessus.", href: "/guides/confirmations-and-reorgs/" },
+    { title: "Index indisponible ou solde vide", body: "La difference qui cause la plupart des fausses alertes.", href: "/guides/unavailable-indexer-vs-empty-balance/" },
+  ]}
+/>
+
+## Emettre
+
+<EntryCards
+  cards={[
+    { title: "Emission directe de FT", body: "Une transaction, une offre complete. Comportement de protocole, non expose par Universe.", href: "/guides/direct-ft-issuance/" },
+    { title: "Deployer un DFT fixe", body: "Fixez les regles de frappe contre lesquelles d autres reclameront.", href: "/guides/deploy-fixed-dft/" },
+    { title: "Deployer un DFT perpetuel", body: "Conditionne a l activation, avec Bitwork progressif.", href: "/guides/deploy-perpetual-dft/" },
+    { title: "Frapper de l ARC-20", body: "Reclamez contre un deploiement sans gaspiller de frais.", href: "/guides/mint-arc20/" },
+    { title: "Frapper un NFT", body: "Payload, media et les decisions qui sont definitives.", href: "/guides/mint-an-nft/" },
+    { title: "Creer un Container", body: "Une identite de collection dont les items peuvent prouver l appartenance.", href: "/guides/create-a-container/" },
+    { title: "Creer des items DMINT", body: "Scellez le manifeste d abord, puis ouvrez la frappe.", href: "/guides/create-dmint-items/" },
+    { title: "Reclamer un Realm", body: "Demandez un nom de premier niveau et confirmez qu il a ete resolu.", href: "/guides/claim-a-realm/" },
+    { title: "Reclamer un Subrealm", body: "Satisfaites les regles du parent, paiement compris.", href: "/guides/claim-a-subrealm/" },
+    { title: "Resoudre des noms Unicode", body: "Normalisez, comparez et detectez les noms confondables.", href: "/guides/resolve-unicode-names/" },
+  ]}
+/>
+
+## Deplacer et recuperer
+
+<EntryCards
+  cards={[
+    { title: "Transferer de l ARC-20", body: "Construisez un transfert qui place chaque unite et ne brule rien.", href: "/guides/transfer-arc20/" },
+    { title: "Diviser et combiner", body: "Restructurez vos lots deliberement.", href: "/guides/split-and-combine-arc20/" },
+    { title: "Eviter les brulures", body: "La procedure qui evite toutes les formes de brulure.", href: "/guides/avoid-burns/" },
+    { title: "Recuperer d un rejet", body: "Une transaction rejetee est recuperable. Voici comment.", href: "/guides/recover-from-a-rejection/" },
+    { title: "Echecs de signature du portefeuille", body: "Problemes de capacite, d encodage et de portee, diagnostiques.", href: "/guides/wallet-signing-failures/" },
+  ]}
+/>
+
+## Echanger
+
+<EntryCards
+  cards={[
+    { title: "Annoncer un lot ARC-20", body: "Prouvez la propriete, preparez, signez, finalisez.", href: "/guides/list-an-arc20-lot/" },
+    { title: "Annoncer un NFT ou un Realm", body: "La verification supplementaire que les noms exigent.", href: "/guides/list-an-nft-or-realm/" },
+    { title: "Modifier ou retirer une annonce", body: "Changez un prix ou retirez en toute securite.", href: "/guides/update-or-remove-a-listing/" },
+    { title: "Offres", body: "Faites, annulez et acceptez une offre.", href: "/guides/offers/" },
+    { title: "Acheter sur le marche", body: "Reservez, preparez, signez, diffusez.", href: "/guides/buy-on-marketplace/" },
+    { title: "Verifier le reglement", body: "Confirmez que l echange s est vraiment termine.", href: "/guides/verify-settlement/" },
+  ]}
+/>
+

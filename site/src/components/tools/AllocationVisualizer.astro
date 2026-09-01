@@ -8,6 +8,8 @@ const presets = vectors.cases.map((testCase) => ({
   outputs: testCase.outputs,
   options: testCase.options,
 }))
+import { docHref } from '../../lib/href'
+const locale = Astro.locals.starlightRoute?.locale
 ---
 
 <div class="bu-tool">
@@ -20,7 +22,7 @@ const presets = vectors.cases.map((testCase) => ({
     <div class="bu-tool-body">
       <p class="bu-noscript">
         This tool needs JavaScript. The same cases are published as executed vectors on the
-        <a href="/reference/conformance/">conformance page</a>, which works without it.
+        <a href={docHref("/reference/conformance/", locale)}>conformance page</a>, which works without it.
       </p>
     </div>
   </noscript>

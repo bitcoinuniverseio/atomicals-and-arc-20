@@ -1,0 +1,96 @@
+---
+title: ARC-20 を送付する
+description: すべての単位を意図した場所に置き、何も焼失させない送付を組み立てます。
+sidebar:
+  order: 20
+provenance:
+  pageId: guides/transfer-arc20
+  area: guides
+  audience: [everyone, holder]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-js-cli
+      path: commandIndex
+  verified: '2026-08-31'
+  tags: [transfers, safety]
+  translationSourceHash: bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c
+  limitations:
+    - Universe の可視な送付画面は、金額欄から受取人への部分割り当てや色付きのおつりを構築しません。アウトポイントと出力額で動作する互換ビルダーを使用してください。
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+import VectorTable from '../../../../components/VectorTable.astro'
+
+## 始める前に
+
+- 対応ネットワーク: mainnet。
+- 状態: プロトコルの挙動。
+- 金額欄ではなく、アウトポイントとサトシ額で動作するウォレットまたはビルダーが必要です。
+
+<Aside type="danger" title="リスクはすべて出力の大きさにあります">
+大きさはサトシであり、トークンの金額欄ではありません。一つ間違えると残りが焼失します。
+</Aside>
+
+## うまくいく構成
+
+| 位置 | 内容 |
+| --- | --- |
+| 入力 0 | 色付きロット |
+| 入力 1 以降 | 手数料用のカーディナル入力 |
+| 出力 0 | 受取人。送付する単位数に正確に合わせます |
+| 出力 1 | 色付きのおつり。残りに正確に合わせます |
+| 出力 2 | カーディナルのおつり（ある場合） |
+
+## 手順
+
+<Steps>
+
+1. 色付きアウトポイントを一覧し、使用するロットを選びます。
+2. 送付額を決めます。その数値は出力 0 のサトシ額でもあります。
+3. 残りを計算します。ロットの額から送付額を引いたものが、出力 1 のサトシ額です。
+4. 入力と出力の正確な組み合わせを
+   [割り当てビジュアライザ](/tools/allocation-visualizer/) でモデル化します。
+5. 焼失量がゼロであることを確認します。
+6. 手数料用のカーディナル入力と、末尾にカーディナルのおつり出力を追加します。
+7. 手数料の入力と出力を含めて再度モデル化します。焼失量はゼロのままでなければなりません。
+8. 入力と出力の順序を保ったままトランザクションを組み立てます。
+9. ウォレットの確認画面を、モデルと一行ずつ比較します。
+10. 署名してブロードキャストします。
+
+</Steps>
+
+## 手順 7 が存在する理由
+
+手数料の入力やおつり出力を加えると出力の集合が変わり、割り当ては出力を順に処理します。ウォレットが
+おつりを追加する前には健全だった送付が、追加後に焼失することがあります。
+
+## リスクを示す二つのベクタ
+
+<VectorTable only={["dust-remainder-burns", "change-output-too-large"]} />
+
+意図も、ロットも、送付額も同じです。違いはおつり出力の大きさだけで、片方は 200 単位を破棄します。
+
+## 費用
+
+Bitcoin の手数料を、カーディナル入力から支払います。通常の送付には commit と reveal の組も探索も
+不要です。
+
+## 失敗した場合
+
+- 出力額をサトシで指定できないウォレット: 別のビルダーを使ってください。
+- 出力を並べ替えるウォレット: 別のビルダーを使ってください。順序は意味を持ちます。
+- 焼失量がゼロでない: 出力の大きさを変更し、そのまま進めないでください。
+
+## ブロードキャスト後
+
+確認し、インデックス化を待ち、資産の所在を読み、記録された焼失量を確認します。
+[トランザクションを検証する](/guides/verify-a-transaction/) を参照してください。
+
+## 出典
+
+[割り当て](/protocol/arc20/allocation/) と [焼失](/protocol/arc20/burns/)。
+

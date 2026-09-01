@@ -1,0 +1,53 @@
+name: Verify deployment
+
+# GitHub Pages serves this repository's default branch directly, so there is no
+# deploy step to run. What there is, and what matters, is proving that the real
+# origin serves what the build produced. A local build passing is not a release.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Daily, so a Pages configuration change or an expired certificate is caught.
+    - cron: '23 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atomicals-docs-verify-deployment
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify the production origin
+    runs-on: [self-hosted, universe-ci, linux-ultra]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      # Pages republishes on a push to the default branch. Give it room to
+      # finish before asserting anything about the origin.
+      - name: Wait for Pages to publish this commit
+        if: github.event_name == 'push'
+        shell: pwsh
+        run: Start-Sleep -Seconds 120
+
+      - name: Verify the deployed site
+        run: node scripts/verify-deployment.mjs
+
+      - name: Upload the verification report
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: deployment-verification-${{ github.run_id }}
+          path: deployment-verification.json
+          retention-days: 30
+          if-no-files-found: warn
