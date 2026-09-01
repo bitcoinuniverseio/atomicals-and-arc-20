@@ -17,13 +17,15 @@
   "scripts": {
     "generate": "node scripts/generate-all.mjs",
     "build": "node scripts/build.mjs",
-    "test": "node --test tests/",
+    "test": "node --test \"tests/*.test.mjs\" \"packages/*/test/*.test.mjs\"",
     "check": "node scripts/check-all.mjs",
     "verify": "npm run generate && npm run check && npm test && npm run build"
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "24.10.1",
     "ajv": "8.17.1",
-    "ajv-formats": "3.0.1"
+    "ajv-formats": "3.0.1",
+    "typescript": "5.9.3"
   }
 }

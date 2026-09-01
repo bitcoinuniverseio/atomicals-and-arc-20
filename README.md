@@ -1,44 +1,122 @@
-# Atomicals + ARC-20
+# Atomicals and ARC-20
 
-Own the satoshi. Carry the story.
+**[Read the documentation](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/)**
 
-ARC-20 brings fungible digital assets to Bitcoin through the Atomicals model. Each unit maps directly to a satoshi, giving ownership a clear home inside Bitcoin's UTXO landscape.
+The working reference for Atomicals digital objects, ARC-20 tokens, and the Bitcoin Universe
+services that expose them. Protocol reference, task guides, validated API contracts, executed
+conformance material, local safety tools, and machine readable output.
 
-## Explore
+---
 
-- [Open ARC-20 in Bitcoin Inscribe](https://inscribe.bitcoinuniverse.io/arc20)
-- [Discover ARC-20](https://bitcoinuniverse.github.io/atomicals-and-arc-20/)
-- [Visit the Atomicals guide](https://atomicals-community.github.io/atomicals-guide/arc20-tokens/)
-- [Discover Bitcoin Universe](https://github.com/bitcoinuniverse)
+## Three layers, never mixed
 
-## Why it stands out
+Every page states which one it describes, at which source revision, and when that was last checked.
 
-- **One unit, one satoshi.** ARC-20 connects every fungible unit to the smallest piece of bitcoin.
-- **Ownership you can trace.** Asset control follows valid Bitcoin UTXO allocation.
-- **Open ways to participate.** Direct issuance and decentralized mint paths support different community stories.
+| Layer | What it means |
+| --- | --- |
+| **Protocol behavior** | What a pinned Atomicals validator revision does |
+| **Universe implementation** | What a Bitcoin Universe service actually exposes today |
+| **Proposed or experimental** | What exists but is not live |
 
-Bitcoin Inscribe connects ARC-20 discovery to live Atomicals index data produced
-by Universe-operated Bitcoin Core and Atomicals infrastructure. You can inspect
-verified tickers and token details, then prepare deploy, mint, and transfer
-actions for review in a compatible Bitcoin wallet.
+A protocol capability is not automatically a product feature. A product feature is not
+automatically protocol behavior. A proposal is not an implementation.
 
-## Production data
+## Start here
 
-Universe services index Atomicals directly from a Universe-operated Bitcoin
-node. Private indexer connectivity keeps administrative and Bitcoin RPC ports
-off the public internet while applications receive current ARC-20 ownership,
-history, and token details through stable product APIs.
+| If you | Read |
+| --- | --- |
+| Hold or want tokens | [What is ARC-20](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/what-is-arc-20/), then [safety fundamentals](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/safety-fundamentals/) |
+| Are launching something | [Choose your path](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/choose-your-path/#creator) |
+| Are integrating | [Source of truth](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/source-of-truth/), then [OpenAPI](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/openapi/) |
+| Run the services | [Readiness and freshness](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/readiness-and-freshness/) |
+| Are an agent | [AI and agent access](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/ai-access/) |
 
-The production read service runs on the dedicated Universe indexer host and
-binds only to its local interface. A supervised private compatibility tunnel
-keeps existing application routes available during infrastructure changes,
-while automatic restart and health checks restore both the indexer and its
-private route without manual intervention.
+## The one rule that costs money
 
-## Stay in control
+**One ARC-20 unit is one satoshi in an output a validator recognises as coloured.** A transfer is
+an allocation over the transaction's inputs and outputs, in order. Value that cannot be placed in
+an eligible output is destroyed, and the Bitcoin transaction still confirms normally.
 
-ARC-20 movements depend on Bitcoin outputs as well as the spend itself. Before signing, check the asset, amount, destination, output values, and miner fee in a compatible wallet. Keep the UTXO intact unless you understand how the transaction allocates its units.
+Read [burns](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/burns/) before
+moving anything, and model the transaction first with the
+[allocation visualizer](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/allocation-visualizer/).
 
-## Visual credit
+## Machine readable
 
-The Atomicals CLI artwork displayed on the site is preserved from the [Atomicals JavaScript project](https://github.com/atomicals/atomicals-js). Atomicals and ARC-20 names and artwork remain associated with their respective creators.
+| Artefact | Path |
+| --- | --- |
+| Compact LLM index | [`/llms.txt`](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/llms.txt) |
+| Full LLM bundle | [`/llms-full.txt`](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/llms-full.txt) |
+| Page manifest with content hashes | [`/manifest.json`](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/manifest.json) |
+| Raw Markdown for any page | `/raw/<page-id>.md` |
+| Compatibility specification | [`/specification.md`](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/specification.md) |
+| Source ledger | [`/sources.md`](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/sources.md) |
+| OpenAPI 3.1 documents | `/contracts/openapi/` |
+| Shared JSON Schemas | `/contracts/schemas/common.schema.json` |
+| Executed conformance vectors | `/conformance/vectors/` |
+| Changelog feed | [`/changelog.xml`](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/changelog.xml) |
+
+There is also a local, read-only
+[documentation MCP server](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/mcp/)
+and a generated
+[TypeScript client](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/client-sdk/).
+
+## What is pinned
+
+Protocol statements are pinned to Atomicals ElectrumX
+[`8df23747`](https://github.com/atomicals/atomicals-electrumx/commit/8df23747835c20230fc8b8097d469e7a1d97c3e0),
+released as v1.5.2.0 on 2025-03-27. That baseline is preserved as history and is not rewritten when
+a Universe service upgrades. Universe revisions are recorded separately, per page.
+
+Every pinned source is in
+[`contracts/source-manifest.json`](contracts/source-manifest.json) and rendered on
+[versions and compatibility](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/versions/).
+
+## Repository layout
+
+```text
+site/                  Astro and Starlight source, and the content collection
+contracts/             Source manifest, OpenAPI, JSON Schemas, route inventories, registries
+conformance/           The ARC-20 allocation engine and its executed vectors
+packages/client/       The generated TypeScript read client
+packages/mcp/          The read-only documentation MCP server
+scripts/               Generators, checks, and the build
+tests/                 Contracts, conformance, content, links, accessibility, performance
+```
+
+Everything at the repository root outside those directories is generated by `npm run build` and
+recorded in `.site-manifest.json`. GitHub Pages serves the default branch directly, and Bitcoin
+Inscribe consumes this repository as a submodule, so the built site is committed rather than
+produced at publish time.
+
+## Working on it
+
+```bash
+npm install
+npm run generate   # regenerate every derived artefact
+npm test           # contracts, conformance, and content
+npm run build      # build the site and publish it to the repository root
+npm run check      # every check that does not need a network
+```
+
+`npm run generate` and `npm run build` must both leave the working tree clean. CI fails when they
+do not, which is what stops a generated file from drifting from its source.
+
+Start with
+[contribute](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/) for where content
+belongs and what every check verifies.
+
+## What this documentation will not do
+
+No price talk. No rankings. No investment, legal, or tax advice. No claim that a ticker proves who
+made something, that metadata proves authenticity, or that a marketplace listing proves ownership.
+Where evidence is missing, a page says so instead of guessing.
+
+## Credits and licence
+
+Documentation and code in this repository are MIT licensed. See [LICENSE](LICENSE).
+
+The Atomicals CLI artwork in `assets/` is preserved unchanged from the
+[Atomicals JavaScript project](https://github.com/atomicals/atomicals-js), which declares an MIT
+licence. Atomicals and ARC-20 names and artwork remain associated with their respective creators.
+Nothing here implies official status, endorsement, affiliation, or a trademark licence.

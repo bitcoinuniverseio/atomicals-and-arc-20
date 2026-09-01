@@ -123,7 +123,7 @@ export function routeIdFor(file) {
     .split('\\')
     .join('/')
     .replace(/\.mdx?$/, '')
-    .replace(/\/index$/, '')
+    .replace(/(^|\/)index$/, '')
 }
 
 export function localeOf(routeId) {

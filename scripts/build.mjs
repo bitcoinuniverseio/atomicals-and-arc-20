@@ -88,7 +88,13 @@ function walk(dir) {
  * not publish to the root, because the source files already live at exactly those paths
  * and are served from there.
  */
-const ALREADY_AT_ROOT = new Set(['contracts', 'conformance'])
+const ALREADY_AT_ROOT = new Set([
+  'contracts',
+  'conformance',
+  'theme.css',
+  'assets',
+  'LICENSE',
+])
 
 const built = walk(distDir)
   .map((file) => relative(distDir, file).split('\\').join('/'))

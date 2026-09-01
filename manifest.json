@@ -18,26 +18,43 @@
   "requiredLocalizedPages": [
     "start/what-are-atomicals",
     "start/what-is-arc-20",
-    "start/choose-your-path",
     "start/safety-fundamentals",
-    "start/glossary",
     "start/status-and-limitations",
-    "protocol/overview",
+    "start/glossary",
     "protocol/arc20/overview",
     "protocol/arc20/unit-model",
-    "protocol/arc20/allocation",
     "protocol/arc20/burns",
-    "protocol/nft/overview",
-    "protocol/realms/overview",
-    "protocol/containers/overview",
-    "guides/index",
-    "guides/inspect-a-ticker",
+    "guides",
     "guides/transfer-arc20",
-    "guides/avoid-burns",
-    "guides/verify-a-transaction"
+    "guides/avoid-burns"
   ],
-  "pageCount": 139,
+  "pageCount": 216,
   "pages": [
+    {
+      "pageId": "home",
+      "routeId": "",
+      "locale": "en",
+      "title": "Atomicals and ARC-20",
+      "description": "Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "823671db3b9877d7c8ebf5013c3832527da4c5bcc340ee9ea8ad538e55aa86e1",
+      "href": "/atomicals-and-arc-20/",
+      "raw": "/atomicals-and-arc-20/raw/index.md"
+    },
     {
       "pageId": "contribute/index",
       "routeId": "contribute",
@@ -631,6 +648,672 @@
       "contentHash": "69ce45c49111ee441840f45b7817eec3db94580f6b3a21c988f925a633f68c2a",
       "href": "/atomicals-and-arc-20/ecosystem/",
       "raw": "/atomicals-and-arc-20/raw/ecosystem.md"
+    },
+    {
+      "pageId": "guides/index",
+      "routeId": "es/guides",
+      "locale": "es",
+      "title": "Guias",
+      "description": "Procedimientos orientados a tareas para tener, inspeccionar, emitir, mover y negociar Atomicals con seguridad.",
+      "area": "guides",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244",
+      "contentHash": "ca2eba392b66edfdb9159d8e038c847a95d568bb569da62cb7abc6d9b96dc3b9",
+      "href": "/atomicals-and-arc-20/es/guides/",
+      "raw": "/atomicals-and-arc-20/raw/es/guides.md"
+    },
+    {
+      "pageId": "guides/avoid-burns",
+      "routeId": "es/guides/avoid-burns",
+      "locale": "es",
+      "title": "Evitar quemas",
+      "description": "El procedimiento practico que evita todas las formas de quema, con los casos ejecutados que muestran como se ve cada una.",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Una quema confirmada es permanente. Este procedimiento evita quemas. Nada revierte una."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44",
+      "contentHash": "eb288015e0cc8da2a6657c2011679defa8b418f3f18ae134a5c442ea2d67e0ba",
+      "href": "/atomicals-and-arc-20/es/guides/avoid-burns/",
+      "raw": "/atomicals-and-arc-20/raw/es/guides/avoid-burns.md"
+    },
+    {
+      "pageId": "guides/transfer-arc20",
+      "routeId": "es/guides/transfer-arc20",
+      "locale": "es",
+      "title": "Transferir ARC-20",
+      "description": "Construye una transferencia que coloca cada unidad donde quieres y no quema nada.",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-js-cli"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "La superficie visible de transferencia de Universe no construye asignaciones parciales para destinatarios ni cambio coloreado a partir de un campo de importe. Usa un constructor compatible que trabaje en outpoints y valores de salida."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c",
+      "contentHash": "775cfd5213920efe35e8f49af1465652a120f72f0f4d89f58cbf1da65c337a26",
+      "href": "/atomicals-and-arc-20/es/guides/transfer-arc20/",
+      "raw": "/atomicals-and-arc-20/raw/es/guides/transfer-arc20.md"
+    },
+    {
+      "pageId": "protocol/arc20/burns",
+      "routeId": "es/protocol/arc20/burns",
+      "locale": "es",
+      "title": "Quemas",
+      "description": "Como se destruye el valor ARC-20, las cuatro formas que lo causan, y las comprobaciones que evitan cada una.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Una quema confirmada es permanente. Nada en esta documentacion puede revertir una."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "642aa44e0f9eb84af25bfb564c5eb831aecce03b08b862e66ae24df3a295a3cb",
+      "contentHash": "3ca82ceeb73fc1ac5da40236da2617fc2bddf2b55d10de2327abb30a999c0c08",
+      "href": "/atomicals-and-arc-20/es/protocol/arc20/burns/",
+      "raw": "/atomicals-and-arc-20/raw/es/protocol/arc20/burns.md"
+    },
+    {
+      "pageId": "protocol/arc20/overview",
+      "routeId": "es/protocol/arc20/overview",
+      "locale": "es",
+      "title": "ARC-20",
+      "description": "El modelo ARC-20 completo en una pagina, de la emision a la asignacion y al limite de seguridad, con enlaces a la regla exacta de cada parte.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Esta es una guia de compatibilidad, no una especificacion de consenso independiente. La especificacion Atomicals esta definida en codigo."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3ca37424403e7ac9d768235cfbd6cd52d53b9b37bf5c277e8e8be409f65c5472",
+      "contentHash": "c49c7ac11da938ec322ec27834fd35d73cf1d206dfd6280bb50036e9cfa4f379",
+      "href": "/atomicals-and-arc-20/es/protocol/arc20/overview/",
+      "raw": "/atomicals-and-arc-20/raw/es/protocol/arc20/overview.md"
+    },
+    {
+      "pageId": "protocol/arc20/unit-model",
+      "routeId": "es/protocol/arc20/unit-model",
+      "locale": "es",
+      "title": "El modelo de unidad",
+      "description": "Un satoshi coloreado es una unidad, el suministro se mide en satoshis, y los decimales son solo presentacion.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "0e97ff4112c1dc00649dd483dd1b427ff83279aad5ed40de820813457a931eb7",
+      "contentHash": "6a9c6f822d46a5d29445a154c4f50d1525602570929dd9a2b3ff1e306599af7e",
+      "href": "/atomicals-and-arc-20/es/protocol/arc20/unit-model/",
+      "raw": "/atomicals-and-arc-20/raw/es/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/glossary",
+      "routeId": "es/start/glossary",
+      "locale": "es",
+      "title": "Glosario",
+      "description": "Todos los terminos de Atomicals y ARC-20 usados en este sitio, definidos una vez y usados de forma coherente en todas partes.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "1bf34ef9ccd7cf1f16e907c6b21143dfb49d1718eb70d575d8b6ae346f8ae665",
+      "contentHash": "d1a4b5d480d06926e3587972f56552e4a3b9c43ef9b48375f934243ceff9757f",
+      "href": "/atomicals-and-arc-20/es/start/glossary/",
+      "raw": "/atomicals-and-arc-20/raw/es/start/glossary.md"
+    },
+    {
+      "pageId": "start/safety-fundamentals",
+      "routeId": "es/start/safety-fundamentals",
+      "locale": "es",
+      "title": "Fundamentos de seguridad",
+      "description": "Las ocho comprobaciones que separan una transaccion Atomicals limpia de una perdida permanente, y las cuatro afirmaciones que nunca debes aceptar como prueba.",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "holder",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Estas comprobaciones reducen perdidas evitables. No sustituyen validar una transaccion concreta contra la revision del validador que ejecutan tus contrapartes."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "29f6e08933cd4c773abaea5d350d276fbaa132a129626c1e4462b4b4a7b74abc",
+      "contentHash": "d1e269c57ac2541b36ba746f4fa0e0bf871d1ebc9f5a32fe98d4cf58cfae9784",
+      "href": "/atomicals-and-arc-20/es/start/safety-fundamentals/",
+      "raw": "/atomicals-and-arc-20/raw/es/start/safety-fundamentals.md"
+    },
+    {
+      "pageId": "start/status-and-limitations",
+      "routeId": "es/start/status-and-limitations",
+      "locale": "es",
+      "title": "Estado y limitaciones conocidas",
+      "description": "Que esta activo, que esta en beta, que es solo propuesta, que no esta expuesto, y las limitaciones que conocemos y no ocultamos.",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "developer",
+        "operator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "universe-index-atomicals-nfts-and-realms",
+        "atomicals-avm-interpreter"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Esta pagina refleja la fecha de verificacion indicada arriba. Consulta el panel de fuentes antes de confiar en cualquier fila."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
+      "contentHash": "c8ef96ee1e7076f896d139f1dfdbb2abf9350b9bd704c3d0927c5a84328bd439",
+      "href": "/atomicals-and-arc-20/es/start/status-and-limitations/",
+      "raw": "/atomicals-and-arc-20/raw/es/start/status-and-limitations.md"
+    },
+    {
+      "pageId": "start/what-are-atomicals",
+      "routeId": "es/start/what-are-atomicals",
+      "locale": "es",
+      "title": "Que son los Atomicals?",
+      "description": "Objetos digitales que viven dentro de salidas normales de Bitcoin, identificados por la transaccion que los creo e interpretados por un validador Atomicals.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "La revision de referencia fijada es una implementacion entre otras. Otra version del validador puede interpretar la misma transaccion de forma distinta."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d",
+      "contentHash": "3fe8acadf7408c4a165f0bcad494826c67c4e064e6d1217fb0e032265e2a6c4d",
+      "href": "/atomicals-and-arc-20/es/start/what-are-atomicals/",
+      "raw": "/atomicals-and-arc-20/raw/es/start/what-are-atomicals.md"
+    },
+    {
+      "pageId": "start/what-is-arc-20",
+      "routeId": "es/start/what-is-arc-20",
+      "locale": "es",
+      "title": "Que es ARC-20?",
+      "description": "El modelo de tokens fungibles de Atomicals, donde una unidad es un satoshi coloreado y una transferencia es un problema de asignacion, no una actualizacion de cuenta.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "El comportamiento de asignacion depende de la version. Las cifras de esta pagina siguen solo la revision de referencia fijada."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49",
+      "contentHash": "2790e261f783777d0f0f5371bee6e111a4f9c2de5e1df705dcaeb3b9270bf3ac",
+      "href": "/atomicals-and-arc-20/es/start/what-is-arc-20/",
+      "raw": "/atomicals-and-arc-20/raw/es/start/what-is-arc-20.md"
+    },
+    {
+      "pageId": "guides/index",
+      "routeId": "fr/guides",
+      "locale": "fr",
+      "title": "Guides",
+      "description": "Procedures orientees taches pour detenir, inspecter, emettre, deplacer et echanger des Atomicals en toute securite.",
+      "area": "guides",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244",
+      "contentHash": "63982bbaa4ecd53458cb9c25a2b8bc7cc5ba1d5d7d001e780ac2f253ff8a3021",
+      "href": "/atomicals-and-arc-20/fr/guides/",
+      "raw": "/atomicals-and-arc-20/raw/fr/guides.md"
+    },
+    {
+      "pageId": "guides/avoid-burns",
+      "routeId": "fr/guides/avoid-burns",
+      "locale": "fr",
+      "title": "Eviter les brulures",
+      "description": "La procedure pratique qui evite toutes les formes de brulure, avec les cas executes qui montrent a quoi chacune ressemble.",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Une brulure confirmee est definitive. Cette procedure evite les brulures. Rien n en annule une."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44",
+      "contentHash": "18531afec5a8321adc5e6e2ec1b8227215b456b43a99939bf31f24eb3d6a96f7",
+      "href": "/atomicals-and-arc-20/fr/guides/avoid-burns/",
+      "raw": "/atomicals-and-arc-20/raw/fr/guides/avoid-burns.md"
+    },
+    {
+      "pageId": "guides/transfer-arc20",
+      "routeId": "fr/guides/transfer-arc20",
+      "locale": "fr",
+      "title": "Transferer de l ARC-20",
+      "description": "Construisez un transfert qui place chaque unite ou vous le voulez et ne brule rien.",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-js-cli"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "La surface de transfert visible d Universe ne construit ni attributions partielles vers des destinataires ni monnaie coloree a partir d un champ de montant. Utilisez un constructeur compatible qui travaille en outpoints et en valeurs de sortie."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c",
+      "contentHash": "1c897d847b84a480d29e3682757bec4236c1af784f6defb3267555297047c94e",
+      "href": "/atomicals-and-arc-20/fr/guides/transfer-arc20/",
+      "raw": "/atomicals-and-arc-20/raw/fr/guides/transfer-arc20.md"
+    },
+    {
+      "pageId": "protocol/arc20/burns",
+      "routeId": "fr/protocol/arc20/burns",
+      "locale": "fr",
+      "title": "Brulures",
+      "description": "Comment la valeur ARC-20 est detruite, les quatre formes qui la causent, et les verifications qui evitent chacune d elles.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Une brulure confirmee est definitive. Rien dans cette documentation ne peut en annuler une."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "642aa44e0f9eb84af25bfb564c5eb831aecce03b08b862e66ae24df3a295a3cb",
+      "contentHash": "83ca7296e11d08328b4df7de7249e7900dcbc0f3c21b81df550d3475669b7a74",
+      "href": "/atomicals-and-arc-20/fr/protocol/arc20/burns/",
+      "raw": "/atomicals-and-arc-20/raw/fr/protocol/arc20/burns.md"
+    },
+    {
+      "pageId": "protocol/arc20/overview",
+      "routeId": "fr/protocol/arc20/overview",
+      "locale": "fr",
+      "title": "ARC-20",
+      "description": "Le modele ARC-20 complet en une page, de l emission a l attribution et a la limite de securite, avec des liens vers la regle exacte de chaque partie.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Ceci est un guide de compatibilite, pas une specification de consensus independante. La specification Atomicals est definie dans le code."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3ca37424403e7ac9d768235cfbd6cd52d53b9b37bf5c277e8e8be409f65c5472",
+      "contentHash": "710c29a9288936119c91ff23bf682a792c390ad71a650f39c7a4853f2057cd35",
+      "href": "/atomicals-and-arc-20/fr/protocol/arc20/overview/",
+      "raw": "/atomicals-and-arc-20/raw/fr/protocol/arc20/overview.md"
+    },
+    {
+      "pageId": "protocol/arc20/unit-model",
+      "routeId": "fr/protocol/arc20/unit-model",
+      "locale": "fr",
+      "title": "Le modele d unite",
+      "description": "Un satoshi colore est une unite, l offre se mesure en satoshis, et les decimales servent uniquement a la presentation.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "0e97ff4112c1dc00649dd483dd1b427ff83279aad5ed40de820813457a931eb7",
+      "contentHash": "ff14e85319bb9eb85c680c0eaeffc5dcf85562f01dc4e8e26f52b67a06be3662",
+      "href": "/atomicals-and-arc-20/fr/protocol/arc20/unit-model/",
+      "raw": "/atomicals-and-arc-20/raw/fr/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/glossary",
+      "routeId": "fr/start/glossary",
+      "locale": "fr",
+      "title": "Glossaire",
+      "description": "Tous les termes Atomicals et ARC-20 utilises sur ce site, definis une fois et employes de facon coherente partout.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "1bf34ef9ccd7cf1f16e907c6b21143dfb49d1718eb70d575d8b6ae346f8ae665",
+      "contentHash": "40754347eb7f26560430dbc34380ae6a9b4128e71f060de66b680b66abec70f6",
+      "href": "/atomicals-and-arc-20/fr/start/glossary/",
+      "raw": "/atomicals-and-arc-20/raw/fr/start/glossary.md"
+    },
+    {
+      "pageId": "start/safety-fundamentals",
+      "routeId": "fr/start/safety-fundamentals",
+      "locale": "fr",
+      "title": "Fondamentaux de securite",
+      "description": "Les huit verifications qui separent une transaction Atomicals propre d une perte definitive, et les quatre affirmations qu il ne faut jamais accepter comme preuve.",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "holder",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Ces verifications reduisent les pertes evitables. Elles ne remplacent pas la validation d une transaction concrete contre la revision du validateur que vos contreparties executent."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "29f6e08933cd4c773abaea5d350d276fbaa132a129626c1e4462b4b4a7b74abc",
+      "contentHash": "ab3824df8208c9dd18e614ffe295f5e0e81f96068f102021c5a517216cfc4c0a",
+      "href": "/atomicals-and-arc-20/fr/start/safety-fundamentals/",
+      "raw": "/atomicals-and-arc-20/raw/fr/start/safety-fundamentals.md"
+    },
+    {
+      "pageId": "start/status-and-limitations",
+      "routeId": "fr/start/status-and-limitations",
+      "locale": "fr",
+      "title": "Etat et limitations connues",
+      "description": "Ce qui est actif, ce qui est en beta, ce qui n est qu une proposition, ce qui n est pas expose, et les limitations que nous connaissons et n avons pas cachees.",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "developer",
+        "operator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "universe-index-atomicals-nfts-and-realms",
+        "atomicals-avm-interpreter"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Cette page reflete la date de verification ci-dessus. Consultez le panneau des sources avant de vous fier a une ligne."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
+      "contentHash": "173c59ce8aa44f5fff7db0300a570d5b16b5c7ac2e250967a8a6802de7613953",
+      "href": "/atomicals-and-arc-20/fr/start/status-and-limitations/",
+      "raw": "/atomicals-and-arc-20/raw/fr/start/status-and-limitations.md"
+    },
+    {
+      "pageId": "start/what-are-atomicals",
+      "routeId": "fr/start/what-are-atomicals",
+      "locale": "fr",
+      "title": "Que sont les Atomicals ?",
+      "description": "Des objets numeriques qui vivent dans des sorties Bitcoin ordinaires, identifies par la transaction qui les a crees et interpretes par un validateur Atomicals.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "La revision de reference epinglee est une implementation parmi d autres. Une autre version du validateur peut interpreter la meme transaction differemment."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d",
+      "contentHash": "5f50112310ed5518ed3267361e3494b636e28d6a6b43018a32ec5e479de9d782",
+      "href": "/atomicals-and-arc-20/fr/start/what-are-atomicals/",
+      "raw": "/atomicals-and-arc-20/raw/fr/start/what-are-atomicals.md"
+    },
+    {
+      "pageId": "start/what-is-arc-20",
+      "routeId": "fr/start/what-is-arc-20",
+      "locale": "fr",
+      "title": "Qu est-ce que ARC-20 ?",
+      "description": "Le modele de jetons fongibles d Atomicals, ou une unite est un satoshi colore et un transfert est un probleme d attribution, pas une mise a jour de compte.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Le comportement d attribution depend de la version. Les chiffres de cette page suivent uniquement la revision de reference epinglee."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49",
+      "contentHash": "2a43e5cac8617a407e32d0482b28ac4555381ceb4944c5a1ce23258fd0584e62",
+      "href": "/atomicals-and-arc-20/fr/start/what-is-arc-20/",
+      "raw": "/atomicals-and-arc-20/raw/fr/start/what-is-arc-20.md"
     },
     {
       "pageId": "guides/index",
@@ -1587,12 +2270,12 @@
       "raw": "/atomicals-and-arc-20/raw/guides/wallet-signing-failures.md"
     },
     {
-      "pageId": "home",
-      "routeId": "index",
-      "locale": "en",
-      "title": "Atomicals and ARC-20",
-      "description": "Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.",
-      "area": "start",
+      "pageId": "guides/index",
+      "routeId": "ja/guides",
+      "locale": "ja",
+      "title": "ガイド",
+      "description": "Atomicals を安全に保有、確認、発行、移動、取引するための、作業単位の手順書。",
+      "area": "guides",
       "audience": [
         "everyone"
       ],
@@ -1606,10 +2289,318 @@
       "verified": "2026-08-31",
       "limitations": [],
       "deprecated": null,
-      "translationSourceHash": null,
-      "contentHash": "823671db3b9877d7c8ebf5013c3832527da4c5bcc340ee9ea8ad538e55aa86e1",
-      "href": "/atomicals-and-arc-20/index/",
-      "raw": "/atomicals-and-arc-20/raw/index.md"
+      "translationSourceHash": "372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244",
+      "contentHash": "c4095e21e50201cf01b878787d5610bbea5443748aad7f5d7a2f245e6b9fb453",
+      "href": "/atomicals-and-arc-20/ja/guides/",
+      "raw": "/atomicals-and-arc-20/raw/ja/guides.md"
+    },
+    {
+      "pageId": "guides/avoid-burns",
+      "routeId": "ja/guides/avoid-burns",
+      "locale": "ja",
+      "title": "焼失を避ける",
+      "description": "すべての焼失の形を防ぐ実務手順と、それぞれがどう見えるかを示す実行済みのケース。",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "確認済みの焼失は恒久的です。この手順は焼失を防ぎます。取り消す手段はありません。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44",
+      "contentHash": "a2fa58ee260b55369e74a8ac32cc743ed5776a31b57a53c425af18fc17910b58",
+      "href": "/atomicals-and-arc-20/ja/guides/avoid-burns/",
+      "raw": "/atomicals-and-arc-20/raw/ja/guides/avoid-burns.md"
+    },
+    {
+      "pageId": "guides/transfer-arc20",
+      "routeId": "ja/guides/transfer-arc20",
+      "locale": "ja",
+      "title": "ARC-20 を送付する",
+      "description": "すべての単位を意図した場所に置き、何も焼失させない送付を組み立てます。",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-js-cli"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Universe の可視な送付画面は、金額欄から受取人への部分割り当てや色付きのおつりを構築しません。アウトポイントと出力額で動作する互換ビルダーを使用してください。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c",
+      "contentHash": "2f4d9a6dea51e81ec3a2805ba134e50651a79f5181d58ac0667b77561dc68d85",
+      "href": "/atomicals-and-arc-20/ja/guides/transfer-arc20/",
+      "raw": "/atomicals-and-arc-20/raw/ja/guides/transfer-arc20.md"
+    },
+    {
+      "pageId": "protocol/arc20/burns",
+      "routeId": "ja/protocol/arc20/burns",
+      "locale": "ja",
+      "title": "焼失",
+      "description": "ARC-20 の価値がどのように破棄されるか、それを引き起こす四つの形、そしてそれぞれを防ぐ確認事項。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "確認済みの焼失は恒久的です。このドキュメントの何もそれを取り消せません。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "642aa44e0f9eb84af25bfb564c5eb831aecce03b08b862e66ae24df3a295a3cb",
+      "contentHash": "b73a51df909b565683be4f4476afa75e3834d5bafd6f4811f37a1a49b440694d",
+      "href": "/atomicals-and-arc-20/ja/protocol/arc20/burns/",
+      "raw": "/atomicals-and-arc-20/raw/ja/protocol/arc20/burns.md"
+    },
+    {
+      "pageId": "protocol/arc20/overview",
+      "routeId": "ja/protocol/arc20/overview",
+      "locale": "ja",
+      "title": "ARC-20",
+      "description": "ARC-20 の全体像を一ページで。発行から割り当て、安全性の境界まで、各部分の正確なルールへのリンク付き。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "これは互換性ガイドであり、独立した合意仕様ではありません。Atomicals の仕様はコードで定義されています。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3ca37424403e7ac9d768235cfbd6cd52d53b9b37bf5c277e8e8be409f65c5472",
+      "contentHash": "010136574a53c8079e2c332a72bc5cc7869c4628323d80dc40b07179c9acc919",
+      "href": "/atomicals-and-arc-20/ja/protocol/arc20/overview/",
+      "raw": "/atomicals-and-arc-20/raw/ja/protocol/arc20/overview.md"
+    },
+    {
+      "pageId": "protocol/arc20/unit-model",
+      "routeId": "ja/protocol/arc20/unit-model",
+      "locale": "ja",
+      "title": "単位モデル",
+      "description": "1 個の色付きサトシが 1 単位であり、供給量はサトシで測られ、小数点は表示のためだけに存在します。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "0e97ff4112c1dc00649dd483dd1b427ff83279aad5ed40de820813457a931eb7",
+      "contentHash": "2a9dbe93290ce8cc9765c3496cf2e7dab594295924bee1594558043b9d6db3f7",
+      "href": "/atomicals-and-arc-20/ja/protocol/arc20/unit-model/",
+      "raw": "/atomicals-and-arc-20/raw/ja/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/glossary",
+      "routeId": "ja/start/glossary",
+      "locale": "ja",
+      "title": "用語集",
+      "description": "このサイトで使うすべての Atomicals および ARC-20 の用語。一度定義し、どこでも同じ意味で使います。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "1bf34ef9ccd7cf1f16e907c6b21143dfb49d1718eb70d575d8b6ae346f8ae665",
+      "contentHash": "ee76e2abb1452e0d2a7e6355114d5ab4d1afd6db347062ed428e5ee7f48fb1d6",
+      "href": "/atomicals-and-arc-20/ja/start/glossary/",
+      "raw": "/atomicals-and-arc-20/raw/ja/start/glossary.md"
+    },
+    {
+      "pageId": "start/safety-fundamentals",
+      "routeId": "ja/start/safety-fundamentals",
+      "locale": "ja",
+      "title": "安全性の基本",
+      "description": "健全な Atomicals トランザクションと恒久的な損失を分ける八つの確認事項と、証拠として受け入れてはならない四つの主張。",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "holder",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "これらの確認は避けられる損失を減らします。取引相手が実行するバリデータのリビジョンに対して具体的なトランザクションを検証することの代わりにはなりません。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "29f6e08933cd4c773abaea5d350d276fbaa132a129626c1e4462b4b4a7b74abc",
+      "contentHash": "b5b7c0be2090c52dcb04706b4cea76870bd6bb6e25685af966568aa428c3b576",
+      "href": "/atomicals-and-arc-20/ja/start/safety-fundamentals/",
+      "raw": "/atomicals-and-arc-20/raw/ja/start/safety-fundamentals.md"
+    },
+    {
+      "pageId": "start/status-and-limitations",
+      "routeId": "ja/start/status-and-limitations",
+      "locale": "ja",
+      "title": "状態と既知の制限",
+      "description": "何が稼働中で、何がベータで、何が提案にすぎず、何が公開されていないか。そして把握していて隠していない制限。",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "developer",
+        "operator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "universe-index-atomicals-nfts-and-realms",
+        "atomicals-avm-interpreter"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "このページは上記の検証日時点の内容です。いずれかの行に依拠する前にソースパネルを確認してください。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
+      "contentHash": "75427d21c071141b471ac639e137d5e24d29b30d4bbc4abd4a544ff6edc09eb5",
+      "href": "/atomicals-and-arc-20/ja/start/status-and-limitations/",
+      "raw": "/atomicals-and-arc-20/raw/ja/start/status-and-limitations.md"
+    },
+    {
+      "pageId": "start/what-are-atomicals",
+      "routeId": "ja/start/what-are-atomicals",
+      "locale": "ja",
+      "title": "Atomicals とは",
+      "description": "通常の Bitcoin の出力の中に存在するデジタルオブジェクト。作成したトランザクションによって識別され、Atomicals バリデータによって解釈されます。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "固定された参照リビジョンは実装のひとつにすぎません。別のバリデータのバージョンは同じトランザクションを異なる形で解釈することがあります。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d",
+      "contentHash": "688a2300f659e24375c312e963962581afaa92404f6359fd41aaab5681af6686",
+      "href": "/atomicals-and-arc-20/ja/start/what-are-atomicals/",
+      "raw": "/atomicals-and-arc-20/raw/ja/start/what-are-atomicals.md"
+    },
+    {
+      "pageId": "start/what-is-arc-20",
+      "routeId": "ja/start/what-is-arc-20",
+      "locale": "ja",
+      "title": "ARC-20 とは",
+      "description": "Atomicals の代替性トークンモデル。1 単位が 1 個の色付きサトシであり、送付はアカウントの更新ではなく割り当ての問題です。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "割り当ての挙動はバージョンに依存します。このページの数値は固定された参照リビジョンにのみ従います。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49",
+      "contentHash": "f71aa72163e5c21adeb403f22ed163d35a5b1166d416ef56bc07173a2b04d411",
+      "href": "/atomicals-and-arc-20/ja/start/what-is-arc-20/",
+      "raw": "/atomicals-and-arc-20/raw/ja/start/what-is-arc-20.md"
     },
     {
       "pageId": "protocol/aips",
@@ -3234,6 +4225,339 @@
       "raw": "/atomicals-and-arc-20/raw/protocol/realms/unicode-and-idna.md"
     },
     {
+      "pageId": "guides/index",
+      "routeId": "pt/guides",
+      "locale": "pt",
+      "title": "Guias",
+      "description": "Procedimentos orientados a tarefas para deter, inspecionar, emitir, mover e negociar Atomicals com seguranca.",
+      "area": "guides",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244",
+      "contentHash": "c5ae560a63c0bee44dc8e72e3094cd3a82374c1c8fde5823d4609e3782d26af4",
+      "href": "/atomicals-and-arc-20/pt/guides/",
+      "raw": "/atomicals-and-arc-20/raw/pt/guides.md"
+    },
+    {
+      "pageId": "guides/avoid-burns",
+      "routeId": "pt/guides/avoid-burns",
+      "locale": "pt",
+      "title": "Evitar queimas",
+      "description": "O procedimento pratico que evita todas as formas de queima, com os casos executados que mostram como cada uma se parece.",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Uma queima confirmada e permanente. Este procedimento evita queimas. Nada reverte uma."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44",
+      "contentHash": "3eea6f6ef6c79701cd68d80f02da2e001b8edec27a72b213b5d2ff539f256d8a",
+      "href": "/atomicals-and-arc-20/pt/guides/avoid-burns/",
+      "raw": "/atomicals-and-arc-20/raw/pt/guides/avoid-burns.md"
+    },
+    {
+      "pageId": "guides/transfer-arc20",
+      "routeId": "pt/guides/transfer-arc20",
+      "locale": "pt",
+      "title": "Transferir ARC-20",
+      "description": "Construa uma transferencia que coloca cada unidade onde pretende e nao queima nada.",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-js-cli"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "A superficie visivel de transferencia da Universe nao constroi alocacoes parciais para destinatarios nem troco colorido a partir de um campo de montante. Use um construtor compativel que trabalhe em outpoints e valores de saida."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c",
+      "contentHash": "8d0888ce2f56740ce74f4ac28f097bfd89897671b1470bc09e72f3b4de2cb01e",
+      "href": "/atomicals-and-arc-20/pt/guides/transfer-arc20/",
+      "raw": "/atomicals-and-arc-20/raw/pt/guides/transfer-arc20.md"
+    },
+    {
+      "pageId": "protocol/arc20/burns",
+      "routeId": "pt/protocol/arc20/burns",
+      "locale": "pt",
+      "title": "Queimas",
+      "description": "Como o valor ARC-20 e destruido, as quatro formas que o causam, e as verificacoes que evitam cada uma delas.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Uma queima confirmada e permanente. Nada nesta documentacao consegue reverter uma."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "642aa44e0f9eb84af25bfb564c5eb831aecce03b08b862e66ae24df3a295a3cb",
+      "contentHash": "26cfbd0a1387197c2778168901e502989819efb3cdbe3cae7a4986601cd8118d",
+      "href": "/atomicals-and-arc-20/pt/protocol/arc20/burns/",
+      "raw": "/atomicals-and-arc-20/raw/pt/protocol/arc20/burns.md"
+    },
+    {
+      "pageId": "protocol/arc20/overview",
+      "routeId": "pt/protocol/arc20/overview",
+      "locale": "pt",
+      "title": "ARC-20",
+      "description": "O modelo ARC-20 completo numa pagina, da emissao a alocacao e ao limite de seguranca, com ligacoes para a regra exata de cada parte.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Este e um guia de compatibilidade, nao uma especificacao de consenso independente. A especificacao Atomicals esta definida em codigo."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3ca37424403e7ac9d768235cfbd6cd52d53b9b37bf5c277e8e8be409f65c5472",
+      "contentHash": "0ccdfc35024135fc127d718ee45b94c3936b32be3b9ed8fc97d7c8d39dc9e780",
+      "href": "/atomicals-and-arc-20/pt/protocol/arc20/overview/",
+      "raw": "/atomicals-and-arc-20/raw/pt/protocol/arc20/overview.md"
+    },
+    {
+      "pageId": "protocol/arc20/unit-model",
+      "routeId": "pt/protocol/arc20/unit-model",
+      "locale": "pt",
+      "title": "O modelo de unidade",
+      "description": "Um satoshi colorido e uma unidade, a oferta e medida em satoshis, e os decimais servem apenas para apresentacao.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "0e97ff4112c1dc00649dd483dd1b427ff83279aad5ed40de820813457a931eb7",
+      "contentHash": "908fd25f7bea3d377fc87d5e356f96c55673ccaeb8c71832745dd04c6b58003f",
+      "href": "/atomicals-and-arc-20/pt/protocol/arc20/unit-model/",
+      "raw": "/atomicals-and-arc-20/raw/pt/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/glossary",
+      "routeId": "pt/start/glossary",
+      "locale": "pt",
+      "title": "Glossario",
+      "description": "Todos os termos Atomicals e ARC-20 usados neste site, definidos uma vez e usados de forma consistente em todo o lado.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "1bf34ef9ccd7cf1f16e907c6b21143dfb49d1718eb70d575d8b6ae346f8ae665",
+      "contentHash": "d9b97923aac88c4a7a091c2da46967016cfd6050bc0d434990d81c06f281dabd",
+      "href": "/atomicals-and-arc-20/pt/start/glossary/",
+      "raw": "/atomicals-and-arc-20/raw/pt/start/glossary.md"
+    },
+    {
+      "pageId": "start/safety-fundamentals",
+      "routeId": "pt/start/safety-fundamentals",
+      "locale": "pt",
+      "title": "Fundamentos de seguranca",
+      "description": "As oito verificacoes que separam uma transacao Atomicals limpa de uma perda permanente, e as quatro afirmacoes que nunca deve aceitar como prova.",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "holder",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Estas verificacoes reduzem perdas evitaveis. Nao substituem validar uma transacao concreta contra a revisao do validador que as suas contrapartes executam."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "29f6e08933cd4c773abaea5d350d276fbaa132a129626c1e4462b4b4a7b74abc",
+      "contentHash": "b1085f91be495bd84b57406b3e3d3aca30716c72b22058945afc384f4e5fa1f6",
+      "href": "/atomicals-and-arc-20/pt/start/safety-fundamentals/",
+      "raw": "/atomicals-and-arc-20/raw/pt/start/safety-fundamentals.md"
+    },
+    {
+      "pageId": "start/status-and-limitations",
+      "routeId": "pt/start/status-and-limitations",
+      "locale": "pt",
+      "title": "Estado e limitacoes conhecidas",
+      "description": "O que esta ativo, o que esta em beta, o que e apenas proposta, o que nao esta exposto, e as limitacoes que conhecemos e nao escondemos.",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "developer",
+        "operator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "universe-index-atomicals-nfts-and-realms",
+        "atomicals-avm-interpreter"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Esta pagina reflete a data de verificacao acima. Consulte o painel de fontes antes de confiar em qualquer linha."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
+      "contentHash": "722d1d1046f958f2420f252a2e4a8e5daf6ae313a288ea917772d9c8102b3d3d",
+      "href": "/atomicals-and-arc-20/pt/start/status-and-limitations/",
+      "raw": "/atomicals-and-arc-20/raw/pt/start/status-and-limitations.md"
+    },
+    {
+      "pageId": "start/what-are-atomicals",
+      "routeId": "pt/start/what-are-atomicals",
+      "locale": "pt",
+      "title": "O que sao Atomicals?",
+      "description": "Objetos digitais que vivem dentro de saidas comuns do Bitcoin, identificados pela transacao que os criou e interpretados por um validador Atomicals.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "A revisao de referencia fixada e uma implementacao entre outras. Outra versao do validador pode interpretar a mesma transacao de forma diferente."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d",
+      "contentHash": "29b472d75c685aacba2786148e942b071ecf28dfb61b0fc2403ac55b40855592",
+      "href": "/atomicals-and-arc-20/pt/start/what-are-atomicals/",
+      "raw": "/atomicals-and-arc-20/raw/pt/start/what-are-atomicals.md"
+    },
+    {
+      "pageId": "start/what-is-arc-20",
+      "routeId": "pt/start/what-is-arc-20",
+      "locale": "pt",
+      "title": "O que e ARC-20?",
+      "description": "O modelo de tokens fungiveis da Atomicals, onde uma unidade e um satoshi colorido e uma transferencia e um problema de alocacao, nao uma atualizacao de conta.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "O comportamento de alocacao depende da versao. Os numeros desta pagina seguem apenas a revisao de referencia fixada."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49",
+      "contentHash": "a509ee44afb3b150c367d26f445e220d124fd8628ce93489668a0e49da853161",
+      "href": "/atomicals-and-arc-20/pt/start/what-is-arc-20/",
+      "raw": "/atomicals-and-arc-20/raw/pt/start/what-is-arc-20.md"
+    },
+    {
       "pageId": "reference/ai-access",
       "routeId": "reference/ai-access",
       "locale": "en",
@@ -3751,6 +5075,339 @@
       "raw": "/atomicals-and-arc-20/raw/releases/versions.md"
     },
     {
+      "pageId": "guides/index",
+      "routeId": "ru/guides",
+      "locale": "ru",
+      "title": "Руководства",
+      "description": "Пошаговые процедуры для безопасного хранения, проверки, выпуска, перемещения и торговли Atomicals.",
+      "area": "guides",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244",
+      "contentHash": "5c4806b20fb1fa1205eabaf1a284621bccdcc94b4eaf5f3547404856de2e13e2",
+      "href": "/atomicals-and-arc-20/ru/guides/",
+      "raw": "/atomicals-and-arc-20/raw/ru/guides.md"
+    },
+    {
+      "pageId": "guides/avoid-burns",
+      "routeId": "ru/guides/avoid-burns",
+      "locale": "ru",
+      "title": "Избежать сжигания",
+      "description": "Рабочая процедура, предотвращающая все формы сжигания, с выполненными случаями, показывающими, как выглядит каждая.",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Подтверждённое сжигание необратимо. Эта процедура предотвращает сжигания. Отменить их нельзя."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44",
+      "contentHash": "c196945566eda404c316edb0ed62df188eba875a41b9aadb4ea4719726f405fd",
+      "href": "/atomicals-and-arc-20/ru/guides/avoid-burns/",
+      "raw": "/atomicals-and-arc-20/raw/ru/guides/avoid-burns.md"
+    },
+    {
+      "pageId": "guides/transfer-arc20",
+      "routeId": "ru/guides/transfer-arc20",
+      "locale": "ru",
+      "title": "Перевести ARC-20",
+      "description": "Постройте перевод, который размещает каждую единицу там, где вы намерены, и ничего не сжигает.",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-js-cli"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Видимая поверхность перевода в Universe не строит частичные распределения получателям и окрашенную сдачу из поля суммы. Используйте совместимый построитель, работающий с аутпойнтами и величинами выходов."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c",
+      "contentHash": "80b51a94ccc6fa205bc8948d325220aadd0a6a158c2a5f4d63370de15daf419a",
+      "href": "/atomicals-and-arc-20/ru/guides/transfer-arc20/",
+      "raw": "/atomicals-and-arc-20/raw/ru/guides/transfer-arc20.md"
+    },
+    {
+      "pageId": "protocol/arc20/burns",
+      "routeId": "ru/protocol/arc20/burns",
+      "locale": "ru",
+      "title": "Сжигание",
+      "description": "Как уничтожается величина ARC-20, четыре формы, которые к этому приводят, и проверки, предотвращающие каждую из них.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Подтверждённое сжигание необратимо. Ничто в этой документации не может его отменить."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "642aa44e0f9eb84af25bfb564c5eb831aecce03b08b862e66ae24df3a295a3cb",
+      "contentHash": "b503576326d8d18996669f96a1cd3998478230249c9edafb3a7777683fe803f8",
+      "href": "/atomicals-and-arc-20/ru/protocol/arc20/burns/",
+      "raw": "/atomicals-and-arc-20/raw/ru/protocol/arc20/burns.md"
+    },
+    {
+      "pageId": "protocol/arc20/overview",
+      "routeId": "ru/protocol/arc20/overview",
+      "locale": "ru",
+      "title": "ARC-20",
+      "description": "Полная модель ARC-20 на одной странице, от выпуска до распределения и границы безопасности, со ссылками на точное правило для каждой части.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Это руководство по совместимости, а не независимая спецификация консенсуса. Спецификация Atomicals определена в коде."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3ca37424403e7ac9d768235cfbd6cd52d53b9b37bf5c277e8e8be409f65c5472",
+      "contentHash": "966f3bca9ab579ab49f728b3157db9a1ca753fb776f239c50ede42ad43dda92b",
+      "href": "/atomicals-and-arc-20/ru/protocol/arc20/overview/",
+      "raw": "/atomicals-and-arc-20/raw/ru/protocol/arc20/overview.md"
+    },
+    {
+      "pageId": "protocol/arc20/unit-model",
+      "routeId": "ru/protocol/arc20/unit-model",
+      "locale": "ru",
+      "title": "Модель единицы",
+      "description": "Один окрашенный сатоши это одна единица, предложение измеряется в сатоши, а десятичные знаки нужны только для отображения.",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "0e97ff4112c1dc00649dd483dd1b427ff83279aad5ed40de820813457a931eb7",
+      "contentHash": "9fe59bfbe5ba7c8fc1958ab557a445a8297aa05b3096d7b44120f5cb8b96dc79",
+      "href": "/atomicals-and-arc-20/ru/protocol/arc20/unit-model/",
+      "raw": "/atomicals-and-arc-20/raw/ru/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/glossary",
+      "routeId": "ru/start/glossary",
+      "locale": "ru",
+      "title": "Глоссарий",
+      "description": "Все термины Atomicals и ARC-20, используемые на этом сайте, определённые один раз и применяемые единообразно везде.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "1bf34ef9ccd7cf1f16e907c6b21143dfb49d1718eb70d575d8b6ae346f8ae665",
+      "contentHash": "7cad41b0763929c3140637661fc9f5412b19c12416c52663a88c35a1bf494a51",
+      "href": "/atomicals-and-arc-20/ru/start/glossary/",
+      "raw": "/atomicals-and-arc-20/raw/ru/start/glossary.md"
+    },
+    {
+      "pageId": "start/safety-fundamentals",
+      "routeId": "ru/start/safety-fundamentals",
+      "locale": "ru",
+      "title": "Основы безопасности",
+      "description": "Восемь проверок, отделяющих чистую транзакцию Atomicals от безвозвратной потери, и четыре утверждения, которые нельзя принимать за доказательство.",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "holder",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Эти проверки уменьшают предотвратимые потери. Они не заменяют проверку конкретной транзакции против ревизии валидатора, которую запускают ваши контрагенты."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "29f6e08933cd4c773abaea5d350d276fbaa132a129626c1e4462b4b4a7b74abc",
+      "contentHash": "281de909839debb7305cfb8b9f90a259804111cfeb67c3d649489afe61498708",
+      "href": "/atomicals-and-arc-20/ru/start/safety-fundamentals/",
+      "raw": "/atomicals-and-arc-20/raw/ru/start/safety-fundamentals.md"
+    },
+    {
+      "pageId": "start/status-and-limitations",
+      "routeId": "ru/start/status-and-limitations",
+      "locale": "ru",
+      "title": "Состояние и известные ограничения",
+      "description": "Что работает, что находится в бета-версии, что является только предложением, что не предоставляется, и ограничения, которые мы знаем и не скрываем.",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "developer",
+        "operator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "universe-index-atomicals-nfts-and-realms",
+        "atomicals-avm-interpreter"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Эта страница отражает указанную выше дату проверки. Прежде чем полагаться на любую строку, посмотрите панель источников."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
+      "contentHash": "41187ebddc03c928c9dec80b62aa48ce3770e4b8616298dd94ef8b99ba66ba3d",
+      "href": "/atomicals-and-arc-20/ru/start/status-and-limitations/",
+      "raw": "/atomicals-and-arc-20/raw/ru/start/status-and-limitations.md"
+    },
+    {
+      "pageId": "start/what-are-atomicals",
+      "routeId": "ru/start/what-are-atomicals",
+      "locale": "ru",
+      "title": "Что такое Atomicals",
+      "description": "Цифровые объекты, которые живут внутри обычных выходов Bitcoin, определяются создавшей их транзакцией и интерпретируются валидатором Atomicals.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Закреплённая эталонная ревизия это одна из реализаций. Другая версия валидатора может интерпретировать ту же транзакцию иначе."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d",
+      "contentHash": "edd6dd21b5958205e5c434a561de7986492b31feefddc46c2aba3242e5ffae70",
+      "href": "/atomicals-and-arc-20/ru/start/what-are-atomicals/",
+      "raw": "/atomicals-and-arc-20/raw/ru/start/what-are-atomicals.md"
+    },
+    {
+      "pageId": "start/what-is-arc-20",
+      "routeId": "ru/start/what-is-arc-20",
+      "locale": "ru",
+      "title": "Что такое ARC-20",
+      "description": "Модель взаимозаменяемых токенов Atomicals, где одна единица это один окрашенный сатоши, а перевод это задача распределения, а не обновление счёта.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Поведение распределения зависит от версии. Числа на этой странице соответствуют только закреплённой эталонной ревизии."
+      ],
+      "deprecated": null,
+      "translationSourceHash": "4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49",
+      "contentHash": "c41db789d3ecd44d8b4a41e05f9f777da425d64347937bb784e65e6c62704926",
+      "href": "/atomicals-and-arc-20/ru/start/what-is-arc-20/",
+      "raw": "/atomicals-and-arc-20/raw/ru/start/what-is-arc-20.md"
+    },
+    {
       "pageId": "start/choose-your-path",
       "routeId": "start/choose-your-path",
       "locale": "en",
@@ -4216,6 +5873,672 @@
       "contentHash": "0a5e132e790662fd3ddd0d2fd9c7f0a8eb44bb787fd5d7659b8ae196f5f5caaa",
       "href": "/atomicals-and-arc-20/tools/transaction-inspector/",
       "raw": "/atomicals-and-arc-20/raw/tools/transaction-inspector.md"
+    },
+    {
+      "pageId": "guides/index",
+      "routeId": "zh-cn/guides",
+      "locale": "zh-cn",
+      "title": "指南",
+      "description": "面向任务的操作步骤，帮助你安全地持有、检查、发行、移动与交易 Atomicals。",
+      "area": "guides",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244",
+      "contentHash": "e639dc7366d8495a6eb8bc589a6899eae4ab2e7856375daa766049cbc4fd657c",
+      "href": "/atomicals-and-arc-20/zh-cn/guides/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/guides.md"
+    },
+    {
+      "pageId": "guides/avoid-burns",
+      "routeId": "zh-cn/guides/avoid-burns",
+      "locale": "zh-cn",
+      "title": "避免销毁",
+      "description": "预防所有销毁形态的实用步骤，并附上展示每种形态的已执行用例。",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "已确认的销毁是永久性的。本步骤用于预防销毁，没有任何方式能撤销它。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44",
+      "contentHash": "85fb3ad9e75f9af3db682386e9d56296bd421593761d8ab446fe90d97658a0d3",
+      "href": "/atomicals-and-arc-20/zh-cn/guides/avoid-burns/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/guides/avoid-burns.md"
+    },
+    {
+      "pageId": "guides/transfer-arc20",
+      "routeId": "zh-cn/guides/transfer-arc20",
+      "locale": "zh-cn",
+      "title": "转移 ARC-20",
+      "description": "构建一笔把每个单位都放到你预期位置、且不销毁任何价值的转移。",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-js-cli"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Universe 的可见转移界面不会根据金额字段构建面向收款人的部分分配或着色找零。请使用以 outpoint 和输出面值工作的兼容构建器。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c",
+      "contentHash": "0e3e531b504bca77939b4d8ed8e39de9dcd4f5a8f270618807b5fc03eed7ed88",
+      "href": "/atomicals-and-arc-20/zh-cn/guides/transfer-arc20/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/guides/transfer-arc20.md"
+    },
+    {
+      "pageId": "protocol/arc20/burns",
+      "routeId": "zh-cn/protocol/arc20/burns",
+      "locale": "zh-cn",
+      "title": "销毁",
+      "description": "ARC-20 价值如何被销毁、导致销毁的四种形态，以及分别预防它们的检查。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "已确认的销毁是永久性的。本文档中的任何内容都无法撤销它。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "642aa44e0f9eb84af25bfb564c5eb831aecce03b08b862e66ae24df3a295a3cb",
+      "contentHash": "edc2821156bbf1561955d836a6dead5350fd8896e300b77dd521a91b401d2a15",
+      "href": "/atomicals-and-arc-20/zh-cn/protocol/arc20/burns/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/protocol/arc20/burns.md"
+    },
+    {
+      "pageId": "protocol/arc20/overview",
+      "routeId": "zh-cn/protocol/arc20/overview",
+      "locale": "zh-cn",
+      "title": "ARC-20",
+      "description": "一页看完完整的 ARC-20 模型，从发行到分配再到安全边界，并链接到每一部分的确切规则。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "这是一份兼容性指南，而不是独立的共识规范。Atomicals 规范由代码定义。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3ca37424403e7ac9d768235cfbd6cd52d53b9b37bf5c277e8e8be409f65c5472",
+      "contentHash": "da4875c3032424fca81c5a76d11c264da9d4a500a27b488e183cda0d4e60b115",
+      "href": "/atomicals-and-arc-20/zh-cn/protocol/arc20/overview/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/protocol/arc20/overview.md"
+    },
+    {
+      "pageId": "protocol/arc20/unit-model",
+      "routeId": "zh-cn/protocol/arc20/unit-model",
+      "locale": "zh-cn",
+      "title": "单位模型",
+      "description": "一个着色聪就是一个单位，供应量以聪计量，小数位仅用于展示。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "0e97ff4112c1dc00649dd483dd1b427ff83279aad5ed40de820813457a931eb7",
+      "contentHash": "8ee0534763936eae177fa926ff579970295aa29a28e62821621b7487964e90c0",
+      "href": "/atomicals-and-arc-20/zh-cn/protocol/arc20/unit-model/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/glossary",
+      "routeId": "zh-cn/start/glossary",
+      "locale": "zh-cn",
+      "title": "术语表",
+      "description": "本站使用的全部 Atomicals 与 ARC-20 术语，定义一次，并在各处保持一致。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "1bf34ef9ccd7cf1f16e907c6b21143dfb49d1718eb70d575d8b6ae346f8ae665",
+      "contentHash": "c372653ee4eb63762afcbebecb941b8d13825b349f02ae3cd186eb57a4dc285c",
+      "href": "/atomicals-and-arc-20/zh-cn/start/glossary/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/start/glossary.md"
+    },
+    {
+      "pageId": "start/safety-fundamentals",
+      "routeId": "zh-cn/start/safety-fundamentals",
+      "locale": "zh-cn",
+      "title": "安全基础",
+      "description": "区分一笔干净的 Atomicals 交易与永久损失的八项检查，以及绝不能当作证据的四种说法。",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "holder",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "这些检查能减少可避免的损失。它们不能替代针对交易对手所运行的验证器版本，对具体交易进行验证。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "29f6e08933cd4c773abaea5d350d276fbaa132a129626c1e4462b4b4a7b74abc",
+      "contentHash": "7fb74e5b852a158dcc316f31b591260428881432264ff1a2844f0aec1e026b8e",
+      "href": "/atomicals-and-arc-20/zh-cn/start/safety-fundamentals/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/start/safety-fundamentals.md"
+    },
+    {
+      "pageId": "start/status-and-limitations",
+      "routeId": "zh-cn/start/status-and-limitations",
+      "locale": "zh-cn",
+      "title": "状态与已知限制",
+      "description": "哪些已上线、哪些处于测试、哪些只是提案、哪些尚未开放，以及我们知道且没有隐瞒的限制。",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "developer",
+        "operator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "universe-index-atomicals-nfts-and-realms",
+        "atomicals-avm-interpreter"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "本页反映的是上方的验证日期。在依赖任何一行之前，请查看来源面板。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
+      "contentHash": "13d03f710ba0cf9182a5e43c9ea4d4b6a38ad316f45742cf0af5817b19631c0c",
+      "href": "/atomicals-and-arc-20/zh-cn/start/status-and-limitations/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/start/status-and-limitations.md"
+    },
+    {
+      "pageId": "start/what-are-atomicals",
+      "routeId": "zh-cn/start/what-are-atomicals",
+      "locale": "zh-cn",
+      "title": "什么是 Atomicals",
+      "description": "存在于普通比特币输出中的数字对象，由创建它的交易标识，并由 Atomicals 验证器解释。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "固定的参考版本只是其中一种实现。另一个验证器版本可能对同一笔交易给出不同的解释。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d",
+      "contentHash": "b83932cf98bae134d9bdbc33c97a60ca39c1c84eb7c93c6ad5808e738fb1e32e",
+      "href": "/atomicals-and-arc-20/zh-cn/start/what-are-atomicals/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/start/what-are-atomicals.md"
+    },
+    {
+      "pageId": "start/what-is-arc-20",
+      "routeId": "zh-cn/start/what-is-arc-20",
+      "locale": "zh-cn",
+      "title": "什么是 ARC-20",
+      "description": "Atomicals 的同质代币模型，一个单位等于一个着色聪，转移是一个分配问题，而不是账户更新。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "分配行为取决于版本。本页的数字仅遵循固定的参考版本。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49",
+      "contentHash": "29261139e0082ba938463b32f97e55688101a1be7cd7519a294a29c8bc7c4efd",
+      "href": "/atomicals-and-arc-20/zh-cn/start/what-is-arc-20/",
+      "raw": "/atomicals-and-arc-20/raw/zh-cn/start/what-is-arc-20.md"
+    },
+    {
+      "pageId": "guides/index",
+      "routeId": "zh-tw/guides",
+      "locale": "zh-tw",
+      "title": "指南",
+      "description": "以任務為導向的操作步驟，協助你安全地持有、檢查、發行、移動與交易 Atomicals。",
+      "area": "guides",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244",
+      "contentHash": "360db4346cd4707cc694a292e945e59586576489062d99435b7c87d2bb92950c",
+      "href": "/atomicals-and-arc-20/zh-tw/guides/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/guides.md"
+    },
+    {
+      "pageId": "guides/avoid-burns",
+      "routeId": "zh-tw/guides/avoid-burns",
+      "locale": "zh-tw",
+      "title": "避免銷毀",
+      "description": "預防所有銷毀型態的實用步驟，並附上呈現每種型態的已執行案例。",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "已確認的銷毀是永久的。本步驟用於預防銷毀，沒有任何方式能撤銷它。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44",
+      "contentHash": "d4c2060fefbe80b036f329a149186cf1efcdc27a7209bc02457e24bf061176dd",
+      "href": "/atomicals-and-arc-20/zh-tw/guides/avoid-burns/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/guides/avoid-burns.md"
+    },
+    {
+      "pageId": "guides/transfer-arc20",
+      "routeId": "zh-tw/guides/transfer-arc20",
+      "locale": "zh-tw",
+      "title": "轉移 ARC-20",
+      "description": "建構一筆把每個單位都放到你預期位置、且不銷毀任何價值的轉移。",
+      "area": "guides",
+      "audience": [
+        "everyone",
+        "holder"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-js-cli"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "Universe 的可見轉移介面不會依金額欄位建構面向收款人的部分配置或著色找零。請使用以 outpoint 與輸出面額運作的相容建構器。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c",
+      "contentHash": "9e0efd3058fb5fe92a3f6cf3b7a54285b299117699d8c76cfe0faf794042c5c2",
+      "href": "/atomicals-and-arc-20/zh-tw/guides/transfer-arc20/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/guides/transfer-arc20.md"
+    },
+    {
+      "pageId": "protocol/arc20/burns",
+      "routeId": "zh-tw/protocol/arc20/burns",
+      "locale": "zh-tw",
+      "title": "銷毀",
+      "description": "ARC-20 價值如何被銷毀、導致銷毀的四種型態，以及分別預防它們的檢查。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "holder",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "已確認的銷毀是永久的。本文件中的任何內容都無法撤銷它。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "642aa44e0f9eb84af25bfb564c5eb831aecce03b08b862e66ae24df3a295a3cb",
+      "contentHash": "f95cf33eac660bb8c2d4db4af6ce74606b60ab18bf53afcdf935384d59098615",
+      "href": "/atomicals-and-arc-20/zh-tw/protocol/arc20/burns/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/protocol/arc20/burns.md"
+    },
+    {
+      "pageId": "protocol/arc20/overview",
+      "routeId": "zh-tw/protocol/arc20/overview",
+      "locale": "zh-tw",
+      "title": "ARC-20",
+      "description": "一頁看完完整的 ARC-20 模型，從發行到配置再到安全邊界，並連結到每一部分的確切規則。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "這是一份相容性指南，而不是獨立的共識規格。Atomicals 規格由程式碼定義。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "3ca37424403e7ac9d768235cfbd6cd52d53b9b37bf5c277e8e8be409f65c5472",
+      "contentHash": "5ba2c9ae0b13e283e21c016ec46ce7abc8fe9e3e698df6a97ffe58155c55e8c7",
+      "href": "/atomicals-and-arc-20/zh-tw/protocol/arc20/overview/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/protocol/arc20/overview.md"
+    },
+    {
+      "pageId": "protocol/arc20/unit-model",
+      "routeId": "zh-tw/protocol/arc20/unit-model",
+      "locale": "zh-tw",
+      "title": "單位模型",
+      "description": "一個著色聰就是一個單位，供應量以聰計量，小數位僅用於顯示。",
+      "area": "protocol",
+      "audience": [
+        "everyone",
+        "developer"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "0e97ff4112c1dc00649dd483dd1b427ff83279aad5ed40de820813457a931eb7",
+      "contentHash": "2cf0ca030c4c67d53be5d3fe707d9e47b99d09ea195073a3c0002e0fbbe3c157",
+      "href": "/atomicals-and-arc-20/zh-tw/protocol/arc20/unit-model/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/glossary",
+      "routeId": "zh-tw/start/glossary",
+      "locale": "zh-tw",
+      "title": "術語表",
+      "description": "本站使用的全部 Atomicals 與 ARC-20 術語，定義一次，並在各處保持一致。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "1bf34ef9ccd7cf1f16e907c6b21143dfb49d1718eb70d575d8b6ae346f8ae665",
+      "contentHash": "81998497e98e38a5cbbe259b677068e22a4a9d82492ee362726030e934cd6457",
+      "href": "/atomicals-and-arc-20/zh-tw/start/glossary/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/start/glossary.md"
+    },
+    {
+      "pageId": "start/safety-fundamentals",
+      "routeId": "zh-tw/start/safety-fundamentals",
+      "locale": "zh-tw",
+      "title": "安全基礎",
+      "description": "區分一筆乾淨的 Atomicals 交易與永久損失的八項檢查，以及絕不能當成證據的四種說法。",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "holder",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "這些檢查能減少可避免的損失，但無法取代針對交易對手所執行的驗證器版本，對具體交易進行驗證。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "29f6e08933cd4c773abaea5d350d276fbaa132a129626c1e4462b4b4a7b74abc",
+      "contentHash": "8d0356d28652e32455bc8ac08f9a64cb9f09d2a1ee11b26456f07f506ffa4aae",
+      "href": "/atomicals-and-arc-20/zh-tw/start/safety-fundamentals/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/start/safety-fundamentals.md"
+    },
+    {
+      "pageId": "start/status-and-limitations",
+      "routeId": "zh-tw/start/status-and-limitations",
+      "locale": "zh-tw",
+      "title": "狀態與已知限制",
+      "description": "哪些已上線、哪些處於測試、哪些只是提案、哪些尚未開放，以及我們知道且沒有隱瞞的限制。",
+      "area": "start",
+      "audience": [
+        "everyone",
+        "developer",
+        "operator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "universe-index-atomicals-nfts-and-realms",
+        "atomicals-avm-interpreter"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "本頁反映的是上方的驗證日期。在依賴任何一列之前，請查看來源面板。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
+      "contentHash": "8dcf595f2ec4525dd07fe6445602bf64e906e21955c40c24bab6927b57d1d5dd",
+      "href": "/atomicals-and-arc-20/zh-tw/start/status-and-limitations/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/start/status-and-limitations.md"
+    },
+    {
+      "pageId": "start/what-are-atomicals",
+      "routeId": "zh-tw/start/what-are-atomicals",
+      "locale": "zh-tw",
+      "title": "什麼是 Atomicals",
+      "description": "存在於一般比特幣輸出中的數位物件，由建立它的交易識別，並由 Atomicals 驗證器解釋。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "固定的參考版本只是其中一種實作。另一個驗證器版本可能對同一筆交易做出不同的解釋。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "ff8722ac3362af24c734f8eda8ffc5fade5e21d122e17d06bf96d75fbff38d5d",
+      "contentHash": "1b4f7e6c084d10fc3d2253230090539922137fa0d1c61a87c2dfab18c9fbb05b",
+      "href": "/atomicals-and-arc-20/zh-tw/start/what-are-atomicals/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/start/what-are-atomicals.md"
+    },
+    {
+      "pageId": "start/what-is-arc-20",
+      "routeId": "zh-tw/start/what-is-arc-20",
+      "locale": "zh-tw",
+      "title": "什麼是 ARC-20",
+      "description": "Atomicals 的同質代幣模型，一個單位等於一個著色聰，轉移是一個配置問題，而不是帳戶更新。",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "reference-implementation",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "atomicals-guide"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [
+        "配置行為取決於版本。本頁的數字僅遵循固定的參考版本。"
+      ],
+      "deprecated": null,
+      "translationSourceHash": "4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49",
+      "contentHash": "81d2dcf9e458cc88ceb4d5d2b8914b63e29b5098d66dd32e29cbdcc0aedea32a",
+      "href": "/atomicals-and-arc-20/zh-tw/start/what-is-arc-20/",
+      "raw": "/atomicals-and-arc-20/raw/zh-tw/start/what-is-arc-20.md"
     }
   ],
   "sources": [

@@ -12,15 +12,27 @@ const data = route.entry.data as typeof route.entry.data & {
 }
 const provenance = data.provenance
 const staleTranslation = provenance ? await isStaleTranslation(route.id, provenance) : false
+
+/**
+ * A splash page renders its own heading in the page content, so this override
+ * emits the anchor target without a second h1. Two h1 elements on one page is an
+ * accessibility defect, and tests/links.test.mjs fails the build on it.
+ */
+const isSplash = data.template === 'splash'
 ---
 
-<h1 id={PAGE_TITLE_ID}>{data.title}</h1>
-
-{data.description && <p class="bu-page-lede">{data.description}</p>}
-
-<PageActions routeId={route.id} />
-
-{provenance && <Provenance provenance={provenance} staleTranslation={staleTranslation} />}
+{
+  isSplash ? (
+    <div id={PAGE_TITLE_ID} class="bu-splash-anchor" />
+  ) : (
+    <>
+      <h1 id={PAGE_TITLE_ID}>{data.title}</h1>
+      {data.description && <p class="bu-page-lede">{data.description}</p>}
+      <PageActions routeId={route.entry.id} />
+      {provenance && <Provenance provenance={provenance} staleTranslation={staleTranslation} />}
+    </>
+  )
+}
 
 <style>
   h1 {
@@ -40,5 +52,9 @@ const staleTranslation = provenance ? await isStaleTranslation(route.id, provena
     line-height: 1.5;
     color: var(--bu-ink-soft);
     max-width: 58ch;
+  }
+
+  .bu-splash-anchor {
+    scroll-margin-top: var(--sl-nav-height);
   }
 </style>

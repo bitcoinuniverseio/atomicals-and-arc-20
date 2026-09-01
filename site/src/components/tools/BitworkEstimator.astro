@@ -1,4 +1,6 @@
 ---
+import { docHref } from '../../lib/href'
+const locale = Astro.locals.starlightRoute?.locale
 ---
 
 <div class="bu-tool">
@@ -11,7 +13,7 @@
     <div class="bu-tool-body">
       <p class="bu-noscript">
         This tool needs JavaScript. The expected attempt table is published on
-        <a href="/protocol/core/bitwork/">Bitwork</a>, which works without it.
+        <a href={docHref("/protocol/core/bitwork/", locale)}>Bitwork</a>, which works without it.
       </p>
     </div>
   </noscript>

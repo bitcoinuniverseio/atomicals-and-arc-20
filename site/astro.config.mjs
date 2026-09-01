@@ -36,7 +36,7 @@ export default defineConfig({
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   image: { responsiveStyles: true },
   markdown: {
-    processor: satteri({ hastPlugins: [docLinksPlugin] }),
+    processor: satteri({ mdastPlugins: [docLinksPlugin] }),
   },
   integrations: [
     starlight({

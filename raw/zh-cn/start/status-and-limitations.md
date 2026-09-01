@@ -1,0 +1,77 @@
+# 状态与已知限制
+
+哪些已上线、哪些处于测试、哪些只是提案、哪些尚未开放，以及我们知道且没有隐瞒的限制。
+
+Page ID: start/status-and-limitations
+Applicability: universe-implementation
+Authority: universe-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: zh-cn
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/start/status-and-limitations/
+
+---
+## ARC-20
+
+| 能力 | 状态 | 说明 |
+| --- | --- | --- |
+| 已验证代号解析与代币详情 | Universe 实现 | 发布的是胜出的 Atomical ID，而不只是名称 |
+| 持有者快照 | Universe 实现 | 持有者各行必须与流通供应量完全相符，否则整轮扫描中止 |
+| 已确认活动历史 | Universe 实现 | 部署、直接与去中心化铸造、转移、销毁、协议操作 |
+| 待处理活动覆盖 | 有限 | 没有能稳定处理待处理生命周期的完备内存池数据流 |
+| 组合余额与着色 UTXO | Universe 实现 | 只读视图，不是结算证明 |
+| 从 Universe 产品直接 `mint-ft` 发行 | 未开放 | 协议支持，但没有任何 Universe 界面提供 |
+| Substantiation Factor 材料 | 初步 | 参见 [Substantiation Factor](/protocol/arc20/substantiation-factor/) |
+
+ARC-20 数据源以明确理由报告 `partial` 覆盖：已确认的权威历史与完整且经过证明的持有者快照均已索引，
+但交付的适配器没有能稳定处理待处理生命周期与消失情形的完备内存池数据流。该限制仅适用于待处理
+活动，不会削弱已确认扫描或持有者证明要求。
+
+## Atomicals NFT、Realm 与 Subrealm
+
+| 能力 | 状态 | 说明 |
+| --- | --- | --- |
+| 普通 NFT、Realm 与 Subrealm 只读模型 | Universe 实现 | 共用一次扫描、一个世代、一个检查点和一个活动指针 |
+| Realm 解析、层级与 Subrealm 列表 | Universe 实现 | 按资产保留候选与支付证据 |
+| 按交易、区块与 UTXO 查询 | Universe 实现 | 限定在活动世代内 |
+| 带完整性校验的媒体分发 | Universe 实现 | 适用 MIME 限制与大小上限 |
+| 该投影中的同质代币 | 按设计排除 | 由 ARC-20 侧提供 |
+| 该投影中的 Container 与 DMINT 条目 | 按设计排除 | 已在索引的来源清单中声明 |
+| 写操作 | 无 | 该投影只读 |
+
+## 市场
+
+| 能力 | 状态 | 说明 |
+| --- | --- | --- |
+| 四个相互隔离的协议权威 | Universe 实现 | `arc20`、`atomicals_nft`、`realms`、`subrealms` |
+| 挂单、预留、购买、报价、结算 | Universe 实现 | 每个操作开关默认关闭 |
+| 所有权证明 | Universe 实现 | 针对 P2WPKH 与密钥路径 P2TR 的 BIP-322 simple 证明 |
+| 混合抵押、销毁、已花费输出、检查点漂移 | 拒绝 | 四条通道均以关闭方式失败 |
+| 旧别名 `/buys` 与 `/orders/{orderId}/reconcile` | 已弃用 | 请使用 `/reservations`、`/purchases`、`/settlements` |
+
+## AVM
+
+| 层次 | 状态 |
+| --- | --- |
+| 白皮书中的架构概念 | 提案 |
+| 官方测试版解释器 | 实验或测试 |
+| Universe 运行时集成 | 未开放 |
+| Universe 运行时证明 | 未发布 |
+
+本站关于 AVM 的任何内容都不应被理解为主网生产支持。参见
+[AVM 状态与限制](/protocol/avm/status-and-limitations/)。
+
+## 我们已知的限制
+
+1. 待处理的 ARC-20 活动没有完备覆盖。已确认的历史有。
+2. Container 与 DMINT 以协议行为的形式记录。目前没有任何 Universe 只读投影提供它们。
+3. 直接 FT 发行属于协议行为，没有对应的 Universe 产品界面。
+4. AVM 在上游处于测试阶段，本处未开放。任何实现声明都需要我们尚未发布的证明。
+5. [注册表](/ecosystem/)中列出的部分 Atomicals 生态服务无法通过可访问来源核实。这些条目标注为
+   `unknown`，而不是猜测。
+6. 速率限制只在确实存在的地方记录。若某服务没有速率限制，页面会如实说明，而不是编造一套策略。
+
+## 如何报告错误
+
+请在[文档仓库](https://github.com/bitcoinuniverseio/atomicals-and-arc-20/issues)提交 issue。
+使用 **incorrect protocol claim** 或 **API mismatch** 模板，并附上来源面板中的 page ID。
