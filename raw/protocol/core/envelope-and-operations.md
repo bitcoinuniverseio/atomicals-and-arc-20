@@ -6,7 +6,7 @@ Page ID: protocol/core/envelope-and-operations
 Applicability: protocol-behavior
 Authority: reference-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-01
 Locale: en
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/envelope-and-operations/
 
@@ -67,3 +67,22 @@ will pass envelopes a validator rejects.
 
 The only reliable check is running the exact validator revision you target against the exact
 transaction blueprint you intend to broadcast.
+
+## What the parser actually scans for
+
+Reading the indexer rather than the prose changes what you should build against.
+
+A witness script is considered only if it is at least 39 bytes long and its first byte is `0x20`,
+the push of a 32 byte key. The parser then scans forward for the first `OP_IF` and checks the five
+marker bytes that follow it. It does not require an `OP_FALSE` before the `OP_IF`.
+
+That tolerance is worth knowing in both directions. An envelope built in either of the two common
+script shapes is accepted, so a wallet that omits the leading `OP_FALSE` still produces something
+this indexer reads. It is implementation behavior rather than a relaxation of the format, so do not
+depend on every implementation being equally tolerant: build the shape your target validator
+documents, and check it against
+[the transaction inspector](/tools/transaction-inspector/) before broadcasting.
+
+A script that fails either precondition is skipped rather than rejected. A transaction with no
+readable envelope yields no operation at all, which is a different outcome from an operation that
+was found and refused.
