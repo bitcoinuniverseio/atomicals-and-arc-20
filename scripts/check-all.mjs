@@ -17,6 +17,14 @@ const built = existsSync(resolve(root, 'site/dist/index.html'))
 
 const CHECKS = [
   {
+    // Runs first because it is the check CI runs that this script did not, and a
+    // type error here is invisible to every other gate: the site builds anyway.
+    name: 'Site types',
+    command: 'npx',
+    args: ['astro', 'check', '--minimumSeverity', 'error'],
+    cwd: 'site',
+  },
+  {
     name: 'Contracts, schemas, and route inventories',
     command: process.execPath,
     args: ['--test', 'tests/contracts.test.mjs'],
@@ -66,7 +74,13 @@ for (const check of CHECKS) {
     continue
   }
   process.stdout.write(`\n[run ] ${check.name}\n`)
-  const result = spawnSync(check.command, check.args, { cwd: root, stdio: 'inherit' })
+  const result = spawnSync(check.command, check.args, {
+    cwd: check.cwd ? resolve(root, check.cwd) : root,
+    stdio: 'inherit',
+    // Only the npx-based check needs a shell. Spawning the Node binary through
+    // one on Windows mangles its path and fails before the check runs.
+    shell: process.platform === 'win32' && check.command !== process.execPath,
+  })
   if (result.status !== 0) failed.push(check.name)
 }
 

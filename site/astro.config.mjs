@@ -11,8 +11,14 @@ const siteMeta = JSON.parse(
   readFileSync(new URL('./src/data/site.json', import.meta.url), 'utf8'),
 )
 
+/**
+ * site.json is read at runtime rather than imported, so its entries carry no type.
+ * @type {{code: string, label: string, lang: string, dir?: 'ltr' | 'rtl'}[]}
+ */
+const locales = siteMeta.locales
+
 const localeEntries = Object.fromEntries(
-  siteMeta.locales.map((locale) => [
+  locales.map((locale) => [
     locale.code === siteMeta.defaultLocale ? 'root' : locale.code,
     {
       label: locale.label,

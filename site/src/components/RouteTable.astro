@@ -68,7 +68,7 @@ const AUTH_LABEL: Record<string, string> = {
                 <>
                   <br />
                   <span style="color:var(--bu-ink-muted)">
-                    Use {(route as { replacedBy: string }).replacedBy}
+                    Use {(route as { replacedBy?: string }).replacedBy}
                   </span>
                 </>
               )}

@@ -13,7 +13,10 @@ interface Props {
 }
 const { only } = Astro.props
 const cases = only
-  ? only.map((id) => vectors.cases.find((entry) => entry.id === id)).filter(Boolean)
+  ? only.flatMap((id) => {
+      const found = vectors.cases.find((entry) => entry.id === id)
+      return found ? [found] : []
+    })
   : vectors.cases
 
 const rows = cases.map((testCase) => {
@@ -27,7 +30,7 @@ const rows = cases.map((testCase) => {
       .join(', '),
     outputs: result.outputs
       .map(
-        (output) =>
+        (output: { index: number; value: number; unspendable?: boolean; coloredTotal: number }) =>
           `out ${output.index}: ${output.value} sats${output.unspendable ? ' (unspendable)' : ''} to ${output.coloredTotal} units`,
       )
       .join('; '),

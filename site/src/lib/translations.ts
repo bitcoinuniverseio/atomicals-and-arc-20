@@ -10,12 +10,12 @@ export const NON_DEFAULT_LOCALES = LOCALE_CODES.filter(
 /** Strip the locale prefix from a Starlight route id. `pt/start/x` -> `start/x`. */
 export function stripLocale(routeId: string): string {
   const [head, ...rest] = routeId.split('/')
-  return NON_DEFAULT_LOCALES.includes(head) ? rest.join('/') : routeId
+  return head !== undefined && NON_DEFAULT_LOCALES.includes(head) ? rest.join('/') : routeId
 }
 
 export function localeOf(routeId: string): string {
   const head = routeId.split('/')[0]
-  return NON_DEFAULT_LOCALES.includes(head) ? head : siteMeta.defaultLocale
+  return head !== undefined && NON_DEFAULT_LOCALES.includes(head) ? head : siteMeta.defaultLocale
 }
 
 /**

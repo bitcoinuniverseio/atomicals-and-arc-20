@@ -122,6 +122,18 @@ const locale = Astro.locals.starlightRoute?.locale
     value: number
     unspendable?: boolean
   }
+  /**
+   * One row of the engine's result. The engine lives in conformance/allocation.mjs,
+   * which is plain JavaScript and not type checked from here, so its shape is named
+   * once rather than inferred as any at each use.
+   */
+  interface AllocOutput {
+    index: number
+    value: number
+    unspendable?: boolean
+    coloredTotal: number
+    assignments: { atomicalId: string; coloredValue: number }[]
+  }
   interface Preset {
     id: string
     title: string
@@ -264,7 +276,7 @@ const locale = Astro.locals.starlightRoute?.locale
         const input = this.#inputs[index]
         if (!input || !field) return
         if (field === 'atomicalId') input.atomicalId = target.value.trim() || 'TOKENA'
-        else (input as Record<string, number>)[field] = Math.max(0, Number(target.value) || 0)
+        else (input as unknown as Record<string, number>)[field] = Math.max(0, Number(target.value) || 0)
       } else {
         const output = this.#outputs[index]
         if (!output || !field) return
@@ -295,17 +307,20 @@ const locale = Astro.locals.starlightRoute?.locale
 
       const result = allocate(this.#outputs, this.#inputs, this.#currentOptions())
       const totalIn = this.#inputs.reduce((sum, input) => sum + input.atomicalValue, 0)
-      const totalOut = result.outputs.reduce((sum, output) => sum + output.coloredTotal, 0)
+      const totalOut = result.outputs.reduce(
+        (sum: number, output: { coloredTotal: number }) => sum + output.coloredTotal,
+        0,
+      )
       const burned = result.burned.reduce((sum, entry) => sum + entry.value, 0)
 
       const rows = result.outputs
         .map(
-          (output) => `
+          (output: AllocOutput) => `
             <tr>
               <th scope="row">output ${output.index}</th>
               <td class="bu-num">${output.value}</td>
               <td class="bu-num">${output.coloredTotal}</td>
-              <td>${output.unspendable ? 'unspendable, skipped' : output.assignments.map((a) => escapeHtml(a.atomicalId)).join(', ') || 'nothing'}</td>
+              <td>${output.unspendable ? 'unspendable, skipped' : output.assignments.map((a: { atomicalId: string }) => escapeHtml(a.atomicalId)).join(', ') || 'nothing'}</td>
             </tr>`,
         )
         .join('')
