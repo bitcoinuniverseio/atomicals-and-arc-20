@@ -7,7 +7,10 @@ interface Props {
 }
 const { only } = Astro.props
 const commands = only
-  ? only.map((name) => inventory.commands.find((c) => c.name === name)).filter(Boolean)
+  ? only.flatMap((name) => {
+      const found = inventory.commands.find((entry) => entry.name === name)
+      return found ? [found] : []
+    })
   : inventory.commands
 
 function usage(command: (typeof inventory.commands)[number]) {

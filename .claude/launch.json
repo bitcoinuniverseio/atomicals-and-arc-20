@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "atomicals-docs",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "site", "exec", "--", "astro", "preview", "--port", "4331"],
+      "port": 4331,
+      "url": "http://localhost:4331"
+    }
+  ]
+}

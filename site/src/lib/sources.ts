@@ -40,6 +40,18 @@ export function sourceUrl(entry: SourceEntry, path?: string): string {
   return `${entry.repository}/blob/${ref}/${resolved}`
 }
 
+/**
+ * The fallback used when a page declares an applicability the labels do not cover.
+ * Declared as its own constant so the lookup below has a definitely defined default:
+ * under noUncheckedIndexedAccess an index into the map is itself possibly undefined,
+ * so falling back to another index would not remove the uncertainty.
+ */
+export const EDITORIAL_FALLBACK = {
+  label: 'Editorial',
+  tone: 'idle',
+  meaning: 'Navigation or explanatory writing with no source-sensitive claim of its own.',
+}
+
 export const APPLICABILITY_LABELS: Record<
   string,
   { label: string; tone: string; meaning: string }
@@ -82,11 +94,7 @@ export const APPLICABILITY_LABELS: Record<
     tone: 'idle',
     meaning: 'Operated by someone else. Not normative and not endorsed.',
   },
-  editorial: {
-    label: 'Editorial',
-    tone: 'idle',
-    meaning: 'Navigation or explanatory writing with no source-sensitive claim of its own.',
-  },
+  editorial: EDITORIAL_FALLBACK,
 }
 
 export const AUTHORITY_LABELS: Record<string, string> = {

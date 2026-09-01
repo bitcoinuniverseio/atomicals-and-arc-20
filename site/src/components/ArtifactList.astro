@@ -14,6 +14,17 @@ function operationCount(document: { paths?: Record<string, Record<string, unknow
   return count
 }
 
+/**
+ * The source revision each contract was generated from. It is an OpenAPI extension
+ * field, so it is read through a widened view rather than the typed document.
+ * Hoisted here deliberately: the template is parsed as JSX, and a generic type
+ * argument written inline there is read as an opening tag.
+ */
+function sourceRevision(document: { info?: unknown }): string {
+  const info = (document.info ?? {}) as Record<string, unknown>
+  return String(info['x-sourceRevision'] ?? '').slice(0, 12)
+}
+
 const documents = [
   {
     file: 'arc20.json',
@@ -55,11 +66,7 @@ const documents = [
             </th>
             <td class="bu-num">{operationCount(entry.document)}</td>
             <td>
-              <code>
-                {String(
-                  (entry.document.info as Record<string, unknown>)['x-sourceRevision'] ?? '',
-                ).slice(0, 12)}
-              </code>
+              <code>{sourceRevision(entry.document)}</code>
             </td>
             <td>
               <a href={`${base}/contracts/openapi/${entry.file}`}>JSON</a>

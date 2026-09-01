@@ -366,3 +366,24 @@ test('every interactive tool degrades without JavaScript', () => {
   }
   assert.deepEqual(problems, [], 'every tool page needs a noscript explanation')
 })
+
+/**
+ * The site name must not be clipped into a different name.
+ *
+ * Starlight clips the title with `overflow: hidden; text-overflow: clip`. At 375px
+ * the full name did not fit, so it rendered as "Atomicals and ARC-2": a name that
+ * is not ours, missing a digit that belongs to the protocol. The override scales
+ * the title down on narrow viewports. This checks the rule is still there, because
+ * the failure is silent in every automated check that only reads the DOM.
+ */
+test('the site title has a narrow viewport rule so the name is not clipped', () => {
+  const override = readFileSync(
+    resolve(root, 'site/src/components/overrides/SiteTitle.astro'),
+    'utf8',
+  )
+  assert.match(
+    override,
+    /@media \(max-width: 30rem\)[\s\S]*\.site-title[\s\S]*font-size/,
+    'SiteTitle must shrink the title on narrow viewports so the whole name fits',
+  )
+})

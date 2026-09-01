@@ -5,3 +5,32 @@ import CommandPalette from '../CommandPalette.astro'
 
 <Default><slot /></Default>
 <CommandPalette />
+
+<style>
+  /*
+   * Starlight clips the site title with `overflow: hidden; text-overflow: clip`.
+   * At 375px the name needs about 180px and gets about 165px, so it rendered as
+   * "Atomicals and ARC-2". A silently truncated name is not a cosmetic problem:
+   * it shows the reader a name that is not ours, and the missing character is a
+   * digit that belongs to the protocol.
+   *
+   * Scaling the title down on narrow viewports keeps the whole name visible.
+   * Clamped so it never drops below a readable size, and only applied where the
+   * clipping actually happens.
+   */
+  @media (max-width: 30rem) {
+    :global(.site-title) {
+      font-size: clamp(0.82rem, 3.6vw, var(--sl-text-h4));
+    }
+
+    /*
+     * The palette trigger sits inside the title wrapper and takes 30px of it. At
+     * 320px that is the difference between the whole name fitting and not. It
+     * duplicates the search control already in the header, and its keyboard
+     * shortcut still works, so hiding it here costs a reader nothing.
+     */
+    :global(bu-command-palette) {
+      display: none;
+    }
+  }
+</style>
