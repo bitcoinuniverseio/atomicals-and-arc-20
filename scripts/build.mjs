@@ -54,6 +54,10 @@ const PRESERVED = new Set([
   'tests',
   'assets',
   'theme.css',
+  // Hand maintained, not generated: the integration record other Universe
+  // documentation surfaces read, and the support routing page.
+  'docs.manifest.json',
+  'SUPPORT.md',
 ])
 
 const args = process.argv.slice(2)

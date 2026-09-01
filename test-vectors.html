@@ -1,351 +1,66 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Test vectors | Atomicals + ARC-20</title>
-  <meta name="description" content="Valid and invalid Atomicals and ARC-20 test vectors with expected outcomes, derived from the indexer's coloring engine and its own test suite.">
-  <link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/test-vectors.html">
-  <meta property="og:title" content="Atomicals + ARC-20 test vectors">
-  <meta property="og:description" content="Coloring, split, custom color, mint, and envelope vectors with expected outcomes, including invalid cases.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/test-vectors.html">
-  <link rel="stylesheet" href="assets/site.css">
-  <script src="assets/site.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test vectors | Atomicals and ARC-20</title>
+<meta name="description" content="Executed ARC-20 allocation vectors with their inputs, outputs, coloured results, and burns.">
+<meta name="generator" content="scripts/generate-artifacts.mjs">
+<link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/conformance/">
+<link rel="icon" href="/atomicals-and-arc-20/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Test vectors">
+<meta property="og:description" content="Executed ARC-20 allocation vectors with their inputs, outputs, coloured results, and burns.">
+<meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/conformance/">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="/atomicals-and-arc-20/theme.css">
 </head>
-<body>
-  <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="./">
-        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="2.4" class="d-fill-accent"/><ellipse cx="11" cy="11" rx="9.5" ry="4" class="d-orbit"/><ellipse cx="11" cy="11" rx="9.5" ry="4" transform="rotate(60 11 11)" class="d-orbit"/></svg>
-        Atomicals + ARC-20
-      </a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="./">Overview</a>
-        <a href="specification.html">Specification</a>
-        <a href="guide.html">Guide</a>
-        <a href="reference.html">Reference</a>
-        <a href="test-vectors.html" aria-current="page">Test vectors</a>
-        <a href="simulator.html">Simulator</a>
-      </nav>
-      <div class="header-tools">
-        <div class="search-box">
-          <label for="search-input" style="position:absolute;left:-999px">Search this site</label>
-          <input type="search" id="search-input" placeholder="Search docs" autocomplete="off">
-          <span class="search-hint" aria-hidden="true">/</span>
-          <ul id="search-results" class="search-results" aria-label="Search results"></ul>
-        </div>
-        <button type="button" id="theme-toggle" class="theme-toggle">Theme</button>
-      </div>
-    </div>
-  </header>
-  <main id="main">
-    <p class="kicker">Conformance</p>
-    <h1>Test vectors</h1>
-    <p class="lede measure">Cases with expected outcomes, for checking an implementation. Vectors marked <span class="tag accent">from suite</span> are transcriptions of cases in the indexer's own test file <code>tests/lib/test_atomicals_blueprint_builder.py</code>, with the same inputs and the same asserted results. The remainder are derived directly from the rules in <a href="specification.html">the specification</a> and are reproducible in the <a href="simulator.html">simulator</a>.</p>
-
-    <div class="note">
-      <p>Notation: inputs are listed as <code>index: sats / units</code>, outputs as <code>index: sats</code>. Unless stated otherwise, one fungible token is involved, FIFO ordering is active (height 819181 or later), and no envelope operation is present (a plain spend).</p>
-    </div>
-
-    <nav class="toc" aria-label="Table of contents">
-      <strong>Contents</strong>
-      <ol>
-        <li><a href="#coloring-valid">Valid coloring</a></li>
-        <li><a href="#coloring-burn">Burn cases</a></li>
-        <li><a href="#split">Split and custom color</a></li>
-        <li><a href="#envelope-vectors">Envelope parsing</a></li>
-        <li><a href="#mint-vectors">Mint validity</a></li>
-        <li><a href="#bitwork-vectors">Bitwork</a></li>
-        <li><a href="#name-vectors">Names and tickers</a></li>
-      </ol>
-    </nav>
-
-    <h2 id="coloring-valid">1. Valid coloring</h2>
-
-    <h3 id="v1">V1. Exact single output <span class="tag accent">from suite</span></h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Input</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 11000 / 11000</td>
-        <td class="num">0: 11000</td>
-        <td>exact cover</td>
-        <td>Output 0 carries 11000 units. Burned: none. Cleanly assigned: yes.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">The token exactly fills the only output. Corresponds to <code>test_spends_ft_valid</code>.</p>
-
-    <h3 id="v2">V2. Ordinary two-way split</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Input</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 10000 / 10000</td>
-        <td class="num">0: 3000<br>1: 7000</td>
-        <td>either</td>
-        <td>Output 0 carries 3000, output 1 carries 7000. Burned: none.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">The everyday transfer: outputs are filled left to right until the pool is exhausted. Both outputs are covered exactly, so this behaves identically in both eras.</p>
-
-    <h3 id="v3">V3. Uncolored change beyond the pool</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Inputs</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 10000 / 10000<br>1: 50000 / uncolored</td>
-        <td class="num">0: 3000<br>1: 7000<br>2: 49800</td>
-        <td>either</td>
-        <td>Outputs 0 and 1 carry 3000 and 7000. Output 2 carries no color. Burned: none. Fee 200 sats paid from plain bitcoin.</td>
-      </tr></tbody>
-    </table></div>
-
-    <h3 id="v4">V4. Two tokens, FIFO order, clean boundaries</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Inputs</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 8000 / 8000 of A<br>1: 2000 / 2000 of B</td>
-        <td class="num">0: 6000<br>1: 2000<br>2: 2000</td>
-        <td>either</td>
-        <td>A colors output 0 with 6000 and output 1 with 2000, exhausting it exactly. B then begins at output 2 and colors it with 2000. Burned: none. Cleanly assigned: yes.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">A is processed first because it appears at the lower input index, and B starts at the output after the last one A colored. This is the case drawn in figure 3 of the specification. Choosing output values so each token's balance ends on an output boundary is what keeps a multi-token transfer predictable.</p>
-
-    <h3 id="v4b">V4b. The non-clean fallback (rule C7)</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Inputs</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 8000 / 8000 of A<br>1: 2000 / 2000 of B</td>
-        <td class="num">0: 6000<br>1: 4000</td>
-        <td>current</td>
-        <td>A's assignment reaches the last output without a clean stop, and B then finds no output at or after its start index. The whole map is discarded and both tokens restart from output 0: <strong>output 0 carries 6000 of A and 2000 of B, output 1 carries 2000 of A.</strong> Burned: none. Cleanly assigned: no.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">The same two tokens as V4 with only the output values changed, and the outcome is qualitatively different: both tokens end up stacked on output 0. This is the behavior that catches implementers who assume each token simply continues where the previous one stopped. Run both shapes in the <a href="simulator.html">simulator</a> to compare the step traces.</p>
-
-    <h3 id="v5">V5. Partially colored input carried forward <span class="tag accent">from suite</span></h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Input</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 11001 sats / 500 units</td>
-        <td class="num">0: 11000</td>
-        <td>current</td>
-        <td>Output 0 carries 500 units against 11000 satoshis. Burned: none. Cleanly assigned reported as false (the output is only partially colored).</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">Corresponds to <code>test_spends_single_ft_partially_colored_transfer</code>. Note that a partially colored UTXO is normal since height 848484: the satoshi value and the token value are tracked separately.</p>
-
-    <h2 id="coloring-burn">2. Burn cases</h2>
-
-    <h3 id="b1">B1. Remainder with nowhere to go <span class="tag accent">from suite</span></h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Inputs</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0 through 10: 1000 / 1000 each (11000 total, one token)</td>
-        <td class="num">0: 1000</td>
-        <td>exact cover</td>
-        <td>Output 0 carries 1000 units. <strong>Burned: 10000.</strong> Burn flag: true.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">Corresponds to <code>test_spends_ft_burned</code>. Eleven colored inputs consolidated into a single small output: everything beyond the first 1000 units is destroyed. This is the classic consolidation accident.</p>
-
-    <h3 id="b2">B2. Output larger than the remaining balance <span class="tag accent">from suite</span></h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Input</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 10999 / 10999</td>
-        <td class="num">0: 11000</td>
-        <td>exact cover</td>
-        <td><strong>No output is colored at all. Burned: 10999.</strong> Burn flag: true.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">Corresponds to <code>test_spends_ft_single_burned_under</code>. Under exact-cover rules an output must be fully covered; one satoshi short destroyed the entire balance. Under current rules the same shape would color output 0 partially with 10999 units and burn nothing, which is exactly why the rule changed.</p>
-
-    <h3 id="b3">B3. One unit over <span class="tag accent">from suite</span></h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Input</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 11001 / 11001</td>
-        <td class="num">0: 11000</td>
-        <td>exact cover</td>
-        <td>Output 0 carries 11000 units. <strong>Burned: 1.</strong> Burn flag: true.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">Corresponds to <code>test_spends_ft_single_burned_over</code>. The single leftover unit is the miner fee, and it is burned token supply.</p>
-
-    <h3 id="b4">B4. Fee taken from colored value</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Input</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 10000 / 10000</td>
-        <td class="num">0: 3000<br>1: 6800</td>
-        <td>current</td>
-        <td>Outputs carry 3000 and 6800. <strong>Burned: 200</strong> (the fee).</td>
-      </tr></tbody>
-    </table></div>
-
-    <h3 id="b5">B5. No outputs able to take color</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Input</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 5000 / 5000</td>
-        <td class="num">0: OP_RETURN (0 sats)</td>
-        <td>either</td>
-        <td><strong>Burned: 5000.</strong> Unspendable outputs are skipped by regular assignment, leaving nowhere for the balance to land.</td>
-      </tr></tbody>
-    </table></div>
-
-    <h2 id="split">3. Split and custom color</h2>
-
-    <h3 id="s1">S1. Merged inputs, single output <span class="tag accent">from suite</span></h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Inputs</th><th scope="col">Outputs</th><th scope="col">Era</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 900 / 900<br>1: 555 / 555 (same token)</td>
-        <td class="num">0: 1454</td>
-        <td>exact cover</td>
-        <td>Output 0 carries 1454 units. <strong>Burned: 1.</strong></td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">From <code>test_spends_ft_split_one_token</code>. The token pool is 1455; the output takes 1454 and the single remaining unit is the fee, burned.</p>
-
-    <h3 id="s2">S2. Split skip</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Inputs</th><th scope="col">Payload (<code>y</code>)</th><th scope="col">Outputs</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 3000 / 3000 of A</td>
-        <td><code>{A: 1000}</code></td>
-        <td class="num">0: 1000<br>1: 2000</td>
-        <td>Output 0 is skipped (its 1000 satoshis satisfy the skip amount). A colors output 1 with 2000. Burned: 1000, since A's remaining value exceeds the remaining outputs.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">The split payload maps each token to a satoshi amount to pass over before its coloring begins. It is the tool for separating two tokens that share one input.</p>
-
-    <h3 id="s3">S3. Custom color with over-request clamping <span class="tag accent">from suite</span></h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Inputs</th><th scope="col">Payload (<code>z</code>)</th><th scope="col">Outputs</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">input 1 carries<br>1000 of A and<br>1000 of B</td>
-        <td><code>A: {0: 1200}</code><br><code>B: {1: 600, 2: 600}</code></td>
-        <td class="num">0: 1200<br>1: 600<br>2: 600</td>
-        <td>Output 0 carries 1000 of A (clamped from the requested 1200 to A's actual balance). Output 1 carries 600 of B, output 2 carries 400 of B (clamped by B's remaining balance). Burned: none. Cleanly assigned: false.</td>
-      </tr></tbody>
-    </table></div>
-    <p class="measure">From <code>test_custom_colored_ft_overflow</code>. The payload requests more value than exists for both tokens; the engine clamps to the output's satoshi value and to the remaining token value, so no inflation is possible.</p>
-
-    <h3 id="s4">S4. Custom color leaving value unassigned</h3>
-    <div class="table-wrap"><table>
-      <thead><tr><th scope="col">Inputs</th><th scope="col">Payload (<code>z</code>)</th><th scope="col">Outputs</th><th scope="col">Expected</th></tr></thead>
-      <tbody><tr>
-        <td class="num">0: 1000 / 1000 of A</td>
-        <td><code>A: {0: 400}</code></td>
-        <td class="num">0: 1000<br>1: 500</td>
-        <td>Output 0 carries 400 units of A. <strong>Burned: 600</strong>, because the payload directed nothing at any other output.</td>
-      </tr></tbody>
-    </table></div>
-
-    <h3 id="s5">S5. Transaction with no atomicals at all <span class="tag accent">from suite</span></h3>
-    <p class="measure">A transaction spending no token-bearing inputs produces an empty blueprint: no NFT outputs, no FT outputs, no burns. Corresponds to <code>test_empty_spends</code>. Implementations must not fabricate assignments for uncolored transactions.</p>
-
-    <h2 id="envelope-vectors">4. Envelope parsing</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th scope="col">Case</th><th scope="col">Input</th><th scope="col">Expected</th></tr></thead>
-        <tbody>
-          <tr><td>E-V1 valid marker</td><td>Witness element beginning <code>20&lt;32 bytes&gt;ac0063 0461746f6d 03646d74 …</code></td><td><span class="tag ok">Valid</span> operation <code>dmt</code>, payload parsed from the pushes that follow.</td></tr>
-          <tr><td>E-X1 short element</td><td>Witness element of 38 bytes</td><td><span class="tag bad">Skipped</span> minimum length is 39 bytes.</td></tr>
-          <tr><td>E-X2 wrong first byte</td><td>Element beginning <code>21</code> instead of <code>20</code></td><td><span class="tag bad">Skipped</span> a 32-byte push is required.</td></tr>
-          <tr><td>E-X3 wrong marker</td><td><code>OP_IF</code> followed by <code>046f7264</code> ("ord")</td><td><span class="tag bad">Skipped</span> not an Atomicals envelope.</td></tr>
-          <tr><td>E-X4 unknown operation</td><td>Marker followed by <code>0378797a</code> ("xyz")</td><td><span class="tag bad">Skipped</span> unrecognized operation code.</td></tr>
-          <tr><td>E-X5 payload not a map</td><td>CBOR encoding of the array <code>[1,2,3]</code></td><td><span class="tag bad">Rejected</span> the payload must decode to a CBOR map.</td></tr>
-          <tr><td>E-X6 undecodable payload</td><td>Random bytes after the operation push</td><td><span class="tag bad">Rejected</span> CBOR decode failure.</td></tr>
-          <tr><td>E-X7 bytes in <code>meta</code></td><td><code>{"meta": {"x": h'0102'}}</code></td><td><span class="tag bad">Rejected</span> byte strings are not permitted inside <code>meta</code> or <code>ctx</code>.</td></tr>
-          <tr><td>E-X8 empty tapscript</td><td>Witness with no leaf scripts</td><td><span class="tag bad">No operation</span> returns an empty result rather than an error. Corresponds to <code>test_parse_operations_from_empty_tap_leafs</code>.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2 id="mint-vectors">5. Mint validity</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th scope="col">Case</th><th scope="col">Setup</th><th scope="col">Expected</th></tr></thead>
-        <tbody>
-          <tr><td>M-V1 direct mint</td><td><code>ft</code> with <code>request_ticker: "quark"</code>, reveal output 0 of 100000 sats</td><td><span class="tag ok">Valid</span> supply 100000 units, all at reveal output 0.</td></tr>
-          <tr><td>M-V2 dmt claim</td><td>Deploy with <code>mint_amount: 1000</code>; claim pays exactly 1000 sats to output 0, at or after <code>mint_height</code>, below the cap</td><td><span class="tag ok">Valid</span> 1000 units minted.</td></tr>
-          <tr><td>M-X1 wrong claim amount</td><td>Same deploy; claim pays 999 or 1001 sats to output 0</td><td><span class="tag bad">Invalid</span> output 0 must equal <code>mint_amount</code> exactly.</td></tr>
-          <tr><td>M-X2 premature claim</td><td>Claim confirmed one block before <code>mint_height</code></td><td><span class="tag bad">Invalid</span> both the claim and its commit must be at or above <code>mint_height</code>.</td></tr>
-          <tr><td>M-X3 cap exceeded</td><td>Claim number <code>max_mints + 1</code></td><td><span class="tag bad">Invalid</span> the mint is closed; counts are re-derived from durable state each block.</td></tr>
-          <tr><td>M-X4 envelope on input 1</td><td>Valid <code>dmt</code> payload placed on the second input</td><td><span class="tag bad">Invalid</span> mint operations require input index 0.</td></tr>
-          <tr><td>M-X5 late reveal</td><td>Reveal 101 blocks after commit</td><td><span class="tag bad">Invalid</span> general commit window is 100 blocks.</td></tr>
-          <tr><td>M-X6 late named reveal</td><td>Ticker mint revealed 4 blocks after commit</td><td><span class="tag bad">Invalid</span> named mints must reveal within 3 blocks (<code>expired_revealed_late</code>).</td></tr>
-          <tr><td>M-X7 nonzero commit index</td><td>Named mint whose commit outpoint index is 1, after height 822800</td><td><span class="tag bad">Invalid</span> commit index must be 0.</td></tr>
-          <tr><td>M-X8 out-of-range deploy</td><td><code>mint_amount: 545</code>, or <code>mint_amount: 100000001</code></td><td><span class="tag bad">Invalid</span> bounds are 546 to 100000000.</td></tr>
-          <tr><td>M-X9 immutable fungible</td><td><code>ft</code> or <code>dft</code> with <code>args.i: true</code></td><td><span class="tag bad">Invalid</span> fungible tokens can never be immutable.</td></tr>
-          <tr><td>M-X10 two name requests</td><td><code>args</code> containing both <code>request_ticker</code> and <code>request_realm</code></td><td><span class="tag bad">Invalid</span> at most one name request per mint.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2 id="bitwork-vectors">6. Bitwork</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th scope="col">Case</th><th scope="col">Bitwork</th><th scope="col">Txid begins</th><th scope="col">Expected</th></tr></thead>
-        <tbody>
-          <tr><td>BW-V1</td><td><code>1a2b</code></td><td><code>1a2b7f…</code></td><td><span class="tag ok">Satisfied</span> prefix matches.</td></tr>
-          <tr><td>BW-X1</td><td><code>1a2b</code></td><td><code>1a2c00…</code></td><td><span class="tag bad">Not satisfied</span> prefix mismatch.</td></tr>
-          <tr><td>BW-V2</td><td><code>1a2b.8</code></td><td><code>1a2b9…</code></td><td><span class="tag ok">Satisfied</span> the next digit (9) is at least 8.</td></tr>
-          <tr><td>BW-X2</td><td><code>1a2b.8</code></td><td><code>1a2b7…</code></td><td><span class="tag bad">Not satisfied</span> the next digit (7) is below 8.</td></tr>
-          <tr><td>BW-V3</td><td><code>1a2b.0</code></td><td>any <code>1a2b…</code></td><td><span class="tag ok">Satisfied</span> an extension of 0 imposes no extra requirement.</td></tr>
-          <tr><td>BW-X3</td><td><code>1a2g</code></td><td>any</td><td><span class="tag bad">Malformed</span> <code>g</code> is not a hex character.</td></tr>
-          <tr><td>BW-X4</td><td><code>1a2b.16</code></td><td>any</td><td><span class="tag bad">Malformed</span> the extension must be 0 to 15.</td></tr>
-          <tr><td>BW-T1 target</td><td><code>1a2b.8</code></td><td>n/a</td><td>Difficulty target = 4 × 16 + 8 = <span class="num">72</span>.</td></tr>
-          <tr><td>BW-T2 perpetual step</td><td><code>bv: "abcd"</code>, start 64, increment 16, <code>max_mints</code> 100, after 250 claims</td><td>n/a</td><td>Steps = floor(250/100) = 2, target = 64 + 32 = 96, required prefix = the first 6 characters of <code>abcd</code> padded with zeros: <code>abcd00</code>.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2 id="name-vectors">7. Names and tickers</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th scope="col">Case</th><th scope="col">Value</th><th scope="col">Expected</th></tr></thead>
-        <tbody>
-          <tr><td>N-V1</td><td>ticker <code>quark</code></td><td><span class="tag ok">Valid</span> lowercase alphanumeric, within 21 characters.</td></tr>
-          <tr><td>N-V2</td><td>ticker <code>a</code></td><td><span class="tag ok">Valid</span> one character is the minimum.</td></tr>
-          <tr><td>N-X1</td><td>ticker <code>QUARK</code></td><td><span class="tag bad">Invalid</span> uppercase is not permitted.</td></tr>
-          <tr><td>N-X2</td><td>ticker <code>my-token</code></td><td><span class="tag bad">Invalid</span> hyphens are not permitted in tickers.</td></tr>
-          <tr><td>N-X3</td><td>ticker of 22 characters</td><td><span class="tag bad">Invalid</span> the maximum is 21.</td></tr>
-          <tr><td>N-V3</td><td>realm <code>alpha-one</code></td><td><span class="tag ok">Valid</span> realms may contain hyphens after the first character.</td></tr>
-          <tr><td>N-X4</td><td>realm <code>1alpha</code></td><td><span class="tag bad">Invalid</span> a realm must begin with a letter.</td></tr>
-          <tr><td>N-X5</td><td>realm <code>alpha-</code></td><td><span class="tag bad">Invalid</span> no trailing hyphen.</td></tr>
-          <tr><td>N-X6</td><td>realm claim with <code>bitworkc: "1a2"</code></td><td><span class="tag bad">Invalid</span> top-level names require a commit bitwork prefix of at least 4 characters.</td></tr>
-          <tr><td>N-T1 race</td><td>Two valid claims for <code>quark</code>: X commits at height 900000 and reveals at 900002; Y commits at 900001 and reveals at 900001</td><td>X wins. Resolution is by earliest commit, not earliest reveal. Both are <code>pending</code> until X's commit is 3 blocks deep.</td></tr>
-          <tr><td>N-X7 subname payment</td><td>Payment confirmed 16 blocks after commit</td><td><span class="tag bad">Invalid</span> the payment window closes at commit + 15 (<code>expired_payment_not_received</code>).</td></tr>
-          <tr><td>N-X8 payment in a split</td><td>Correct payment output in a transaction that also carries a <code>y</code> operation</td><td><span class="tag bad">Refused</span> payments are never satisfied in a split transaction.</td></tr>
-          <tr><td>N-X9 dmitem proof</td><td>Merkle proof item with a data hash of 63 hex characters</td><td><span class="tag bad">Invalid</span> each proof step's <code>d</code> must be exactly 64 hex characters.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="warn">
-      <p><strong>On reproducing suite vectors exactly.</strong> The indexer's tests supply full raw transactions plus a synthetic map of spent atomicals; the tables above transcribe the satoshi and unit quantities and the asserted outcomes, which is what an independent implementation needs to check. To run the original cases byte for byte, use the test file named at the top of this page in an Atomicals indexer checkout.</p>
-    </div>
-  </main>
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-grid">
-        <div>
-          <p><strong>Atomicals + ARC-20 protocol documentation</strong><br>
-          Owning repository: <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20">bitcoinuniverseio/atomicals-and-arc-20</a><br>
-          Source path: <code>/test-vectors.html</code> · <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/edit/main/test-vectors.html">Edit on GitHub</a></p>
-        </div>
-        <div>
-          <p>Document version 2.0.0 · Lifecycle: beta<br>
-          Chain: Bitcoin mainnet · Last verified: 2026-09-01<br>
-          <a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></p>
-        </div>
-      </div>
-      <p class="footer-meta">Upstream protocol by the Atomicals project. This site documents the protocol as indexed by Bitcoin Universe and marks Universe-specific decisions explicitly.</p>
-    </div>
-  </footer>
+<body class="compat">
+<a class="skip" href="#main">Skip to content</a>
+<header class="compat-header">
+  <a class="compat-brand" href="/atomicals-and-arc-20/">Atomicals and ARC-20</a>
+  <nav aria-label="Primary">
+    <a href="/atomicals-and-arc-20/start/what-are-atomicals/">Start</a>
+    <a href="/atomicals-and-arc-20/protocol/overview/">Protocol</a>
+    <a href="/atomicals-and-arc-20/guides/">Guides</a>
+    <a href="/atomicals-and-arc-20/reference/openapi/">Reference</a>
+  </nav>
+</header>
+<main id="main" class="compat-main">
+<div class="compat-notice">
+  <strong>Compatibility page.</strong> This route is preserved so older links keep working. It is
+  generated from the current documentation, so it cannot drift.
+  <a href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/conformance/">Open the current page</a>.
+</div>
+<h1>Test vectors</h1>
+<p>Every row below is produced by running <code>conformance/allocation.mjs</code>, the port of the
+allocation rules from the pinned indexer revision. The expected values are not transcribed. They are
+what the engine returns, checked in CI, so a page that disagrees with the engine cannot be
+published.</p>
+<p>Cases naming an upstream test correspond to a case in the indexer's own
+<code>tests/lib/test_atomicals_blueprint_builder.py</code> at the pinned revision.</p>
+<p>Era is <code>exact-cover</code> for the rules before activation height 848484, where an output had
+to be fully covered or nothing was coloured, and <code>current</code> for the rules at or after it,
+where an output can be partially coloured.</p>
+<p>Machine readable: <a href="/atomicals-and-arc-20/conformance/vectors/arc20-allocation.json">arc20-allocation.json</a>.
+Run them interactively in the <a href="/atomicals-and-arc-20/tools/allocation-visualizer/">allocation visualizer</a>.</p>
+<div class="table-scroll"><table>
+<caption>ARC-20 allocation vectors, executed</caption>
+<thead><tr><th scope="col">Case</th><th scope="col">Era</th><th scope="col">Inputs</th><th scope="col">Outputs</th><th scope="col">Coloured</th><th scope="col">Burned</th><th scope="col">Clean</th></tr></thead>
+<tbody><tr><td><code>clean-split</code><br>Clean split into two outputs</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 700<br>1: 500</td><td>0: 700<br>1: 500</td><td>none</td><td>true</td></tr><tr><td><code>oversized-next-output</code><br>Oversized next output burns the remainder</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 700<br>1: 546</td><td>0: 700<br>1: 0</td><td>TOKENA: 500</td><td>false</td></tr><tr><td><code>exact-single-output</code><br>Whole lot into one output</td><td>current</td><td>0: 10000 of TOKENA</td><td>0: 10000</td><td>0: 10000</td><td>none</td><td>true</td></tr><tr><td><code>first-output-too-large</code><br>First output larger than the whole lot</td><td>current</td><td>0: 500 of TOKENA</td><td>0: 20000</td><td>0: 0</td><td>TOKENA: 500</td><td>false</td></tr><tr><td><code>too-few-outputs</code><br>Outputs run out before the value does</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 700</td><td>0: 700</td><td>TOKENA: 500</td><td>false</td></tr><tr><td><code>unspendable-output-skipped</code><br>Unspendable outputs are skipped, not funded</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 0 (unspendable)<br>1: 700<br>2: 500</td><td>0: 0<br>1: 700<br>2: 500</td><td>none</td><td>true</td></tr><tr><td><code>combine-two-lots</code><br>Combining two lots of the same token</td><td>current</td><td>0: 700 of TOKENA<br>1: 500 of TOKENA</td><td>0: 1200</td><td>0: 1200</td><td>none</td><td>true</td></tr><tr><td><code>two-tokens-sequential-slots</code><br>Two different tokens take sequential output slots</td><td>current</td><td>0: 700 of TOKENA<br>1: 900 of TOKENB</td><td>0: 700<br>1: 900</td><td>0: 700<br>1: 900</td><td>none</td><td>true</td></tr><tr><td><code>two-tokens-non-clean-fallback</code><br>A non-clean slot triggers the output zero fallback</td><td>current</td><td>0: 700 of TOKENA<br>1: 400 of TOKENB</td><td>0: 700<br>1: 546</td><td>0: 700</td><td>TOKENB: 400</td><td>false</td></tr><tr><td><code>dust-remainder-burns</code><br>A remainder smaller than the change output burns</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 1000<br>1: 200</td><td>0: 1000<br>1: 200</td><td>none</td><td>true</td></tr><tr><td><code>change-output-too-large</code><br>A change output larger than the remainder burns it</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 1000<br>1: 546</td><td>0: 1000<br>1: 0</td><td>TOKENA: 200</td><td>false</td></tr><tr><td><code>custom-coloring-partial-fill</code><br>Custom coloring assigns a partial value to the last output</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 700<br>1: 546</td><td>0: 700<br>1: 500</td><td>none</td><td>false</td></tr><tr><td><code>suite-exact-single-output</code><br>Exact single output, exact-cover era<br><small>Upstream test: <code>test_spends_ft_valid</code></small></td><td>exact-cover</td><td>0: 11000 of TOKENA</td><td>0: 11000</td><td>0: 11000</td><td>none</td><td>true</td></tr><tr><td><code>suite-partially-colored-carry-forward</code><br>Partially coloured output, current era<br><small>Upstream test: <code>test_spends_single_ft_partially_colored_transfer</code></small></td><td>current</td><td>0: 500 of TOKENA</td><td>0: 11000</td><td>0: 500</td><td>none</td><td>false</td></tr><tr><td><code>suite-consolidation-burn</code><br>Eleven inputs consolidated into one small output<br><small>Upstream test: <code>test_spends_ft_burned</code></small></td><td>exact-cover</td><td>0: 1000 of TOKENA<br>1: 1000 of TOKENA<br>2: 1000 of TOKENA<br>3: 1000 of TOKENA<br>4: 1000 of TOKENA<br>5: 1000 of TOKENA<br>6: 1000 of TOKENA<br>7: 1000 of TOKENA<br>8: 1000 of TOKENA<br>9: 1000 of TOKENA<br>10: 1000 of TOKENA</td><td>0: 1000</td><td>0: 1000</td><td>TOKENA: 10000</td><td>false</td></tr><tr><td><code>suite-output-over-balance</code><br>One satoshi short destroys the whole balance<br><small>Upstream test: <code>test_spends_ft_single_burned_under</code></small></td><td>exact-cover</td><td>0: 10999 of TOKENA</td><td>0: 11000</td><td>nothing coloured</td><td>TOKENA: 10999</td><td>false</td></tr><tr><td><code>suite-one-unit-over</code><br>One unit over the output value burns that unit<br><small>Upstream test: <code>test_spends_ft_single_burned_over</code></small></td><td>exact-cover</td><td>0: 11001 of TOKENA</td><td>0: 11000</td><td>0: 11000</td><td>TOKENA: 1</td><td>false</td></tr><tr><td><code>suite-merged-inputs-single-output</code><br>Two lots merged into one output, one unit as fee<br><small>Upstream test: <code>test_spends_ft_split_one_token</code></small></td><td>exact-cover</td><td>0: 900 of TOKENA<br>1: 555 of TOKENA</td><td>0: 1454</td><td>0: 1454</td><td>TOKENA: 1</td><td>false</td></tr><tr><td><code>suite-no-atomicals</code><br>A transaction carrying no tokens<br><small>Upstream test: <code>test_empty_spends</code></small></td><td>current</td><td>none</td><td>0: 1000</td><td>nothing coloured</td><td>none</td><td>true</td></tr><tr><td><code>fee-taken-from-colored-value</code><br>Paying the fee out of coloured value burns it</td><td>current</td><td>0: 10000 of TOKENA</td><td>0: 3000<br>1: 6800</td><td>0: 3000<br>1: 6800</td><td>TOKENA: 200</td><td>false</td></tr><tr><td><code>only-unspendable-outputs</code><br>No output able to take colour</td><td>current</td><td>0: 5000 of TOKENA</td><td>0: 0 (unspendable)</td><td>nothing coloured</td><td>TOKENA: 5000</td><td>false</td></tr><tr><td><code>split-skip-amount</code><br>Split skips a satoshi amount before colouring</td><td>exact-cover</td><td>0: 3000 of TOKENA</td><td>0: 1000<br>1: 2000</td><td>1: 2000</td><td>TOKENA: 1000</td><td>false</td></tr><tr><td><code>custom-color-over-request-clamped</code><br>Custom colouring clamps an over-request<br><small>Upstream test: <code>test_custom_colored_ft_overflow</code></small></td><td>current</td><td>0: 1000 of TOKENA<br>0: 1000 of TOKENB</td><td>0: 1200<br>1: 600<br>2: 600</td><td>0: 1000<br>1: 600<br>2: 400</td><td>none</td><td>false</td></tr><tr><td><code>custom-color-unassigned-value-burns</code><br>Custom colouring burns what the payload does not place</td><td>current</td><td>0: 1000 of TOKENA</td><td>0: 1000<br>1: 500</td><td>0: 400</td><td>TOKENA: 600</td><td>false</td></tr></tbody>
+</table></div>
+</main>
+<footer class="compat-footer">
+  <p>
+    Independent documentation published by Bitcoin Universe. Atomicals and ARC-20 names and artwork
+    stay with their creators. Nothing here is investment, legal, or tax advice.
+  </p>
+  <p>
+    <a href="/atomicals-and-arc-20/llms.txt">llms.txt</a>
+    <a href="/atomicals-and-arc-20/llms-full.txt">llms-full.txt</a>
+    <a href="/atomicals-and-arc-20/specification.md">specification.md</a>
+    <a href="/atomicals-and-arc-20/sources.md">sources.md</a>
+    <a href="/atomicals-and-arc-20/manifest.json">manifest.json</a>
+  </p>
+</footer>
 </body>
 </html>

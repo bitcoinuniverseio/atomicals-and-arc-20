@@ -760,6 +760,100 @@ for (const file of CONTRACT_FILES) {
   written.push(file)
 }
 
+// ---------------------------------------------- preserved compatibility routes
+
+/*
+ * These three paths were published before this build existed, and
+ * docs.manifest.json names test-vectors.html as a specification document. A URL
+ * that once resolved has to keep resolving, so they are generated here from the
+ * same material the site uses rather than left as hand written copies that drift.
+ */
+
+function vectorRow(entry) {
+  const inputs = entry.inputs.length
+    ? entry.inputs
+        .map((input) => `${input.txinIndex}: ${input.atomicalValue} of ${input.atomicalId}`)
+        .join('<br>')
+    : 'none'
+  const outputs = entry.outputs
+    .map(
+      (output, index) =>
+        `${index}: ${output.value}${output.unspendable ? ' (unspendable)' : ''}`,
+    )
+    .join('<br>')
+  const expectedOutputs = entry.expected.outputs ?? []
+  const expectedBurned = entry.expected.burned ?? []
+  const colored = expectedOutputs.length
+    ? expectedOutputs.map((output) => `${output.index}: ${output.coloredTotal}`).join('<br>')
+    : 'nothing coloured'
+  const burned = expectedBurned.length
+    ? expectedBurned.map((burn) => `${burn.atomicalId}: ${burn.value}`).join('<br>')
+    : 'none'
+  const cited = entry.upstreamTest
+    ? `<br><small>Upstream test: <code>${entry.upstreamTest}</code></small>`
+    : ''
+  return `<tr><td><code>${entry.id}</code><br>${entry.title}${cited}</td><td>${
+    entry.era ?? 'current'
+  }</td><td>${inputs}</td><td>${outputs}</td><td>${colored}</td><td>${burned}</td><td>${
+    entry.expected.cleanlyAssigned
+  }</td></tr>`
+}
+
+write(
+  'test-vectors.html',
+  compatibilityPage({
+    title: 'Test vectors',
+    description:
+      'Executed ARC-20 allocation vectors with their inputs, outputs, coloured results, and burns.',
+    canonical: absoluteUrlFor('reference/conformance'),
+    body: `<h1>Test vectors</h1>
+<p>Every row below is produced by running <code>conformance/allocation.mjs</code>, the port of the
+allocation rules from the pinned indexer revision. The expected values are not transcribed. They are
+what the engine returns, checked in CI, so a page that disagrees with the engine cannot be
+published.</p>
+<p>Cases naming an upstream test correspond to a case in the indexer's own
+<code>tests/lib/test_atomicals_blueprint_builder.py</code> at the pinned revision.</p>
+<p>Era is <code>exact-cover</code> for the rules before activation height 848484, where an output had
+to be fully covered or nothing was coloured, and <code>current</code> for the rules at or after it,
+where an output can be partially coloured.</p>
+<p>Machine readable: <a href="${BASE}/conformance/vectors/arc20-allocation.json">arc20-allocation.json</a>.
+Run them interactively in the <a href="${BASE}/tools/allocation-visualizer/">allocation visualizer</a>.</p>
+<div class="table-scroll"><table>
+<caption>ARC-20 allocation vectors, executed</caption>
+<thead><tr><th scope="col">Case</th><th scope="col">Era</th><th scope="col">Inputs</th><th scope="col">Outputs</th><th scope="col">Coloured</th><th scope="col">Burned</th><th scope="col">Clean</th></tr></thead>
+<tbody>${vectors.cases.map(vectorRow).join('')}</tbody>
+</table></div>`,
+  }),
+)
+
+write(
+  'simulator.html',
+  compatibilityPage({
+    title: 'Allocation simulator',
+    description: 'The transfer outcome simulator now lives in the allocation visualizer.',
+    canonical: absoluteUrlFor('tools/allocation-visualizer'),
+    noindex: true,
+    body: `<h1>Allocation simulator</h1>
+<p>This tool is now the
+<a href="${BASE}/tools/allocation-visualizer/">allocation visualizer</a>. It runs the same engine the
+<a href="${BASE}/test-vectors.html">test vectors</a> are executed with, in your browser, and it never
+signs or broadcasts anything.</p>`,
+  }),
+)
+
+write(
+  'changelog.html',
+  compatibilityPage({
+    title: 'Changelog',
+    description: 'Release history for this documentation and the revisions it is pinned to.',
+    canonical: absoluteUrlFor('releases'),
+    body: `<h1>Changelog</h1>
+<p>The full release history, with the pinned source revision behind each entry, is on the
+<a href="${BASE}/releases/">releases page</a>. A machine readable feed is at
+<a href="${BASE}/changelog.xml">changelog.xml</a>.</p>`,
+  }),
+)
+
 // ------------------------------------------------------------------------- report
 
 write(
