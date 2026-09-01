@@ -275,3 +275,27 @@ test('gzip is also within budget, for hosts that do not serve brotli', () => {
   }
   assert.deepEqual(failures, [], 'pages over the gzip JavaScript budget')
 })
+
+/**
+ * Reproducibility.
+ *
+ * The built site is committed to the repository root, so the build has to be a
+ * function of the working tree alone. Anything derived from the commit history
+ * makes the published HTML one commit stale by construction, and no rebuild can
+ * ever close the gap. Starlight's git-derived "last updated" footer is the one
+ * source of that in this stack, and it is switched off in astro.config.mjs.
+ */
+test('no built page carries a commit-derived timestamp', () => {
+  const offenders = []
+  for (const file of htmlFiles) {
+    const html = readFileSync(file, 'utf8')
+    for (const match of html.matchAll(/<time datetime="([^"]+)"/g)) {
+      offenders.push(`${where(file)}: ${match[1]}`)
+    }
+  }
+  assert.deepEqual(
+    offenders.slice(0, 10),
+    [],
+    `${offenders.length} page(s) render a timestamp the working tree does not determine`,
+  )
+})
