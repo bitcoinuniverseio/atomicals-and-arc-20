@@ -3576,16 +3576,17 @@
       ],
       "sources": [
         "atomicals-electrumx-1.5.2.0",
-        "atomicals-guide"
+        "atomicals-guide",
+        "universe-index-atomicals"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-01",
       "limitations": [
         "Operation availability and payload validation are activation sensitive. Build against the exact revision you target."
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "667248abfdd9a87b9d3d84914852368f01efea0b5c623a0ae002251fb0aba6d0",
+      "contentHash": "0b60c066a328be86293133010aeb3b47257d26fbacd8ce544d25cbc1a78afe25",
       "href": "/atomicals-and-arc-20/protocol/core/envelope-and-operations/",
       "raw": "/atomicals-and-arc-20/raw/protocol/core/envelope-and-operations.md"
     },
@@ -4181,14 +4182,15 @@
       ],
       "sources": [
         "atomicals-electrumx-1.5.2.0",
-        "atomicals-js-cli"
+        "atomicals-js-cli",
+        "universe-index-atomicals"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-01",
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "1927d5613c5d9335fcd24d098b0b0a32efdfa38bc622b1004dd3513b149b74e8",
+      "contentHash": "d347dd0f096e4e505e27d41d0fc33da51d3ee14250789c1aa71919b54a65e8fc",
       "href": "/atomicals-and-arc-20/protocol/realms/subrealms/",
       "raw": "/atomicals-and-arc-20/raw/protocol/realms/subrealms.md"
     },

@@ -15,7 +15,9 @@ provenance:
       path: realmValidation
     - id: atomicals-js-cli
       path: commandIndex
-  verified: '2026-08-31'
+    - id: universe-index-atomicals
+      path: electrumx/lib/atomicals_blueprint_builder.py
+  verified: '2026-09-01'
   tags: [subrealms, names]
 ---
 
@@ -50,6 +52,16 @@ Where a rule requires payment, the payment output and its marker are part of val
 marker output identifies which claim the payment belongs to, so a validator can match them.
 
 Paying the right amount to the wrong script, or omitting the marker, makes the claim invalid.
+
+### A payment is never satisfied in a split transaction
+
+A payment carried in a transaction that also carries a split (`y`) operation is refused, even when
+the amount and the marker are both correct. The reason is that a split can reassign ARC-20 value
+inside the very transaction that is meant to pay, so the payment cannot be judged in isolation.
+
+This is the indexer being conservative rather than a rule stated in the format, and it may refuse a
+payment another implementation would accept. Send the payment as its own transaction. Combining it
+with a token movement to save a fee costs the claim.
 
 ## Pending claims
 
