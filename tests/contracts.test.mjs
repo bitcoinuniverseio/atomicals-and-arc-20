@@ -247,3 +247,42 @@ test('the integration manifest declares the current documentation version', () =
   assert.equal(docsManifest.repository, 'bitcoinuniverseio/atomicals-and-arc-20')
   assert.equal(docsManifest.securityClassification, 'public')
 })
+
+/**
+ * The lockfile has to cover the platform CI builds on, not just the one it was
+ * written on.
+ *
+ * npm 11 records only the host platform's optional dependencies. This repository is
+ * authored on Windows and built on Linux, so the lockfile carried @esbuild/win32-x64
+ * and @img/sharp-win32-x64 and nothing else. `npm ci` on a Linux runner removed those
+ * and installed no replacement, leaving esbuild and sharp with no binary and failing
+ * the site build. The failure is invisible locally: every check passes on Windows.
+ *
+ * The Linux binaries are declared as optionalDependencies so they resolve into the
+ * lockfile from any host. They are skipped on a platform they do not match.
+ */
+test('the lockfile carries the Linux binaries CI builds with', () => {
+  const lock = read('package-lock.json')
+  const present = new Set(
+    Object.keys(lock.packages ?? {}).map((key) => key.split('node_modules/').pop()),
+  )
+  const required = ['@esbuild/linux-x64', '@img/sharp-linux-x64', '@img/sharp-libvips-linux-x64']
+  const missing = required.filter((name) => !present.has(name))
+  assert.deepEqual(
+    missing,
+    [],
+    'npm ci on a Linux runner would install no binary for these, and the site build would fail',
+  )
+})
+
+test('the Linux binaries are declared optional so they never break a Windows install', () => {
+  const manifest = read('package.json')
+  const optional = manifest.optionalDependencies ?? {}
+  for (const name of ['@esbuild/linux-x64', '@img/sharp-linux-x64', '@img/sharp-libvips-linux-x64']) {
+    assert.ok(optional[name], `${name} must be declared under optionalDependencies`)
+  }
+  const hard = { ...(manifest.dependencies ?? {}), ...(manifest.devDependencies ?? {}) }
+  for (const name of Object.keys(optional)) {
+    assert.ok(!hard[name], `${name} must not also be a hard dependency; it is platform specific`)
+  }
+})
