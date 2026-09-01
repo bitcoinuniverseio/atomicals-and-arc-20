@@ -1,0 +1,77 @@
+---
+title: Architecture overview
+description: How the Universe Atomicals services fit together, what each one is authoritative for, and where the boundaries are.
+sidebar:
+  order: 1
+  label: Architecture
+provenance:
+  pageId: develop/index
+  area: develop
+  audience: [developer, operator, integrator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet]
+  sources:
+    - id: universe-index-atomicals
+      path: tokenExplorerDocs
+    - id: universe-index-atomicals-nfts-and-realms
+      path: architectureDocs
+  verified: '2026-08-31'
+  tags: [architecture]
+  limitations:
+    - Deployment topology, credentials, capacity, and monitoring are private operational material and are not published here.
+---
+
+import DataFlow from '../../components/diagrams/DataFlow.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+<DataFlow />
+
+## The services
+
+| Service | Authoritative for | Read |
+| --- | --- | --- |
+| Atomicals ElectrumX | Protocol interpretation of blocks | [ElectrumX reference](/reference/electrumx/) |
+| ARC-20 index and feed | Verified tickers, holders, confirmed activity | [ARC-20 API](/reference/api/arc20/) |
+| NFT and Realm index | Plain NFTs, Realms, Subrealms | [NFT and Realm API](/reference/api/atomicals-nfts-realms/) |
+| Marketplace v1 authority | Listings, reservations, purchases, settlements | [Marketplace v1](/reference/api/marketplace-v1/) |
+| Ordex contract | Marketplace contract, SDK, conformance | [Ordex](/reference/api/ordex/) |
+
+<Aside type="note" title="Data sovereignty">
+All Bitcoin and Atomicals data comes from Universe-operated nodes, indexes, and databases. No
+third-party blockchain data provider sits in any production path.
+</Aside>
+
+## What each index is not
+
+- Not a validator. Both indexes project what an Atomicals provider reports.
+- Not complete. Each declares its projection, and each excludes asset kinds on purpose.
+- Not final. Every answer is scoped to a generation and a chain position.
+
+## Projections
+
+The NFT and Realm read model declares its projection explicitly:
+
+- **Included:** plain NFT, Realm, Subrealm.
+- **Excluded:** FT, DFT, Container, DMItem.
+
+Fungible tokens are served by the ARC-20 side. Containers and DMINT items are not projected by
+either.
+
+## Read next
+
+| Topic | Page |
+| --- | --- |
+| Where data comes from and what it costs to trust | [Data flow](/develop/data-flow/) |
+| How to decide which answer to believe | [Source of truth](/develop/source-of-truth/) |
+| Generations, checkpoints, and rollback | [Consistency and reorgs](/develop/consistency-and-reorgs/) |
+| Identifiers, networks, and protocol IDs | [Identifiers and networks](/develop/identifiers-and-networks/) |
+| Authentication across the services | [Authentication](/develop/authentication/) |
+| Error envelopes | [Errors](/develop/errors/) |
+| Cursors and paging | [Pagination and cursors](/develop/pagination-and-cursors/) |
+| Safe retries and tracing | [Idempotency and request IDs](/develop/idempotency-and-request-ids/) |
+| Readiness against configured | [Readiness and freshness](/develop/readiness-and-freshness/) |
+| Rate limits where they exist | [Rate limits](/develop/rate-limits/) |
+| Versioning and deprecation | [Versioning and deprecation](/develop/versioning-and-deprecation/) |
+| Moving between versions | [Migration](/develop/migration/) |
+

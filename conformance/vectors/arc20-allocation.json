@@ -1,0 +1,221 @@
+{
+  "vectorSetVersion": "1.0.0",
+  "title": "ARC-20 normal allocation",
+  "engine": "conformance/allocation.mjs",
+  "source": {
+    "id": "atomicals-electrumx-1.5.2.0",
+    "revision": "8df23747835c20230fc8b8097d469e7a1d97c3e0",
+    "paths": [
+      "electrumx/lib/atomicals_blueprint_builder.py#assign_expected_outputs_basic",
+      "electrumx/lib/atomicals_blueprint_builder.py#calculate_outputs_to_color_for_ft_atomical_ids",
+      "electrumx/lib/atomicals_blueprint_builder.py#color_ft_atomicals_regular"
+    ]
+  },
+  "network": "mainnet",
+  "applicability": "protocol-behavior",
+  "notes": [
+    "Normal allocation only. Custom coloring is activation gated and covered by its own cases.",
+    "Fee inputs and output scripts are omitted for clarity. They do not change the allocation result.",
+    "Every case is executed by tests/conformance.test.mjs against conformance/allocation.mjs."
+  ],
+  "cases": [
+    {
+      "id": "clean-split",
+      "title": "Clean split into two outputs",
+      "description": "Both outputs are exactly covered, so nothing is left to place and nothing burns.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 1200 }],
+      "outputs": [{ "value": 700 }, { "value": 500 }],
+      "expected": {
+        "outputs": [
+          { "index": 0, "coloredTotal": 700 },
+          { "index": 1, "coloredTotal": 500 }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "oversized-next-output",
+      "title": "Oversized next output burns the remainder",
+      "description": "Output zero takes 700. The next output is 546 satoshis, larger than the 500 units left, so the remainder is destroyed.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 1200 }],
+      "outputs": [{ "value": 700 }, { "value": 546 }],
+      "expected": {
+        "outputs": [
+          { "index": 0, "coloredTotal": 700 },
+          { "index": 1, "coloredTotal": 0 }
+        ],
+        "burned": [{ "atomicalId": "TOKENA", "value": 500 }],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "exact-single-output",
+      "title": "Whole lot into one output",
+      "description": "One output exactly equal to the coloured value takes everything.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 10000 }],
+      "outputs": [{ "value": 10000 }],
+      "expected": {
+        "outputs": [{ "index": 0, "coloredTotal": 10000 }],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "first-output-too-large",
+      "title": "First output larger than the whole lot",
+      "description": "Nothing can be placed at all, so the entire coloured value is destroyed.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 500 }],
+      "outputs": [{ "value": 20000 }],
+      "expected": {
+        "outputs": [{ "index": 0, "coloredTotal": 0 }],
+        "burned": [{ "atomicalId": "TOKENA", "value": 500 }],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "too-few-outputs",
+      "title": "Outputs run out before the value does",
+      "description": "Every output is covered but value is still left over, so the leftover burns.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 1200 }],
+      "outputs": [{ "value": 700 }],
+      "expected": {
+        "outputs": [{ "index": 0, "coloredTotal": 700 }],
+        "burned": [{ "atomicalId": "TOKENA", "value": 500 }],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "unspendable-output-skipped",
+      "title": "Unspendable outputs are skipped, not funded",
+      "description": "A provably unspendable output is passed over and consumes no coloured value.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 1200 }],
+      "outputs": [{ "value": 0, "unspendable": true }, { "value": 700 }, { "value": 500 }],
+      "expected": {
+        "outputs": [
+          { "index": 0, "coloredTotal": 0 },
+          { "index": 1, "coloredTotal": 700 },
+          { "index": 2, "coloredTotal": 500 }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "combine-two-lots",
+      "title": "Combining two lots of the same token",
+      "description": "Two coloured inputs of the same token are summed before allocation and land in one output.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [
+        { "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 700 },
+        { "atomicalId": "TOKENA", "txinIndex": 1, "atomicalValue": 500 }
+      ],
+      "outputs": [{ "value": 1200 }],
+      "expected": {
+        "outputs": [{ "index": 0, "coloredTotal": 1200 }],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "two-tokens-sequential-slots",
+      "title": "Two different tokens take sequential output slots",
+      "description": "The first token fills the outputs it needs, then the next token starts after the last slot the first one used.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [
+        { "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 700 },
+        { "atomicalId": "TOKENB", "txinIndex": 1, "atomicalValue": 900 }
+      ],
+      "outputs": [{ "value": 700 }, { "value": 900 }],
+      "expected": {
+        "outputs": [
+          { "index": 0, "coloredTotal": 700 },
+          { "index": 1, "coloredTotal": 900 }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "two-tokens-non-clean-fallback",
+      "title": "A non-clean slot triggers the output zero fallback",
+      "description": "When the sequential assignment cannot be made cleanly, the reference builder restarts every token from output zero. Both tokens then contend for the same outputs and value burns.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [
+        { "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 700 },
+        { "atomicalId": "TOKENB", "txinIndex": 1, "atomicalValue": 400 }
+      ],
+      "outputs": [{ "value": 700 }, { "value": 546 }],
+      "expected": {
+        "burned": [{ "atomicalId": "TOKENB", "value": 400 }],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "dust-remainder-burns",
+      "title": "A remainder smaller than the change output burns",
+      "description": "Sending 1000 units from a 1200 unit lot with a 200 satoshi change output fails, because 200 is placed only if it fits after the 1000 is taken. Here it does fit, so nothing burns. Compare with the next case.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 1200 }],
+      "outputs": [{ "value": 1000 }, { "value": 200 }],
+      "expected": {
+        "outputs": [
+          { "index": 0, "coloredTotal": 1000 },
+          { "index": 1, "coloredTotal": 200 }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "change-output-too-large",
+      "title": "A change output larger than the remainder burns it",
+      "description": "The same intent with a 546 satoshi change output destroys the 200 unit remainder, because 546 does not fit in 200.",
+      "options": { "sortByFifo": true, "customColoring": false },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 1200 }],
+      "outputs": [{ "value": 1000 }, { "value": 546 }],
+      "expected": {
+        "outputs": [
+          { "index": 0, "coloredTotal": 1000 },
+          { "index": 1, "coloredTotal": 0 }
+        ],
+        "burned": [{ "atomicalId": "TOKENA", "value": 200 }],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "custom-coloring-partial-fill",
+      "title": "Custom coloring assigns a partial value to the last output",
+      "description": "With custom coloring active the builder attaches an output even when the value does not cover it fully, and the last output receives only what is left.",
+      "options": { "sortByFifo": true, "customColoring": true },
+      "inputs": [{ "atomicalId": "TOKENA", "txinIndex": 0, "atomicalValue": 1200 }],
+      "outputs": [{ "value": 700 }, { "value": 546 }],
+      "expected": {
+        "outputs": [
+          { "index": 0, "coloredTotal": 700 },
+          { "index": 1, "coloredTotal": 500 }
+        ],
+        "burned": [],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "changelogVersion": "1.0.0",
+  "title": "Atomicals and ARC-20 documentation changelog",
+  "entries": [
+    {
+      "version": "2026.08",
+      "date": "2026-08-31",
+      "title": "Documentation platform",
+      "summary": "Replaced the hand-authored single-page site with a generated documentation platform covering the whole Atomicals protocol family, the Universe API contracts, executed conformance material, interactive safety tools, and machine readable outputs.",
+      "changes": [
+        {
+          "kind": "added",
+          "text": "Complete protocol reference for Atomicals core concepts, ARC-20, Atomicals NFTs, Containers and DMINT, Realms, Subrealms, Paynames, and the AVM, each labelled by what it applies to and pinned to a source revision."
+        },
+        {
+          "kind": "added",
+          "text": "Thirty one task-oriented guides covering setup, inspection, issuance, minting, transfers, recovery, and trading, each with prerequisites, safety checks, failure cases, and post-broadcast verification."
+        },
+        {
+          "kind": "added",
+          "text": "Validated OpenAPI 3.1 documents for the ARC-20 index, the NFT and Realm index, and Marketplace v1, bound to sanitized route inventories by a check that fails in both directions."
+        },
+        {
+          "kind": "added",
+          "text": "A shared JSON Schema component library where every satoshi and protocol quantity is a decimal string, and every example is validated in CI."
+        },
+        {
+          "kind": "added",
+          "text": "Executed ARC-20 allocation conformance vectors and the engine behind them, implemented from the pinned reference revision and shared by the prose, the visualizer, and the tests."
+        },
+        {
+          "kind": "added",
+          "text": "A generated CLI inventory parsed from the pinned Atomicals JavaScript CLI source, covering every command, argument, and option."
+        },
+        {
+          "kind": "added",
+          "text": "A generated AVM opcode inventory parsed from the beta interpreter source, with the upstream test annotation preserved per opcode."
+        },
+        {
+          "kind": "added",
+          "text": "An AIP registry generated from the upstream proposals plus a separate implementation evidence file, so no proposal is ever marked implemented because it exists."
+        },
+        {
+          "kind": "added",
+          "text": "Interactive local tools: an allocation visualizer, a transaction safety inspector, a Bitwork estimator, a CLI command builder, and an API explorer. None signs, broadcasts, or sends anything anywhere."
+        },
+        {
+          "kind": "added",
+          "text": "An evidence-based ecosystem registry that records unknown rather than guessing, and never treats a network failure as closure."
+        },
+        {
+          "kind": "added",
+          "text": "Machine readable outputs: llms.txt, llms-full.txt, llms.html, a page manifest with content hashes, raw Markdown for every page, a sitemap, and a changelog feed."
+        },
+        {
+          "kind": "added",
+          "text": "A generated TypeScript client for the public read surfaces, with typed errors, pagination helpers, and no embedded credential or default origin."
+        },
+        {
+          "kind": "added",
+          "text": "A local, read-only documentation MCP server that answers from built artefacts, offline, with no mutation, signing, or credential capability."
+        },
+        {
+          "kind": "added",
+          "text": "Eight configured locales with a required page set, a shared glossary, a prohibited mistranslation list, and automatic staleness detection from the English source hash."
+        },
+        {
+          "kind": "restored",
+          "text": "The specification, source ledger, and LLM layer, now generated from the content rather than hand maintained, so the compatibility routes cannot drift from the current documentation."
+        },
+        {
+          "kind": "fixed",
+          "text": "The published site URL now agrees across repository metadata, README links, canonical tags, Open Graph metadata, the sitemap, and the Pages configuration."
+        }
+      ]
+    }
+  ]
+}

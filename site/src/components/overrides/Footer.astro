@@ -1,0 +1,30 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro'
+import siteMeta from '../../data/site.json'
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const links = [
+  { href: `${base}/llms.txt`, label: 'llms.txt' },
+  { href: `${base}/llms-full.txt`, label: 'llms-full.txt' },
+  { href: `${base}/specification.md`, label: 'specification.md' },
+  { href: `${base}/sources.md`, label: 'sources.md' },
+  { href: `${base}/manifest.json`, label: 'Page manifest' },
+  { href: `${base}/changelog.xml`, label: 'Changelog feed' },
+  { href: `${base}/reference/openapi/`, label: 'OpenAPI' },
+  { href: siteMeta.repository, label: 'Repository' },
+]
+---
+
+<Default><slot /></Default>
+
+<div class="bu-footer-extra">
+  <nav aria-label="Machine readable documentation">
+    <ul>
+      {links.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+    </ul>
+  </nav>
+  <p>
+    Independent documentation published by Bitcoin Universe. Atomicals and ARC-20 names and
+    artwork stay with their creators. Nothing here is investment, legal, or tax advice.
+  </p>
+</div>

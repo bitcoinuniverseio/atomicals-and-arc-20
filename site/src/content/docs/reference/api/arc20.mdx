@@ -1,0 +1,98 @@
+---
+title: Universe ARC-20 API
+description: The complete ARC-20 read contract, with its guarantees, its declared coverage limit, and the OpenAPI document behind it.
+sidebar:
+  order: 3
+provenance:
+  pageId: reference/api/arc20
+  area: reference
+  audience: [developer, integrator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet]
+  sources:
+    - id: universe-index-atomicals
+      path: tokenExplorerServer
+    - id: universe-index-atomicals
+      path: tokenExplorerDocs
+  verified: '2026-08-31'
+  tags: [api, arc-20]
+  limitations:
+    - Declared coverage is partial. The limitation applies to pending activity only, not to the confirmed scan or the holder proof requirements.
+---
+
+import RouteTable from '../../../../components/RouteTable.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../../components/EntryCards.astro'
+
+## What this service guarantees
+
+**Verified winners only.** Every ticker candidate is discovered without an upstream verified-only
+filter, then resolved through the provider. Only the verified winning Atomical ID is published. The
+reference exposed to products is the lower-case ticker, and the winning compact Atomical ID is
+retained in protocol details.
+
+**All or nothing scans.** Holder rows are aggregated by address and must sum exactly to circulating
+supply. A mismatch, a null address, a truncated page sequence, a changing declared total, or a
+changing chain tip aborts the entire poll. No partial authoritative snapshot is committed.
+
+**No double application.** Supply and holder snapshots are the authoritative state, so activity
+events publish empty wallet and supply deltas. A consumer that also applied event deltas would
+count everything twice.
+
+<Aside type="caution" title="Declared coverage is partial, and says exactly why">
+Confirmed authoritative history and complete proven holder snapshots are indexed, but the shipped
+adapter has no exhaustive mempool feed with stable pending lifecycle and disappearance handling.
+That limitation applies to **pending activity only**.
+</Aside>
+
+## Routes
+
+<RouteTable inventory="arc20" />
+
+## Cursors
+
+Cursors are opaque and signed with a secret separate from the feed bearer token. They refer to a
+position inside an immutable generation and preserve the page and holder chunk sizes they were
+created with.
+
+A cursor-free request may need to build a generation first. In that case the service copies a
+bounded number of rows and returns a retryable unavailable response until the generation is ready.
+Retries resume and reuse the same source fingerprint, and source movement abandons an unfinished
+generation.
+
+Treat that retryable response as normal during cold bootstrap, with backoff. At most 64 unexpired
+generations are retained.
+
+See [pagination and cursors](/develop/pagination-and-cursors/).
+
+## Reorg handling
+
+Each changed tip is rescanned under identical before and after Bitcoin and Atomicals tips. Missing
+unfinalised events produce explicit invalidations. Changes to finalised blocks, events, or ticker
+identity fail closed. Historical headers outside the configured reorg window are reused from a
+durable journal.
+
+See [consistency and reorgs](/develop/consistency-and-reorgs/).
+
+## Amount encoding
+
+Every satoshi and protocol quantity is a decimal string. JSON numbers are rejected, so no precision
+is lost in transit. Never parse one into a floating point number.
+
+## Reading the figures correctly
+
+| Figure | What it is |
+| --- | --- |
+| Maximum issuance | `mint_amount * max_mints`. A ceiling, not a supply |
+| Claims made | Valid claims counted from records |
+| Circulating supply | Coloured value actually held after burns |
+| Global maximum | Null for a perpetual deployment with no configured maximum. Do not compute one |
+
+<EntryCards
+  cards={[
+    { title: "OpenAPI document", body: "Download the validated 3.1 document, or explore it interactively.", href: "/reference/openapi/" },
+    { title: "TypeScript client", body: "Generated from this contract, with typed errors and pagination helpers.", href: "/reference/client-sdk/" },
+  ]}
+/>
+

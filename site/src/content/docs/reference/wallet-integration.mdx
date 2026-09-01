@@ -1,0 +1,133 @@
+---
+title: Wallet integration
+description: Provider detection, capability discovery, PSBT encodings, signing scopes, and normalised errors.
+sidebar:
+  order: 10
+provenance:
+  pageId: reference/wallet-integration
+  area: reference
+  audience: [developer, integrator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet]
+  sources:
+    - id: universe-index-atomicals
+      path: marketplaceDocs
+    - id: universe-inscribe
+      path: submodule
+  verified: '2026-08-31'
+  tags: [wallets, psbt, integration]
+  limitations:
+    - Provider methods and payload shapes vary between wallets and versions. Only build against capabilities the current provider contract actually proves.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+## Discover before you build
+
+The single most common integration failure is building a transaction for a capability the wallet
+does not have, then discovering it at signing time.
+
+Discover first:
+
+1. Is a provider present?
+2. Which networks does it support, and which is it on?
+3. Which address and script types can it sign?
+4. Which PSBT encodings does it accept?
+5. Which signature hash flags will it produce?
+6. Does it sign only, or sign and broadcast?
+7. Can it prove address control without moving anything?
+
+Then build for what it answered.
+
+<Aside type="caution" title="Only document what the contract proves">
+Do not code against a provider method because another integration uses it. Verify it exists in the
+current provider contract for the version your users run.
+</Aside>
+
+## Provider detection
+
+A provider is injected into the page. Detection must:
+
+- wait for injection rather than assuming it happened before your code ran;
+- handle a provider that appears after a user installs it;
+- handle more than one provider being present;
+- never assume a specific provider is the only one.
+
+## Connection states
+
+| State | What it means | What to show |
+| --- | --- | --- |
+| Absent | No provider injected | An install path, not an error |
+| Present, not connected | Injected, no permission granted | A connect action |
+| Locked | Connected previously, wallet locked | An unlock prompt, and retry |
+| Wrong network | Connected, different network | The network you need, and how to switch |
+| Wrong account | Connected, a different account owns the input | Which account is required |
+| Ready | Connected and on the right network | The action |
+
+Handle reconnection: a provider can disconnect at any time, and a stale connection produces
+confusing failures.
+
+## PSBT requirements
+
+Every input must carry the previous output script and value, derivation information for the
+signing key, and for Taproot inputs the internal key and merkle root. Every output must carry its
+exact script and value.
+
+Never reorder inputs or outputs. Order is meaning in Atomicals, and a library that canonicalises
+ordering changes the allocation result.
+
+See [PSBT requirements](/protocol/arc20/psbt-requirements/).
+
+## Signature hash scopes
+
+| Scope | Use |
+| --- | --- |
+| `SIGHASH_ALL` | An ordinary transfer, and buyer P2WPKH inputs in a settlement |
+| Default or ALL for key-path P2TR | Buyer Taproot inputs in a settlement |
+| `SIGHASH_SINGLE` with `ANYONECANPAY`, `0x83` | Seller collateral in a Marketplace v1 listing |
+
+A builder must state the expected scope per input. A wallet must show which scope it is about to
+use. A signer must refuse a scope they did not expect.
+
+## BIP-322 ownership proof
+
+Proving control of an address without moving anything. Marketplace v1 issues an owner session only
+after a BIP-322 simple proof for P2WPKH or key-path P2TR.
+
+A proof is not a signature on a settlement transaction. Keep the two steps distinct in your user
+interface, so a user is never led to believe proving ownership sold something.
+
+## Protected outputs
+
+The wallet must exclude coloured outputs from automatic coin selection unless the user explicitly
+chose to spend that asset. An integration should also:
+
+- request the coloured state per input before building;
+- surface the asset name and Atomical ID for every coloured input;
+- show the expected allocation per output;
+- show the burn figure, and require a deliberate confirmation when it is not zero.
+
+## Normalised errors
+
+Map provider errors into categories a user can act on, rather than surfacing raw strings:
+
+| Category | Examples | What to show |
+| --- | --- | --- |
+| Capability | Unsupported script type, unsupported flag | What the wallet cannot do, and an alternative |
+| Encoding | Unreadable PSBT, missing input data | A rebuild, not a retry |
+| Scope | Refused signature hash flag | The scope required, and why |
+| State | Locked, disconnected, wrong network or account | The exact state to fix |
+| User | Rejected in the wallet | Nothing happened. Offer to try again |
+
+## Browser and mobile
+
+Injection timing, deep links, and app switching all differ on mobile. Two rules:
+
+1. Never lose transaction state when the browser backgrounds during an app switch.
+2. Never re-prompt for a signature you already have.
+
+## Source
+
+[Wallet safety](/protocol/arc20/wallet-safety/) and
+[wallet signing failures](/guides/wallet-signing-failures/).

@@ -1,0 +1,37 @@
+---
+import siteMeta from '../data/site.json'
+import { docHref } from '../lib/href'
+import CommitReveal from './diagrams/CommitReveal.astro'
+
+const locale = Astro.locals.starlightRoute?.locale
+---
+
+<section class="bu-hero">
+  <div>
+    <p class="bu-hero-kicker">Atomicals protocol family and ARC-20</p>
+    <h1>One satoshi. One unit. Nothing hidden in between.</h1>
+    <p>
+      {siteMeta.tagline} Every claim is pinned to a source revision, labelled by what it applies
+      to, and dated.
+    </p>
+    <div class="bu-hero-actions">
+      <a class="bu-btn" data-variant="primary" href={docHref('/start/what-is-arc-20/', locale)}>
+        Understand ARC-20
+      </a>
+      <a class="bu-btn" href={docHref('/start/safety-fundamentals/', locale)}>Before you sign</a>
+      <a class="bu-btn" href={docHref('/reference/openapi/', locale)}>API contracts</a>
+    </div>
+  </div>
+  <CommitReveal />
+</section>
+
+<style>
+  .bu-hero-kicker {
+    margin: 0 0 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bu-accent-strong);
+  }
+</style>

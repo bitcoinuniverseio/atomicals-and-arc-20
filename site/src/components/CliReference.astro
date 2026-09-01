@@ -1,0 +1,155 @@
+---
+import inventory from '../../../contracts/cli-inventory.json'
+
+interface Props {
+  /** Restrict to a named subset. Defaults to every command. */
+  only?: string[]
+}
+const { only } = Astro.props
+const commands = only
+  ? only.map((name) => inventory.commands.find((c) => c.name === name)).filter(Boolean)
+  : inventory.commands
+
+function usage(command: (typeof inventory.commands)[number]) {
+  const args = command.arguments
+    .map((argument) =>
+      argument.required ? `<${argument.name}>` : `[${argument.name}]`,
+    )
+    .join(' ')
+  return `${inventory.invocation.replace('<command>', command.name)}${args ? ` ${args}` : ''}`
+}
+---
+
+<div class="bu-cli">
+  <p class="bu-cli-note">
+    Generated from <code>{inventory.source.path}</code> at
+    <a href={`${inventory.source.repository}/blob/${inventory.source.revision}/${inventory.source.path}`} rel="noopener noreferrer">
+      <code>{inventory.source.revision.slice(0, 12)}</code>
+    </a>. {inventory.commandCount} commands. This page is not hand maintained, so it cannot drift
+    from the source.
+  </p>
+
+  {
+    commands.map((command) => (
+      <section class="bu-cli-command" id={command.name}>
+        <h3>
+          <a href={`#${command.name}`}>{command.name}</a>
+        </h3>
+        {command.description && <p>{command.description}</p>}
+        <pre><code>{usage(command)}</code></pre>
+
+        {command.arguments.length > 0 && (
+          <>
+            <h4>Arguments</h4>
+            <div class="bu-matrix">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Required</th>
+                    <th scope="col">Type hint</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {command.arguments.map((argument) => (
+                    <tr>
+                      <th scope="row"><code>{argument.name}</code></th>
+                      <td>{argument.required ? 'required' : 'optional'}</td>
+                      <td>{argument.description ?? 'unstated'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+
+        {command.options.length > 0 && (
+          <>
+            <h4>Options</h4>
+            <div class="bu-matrix">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Flag</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">Default</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {command.options.map((option) => (
+                    <tr>
+                      <th scope="row"><code>{option.flags}</code></th>
+                      <td>{option.valueName ? (option.valueRequired ? 'required' : 'optional') : 'flag'}</td>
+                      <td>{option.default ?? 'none'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .bu-cli-note {
+    font-size: var(--bu-step--1);
+    color: var(--bu-ink-muted);
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface-sunken);
+    padding: 0.7rem 0.9rem;
+  }
+
+  .bu-cli-command {
+    border-top: 1px solid var(--bu-line);
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .bu-cli-command h3 {
+    font-family: var(--bu-font-mono);
+    font-size: var(--bu-step-1);
+    margin: 0 0 0.35rem;
+    scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem);
+  }
+
+  .bu-cli-command h3 a {
+    color: var(--bu-ink);
+    text-decoration: none;
+  }
+
+  .bu-cli-command h3 a:hover {
+    color: var(--bu-accent-strong);
+    text-decoration: underline;
+  }
+
+  .bu-cli-command h4 {
+    font-size: var(--bu-step-0);
+    margin: 1rem 0 0.4rem;
+    color: var(--bu-ink-muted);
+  }
+
+  .bu-cli-command > p {
+    margin: 0 0 0.6rem;
+    color: var(--bu-ink-soft);
+  }
+
+  .bu-cli-command pre {
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface-sunken);
+    overflow-x: auto;
+  }
+
+  .bu-cli-command pre code {
+    font-family: var(--bu-font-mono);
+    font-size: var(--bu-step--1);
+    color: var(--bu-ink);
+  }
+</style>

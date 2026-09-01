@@ -1,0 +1,18 @@
+---
+interface Props {
+  facts: { label: string; value: string }[]
+  caption?: string
+}
+const { facts, caption } = Astro.props
+---
+
+<dl class="bu-facts" aria-label={caption}>
+  {
+    facts.map((fact) => (
+      <div class="bu-fact">
+        <dt>{fact.label}</dt>
+        <dd>{fact.value}</dd>
+      </div>
+    ))
+  }
+</dl>

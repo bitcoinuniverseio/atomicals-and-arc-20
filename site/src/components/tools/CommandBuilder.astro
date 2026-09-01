@@ -1,0 +1,305 @@
+---
+import inventory from '../../../../contracts/cli-inventory.json'
+
+const commands = inventory.commands.map((command) => ({
+  name: command.name,
+  description: command.description,
+  arguments: command.arguments,
+  options: command.options,
+}))
+
+// Options that change what is spent or signed. Surfaced prominently in the builder.
+const SAFETY_FLAGS = [
+  '--funding',
+  '--owner',
+  '--initialowner',
+  '--satsoutput',
+  '--satsbyte',
+  '--rbf',
+]
+---
+
+<div class="bu-tool">
+  <div class="bu-tool-head">
+    <h2 id="builder">CLI command builder</h2>
+    <span class="bu-chip" data-tone="protocol">
+      Pinned to <code>{inventory.source.revision.slice(0, 12)}</code>
+    </span>
+  </div>
+
+  <noscript>
+    <div class="bu-tool-body">
+      <p class="bu-noscript">
+        This tool needs JavaScript. Every command, argument, and option is published on the
+        <a href="/reference/cli/">CLI reference</a>, which works without it.
+      </p>
+    </div>
+  </noscript>
+
+  <bu-command-builder
+    data-commands={JSON.stringify(commands)}
+    data-invocation={inventory.invocation}
+    data-safety={JSON.stringify(SAFETY_FLAGS)}
+  >
+    <div class="bu-tool-body" data-layout="split">
+      <form data-form novalidate>
+        <div class="bu-field">
+          <label for="cb-command">Command</label>
+          <select id="cb-command" data-command>
+            {commands.map((command) => <option value={command.name}>{command.name}</option>)}
+          </select>
+          <span class="bu-hint" data-command-description></span>
+        </div>
+
+        <fieldset data-arguments-host>
+          <legend>Arguments</legend>
+          <div data-arguments></div>
+        </fieldset>
+
+        <fieldset data-options-host>
+          <legend>Options</legend>
+          <div data-options></div>
+        </fieldset>
+
+        <p class="bu-error" data-error role="alert" hidden></p>
+      </form>
+
+      <div>
+        <div class="bu-out" data-result aria-live="polite" aria-atomic="true"></div>
+        <div class="bu-page-actions">
+          <button type="button" data-copy>Copy command</button>
+        </div>
+        <div data-safety-notes></div>
+      </div>
+    </div>
+  </bu-command-builder>
+</div>
+
+<style>
+  fieldset {
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    padding: 0.9rem;
+    margin: 0 0 1rem;
+  }
+  legend {
+    font-weight: 640;
+    color: var(--bu-ink);
+    padding: 0 0.4rem;
+    font-size: var(--bu-step--1);
+  }
+</style>
+
+<script>
+  interface CommandArgument {
+    name: string
+    required: boolean
+    variadic: boolean
+    description: string | null
+  }
+  interface CommandOption {
+    flags: string
+    long: string | null
+    valueName: string | null
+    valueRequired: boolean
+    description: string | null
+    default: string | null
+  }
+  interface Command {
+    name: string
+    description: string | null
+    arguments: CommandArgument[]
+    options: CommandOption[]
+  }
+
+  class BuCommandBuilder extends HTMLElement {
+    #commands: Command[] = []
+    #invocation = 'yarn cli <command>'
+    #safety: string[] = []
+
+    connectedCallback() {
+      try {
+        this.#commands = JSON.parse(this.dataset.commands ?? '[]')
+        this.#safety = JSON.parse(this.dataset.safety ?? '[]')
+      } catch {
+        this.#commands = []
+      }
+      this.#invocation = this.dataset.invocation ?? this.#invocation
+
+      const select = this.querySelector('[data-command]') as HTMLSelectElement | null
+      select?.addEventListener('change', () => this.#renderCommand())
+      this.querySelector('[data-copy]')?.addEventListener('click', () => void this.#copy())
+      this.#renderCommand()
+    }
+
+    #current(): Command | undefined {
+      const name = (this.querySelector('[data-command]') as HTMLSelectElement | null)?.value
+      return this.#commands.find((command) => command.name === name)
+    }
+
+    #renderCommand() {
+      const command = this.#current()
+      const description = this.querySelector('[data-command-description]') as HTMLElement
+      const argumentsHost = this.querySelector('[data-arguments]') as HTMLElement
+      const argumentsFieldset = this.querySelector('[data-arguments-host]') as HTMLElement
+      const optionsHost = this.querySelector('[data-options]') as HTMLElement
+      const optionsFieldset = this.querySelector('[data-options-host]') as HTMLElement
+      if (!command || !argumentsHost || !optionsHost) return
+
+      description.textContent = command.description ?? 'No description in the source.'
+      argumentsFieldset.hidden = command.arguments.length === 0
+      optionsFieldset.hidden = command.options.length === 0
+
+      argumentsHost.replaceChildren(
+        ...command.arguments.map((argument, index) => {
+          const field = document.createElement('div')
+          field.className = 'bu-field'
+          const id = `cb-arg-${index}`
+          field.innerHTML = `
+            <label for="${id}">${escapeHtml(argument.name)}${argument.required ? '' : ' (optional)'}</label>
+            <input id="${id}" type="text" data-argument="${index}" autocomplete="off" spellcheck="false" />
+            <span class="bu-hint">${escapeHtml(argument.description ?? (argument.required ? 'Required.' : 'Optional.'))}</span>
+          `
+          return field
+        }),
+      )
+
+      optionsHost.replaceChildren(
+        ...command.options.map((option, index) => {
+          const field = document.createElement('div')
+          field.className = 'bu-field'
+          const id = `cb-opt-${index}`
+          const isSafety = this.#safety.includes(option.long ?? '')
+          if (option.valueName) {
+            field.innerHTML = `
+              <label for="${id}">${escapeHtml(option.flags)}${isSafety ? ' *' : ''}</label>
+              <input id="${id}" type="text" data-option="${index}" autocomplete="off" spellcheck="false" placeholder="${escapeHtml(option.default ?? '')}" />
+              <span class="bu-hint">${escapeHtml(option.description ?? 'No description in the source.')}</span>
+            `
+          } else {
+            field.innerHTML = `
+              <label for="${id}">${escapeHtml(option.flags)}${isSafety ? ' *' : ''}</label>
+              <select id="${id}" data-option="${index}">
+                <option value="">Not set</option>
+                <option value="on">Set</option>
+              </select>
+              <span class="bu-hint">${escapeHtml(option.description ?? 'A flag with no value.')}</span>
+            `
+          }
+          return field
+        }),
+      )
+
+      for (const control of this.querySelectorAll('[data-argument], [data-option]')) {
+        control.addEventListener('input', () => this.#render())
+        control.addEventListener('change', () => this.#render())
+      }
+      this.#render()
+    }
+
+    #build(): { command: string; missing: string[]; safetyUsed: CommandOption[] } {
+      const command = this.#current()
+      if (!command) return { command: '', missing: [], safetyUsed: [] }
+
+      const parts = [this.#invocation.replace('<command>', command.name)]
+      const missing: string[] = []
+
+      command.arguments.forEach((argument, index) => {
+        const control = this.querySelector(
+          `[data-argument="${index}"]`,
+        ) as HTMLInputElement | null
+        const value = control?.value.trim() ?? ''
+        if (!value) {
+          if (argument.required) missing.push(argument.name)
+          return
+        }
+        parts.push(shellQuote(value))
+      })
+
+      const safetyUsed: CommandOption[] = []
+      command.options.forEach((option, index) => {
+        const control = this.querySelector(`[data-option="${index}"]`) as
+          | HTMLInputElement
+          | HTMLSelectElement
+          | null
+        const value = control?.value.trim() ?? ''
+        if (!value) return
+        if (option.valueName) parts.push(`${option.long ?? option.flags} ${shellQuote(value)}`)
+        else parts.push(option.long ?? option.flags)
+        if (this.#safety.includes(option.long ?? '')) safetyUsed.push(option)
+      })
+
+      return { command: parts.join(' '), missing, safetyUsed }
+    }
+
+    #render() {
+      const result = this.querySelector('[data-result]') as HTMLElement
+      const errorHost = this.querySelector('[data-error]') as HTMLElement
+      const notes = this.querySelector('[data-safety-notes]') as HTMLElement
+      if (!result || !errorHost || !notes) return
+
+      const built = this.#build()
+
+      if (built.missing.length > 0) {
+        errorHost.hidden = false
+        errorHost.textContent = `Fill in the required arguments: ${built.missing.join(', ')}.`
+      } else {
+        errorHost.hidden = true
+      }
+
+      result.innerHTML = `<pre style="margin:0;white-space:pre-wrap;overflow-wrap:anywhere"><code>${escapeHtml(built.command)}</code></pre>`
+
+      const items: string[] = [
+        'A build command spends outputs. Model the allocation before running it.',
+        'Grinding changes the transaction, so any fee estimate taken before it is stale.',
+        'A confirmed Bitcoin transaction is not a successful Atomicals operation.',
+      ]
+      for (const option of built.safetyUsed) {
+        items.push(
+          `<code>${escapeHtml(option.long ?? option.flags)}</code> affects what is spent or where the result lands. Check it twice.`,
+        )
+      }
+      notes.innerHTML = `
+        <p class="bu-hint"><strong>Before you run this.</strong></p>
+        <ul class="bu-hint">${items.map((item) => `<li>${item}</li>`).join('')}</ul>
+      `
+    }
+
+    async #copy() {
+      const button = this.querySelector('[data-copy]') as HTMLButtonElement
+      const built = this.#build()
+      if (built.missing.length > 0) {
+        button.textContent = 'Fill required arguments first'
+      } else {
+        try {
+          await navigator.clipboard.writeText(built.command)
+          button.textContent = 'Copied'
+        } catch {
+          button.textContent = 'Copy failed'
+        }
+      }
+      window.setTimeout(() => {
+        button.textContent = 'Copy command'
+      }, 2400)
+    }
+  }
+
+  function shellQuote(value: string) {
+    return /^[A-Za-z0-9._\-/:]+$/.test(value) ? value : JSON.stringify(value)
+  }
+
+  function escapeHtml(value: string) {
+    return value.replace(/[&<>"']/g, (character) => {
+      const map: Record<string, string> = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }
+      return map[character] ?? character
+    })
+  }
+
+  customElements.define('bu-command-builder', BuCommandBuilder)
+</script>

@@ -1,0 +1,94 @@
+---
+import arc20 from '../../../contracts/routes/arc20.json'
+import nftsRealms from '../../../contracts/routes/atomicals-nfts-realms.json'
+import marketplace from '../../../contracts/routes/marketplace-v1.json'
+import { getSource, sourceUrl, shortRevision } from '../lib/sources'
+
+const INVENTORIES = {
+  arc20,
+  'atomicals-nfts-realms': nftsRealms,
+  'marketplace-v1': marketplace,
+} as const
+
+interface Props {
+  inventory: keyof typeof INVENTORIES
+  /** Restrict to routes with this scope, when the inventory declares scopes. */
+  scope?: string
+}
+const { inventory, scope } = Astro.props
+const data = INVENTORIES[inventory]
+const source = getSource(data.source.id)
+const routes = scope
+  ? data.routes.filter((route) => (route as { scope?: string }).scope === scope)
+  : data.routes
+
+const AUTH_LABEL: Record<string, string> = {
+  none: 'none',
+  bearer: 'bearer',
+  'admin-token': 'operator token',
+  'bearer+hmac': 'bearer and signature',
+  'bearer+hmac+owner': 'bearer, signature, owner session',
+  'bearer+hmac+operator': 'bearer, signature, operator',
+  internal: 'internal bridge only',
+}
+---
+
+<p class="bu-route-note">
+  Generated from <code>{data.source.path}</code> in
+  <a href={sourceUrl(source)} rel="noopener noreferrer">{source.name}</a> at
+  <code>{shortRevision(source)}</code>. {routes.length} routes. CI fails when this inventory and the
+  OpenAPI document disagree in either direction.
+</p>
+
+<div class="bu-matrix">
+  <table>
+    <caption class="sr-only">Public route inventory for {data.service}</caption>
+    <thead>
+      <tr>
+        <th scope="col">Method</th>
+        <th scope="col">Path</th>
+        <th scope="col">Auth</th>
+        <th scope="col">Summary</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        routes.map((route) => (
+          <tr>
+            <td><code>{route.method}</code></td>
+            <th scope="row">
+              <code>{route.path}</code>
+              {(route as { deprecated?: boolean }).deprecated && (
+                <>
+                  {' '}
+                  <span class="bu-chip" data-tone="risk">deprecated</span>
+                </>
+              )}
+              {(route as { replacedBy?: string }).replacedBy && (
+                <>
+                  <br />
+                  <span style="color:var(--bu-ink-muted)">
+                    Use {(route as { replacedBy: string }).replacedBy}
+                  </span>
+                </>
+              )}
+            </th>
+            <td>{AUTH_LABEL[route.auth] ?? route.auth}</td>
+            <td>{route.summary}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .bu-route-note {
+    font-size: var(--bu-step--1);
+    color: var(--bu-ink-muted);
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface-sunken);
+    padding: 0.7rem 0.9rem;
+  }
+</style>

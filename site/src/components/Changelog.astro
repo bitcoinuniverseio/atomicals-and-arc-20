@@ -1,0 +1,81 @@
+---
+import changelog from '../../../contracts/changelog.json'
+
+const TONE: Record<string, string> = {
+  added: 'ok',
+  changed: 'protocol',
+  fixed: 'universe',
+  restored: 'universe',
+  deprecated: 'warn',
+  removed: 'risk',
+  security: 'risk',
+}
+---
+
+{
+  changelog.entries.map((entry) => (
+    <section class="bu-release" id={`release-${entry.version}`}>
+      <h2>
+        {entry.version}
+        <span class="bu-release-date">{entry.date}</span>
+      </h2>
+      <p class="bu-release-title">{entry.title}</p>
+      <p>{entry.summary}</p>
+      <ul class="bu-release-changes">
+        {entry.changes.map((change) => (
+          <li>
+            <span class="bu-chip" data-tone={TONE[change.kind] ?? 'idle'}>
+              {change.kind}
+            </span>
+            <span>{change.text}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))
+}
+
+<style>
+  .bu-release {
+    border-top: 1px solid var(--bu-line);
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .bu-release h2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin: 0 0 0.2rem;
+    scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem);
+  }
+  .bu-release-date {
+    font-size: var(--bu-step--1);
+    font-weight: 500;
+    color: var(--bu-ink-muted);
+  }
+  .bu-release-title {
+    margin: 0 0 0.6rem;
+    font-weight: 640;
+    color: var(--bu-ink);
+  }
+  .bu-release-changes {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .bu-release-changes li {
+    display: grid;
+    grid-template-columns: minmax(5.5rem, max-content) 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+  @media (max-width: 34rem) {
+    .bu-release-changes li {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
+</style>

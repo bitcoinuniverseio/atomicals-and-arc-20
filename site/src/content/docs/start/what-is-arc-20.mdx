@@ -1,0 +1,96 @@
+---
+title: What is ARC-20?
+description: The Atomicals fungible token model, where one unit is one coloured satoshi and transfers are an allocation problem rather than an account update.
+sidebar:
+  order: 2
+provenance:
+  pageId: start/what-is-arc-20
+  area: start
+  audience: [everyone]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-guide
+      path: arc20
+  verified: '2026-08-31'
+  tags: [arc-20, concepts]
+  limitations:
+    - Allocation behavior is version sensitive. The numbers on this page follow the pinned reference revision only.
+---
+
+import Arc20Units from '../../../components/diagrams/Arc20Units.astro'
+import ModelComparison from '../../../components/diagrams/ModelComparison.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../components/EntryCards.astro'
+
+ARC-20 is the fungible token model inside Atomicals. Its rule is short:
+
+> **One ARC-20 unit is one satoshi in a Bitcoin output that a validator recognises as coloured.**
+
+That single sentence decides everything else. Supply is measured in satoshis. A transfer is a
+question about which outputs receive how much value. Value that cannot be placed is destroyed.
+
+<Arc20Units />
+
+## Why this is not an account balance
+
+<ModelComparison />
+
+In an account model a transfer subtracts from one row and adds to another, and the transaction
+either succeeds or fails. In ARC-20 the transaction succeeds on Bitcoin either way. What changes
+is where the coloured value lands.
+
+| Question | Account model | ARC-20 |
+| --- | --- | --- |
+| Where is the balance? | A row in a ledger | Spread across your unspent outputs |
+| What is a transfer? | Debit and credit | Assigning input value to outputs in order |
+| Can value vanish? | No | Yes. Unplaceable value is burned |
+| Who decides the result? | The contract | The validator revision your indexer runs |
+| Does confirmation mean success? | Yes | No. Confirmation and allocation are separate answers |
+
+<Aside type="danger" title="The failure mode to understand first">
+If the next eligible output is larger than the coloured value still to place, that value is not
+carried forward. It is burned. This is not an error state on Bitcoin: the transaction confirms
+normally. Read [burns](/protocol/arc20/burns/) before moving anything.
+</Aside>
+
+## The three ways units come into existence
+
+| Mode | Operation | Shape |
+| --- | --- | --- |
+| Direct issuance | `ft` | The entire supply lands in output zero of one transaction |
+| Fixed decentralised | `dft` then `dmt` | A deployment sets the rules, then claimants mint a fixed amount each |
+| Perpetual decentralised | `dft` with perpetual parameters | Activation gated, with progressing Bitwork and an optional global cap |
+
+See [direct issuance](/protocol/arc20/direct-issuance/),
+[fixed DFT](/protocol/arc20/fixed-dft/), and
+[perpetual DFT](/protocol/arc20/perpetual-dft/).
+
+## What a ticker does and does not mean
+
+A ticker is a globally allocated name. Winning it means the Atomicals rules resolved a candidate
+into a verified winner. It does not mean:
+
+- the project is who it says it is;
+- the metadata is accurate;
+- the image belongs to the minter;
+- anyone stands behind the supply.
+
+Always store and display the resolved **Atomical ID** next to any ticker.
+See [tickers and candidates](/protocol/arc20/tickers-and-candidates/).
+
+## Decimals do not create fractions
+
+`decimals` is presentation metadata. It changes how a wallet formats a number on screen. It never
+creates sub-satoshi units. Native ARC-20 quantities are integers, always.
+See [metadata and decimals](/protocol/arc20/metadata-and-decimals/).
+
+<EntryCards
+  cards={[
+    { title: "Allocation, step by step", body: "Exactly how a validator places coloured value into outputs.", href: "/protocol/arc20/allocation/" },
+    { title: "Try it", body: "Model a transaction and see the burns before you build one.", href: "/tools/allocation-visualizer/" },
+  ]}
+/>

@@ -1,0 +1,42 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-realm-hierarchy"
+  title="Realm hierarchy and claim states"
+  summary="A top-level Realm owns the rules for names beneath it. Subrealms are claimed against those rules and can nest further. Every name in the tree is in one of four states: a verified winner that the rules awarded, a pending candidate that has not resolved, a losing candidate that another claim beat, or a rejected claim that failed a rule. Only a verified winner may be presented as owned."
+>
+  <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g font-family="var(--bu-font-sans)" font-size="12.5">
+      <rect x="260" y="12" width="200" height="52" rx="9" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.6" />
+      <text x="360" y="34" text-anchor="middle" font-size="11" letter-spacing="1.2" fill="var(--d-accent)">TOP LEVEL REALM</text>
+      <text x="360" y="54" text-anchor="middle" font-weight="640" fill="var(--d-ink)">owns the Subrealm rules</text>
+
+      <path d="M360 64 L360 84 M150 84 L570 84 M150 84 L150 104 M360 84 L360 104 M570 84 L570 104" fill="none" stroke="var(--d-line)" stroke-width="1.5" />
+
+      <rect x="60" y="106" width="180" height="52" rx="8" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="1.5" />
+      <text x="76" y="128" font-weight="640" fill="var(--d-ink)">subrealm one</text>
+      <text x="76" y="147" fill="var(--d-ok)">verified winner</text>
+
+      <rect x="270" y="106" width="180" height="52" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" stroke-dasharray="5 4" />
+      <text x="286" y="128" font-weight="640" fill="var(--d-ink)">subrealm two</text>
+      <text x="286" y="147" fill="var(--d-soft)">pending candidate</text>
+
+      <rect x="480" y="106" width="180" height="52" rx="8" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="1.5" />
+      <text x="496" y="128" font-weight="640" fill="var(--d-ink)">subrealm three</text>
+      <text x="496" y="147" fill="var(--d-risk)">rejected, rule not met</text>
+
+      <path d="M150 158 L150 178 M150 178 L150 196" fill="none" stroke="var(--d-line)" stroke-width="1.5" />
+      <rect x="60" y="198" width="180" height="48" rx="8" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="1.5" />
+      <text x="76" y="220" font-weight="640" fill="var(--d-ink)">nested subrealm</text>
+      <text x="76" y="238" fill="var(--d-ok)">verified winner</text>
+
+      <text x="270" y="200" fill="var(--d-soft)">Only a verified winner may be</text>
+      <text x="270" y="220" fill="var(--d-soft)">presented as owned. A pending</text>
+      <text x="270" y="240" fill="var(--d-soft)">claim is not a name.</text>
+
+      <text x="8" y="272" fill="var(--d-soft)">Resolution is computed at a chain position, so a reorg can change which claim won.</text>
+    </g>
+  </svg>
+</Figure>

@@ -1,0 +1,54 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-family-map"
+  title="The Atomicals protocol family"
+  summary="Every Atomicals primitive starts from the same envelope written in a reveal transaction. The operation inside the envelope decides what is produced. The fungible branch produces direct FT issuance, fixed decentralised deployments, and their mint claims. The non-fungible branch produces plain NFTs, Containers with DMINT items, and the name primitives Realm, Subrealm, and Payname. The AVM is a separate beta layer that is not part of either branch today."
+>
+  <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="fm-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+    </defs>
+    <g font-family="var(--bu-font-sans)" font-size="12">
+      <rect x="270" y="10" width="180" height="46" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="360" y="32" text-anchor="middle" font-size="11" fill="var(--d-accent)" letter-spacing="1">REVEAL ENVELOPE</text>
+      <text x="360" y="48" text-anchor="middle" font-size="12.5" font-family="var(--bu-font-mono)" fill="var(--d-ink)">"atom" + operation + CBOR</text>
+
+      <line x1="330" y1="58" x2="180" y2="86" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#fm-arrow)" />
+      <line x1="390" y1="58" x2="520" y2="86" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#fm-arrow)" />
+
+      <text x="20" y="102" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">FUNGIBLE</text>
+      <rect x="20" y="112" width="290" height="42" rx="7" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.3" />
+      <text x="36" y="130" font-weight="640" fill="var(--d-ink)">Direct FT</text>
+      <text x="36" y="147" fill="var(--d-soft)">ft, whole supply in output zero</text>
+
+      <rect x="20" y="160" width="290" height="42" rx="7" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.3" />
+      <text x="36" y="178" font-weight="640" fill="var(--d-ink)">Fixed and perpetual DFT</text>
+      <text x="36" y="195" fill="var(--d-soft)">dft deployment, then dmt claims</text>
+
+      <text x="410" y="102" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">NON-FUNGIBLE</text>
+      <rect x="410" y="112" width="290" height="42" rx="7" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.3" />
+      <text x="426" y="130" font-weight="640" fill="var(--d-ink)">Atomicals NFT</text>
+      <text x="426" y="147" fill="var(--d-soft)">payload files, metadata, media</text>
+
+      <rect x="410" y="160" width="290" height="42" rx="7" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.3" />
+      <text x="426" y="178" font-weight="640" fill="var(--d-ink)">Container and DMINT items</text>
+      <text x="426" y="195" fill="var(--d-soft)">sealed manifest, verified membership</text>
+
+      <rect x="410" y="208" width="290" height="42" rx="7" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.3" />
+      <text x="426" y="226" font-weight="640" fill="var(--d-ink)">Realm, Subrealm, Payname</text>
+      <text x="426" y="243" fill="var(--d-soft)">names resolved through candidate rules</text>
+
+      <rect x="20" y="208" width="290" height="42" rx="7" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.3" stroke-dasharray="5 4" />
+      <text x="36" y="226" font-weight="640" fill="var(--d-soft)">AVM, beta and separate</text>
+      <text x="36" y="243" fill="var(--d-soft)">not part of either branch today</text>
+
+      <text x="20" y="282" font-size="12.5" fill="var(--d-soft)">Everything above is written into ordinary Bitcoin transactions. Nothing runs on a side chain.</text>
+      <text x="20" y="302" font-size="12.5" fill="var(--d-soft)">A validator revision decides which of these operations it recognises and when.</text>
+    </g>
+  </svg>
+</Figure>

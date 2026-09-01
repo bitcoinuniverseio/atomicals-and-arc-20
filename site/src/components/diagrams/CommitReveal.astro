@@ -1,0 +1,52 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-commit-reveal"
+  title="Commit and reveal"
+  summary="An Atomicals operation is created in two Bitcoin transactions. The commit transaction pays to a Taproot output whose script contains the operation envelope. The reveal transaction spends that output and exposes the envelope in its witness. A validator reads the revealed envelope, applies the operation, and assigns the resulting Atomical to the reveal transaction's output zero."
+>
+  <svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="cr-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+    </defs>
+
+    <g font-family="var(--bu-font-sans)" font-size="13">
+      <rect x="8" y="46" width="184" height="104" rx="10" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="24" y="72" fill="var(--d-soft)" font-size="11" letter-spacing="1.2">STEP 1</text>
+      <text x="24" y="94" fill="var(--d-ink)" font-size="15" font-weight="640">Commit</text>
+      <text x="24" y="116" fill="var(--d-soft)" font-size="12">Pay to a Taproot output</text>
+      <text x="24" y="133" fill="var(--d-soft)" font-size="12">that commits to the script</text>
+
+      <line x1="196" y1="98" x2="256" y2="98" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#cr-arrow)" />
+
+      <rect x="264" y="30" width="200" height="136" rx="10" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="282" y="56" fill="var(--d-accent)" font-size="11" letter-spacing="1.2">STEP 2</text>
+      <text x="282" y="78" fill="var(--d-ink)" font-size="15" font-weight="640">Reveal</text>
+      <g font-family="var(--bu-font-mono)" font-size="11.5" fill="var(--d-ink)">
+        <text x="282" y="100">OP_FALSE OP_IF</text>
+        <text x="292" y="117">"atom"</text>
+        <text x="292" y="134">&lt;operation&gt;</text>
+        <text x="292" y="151">&lt;CBOR payload&gt;</text>
+      </g>
+
+      <line x1="468" y1="98" x2="528" y2="98" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#cr-arrow)" />
+
+      <rect x="536" y="46" width="176" height="104" rx="10" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="552" y="72" fill="var(--d-soft)" font-size="11" letter-spacing="1.2">RESULT</text>
+      <text x="552" y="94" fill="var(--d-ink)" font-size="15" font-weight="640">Output zero</text>
+      <text x="552" y="116" fill="var(--d-soft)" font-size="12">Carries the new Atomical</text>
+      <text x="552" y="133" fill="var(--d-soft)" font-size="12">or the minted units</text>
+
+      <text x="8" y="196" fill="var(--d-soft)" font-size="12">
+        A validator only applies the operation after it reads the revealed envelope. Until then nothing exists.
+      </text>
+      <text x="8" y="218" fill="var(--d-soft)" font-size="12">
+        Bitcoin confirmation alone is not an Atomicals result.
+      </text>
+    </g>
+  </svg>
+</Figure>

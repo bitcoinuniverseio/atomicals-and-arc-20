@@ -1,0 +1,50 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-swap"
+  title="An atomic swap in one transaction"
+  summary="A swap places the seller's asset input and the buyer's funding inputs in one transaction. Output zero pays the asset to the buyer. A later output pays the price to the seller's exact script. Both parties sign the same transaction, so neither side can take one half without giving the other. The seller's signature must commit to the exact payment output, or a buyer could redirect it after signing."
+>
+  <svg viewBox="0 0 720 268" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="sw-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+    </defs>
+    <g font-family="var(--bu-font-sans)" font-size="12.5">
+      <text x="8" y="22" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">INPUTS</text>
+      <text x="420" y="22" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">OUTPUTS</text>
+
+      <rect x="8" y="34" width="230" height="52" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="24" y="54" fill="var(--d-soft)">input 0, seller</text>
+      <text x="24" y="74" font-weight="640" fill="var(--d-ink)">the coloured asset</text>
+
+      <rect x="8" y="96" width="230" height="52" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="24" y="116" fill="var(--d-soft)">input 1 and later, buyer</text>
+      <text x="24" y="136" font-weight="640" fill="var(--d-ink)">confirmed uncoloured funds</text>
+
+      <line x1="246" y1="60" x2="412" y2="60" stroke="var(--d-accent)" stroke-width="1.6" marker-end="url(#sw-arrow)" />
+      <line x1="246" y1="122" x2="412" y2="128" stroke="var(--d-line)" stroke-width="1.6" marker-end="url(#sw-arrow)" />
+
+      <rect x="420" y="34" width="292" height="52" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="436" y="54" fill="var(--d-soft)">output 0, exact value</text>
+      <text x="436" y="74" font-weight="640" fill="var(--d-ink)">asset to the buyer</text>
+
+      <rect x="420" y="96" width="292" height="52" rx="8" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="1.5" />
+      <text x="436" y="116" fill="var(--d-soft)">output 1, exact script and value</text>
+      <text x="436" y="136" font-weight="640" fill="var(--d-ink)">price to the seller</text>
+
+      <rect x="420" y="158" width="292" height="42" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="436" y="184" fill="var(--d-soft)">output 2, buyer cardinal change</text>
+
+      <text x="8" y="180" fill="var(--d-soft)">Seller signs, committing</text>
+      <text x="8" y="198" fill="var(--d-soft)">to output 1 exactly.</text>
+      <text x="8" y="222" fill="var(--d-soft)">Buyer signs their inputs.</text>
+
+      <line x1="8" y1="238" x2="712" y2="238" stroke="var(--d-line)" stroke-width="1" />
+      <text x="8" y="258" fill="var(--d-risk)" font-weight="640">If the seller signature does not bind output 1 exactly, the payment can be redirected after signing.</text>
+    </g>
+  </svg>
+</Figure>

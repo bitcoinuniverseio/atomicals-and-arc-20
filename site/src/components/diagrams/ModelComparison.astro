@@ -1,0 +1,47 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-model-comparison"
+  title="Account transfer against ARC-20 allocation"
+  summary="An account transfer subtracts a number from one row and adds it to another, and an invalid transfer simply fails. An ARC-20 transfer spends whole coloured outputs and assigns their value to new outputs in order. The Bitcoin transaction confirms either way, so an unwanted result is not reported as a failure. It is reported as a different allocation, which can include a burn."
+>
+  <svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="mc-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+    </defs>
+    <g font-family="var(--bu-font-sans)" font-size="12.5">
+      <text x="8" y="24" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">ACCOUNT MODEL</text>
+      <rect x="8" y="36" width="130" height="52" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="24" y="58" fill="var(--d-soft)">Alice</text>
+      <text x="24" y="78" font-weight="640" fill="var(--d-ink)">1 000 to 700</text>
+      <line x1="146" y1="62" x2="196" y2="62" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#mc-arrow)" />
+      <rect x="204" y="36" width="130" height="52" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="220" y="58" fill="var(--d-soft)">Bob</text>
+      <text x="220" y="78" font-weight="640" fill="var(--d-ink)">0 to 300</text>
+      <text x="346" y="68" fill="var(--d-ok)">nothing can vanish</text>
+
+      <line x1="8" y1="108" x2="712" y2="108" stroke="var(--d-line)" stroke-width="1" />
+
+      <text x="8" y="134" font-size="11" letter-spacing="1.2" fill="var(--d-accent)">ARC-20 ALLOCATION</text>
+      <rect x="8" y="146" width="130" height="52" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="24" y="168" fill="var(--d-soft)">input, 1 000 sats</text>
+      <text x="24" y="188" font-weight="640" fill="var(--d-ink)">1 000 units</text>
+
+      <line x1="146" y1="172" x2="196" y2="172" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#mc-arrow)" />
+
+      <rect x="204" y="132" width="130" height="40" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="220" y="157" font-weight="640" fill="var(--d-ink)">out 0: 700 units</text>
+
+      <rect x="204" y="180" width="130" height="40" rx="8" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="1.5" />
+      <text x="220" y="205" font-weight="640" fill="var(--d-ink)">out 1: 0 units</text>
+
+      <text x="346" y="152" fill="var(--d-soft)">out 1 is 546 sats, larger than the 300 units left</text>
+      <text x="346" y="176" fill="var(--d-risk)" font-weight="640">300 units burn</text>
+      <text x="346" y="200" fill="var(--d-soft)">the Bitcoin transaction still confirms normally</text>
+    </g>
+  </svg>
+</Figure>

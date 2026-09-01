@@ -1,0 +1,37 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-avm-layers"
+  title="Four separate AVM status layers"
+  summary="The word AVM covers four different things with four different statuses. The whitepaper describes an architecture and is proposed. The beta interpreter is working code with its own test suite and is experimental. Universe runtime integration does not exist: no service executes AVM contracts. Universe runtime attestation does not exist either: nothing has been published about behavior we verified. Collapsing these four into one is how a design document ends up described as a live feature."
+>
+  <svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g font-family="var(--bu-font-sans)" font-size="12.5">
+      <rect x="8" y="14" width="704" height="50" rx="9" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" stroke-dasharray="6 4" />
+      <text x="26" y="36" font-weight="640" fill="var(--d-ink)">1. Architectural whitepaper concepts</text>
+      <text x="26" y="55" fill="var(--d-soft)">A design document. Nothing is implemented by virtue of being described.</text>
+      <rect x="560" y="26" width="134" height="26" rx="13" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.2" />
+      <text x="627" y="44" text-anchor="middle" font-size="11.5" fill="var(--d-soft)">PROPOSED</text>
+
+      <rect x="8" y="72" width="704" height="50" rx="9" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="26" y="94" font-weight="640" fill="var(--d-ink)">2. Official beta interpreter</text>
+      <text x="26" y="113" fill="var(--d-soft)">Working code at a pinned revision, with upstream test annotations per opcode.</text>
+      <rect x="560" y="84" width="134" height="26" rx="13" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.2" />
+      <text x="627" y="102" text-anchor="middle" font-size="11.5" fill="var(--d-accent)">EXPERIMENTAL</text>
+
+      <rect x="8" y="130" width="704" height="50" rx="9" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="1.5" />
+      <text x="26" y="152" font-weight="640" fill="var(--d-ink)">3. Universe runtime integration</text>
+      <text x="26" y="171" fill="var(--d-soft)">No service, no route, no configuration. Nothing executes AVM contracts.</text>
+      <rect x="560" y="142" width="134" height="26" rx="13" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="1.2" />
+      <text x="627" y="160" text-anchor="middle" font-size="11.5" fill="var(--d-risk)">NOT EXPOSED</text>
+
+      <rect x="8" y="188" width="704" height="50" rx="9" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="1.5" />
+      <text x="26" y="210" font-weight="640" fill="var(--d-ink)">4. Universe runtime attestation</text>
+      <text x="26" y="229" fill="var(--d-soft)">Nothing published about behavior we independently verified.</text>
+      <rect x="560" y="200" width="134" height="26" rx="13" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="1.2" />
+      <text x="627" y="218" text-anchor="middle" font-size="11.5" fill="var(--d-risk)">NONE</text>
+    </g>
+  </svg>
+</Figure>
