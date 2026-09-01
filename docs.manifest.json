@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "atomicals-and-arc-20",
+  "name": "Atomicals and ARC-20",
+  "classification": "protocol",
+  "repository": "bitcoinuniverseio/atomicals-and-arc-20",
+  "documentationUrl": "https://docs.bitcoinuniverse.io/protocols/atomicals-and-arc-20/",
+  "docsRoot": ".",
+  "sourceRef": "main",
+  "lifecycle": "experimental",
+  "chains": [
+    {
+      "chain": "bitcoin",
+      "networks": [
+        "mainnet"
+      ]
+    }
+  ],
+  "protocols": [
+    "atomicals",
+    "arc-20"
+  ],
+  "audiences": [
+    "user",
+    "app-developer",
+    "protocol-implementer"
+  ],
+  "owners": [
+    "bitcoinuniverseio"
+  ],
+  "lastVerified": {
+    "commit": "31bb02caf397dfa34f388de6e3128168fef4944e",
+    "timestamp": "2026-09-01T02:00:00Z"
+  },
+  "securityClassification": "public"
+}
