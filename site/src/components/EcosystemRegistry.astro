@@ -31,7 +31,7 @@ for (const record of registry.records) {
   byCategory.set(record.category, bucket)
 }
 const categories = [...byCategory.keys()].sort((a, b) =>
-  (CATEGORY_LABEL[a] ?? a).localeCompare(CATEGORY_LABEL[b] ?? b),
+  ((x, y) => (x < y ? -1 : x > y ? 1 : 0))(CATEGORY_LABEL[a] ?? a, CATEGORY_LABEL[b] ?? b),
 )
 ---
 

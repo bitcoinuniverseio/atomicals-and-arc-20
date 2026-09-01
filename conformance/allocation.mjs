@@ -470,7 +470,7 @@ export function allocate(outputs, inputs, options = {}) {
     outputs: perOutput,
     burned: [...result.burned.entries()]
       .map(([atomicalId, value]) => ({ atomicalId, value }))
-      .sort((a, b) => a.atomicalId.localeCompare(b.atomicalId)),
+      .sort((a, b) => (a.atomicalId < b.atomicalId ? -1 : a.atomicalId > b.atomicalId ? 1 : 0)),
     cleanlyAssigned: result.cleanlyAssigned,
     inflationRejected: result.inflationRejected,
   }
