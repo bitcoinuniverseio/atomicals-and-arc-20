@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Reference | Atomicals + ARC-20</title>
+  <meta name="description" content="Atomicals and ARC-20 reference: terminology, indexer semantics for confirmation, mempool and reorgs, fee and size considerations, limitations, security notes, and an implementation checklist.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference.html">
+  <meta property="og:title" content="Atomicals + ARC-20 reference">
+  <meta property="og:description" content="Terminology, indexer semantics, limitations, security considerations, and an implementation checklist.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference.html">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="2.4" class="d-fill-accent"/><ellipse cx="11" cy="11" rx="9.5" ry="4" class="d-orbit"/><ellipse cx="11" cy="11" rx="9.5" ry="4" transform="rotate(60 11 11)" class="d-orbit"/></svg>
+        Atomicals + ARC-20
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./">Overview</a>
+        <a href="specification.html">Specification</a>
+        <a href="guide.html">Guide</a>
+        <a href="reference.html" aria-current="page">Reference</a>
+        <a href="test-vectors.html">Test vectors</a>
+        <a href="simulator.html">Simulator</a>
+      </nav>
+      <div class="header-tools">
+        <div class="search-box">
+          <label for="search-input" style="position:absolute;left:-999px">Search this site</label>
+          <input type="search" id="search-input" placeholder="Search docs" autocomplete="off">
+          <span class="search-hint" aria-hidden="true">/</span>
+          <ul id="search-results" class="search-results" aria-label="Search results"></ul>
+        </div>
+        <button type="button" id="theme-toggle" class="theme-toggle">Theme</button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <p class="kicker">Implementer's reference</p>
+    <h1>Reference</h1>
+    <p class="lede measure">Terminology, the semantics an indexer must reproduce, and the practical limits that shape real integrations.</p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <strong>Contents</strong>
+      <ol>
+        <li><a href="#terms">Terminology</a></li>
+        <li><a href="#indexer">Indexer semantics</a></li>
+        <li><a href="#universe-decisions">Universe indexing decisions</a></li>
+        <li><a href="#fees">Fee and size considerations</a></li>
+        <li><a href="#limits">Limitations</a></li>
+        <li><a href="#security">Security considerations</a></li>
+        <li><a href="#checklist">Implementation checklist</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="terms">1. Terminology</h2>
+    <dl class="measure">
+      <dt><strong>Atomical</strong></dt><dd>Any digital object minted under this protocol: an NFT, a fungible token deploy, a realm, a container. Identified by its commit outpoint.</dd>
+      <dt><strong>ARC-20</strong></dt><dd>The fungible token model where one token unit occupies exactly one satoshi.</dd>
+      <dt><strong>Envelope</strong></dt><dd>The tapscript structure carrying the protocol marker <code>atom</code>, an operation code, and a CBOR payload.</dd>
+      <dt><strong>Commit / reveal</strong></dt><dd>The two-transaction mint pattern. The commit creates the outpoint that fixes identity; the reveal exposes the envelope in witness data.</dd>
+      <dt><strong>Atomical id</strong></dt><dd>36 bytes: commit txid plus commit output index. Compact form <code>&lt;txid&gt;i&lt;index&gt;</code>.</dd>
+      <dt><strong>Location id</strong></dt><dd>Where an Atomical currently sits: the outpoint (txid plus index) of the UTXO holding it. Changes with every transfer; the atomical id never does.</dd>
+      <dt><strong>Coloring</strong></dt><dd>The assignment of token value from a transaction's inputs to its outputs, decided entirely by the rules in specification section 8.</dd>
+      <dt><strong>Sat value / atomical value</strong></dt><dd>Two numbers recorded per token-bearing UTXO. Classically equal; since the custom coloring activation the atomical value may be lower (partial color), never higher.</dd>
+      <dt><strong>Cleanly assigned</strong></dt><dd>A flag meaning every colored output's satoshi value was exactly matched by token value. Unclean assignment is legal but is a signal that a transaction shape deserves scrutiny.</dd>
+      <dt><strong>Burn</strong></dt><dd>Token value that landed on no spendable output. Permanently removed from supply; the indexer reports it per token.</dd>
+      <dt><strong>Bitwork</strong></dt><dd>Proof-of-work over a transaction id, expressed as a hex prefix with an optional fractional extension (<code>1a2b.8</code>).</dd>
+      <dt><strong>dft / dmt</strong></dt><dd>The decentralized mint deploy and the individual mint claims against it.</dd>
+      <dt><strong>Splat / split</strong></dt><dd>The <code>x</code> operation separates co-located NFTs into distinct outputs; the <code>y</code> operation lets each fungible token skip output value before its coloring begins.</dd>
+      <dt><strong>Realm, subrealm, container, dmitem</strong></dt><dd>The naming and collection families: a top-level name, a name under a parent, a collection, and a proven item of a collection.</dd>
+      <dt><strong>Sealed</strong></dt><dd>An NFT locked forever by the <code>sl</code> operation: it can no longer move or change state.</dd>
+    </dl>
+
+    <h2 id="indexer">2. Indexer semantics</h2>
+
+    <h3 id="ordering">2.1 Deterministic ordering</h3>
+    <p class="measure">Everything is decided by position, never by timestamp or intent. Blocks are processed in height order, transactions in block order, inputs in index order, outputs in index order. Two independent indexers processing the same chain must produce identical state; any divergence is a bug in one of them.</p>
+    <p class="measure">Races (a ticker, a realm, a mint claim near the cap) resolve on the transaction number of the <em>commit</em>, which is a monotonically increasing counter assigned in block-then-position order. This is why a name claim can be lost by someone who revealed earlier but committed later.</p>
+
+    <h3 id="confirmation">2.2 Confirmation</h3>
+    <p class="measure">Indexing happens at block connection: a transaction has no protocol effect until it is in a block. Two additional depths matter:</p>
+    <ul class="measure">
+      <li><strong>3 blocks</strong> for name and ticker claims to move from <code>pending</code> to <code>verified</code>. Before that depth the winner is not settled and an application must not treat a claim as final.</li>
+      <li><strong>Application confirmation depth.</strong> Bitcoin Universe marketplace settlement requires at least one confirmation by default and is operator-configurable from 1 to 100. Mempool observation alone never marks a trade settled.</li>
+    </ul>
+
+    <figure class="fig">
+      <svg viewBox="0 0 620 210" width="620" role="img" aria-labelledby="fig-states-t fig-states-d">
+        <title id="fig-states-t">Claim state machine</title>
+        <desc id="fig-states-d">A flow from mempool to pending at first confirmation, to verified after three blocks, with branches to expired when the reveal or payment window is missed, and a rollback arrow from verified back to pending on a reorg.</desc>
+        <rect x="14" y="80" width="104" height="42" rx="6" class="d-hair d-fill-paper"/><text x="66" y="106" text-anchor="middle" class="d-text">mempool</text>
+        <path d="M120 101 L166 101" class="d-line"/><text x="143" y="92" text-anchor="middle" class="d-text-mono-soft">block</text>
+        <rect x="168" y="80" width="104" height="42" rx="6" class="d-accent d-fill-wash"/><text x="220" y="106" text-anchor="middle" class="d-text">pending</text>
+        <path d="M274 101 L326 101" class="d-line"/><text x="300" y="92" text-anchor="middle" class="d-text-mono-soft">+3 blocks</text>
+        <rect x="328" y="80" width="104" height="42" rx="6" class="d-accent d-fill-wash"/><text x="380" y="106" text-anchor="middle" class="d-text">verified</text>
+        <rect x="470" y="26" width="132" height="42" rx="6" class="d-hair d-fill-warmwash"/><text x="536" y="52" text-anchor="middle" class="d-text">expired</text>
+        <path d="M240 76 C 280 40 400 30 468 43" class="d-warm-line"/>
+        <text x="330" y="40" text-anchor="middle" class="d-text-mono-soft">window missed</text>
+        <path d="M370 128 C 330 168 260 168 224 130" class="d-bad" stroke-dasharray="4 3"/>
+        <text x="296" y="182" text-anchor="middle" class="d-text-soft">reorg rollback re-runs the race from undo data</text>
+      </svg>
+      <figcaption><b>Fig. 2:</b> claim lifecycle. Verification is a depth, not an event; a reorg deeper than the claim returns it to the race.</figcaption>
+    </figure>
+
+    <h3 id="mempool">2.3 Mempool</h3>
+    <p class="measure">The indexer parses unconfirmed transactions so wallets can see pending mints and transfers, but mempool state is strictly provisional and separate from indexed state. Unconfirmed operations are held in a per-transaction map and dropped the moment the transaction leaves the mempool. Consequences for integrators:</p>
+    <ul class="measure">
+      <li>Do not treat a mempool mint as owning a ticker or a name; races are decided by confirmed commit order.</li>
+      <li>Replace-by-fee changes the transaction id, which changes the reveal txid. Any operation whose validity depends on a bitwork requirement over that txid is invalidated by RBF, and a name mint that is replaced loses its place.</li>
+      <li>Broadcast-time validation is available separately: the indexer exposes a validation call that runs the coloring blueprint over a raw transaction and refuses it when the result would burn or misassign value unexpectedly. Wallets should use a check of this kind before signing rather than after broadcasting.</li>
+    </ul>
+
+    <h3 id="reorg">2.4 Reorgs</h3>
+    <p class="measure">Rollback is exact, not approximate. Every block write records undo information for both the base UTXO set and the Atomicals state, so disconnecting a block restores the precise prior state: mint records, coloring assignments, name candidacies, and mint counters all revert. On reconnection the affected blocks are reprocessed in order, and a name race whose winner was reorged out is genuinely re-run.</p>
+    <p class="measure">Undo data is retained for a bounded window (the reorg limit of the coin configuration; the ElectrumX default is 200 blocks for Bitcoin). A reorg deeper than the retained window cannot be unwound incrementally and requires a resync from an earlier snapshot. Applications built on top should therefore treat any assertion of ownership as valid only up to the reorg depth they are willing to tolerate, and should reconcile rather than assume.</p>
+
+    <h2 id="universe-decisions">3. Universe indexing decisions</h2>
+    <p class="measure">Where this documentation follows the Bitcoin Universe indexers rather than upstream Atomicals documentation, the difference is listed here. Nothing else on this site is a Universe-specific rule.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Decision</th><th scope="col">What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Envelope prefix tolerance</td><td>The parser locates the marker by scanning for the first <code>OP_IF</code> after a 32-byte key push, and does not require a preceding <code>OP_FALSE</code>. Envelopes are therefore accepted in both common script shapes. Documented here as implementation behavior, not as a relaxation of intent.</td></tr>
+          <tr><td>AVM operations</td><td>The operation codes <code>def</code> and <code>new</code>, and an activation height of 900000 for them, exist in this fork's AVM support. They are not part of the original upstream envelope operation set, and this site does not document AVM semantics.</td></tr>
+          <tr><td>Split-transaction payment refusal</td><td>Subname and dmitem payments are refused in any transaction that also carries a split (<code>y</code>) operation, because a split can reassign ARC-20 value inside the paying transaction. This is a conservative safety rule and may reject a payment another implementation would accept.</td></tr>
+          <tr><td>Two-repository split</td><td>Universe operates the fungible/general indexer and a separate read-only projection service for NFTs, realms, subrealms, containers, and dmitems. The protocol rules are identical; only the serving surface differs.</td></tr>
+          <tr><td>Marketplace fail-closed reads</td><td>Universe products refuse ARC-20 listing and buyer-funding mutations when the Atomicals indexer is unavailable or disagrees, instead of falling back to ordinary UTXO data. This is product policy, not a protocol rule.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="fees">4. Fee and size considerations</h2>
+    <ul class="measure">
+      <li><strong>Two transactions per mint.</strong> Budget for a commit and a reveal, plus the dust each carries.</li>
+      <li><strong>Payload lives in the witness</strong> and is discounted, but a large NFT payload still dominates reveal cost. Payload bytes are split across pushes; there is no single-push size ceiling on the payload as a whole.</li>
+      <li><strong>Token value is satoshi value.</strong> A 1000000-unit ARC-20 position locks up 0.01 BTC. Dust rules apply: an output below the dust threshold is not relayable, so very small balances cannot be split arbitrarily. The minimum <code>mint_amount</code> for a decentralized mint is 546 satoshis for exactly this reason.</li>
+      <li><strong>Bitwork costs time, not fees</strong>, but each grinding attempt re-signs the transaction; the cost is CPU and latency, and a high-difficulty launch can mean minutes per claim.</li>
+      <li><strong>Fee funding.</strong> Paying a fee out of colored inputs burns tokens. Always add an uncolored funding input for transfers where the balance must be preserved exactly.</li>
+    </ul>
+
+    <h2 id="limits">5. Limitations</h2>
+    <ul class="measure">
+      <li><strong>No divisibility.</strong> One unit is one satoshi; there is no decimals field at the protocol layer. Applications that display decimals are applying their own convention.</li>
+      <li><strong>Supply is bounded by bitcoin.</strong> A token's maximum supply is limited by how many satoshis its holders are willing to immobilize.</li>
+      <li><strong>No protocol-level rejection.</strong> Malformed intent produces burns, not errors. There is no recovery mechanism, no admin, no reversal.</li>
+      <li><strong>Ordering couples unrelated assets.</strong> Combining two tokens in one transaction makes each one's outcome depend on the other's input position.</li>
+      <li><strong>Names are ASCII.</strong> Only <code>a-z0-9-</code> at the protocol layer; unicode presentation is an application convention.</li>
+      <li><strong>Upstream development has slowed.</strong> The protocol is stable as specified, but new upstream rule changes should not be assumed; verify activation heights against the implementation you index with.</li>
+      <li><strong>Indexer diversity is low.</strong> Most of the ecosystem runs one implementation lineage, so "what the indexer does" and "what the protocol is" are closer together here than in protocols with several independent implementations.</li>
+    </ul>
+
+    <h2 id="security">6. Security considerations</h2>
+    <ul class="measure">
+      <li><strong>Coin selection is the primary risk.</strong> Any wallet component that can spend UTXOs must know which are colored. Treat an unknown indexer response as "colored" and refuse, never as "clean".</li>
+      <li><strong>Validate before signing.</strong> Run the coloring blueprint over the draft transaction and show the user the resulting per-output balances and any burn. Post-broadcast checks are too late.</li>
+      <li><strong>Verify ownership at the exact outpoint.</strong> Ownership claims must bind txid, output index, ticker, and amount together. An address-level or amount-only check can be satisfied by an unrelated UTXO.</li>
+      <li><strong>Fail closed on indexer outage.</strong> Falling back to raw prevout data for asset decisions turns an availability problem into a loss of funds.</li>
+      <li><strong>Respect the 3-block name depth.</strong> Acting on a pending claim risks acting on a name someone else will win.</li>
+      <li><strong>Reconcile after reorgs.</strong> Any state derived from confirmed observation must be re-derived when blocks are disconnected, including settlement records.</li>
+      <li><strong>Do not trust payload content.</strong> CBOR payloads are attacker-controlled. Enforce the type restrictions on <code>meta</code>, <code>args</code>, <code>ctx</code>, and treat rendered payload data as untrusted input (content type sniffing, script injection, decompression bombs).</li>
+      <li><strong>Merkle proofs bound collections.</strong> A dmitem's membership proof is what makes a collection finite. Verify it rather than trusting a container's advertised item list.</li>
+    </ul>
+
+    <h2 id="checklist">7. Implementation checklist</h2>
+    <p class="measure">Minimum work to index or integrate correctly:</p>
+    <ul class="measure">
+      <li>Parse witness elements for the <code>atom</code> marker under the structural conditions of rules E1 to E4; reject non-map CBOR and disallowed nested types.</li>
+      <li>Enforce input-index 0 for mint operations, and both commit windows (100 blocks general, 3 blocks named).</li>
+      <li>Derive atomical ids from the commit outpoint and imprint mints at reveal output 0.</li>
+      <li>Implement coloring exactly: FIFO input ordering, left-to-right output filling, OP_RETURN skipping, era-dependent partial coloring, the non-clean fallback to output 0, and burn accounting.</li>
+      <li>Implement the <code>y</code> split skip semantics and, from height 848484, the <code>z</code> custom color clamping (never inflate).</li>
+      <li>Track NFT movement by input index with the fallback to output 0, plus <code>x</code> splat and <code>sl</code> sealing.</li>
+      <li>Validate deploy parameter bounds and enforce mint caps by recounting from durable state at block boundaries, not from an in-memory counter.</li>
+      <li>Implement bitwork validation including the fractional extension, and the perpetual difficulty schedule with the rollover allowance.</li>
+      <li>Resolve name and ticker races by earliest commit transaction number, with the 3-block verification depth.</li>
+      <li>Record undo information per block and support exact rollback to the reorg limit.</li>
+      <li>Expose burns explicitly. An integration that silently hides burned value will eventually mislead someone into losing funds.</li>
+      <li>Check your implementation against the <a href="test-vectors.html">test vectors</a>; several are drawn from the indexer's own suite.</li>
+    </ul>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <p><strong>Atomicals + ARC-20 protocol documentation</strong><br>
+          Owning repository: <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20">bitcoinuniverseio/atomicals-and-arc-20</a><br>
+          Source path: <code>/reference.html</code> · <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/edit/main/reference.html">Edit on GitHub</a></p>
+        </div>
+        <div>
+          <p>Document version 2.0.0 · Lifecycle: beta<br>
+          Chain: Bitcoin mainnet · Last verified: 2026-09-01<br>
+          <a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></p>
+        </div>
+      </div>
+      <p class="footer-meta">Upstream protocol by the Atomicals project. This site documents the protocol as indexed by Bitcoin Universe and marks Universe-specific decisions explicitly.</p>
+    </div>
+  </footer>
+</body>
+</html>

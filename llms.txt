@@ -1,0 +1,35 @@
+# Atomicals + ARC-20
+
+> Protocol documentation for Atomicals, digital objects minted on Bitcoin via a commit and reveal pattern carrying a CBOR payload in tapscript witness data, and ARC-20, its fungible token model where one token unit occupies exactly one satoshi. Published by Bitcoin Universe and grounded in the Atomicals indexer code it runs, a pinned fork of the upstream atomicals-electrumx reference implementation.
+
+Chain and network: Bitcoin mainnet. Protocol activation height 808080. Envelope marker: a four byte "atom" push (hex 0461746f6d) immediately after OP_IF in a taproot leaf script. Payload encoding: CBOR map. Document version 2.0.0, lifecycle beta, last verified 2026-09-01.
+
+Upstream attribution: the protocol originated with the Atomicals project (https://github.com/atomicals). This site documents the protocol as indexed by Bitcoin Universe; Universe-specific indexing decisions are listed separately on the reference page rather than presented as protocol rules.
+
+## Pages
+
+- [Overview](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/): what Atomicals and ARC-20 are in plain language, the colored satoshi model, the three protocol families (fungible tokens, NFTs and collections, realms and subrealms), lifecycle state, entry points, and links to source, products, and security reporting.
+- [Specification](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/specification.html): the normative document. Numbered rules covering the atom envelope grammar (E1 to E12), identifiers (I1 to I4), commit and reveal windows of 100 blocks general and 3 blocks for names (R1 to R7), the recognized operation codes (nft, ft, dft, dmt, mod, evt, dat, sl, x, y, z), ticker rules (T1 to T4), direct mints (F1 to F3), decentralized mint deploys (D1 to D6), mint claims (M1 to M7), bitwork proof-of-work including the perpetual difficulty schedule (B1 to B5), the ARC-20 coloring rules (C1 to C12), state and sealing (S1 to S4), realms, containers and dmitems (N1 to N10), the mainnet activation height table, and invalidity conditions (X1 to X8).
+- [Guide](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guide.html): plain language walkthrough. The colored satoshi mental model compared with ledger token models, how a commit and reveal mint happens, launching a token by direct or decentralized mint, what bitwork actually is, how a transfer colors outputs, worked transaction examples with expected outcomes, the pitfalls that destroy value, names and collections, and a product support matrix limited to actions verifiable in Bitcoin Universe code.
+- [Reference](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference.html): terminology, indexer semantics for deterministic ordering, confirmation depths, mempool handling and replace-by-fee consequences, exact reorg rollback via per-block undo data, the list of Universe-specific indexing decisions, fee and size considerations, protocol limitations, security considerations, and an implementation checklist.
+- [Test vectors](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/test-vectors.html): valid and invalid cases with expected outcomes. Coloring vectors, burn cases, split and custom color cases, envelope parsing failures, mint validity failures, bitwork cases, and name and ticker cases. Several vectors are transcribed from the indexer's own test suite.
+- [Simulator](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/simulator.html): an interactive, entirely client-side ARC-20 transfer outcome simulator. Enter inputs carrying token color and output values, and the page applies the indexer's coloring rules and explains each step, showing which outputs carry which balance and when color burns. Nothing entered is logged or transmitted.
+- [Changelog](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/changelog.html): version history of these documents.
+
+## Core facts
+
+- An atomical id is the commit outpoint: commit transaction id plus commit output index, written compactly as <txid>i<index>. The object is imprinted at output 0 of the reveal transaction.
+- ARC-20 balances are colored satoshis. A balance has no separate existence from the UTXO holding it, so a token amount can never exceed the satoshi amount of its output.
+- Coloring is mechanical: tokens are ordered first in, first out by input index (since height 819181), then each fills outputs left to right, skipping OP_RETURN outputs. Value that lands on no spendable output burns permanently.
+- Partial coloring of the final output a token touches became legal at height 848484, together with the z custom color operation. Before that an output had to be covered exactly, and a shortfall of one satoshi could burn an entire balance.
+- If any token cannot be placed cleanly, every token restarts assignment from output 0, which can stack several tokens onto the same outputs.
+- The protocol never rejects a badly shaped transfer. Bitcoin confirms it and the coloring rules decide what survives, so validation must happen before signing.
+- Decentralized mint claims must pay exactly the deploy's mint_amount to output 0, arrive at or after mint_height, stay under the cap, and satisfy any declared bitwork on the commit or reveal transaction id.
+- Ticker and name claims resolve by earliest commit transaction number, not earliest reveal, and reach verified status once the commit is 3 blocks deep.
+
+## Other files
+
+- [Repository](https://github.com/bitcoinuniverseio/atomicals-and-arc-20): site source, MIT licensed, no build step.
+- [Documentation manifest](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/docs.manifest.json): machine readable repository manifest for the Bitcoin Universe documentation portal.
+- [Search index](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/search-index.json): the local search corpus, one entry per heading with page, anchor, snippet, and aliases.
+- [Central portal](https://docs.bitcoinuniverse.io): Bitcoin Universe documentation portal.

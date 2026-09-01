@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/sitemap.xml
