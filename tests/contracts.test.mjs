@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, readdirSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import Ajv from 'ajv/dist/2020.js'
@@ -218,4 +218,32 @@ test('deprecated routes name their replacement', () => {
       }
     }
   }
+})
+
+/**
+ * docs.manifest.json is the record other Universe documentation surfaces read to
+ * find this repository's documents. It is hand maintained rather than generated,
+ * because most of what it says (classification, audiences, how this documentation
+ * relates to upstream) is a judgement rather than something derivable. What it can
+ * drift on is the mechanical part: a version that no longer matches, or a
+ * specification path that no longer resolves. That is what these check.
+ */
+test('the integration manifest points at documents that exist', () => {
+  const docsManifest = read('docs.manifest.json')
+  const specifications = docsManifest.specifications ?? []
+  assert.ok(specifications.length > 0, 'docs.manifest.json must name its specification documents')
+  const missing = specifications.filter((path) => !existsSync(resolve(root, path)))
+  assert.deepEqual(missing, [], 'docs.manifest.json names a specification that is not published')
+})
+
+test('the integration manifest declares the current documentation version', () => {
+  const docsManifest = read('docs.manifest.json')
+  const siteMeta = read('site/src/data/site.json')
+  assert.equal(
+    docsManifest.releaseVersion,
+    siteMeta.docsVersion,
+    'docs.manifest.json releaseVersion must match the documentation version',
+  )
+  assert.equal(docsManifest.repository, 'bitcoinuniverseio/atomicals-and-arc-20')
+  assert.equal(docsManifest.securityClassification, 'public')
 })

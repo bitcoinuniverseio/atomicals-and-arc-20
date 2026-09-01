@@ -276,6 +276,18 @@ output scripts for clarity, because neither changes the allocation result.
 | dust-remainder-burns | 1200 units | output 0: 1000 sats; output 1: 200 sats | Sending 1000 units from a 1200 unit lot with a 200 satoshi change output fails, because 200 is placed only if it fits after the 1000 is taken. Here it does fit, so nothing burns. Compare with the next case. |
 | change-output-too-large | 1200 units | output 0: 1000 sats; output 1: 546 sats | The same intent with a 546 satoshi change output destroys the 200 unit remainder, because 546 does not fit in 200. |
 | custom-coloring-partial-fill | 1200 units | output 0: 700 sats; output 1: 546 sats | With custom coloring active the builder attaches an output even when the value does not cover it fully, and the last output receives only what is left. |
+| suite-exact-single-output | 11000 units | output 0: 11000 sats | The token exactly fills the only output, so nothing is left over and the assignment is clean. |
+| suite-partially-colored-carry-forward | 500 units | output 0: 11000 sats | Since height 848484 an output can carry fewer token units than satoshis. The 500 units land on an 11000 satoshi output and nothing burns. Reported as not cleanly assigned because the output is only partly coloured. |
+| suite-consolidation-burn | 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units | output 0: 1000 sats | The classic consolidation accident: everything beyond the first output is destroyed. |
+| suite-output-over-balance | 10999 units | output 0: 11000 sats | Under exact-cover rules an output has to be fully covered. Being one satoshi short colours nothing at all. The same shape under current rules colours the output partially and burns nothing, which is why the rule changed. |
+| suite-one-unit-over | 11001 units | output 0: 11000 sats | The single leftover unit is the miner fee, and it is burned token supply. |
+| suite-merged-inputs-single-output | 900 units plus 555 units | output 0: 1454 sats | The pool is 1455, the output takes 1454, and the remaining unit is burned. |
+| suite-no-atomicals |  | output 0: 1000 sats | Spending no token-bearing input produces an empty blueprint. An implementation must not fabricate assignments for an uncoloured transaction. |
+| fee-taken-from-colored-value | 10000 units | output 0: 3000 sats; output 1: 6800 sats | The outputs total 200 satoshis less than the coloured input, and those 200 units are destroyed rather than returned. Pay the fee from a plain bitcoin input instead. |
+| only-unspendable-outputs | 5000 units | output 0: 0 sats (unspendable) | Unspendable outputs are skipped by regular assignment, so a transaction whose only output is an OP_RETURN leaves the balance nowhere to land. |
+| split-skip-amount | 3000 units | output 0: 1000 sats; output 1: 2000 sats | The y payload names satoshis to pass over before a token starts colouring, which is how two tokens sharing one input get separated. Here output 0 satisfies the skip, the token colours output 1, and the value beyond it burns. |
+| custom-color-over-request-clamped | 1000 units plus 1000 units | output 0: 1200 sats; output 1: 600 sats; output 2: 600 sats | The payload asks for more than either token holds. Each request is clamped to the output value and then to the remaining balance, so no inflation is possible. |
+| custom-color-unassigned-value-burns | 1000 units | output 0: 1000 sats; output 1: 500 sats | The payload directs 400 units at output 0 and says nothing about the rest, so the remaining 600 units are destroyed. Custom colouring places value explicitly; it does not carry a remainder forward. |
 
 ## Universe compatibility boundary
 
