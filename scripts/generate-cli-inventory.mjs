@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { byCodepoint } from './lib/order.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const manifest = JSON.parse(
@@ -117,11 +118,11 @@ while ((match = commandStart.exec(text)) !== null) {
     signature,
     description: descriptionMatch ? unescape(descriptionMatch[2]) : null,
     arguments: params,
-    options: options.sort((a, b) => a.flags.localeCompare(b.flags)),
+    options: options.sort((a, b) => byCodepoint(a.flags, b.flags)),
   })
 }
 
-commands.sort((a, b) => a.name.localeCompare(b.name))
+commands.sort((a, b) => byCodepoint(a.name, b.name))
 
 const inventory = {
   inventoryVersion: '1.0.0',

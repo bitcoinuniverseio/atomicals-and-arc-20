@@ -6,6 +6,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { join, resolve, dirname, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createHash } from 'node:crypto'
+import { byCodepoint } from './order.mjs'
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 export const docsRoot = resolve(root, 'site/src/content/docs')
@@ -160,7 +161,7 @@ export function loadPages() {
         hash: contentHash(body),
       }
     })
-    .sort((a, b) => a.routeId.localeCompare(b.routeId))
+    .sort((a, b) => byCodepoint(a.routeId, b.routeId))
 }
 
 /** Body with MDX imports and component tags removed, so it reads as plain Markdown. */
