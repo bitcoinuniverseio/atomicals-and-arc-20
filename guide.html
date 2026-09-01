@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Guide | Atomicals + ARC-20</title>
+  <meta name="description" content="Plain-language walkthrough of Atomicals and ARC-20: how a mint works, how a transfer colors outputs, worked examples, and what Bitcoin Universe products support.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guide.html">
+  <meta property="og:title" content="Atomicals + ARC-20 guide">
+  <meta property="og:description" content="How minting and transferring actually work, with worked transaction examples and a verified product support matrix.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guide.html">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="2.4" class="d-fill-accent"/><ellipse cx="11" cy="11" rx="9.5" ry="4" class="d-orbit"/><ellipse cx="11" cy="11" rx="9.5" ry="4" transform="rotate(60 11 11)" class="d-orbit"/></svg>
+        Atomicals + ARC-20
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./">Overview</a>
+        <a href="specification.html">Specification</a>
+        <a href="guide.html" aria-current="page">Guide</a>
+        <a href="reference.html">Reference</a>
+        <a href="test-vectors.html">Test vectors</a>
+        <a href="simulator.html">Simulator</a>
+      </nav>
+      <div class="header-tools">
+        <div class="search-box">
+          <label for="search-input" style="position:absolute;left:-999px">Search this site</label>
+          <input type="search" id="search-input" placeholder="Search docs" autocomplete="off">
+          <span class="search-hint" aria-hidden="true">/</span>
+          <ul id="search-results" class="search-results" aria-label="Search results"></ul>
+        </div>
+        <button type="button" id="theme-toggle" class="theme-toggle">Theme</button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <p class="kicker">Working knowledge</p>
+    <h1>Guide</h1>
+    <p class="lede measure">Everything on this page is the same protocol described normatively on the <a href="specification.html">specification page</a>, told in the order you actually meet it: what an Atomical is, how one is created, how ARC-20 balances move, and where the sharp edges are.</p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <strong>Contents</strong>
+      <ol>
+        <li><a href="#mental-model">The mental model</a></li>
+        <li><a href="#minting">How a mint happens</a></li>
+        <li><a href="#deploy">Launching an ARC-20 token</a></li>
+        <li><a href="#transfer">How a transfer colors outputs</a></li>
+        <li><a href="#worked">Worked transactions</a></li>
+        <li><a href="#pitfalls">Pitfalls that destroy value</a></li>
+        <li><a href="#names">Names, collections, NFTs</a></li>
+        <li><a href="#support">Product support matrix</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="mental-model">1. The mental model</h2>
+    <p class="measure">Most token protocols keep a ledger: an account has a balance, and a message moves it. Atomicals does not. An ARC-20 balance <em>is</em> a set of satoshis. Holding 10000 QUARK means holding a UTXO of 10000 satoshis that the indexer has recorded as colored QUARK. Send those satoshis and the balance goes with them; let them fall into a miner fee and the balance is gone.</p>
+
+    <figure class="fig">
+      <svg viewBox="0 0 620 200" width="620" role="img" aria-labelledby="fig-model-t fig-model-d">
+        <title id="fig-model-t">Ledger model compared with the colored-sat model</title>
+        <desc id="fig-model-d">Left: a ledger table where addresses have balances and a message updates rows. Right: an atom diagram where satoshis themselves carry token color and moving the satoshis moves the balance.</desc>
+        <text x="20" y="24" class="d-text">ledger model (BRC-20 style)</text>
+        <rect x="20" y="38" width="240" height="120" rx="6" class="d-hair d-fill-paper"/>
+        <line x1="20" y1="68" x2="260" y2="68" class="d-hair"/>
+        <text x="34" y="59" class="d-text-mono-soft">address</text><text x="180" y="59" class="d-text-mono-soft">balance</text>
+        <text x="34" y="90" class="d-text-mono">bc1q…a7</text><text x="180" y="90" class="d-text-mono">10000</text>
+        <text x="34" y="112" class="d-text-mono">bc1q…f2</text><text x="180" y="112" class="d-text-mono">250</text>
+        <text x="34" y="142" class="d-text-soft">an inscription tells the indexer to edit rows</text>
+        <text x="350" y="24" class="d-text">colored-sat model (ARC-20)</text>
+        <ellipse cx="470" cy="105" rx="120" ry="46" class="d-orbit"/>
+        <circle cx="470" cy="105" r="24" class="d-accent d-fill-wash"/>
+        <text x="470" y="102" text-anchor="middle" class="d-text-mono">UTXO</text>
+        <text x="470" y="117" text-anchor="middle" class="d-text-mono-soft">10000 sat</text>
+        <circle cx="590" cy="105" r="6" class="d-fill-accent"/>
+        <circle cx="350" cy="105" r="6" class="d-fill-accent"/>
+        <text x="470" y="176" text-anchor="middle" class="d-text-soft">spending the sats is the transfer; there is nothing else to update</text>
+      </svg>
+      <figcaption><b>Fig. 1:</b> two ways to hold a token. In ARC-20 the balance has no separate existence: it is a property of specific satoshis in specific outputs.</figcaption>
+    </figure>
+
+    <p class="measure">Three consequences follow, and they explain almost every surprise people hit:</p>
+    <ul class="measure">
+      <li>A token amount can never exceed the satoshi amount of the output holding it. 10000 units need at least 10000 satoshis.</li>
+      <li>Coin selection is dangerous. A wallet that treats a colored UTXO as ordinary change will spend your tokens as fees.</li>
+      <li>The rules that decide which output inherits which units are purely mechanical: input order, then output order. No intent is recorded anywhere.</li>
+    </ul>
+
+    <h2 id="minting">2. How a mint happens</h2>
+    <p class="measure">Every Atomical is created by two transactions.</p>
+    <ol class="measure">
+      <li><strong>Commit.</strong> You build a taproot script containing an <code>atom</code> envelope: the operation you want (<code>ft</code>, <code>dft</code>, <code>dmt</code>, <code>nft</code>) plus a CBOR payload with your parameters. You pay to the address that script commits to. Nothing is visible yet; the script is only a hash.</li>
+      <li><strong>Reveal.</strong> You spend that output, which forces the script into the witness where indexers can read it. The Atomical is born, its identity fixed to the commit outpoint, its home fixed to output 0 of this reveal.</li>
+    </ol>
+    <p class="measure">Two clocks run between them. A general mint must reveal within 100 blocks of its commit; anything requesting a <em>name</em> (a ticker, realm, container, or dmitem) must reveal within 3 blocks. Miss the window and the mint is simply void: the bitcoin moved, the Atomical never existed.</p>
+    <p class="measure">Commit/reveal exists to make name races fair. Because the commit hides your intent, nobody can see that you are claiming <code>+alpha</code> and front-run you; because claims resolve by earliest commit, the person who committed first wins even if someone else reveals sooner.</p>
+
+    <h2 id="deploy">3. Launching an ARC-20 token</h2>
+    <h3 id="direct">Direct mint (<code>ft</code>)</h3>
+    <p class="measure">One transaction pair creates the whole supply at once. The supply equals the satoshi value of the reveal's first output, so a 100000-unit token means paying 100000 satoshis into output 0 and holding them. Simple, immediate, and entirely pre-allocated to you.</p>
+
+    <h3 id="dmint-guide">Decentralized mint (<code>dft</code> then many <code>dmt</code>)</h3>
+    <p class="measure">The deploy declares the shape of the mint and creates no supply at all:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Field</th><th scope="col">Meaning</th><th scope="col">Bounds</th></tr></thead>
+        <tbody>
+          <tr><td><code>request_ticker</code></td><td>The ticker being claimed</td><td>1 to 21 chars, <code>a-z0-9</code></td></tr>
+          <tr><td><code>mint_amount</code></td><td>Units each claim receives</td><td class="num">546 to 100000000</td></tr>
+          <tr><td><code>max_mints</code></td><td>How many claims are allowed</td><td class="num">1 to 21000000</td></tr>
+          <tr><td><code>mint_height</code></td><td>First block a claim is valid</td><td class="num">0 to 10000000</td></tr>
+          <tr><td><code>mint_bitworkc</code> / <code>mint_bitworkr</code></td><td>Proof-of-work each claim must satisfy on its commit / reveal txid</td><td>optional</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="measure">Then anyone mints. A claim is valid when it names the ticker, arrives at or after <code>mint_height</code>, pays exactly <code>mint_amount</code> satoshis to its first output, comes before the cap is reached, and satisfies whatever bitwork the deploy demanded. Nothing is reserved, nothing is whitelisted, and claims are processed in block order: it is a public race.</p>
+
+    <h3 id="bitwork-guide">What bitwork actually is</h3>
+    <p class="measure">Bitwork is proof-of-work over your own transaction id. A requirement of <code>1a2b</code> means you must grind your transaction (changing a nonce field in the payload, re-signing, re-hashing) until its txid starts with <code>1a2b</code>. Four hex characters is roughly 65 thousand attempts on average; each extra character multiplies by 16. The fractional form <code>1a2b.8</code> asks for the next digit to be at least 8, giving a half-step of difficulty.</p>
+    <p class="measure">Bitwork is a fairness device, not security: it slows down mass minting so a launch is not instantly drained by one script. In perpetual mode the required difficulty rises automatically after every <code>max_mints</code> claims, so a token can mint forever with steadily increasing cost.</p>
+
+    <h2 id="transfer">4. How a transfer colors outputs</h2>
+    <p class="measure">This is the part worth internalizing. When you spend colored UTXOs, no part of the transaction says where the tokens should go. The indexer decides, by walking a fixed procedure:</p>
+    <ol class="measure">
+      <li><strong>Collect.</strong> Sum every token's value across all inputs. Two inputs of 500 QUARK are one 1000-unit pool.</li>
+      <li><strong>Order the tokens.</strong> First-in-first-out, by the earliest input index each token appears at.</li>
+      <li><strong>Fill outputs left to right.</strong> The first token fills output 0, then output 1, and so on until its value is exhausted. The next token starts at the output after the last one the previous token touched. <code>OP_RETURN</code> outputs are skipped.</li>
+      <li><strong>Anything left over burns.</strong> Value that no output can hold leaves the supply permanently.</li>
+    </ol>
+    <p class="measure">So a transfer is "engineered" by choosing output values. To send 3000 units to a friend and keep 7000, you build output 0 with 3000 satoshis to their address and output 1 with 7000 satoshis to yourself. The order matters more than the addresses.</p>
+    <p class="measure">Since block 848484 the last output a token touches can be partially colored (a 5000-satoshi output carrying 3000 units, the other 2000 satoshis being plain bitcoin). Before that, an output had to be filled exactly or the assignment failed. Use the <a href="simulator.html">simulator</a> to see either era behave.</p>
+
+    <h2 id="worked">5. Worked transactions</h2>
+
+    <h3 id="worked-1">Example A: a clean split</h3>
+    <pre><code>inputs
+  0: 10000 sats, colored 10000 QUARK
+outputs
+  0: 3000 sats -> recipient
+  1: 6800 sats -> your change address
+fee: 200 sats
+
+result
+  output 0 carries 3000 QUARK
+  output 1 carries 6800 QUARK
+  200 QUARK burn (they went to the miner)</code></pre>
+    <p class="measure">The fee is paid in colored satoshis, so the fee is also paid in tokens. This is unavoidable when the fee comes out of a colored input: to avoid it, add a separate uncolored input to pay the fee, and give the outputs the full 10000 satoshis between them.</p>
+
+    <h3 id="worked-2">Example B: paying the fee from plain bitcoin</h3>
+    <pre><code>inputs
+  0: 10000 sats, colored 10000 QUARK
+  1: 50000 sats, plain bitcoin
+outputs
+  0: 3000 sats  -> recipient
+  1: 7000 sats  -> your change address
+  2: 49800 sats -> your change address
+fee: 200 sats
+
+result
+  output 0 carries 3000 QUARK
+  output 1 carries 7000 QUARK
+  output 2 carries no token color
+  nothing burns</code></pre>
+    <p class="measure">The token pool is 10000 and outputs 0 and 1 absorb exactly that, in order, so coloring stops before output 2. Output 2 is ordinary change.</p>
+
+    <h3 id="worked-3">Example C: two tokens on one UTXO, separated with split</h3>
+    <p class="measure">If a single UTXO carries both QUARK and ATOM (because a previous transaction merged them), a plain spend colors them consecutively in FIFO order, which may not be what you want. The <code>y</code> (split) operation lets each token skip a declared amount of output satoshis before its coloring starts, so you can steer each one onto its own output. NFTs in a split transaction are always forced to output 0, which is a deliberate safety rule.</p>
+
+    <h2 id="pitfalls">6. Pitfalls that destroy value</h2>
+    <div class="warn">
+      <p><strong>The protocol never rejects a bad transfer.</strong> Bitcoin will happily confirm a transaction that burns every unit you own. There is no error, no bounce, no recovery. The only protection is checking the shape before you sign.</p>
+    </div>
+    <ul class="measure">
+      <li><strong>Fee-funded from a colored input.</strong> Every satoshi of fee taken from colored value is burned token supply (example A).</li>
+      <li><strong>An output too small for the remaining balance.</strong> In the exact-cover era this burned the whole remainder; today it burns only the excess, but the excess is still gone.</li>
+      <li><strong>Sending colored sats to an exchange or a service that does not index Atomicals.</strong> They will see ordinary bitcoin, and it will be swept into a hot wallet and mixed away.</li>
+      <li><strong>Consolidating UTXOs "to tidy up".</strong> Merging colored UTXOs is legal but changes which outputs carry what, and a consolidation to one small output burns the difference.</li>
+      <li><strong>Ordinary wallet coin selection.</strong> Any wallet without Atomicals awareness may pick a colored UTXO to pay for coffee.</li>
+      <li><strong>Directing value at an <code>OP_RETURN</code> output under the <code>z</code> operation.</strong> Regular assignment skips unspendable outputs; custom coloring does not protect you.</li>
+    </ul>
+    <p class="measure">Before signing anything that touches an ARC-20 balance: identify which input is colored, confirm the total units, confirm output 0's value, confirm your change output's value, and confirm the two add up to the token total. Run it through the <a href="simulator.html">simulator</a> if in any doubt.</p>
+
+    <h2 id="names">7. Names, collections, NFTs</h2>
+    <ul class="measure">
+      <li><strong>NFTs</strong> are single Atomicals carrying arbitrary payload data. They move by input order (the n-th NFT-bearing input lands on output n) and fall back to output 0 rather than burning, which makes them much harder to lose than fungible value. Minting with the immutable flag, or later sealing with <code>sl</code>, locks them permanently.</li>
+      <li><strong>Realms</strong> are top-level names, written <code>+alpha</code>. Claiming one needs commit bitwork of at least four hex characters, and the earliest valid commit wins the race.</li>
+      <li><strong>Subrealms</strong> (<code>+alpha.child</code>) are minted under a parent, either directly (the parent owner spends the parent in the same transaction) or by rule: the parent publishes a rule set of regular expressions with prices, and anyone matching a pattern may claim by paying, within a window that opens 3 blocks after commit and closes at 15.</li>
+      <li><strong>Containers and dmitems</strong> are collections. The container publishes a merkle root of its full item list; each item mint proves membership with a merkle path, so the collection's contents are fixed at publication and cannot be quietly extended.</li>
+    </ul>
+
+    <h2 id="support">8. Product support matrix</h2>
+    <p class="measure">Claims below are limited to what is wired in Bitcoin Universe's own code, verified in the shared protocol capability registry and the corresponding service implementations. Anything not listed is not currently supported in Bitcoin Universe products.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Protocol family</th><th scope="col">Marketplace</th><th scope="col">Wallet</th><th scope="col">Inscribe</th></tr></thead>
+        <tbody>
+          <tr>
+            <th scope="row">ARC-20</th>
+            <td><span class="tag ok">Yes</span> view, discover, activity, list, update listing, unlist, buy, make/accept/cancel offer, settle, reconcile</td>
+            <td><span class="tag ok">Yes</span> view, send, receive</td>
+            <td><span class="tag ok">Yes</span> deploy, mint, transfer</td>
+          </tr>
+          <tr>
+            <th scope="row">Atomicals NFTs</th>
+            <td><span class="tag ok">Yes</span> same action set as ARC-20</td>
+            <td><span class="tag ok">Yes</span> view, send, receive</td>
+            <td><span class="tag ok">Yes</span> mint, transfer</td>
+          </tr>
+          <tr>
+            <th scope="row">Realms</th>
+            <td><span class="tag ok">Yes</span> same action set</td>
+            <td><span class="tag ok">Yes</span></td>
+            <td><span class="tag ok">Yes</span> mint, transfer</td>
+          </tr>
+          <tr>
+            <th scope="row">Subrealms</th>
+            <td><span class="tag ok">Yes</span> same action set</td>
+            <td><span class="tag ok">Yes</span></td>
+            <td><span class="tag ok">Yes</span> mint, transfer</td>
+          </tr>
+          <tr>
+            <th scope="row">Atomicals (general objects)</th>
+            <td><span class="tag">Discovery only</span> view, discover, collection, activity, transaction</td>
+            <td><span class="tag ok">Yes</span></td>
+            <td><span class="tag ok">Yes</span> mint, transfer</td>
+          </tr>
+          <tr>
+            <th scope="row">Containers, dmitems</th>
+            <td colspan="3"><span class="tag">Not a separate registry entry.</span> Container and dmitem objects are indexed and readable through the Atomicals asset service, but no distinct marketplace leaf exists for them.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="measure">Marketplace ARC-20 execution runs through an authoritative prepare, sign, finalize flow: listings bind the exact indexed seller outpoint, ticker, and amount, and both listing and buyer-funding checks fail closed if the Atomicals indexer is unavailable rather than falling back to ordinary UTXO data. Settlement is recorded only after the configured confirmation depth (at least one confirmation by default, operator-configurable between 1 and 100).</p>
+    <div class="note">
+      <p><strong>Verified limits.</strong> Two things this documentation will not claim. First, the ARC-20 order book's durability is currently single-host: the engineering record tracks a migration to shared SQL storage as outstanding, so multi-host durability is not yet a supported property. Second, cross-protocol post-confirmation reorg reconciliation for settlement is tracked as an open item, so reorg handling should be treated as operator reconciliation and not as an automatic guarantee. Both are recorded in the marketplace audit log in the Bitcoin Universe core repository.</p>
+    </div>
+    <p class="measure">Live ARC-20 token data and prepared deploy/mint/transfer actions are available in <a href="https://inscribe.bitcoinuniverse.io/arc20">Bitcoin Inscribe</a>; every action is handed to a compatible Bitcoin wallet for review and signing.</p>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <p><strong>Atomicals + ARC-20 protocol documentation</strong><br>
+          Owning repository: <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20">bitcoinuniverseio/atomicals-and-arc-20</a><br>
+          Source path: <code>/guide.html</code> · <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/edit/main/guide.html">Edit on GitHub</a></p>
+        </div>
+        <div>
+          <p>Document version 2.0.0 · Lifecycle: beta<br>
+          Chain: Bitcoin mainnet · Last verified: 2026-09-01<br>
+          <a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></p>
+        </div>
+      </div>
+      <p class="footer-meta">Upstream protocol by the Atomicals project. This site documents the protocol as indexed by Bitcoin Universe and marks Universe-specific decisions explicitly.</p>
+    </div>
+  </footer>
+</body>
+</html>

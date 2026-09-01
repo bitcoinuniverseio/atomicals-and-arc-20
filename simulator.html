@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ARC-20 transfer simulator | Atomicals + ARC-20</title>
+  <meta name="description" content="Client-side simulator of ARC-20 coloring: enter input sats carrying token color and output values, and see which outputs carry which balance and when color burns.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/simulator.html">
+  <meta property="og:title" content="ARC-20 transfer outcome simulator">
+  <meta property="og:description" content="Apply the indexer's ARC-20 coloring and split rules to your own transaction shape, entirely in your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/simulator.html">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+  <script src="assets/simulator.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="2.4" class="d-fill-accent"/><ellipse cx="11" cy="11" rx="9.5" ry="4" class="d-orbit"/><ellipse cx="11" cy="11" rx="9.5" ry="4" transform="rotate(60 11 11)" class="d-orbit"/></svg>
+        Atomicals + ARC-20
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./">Overview</a>
+        <a href="specification.html">Specification</a>
+        <a href="guide.html">Guide</a>
+        <a href="reference.html">Reference</a>
+        <a href="test-vectors.html">Test vectors</a>
+        <a href="simulator.html" aria-current="page">Simulator</a>
+      </nav>
+      <div class="header-tools">
+        <div class="search-box">
+          <label for="search-input" class="visually-hidden">Search this site</label>
+          <input type="search" id="search-input" placeholder="Search docs" autocomplete="off">
+          <span class="search-hint" aria-hidden="true">/</span>
+          <ul id="search-results" class="search-results" aria-label="Search results"></ul>
+        </div>
+        <button type="button" id="theme-toggle" class="theme-toggle">Theme</button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <p class="kicker">Interactive instrument</p>
+    <h1>ARC-20 transfer outcome simulator</h1>
+    <p class="lede measure">Enter the inputs of a hypothetical transaction, their satoshi value and any token color they carry, and its outputs. The simulator applies the same coloring rules the indexer applies and explains, step by step, which outputs end up carrying which token balance and when color burns.</p>
+
+    <div class="note">
+      <p><strong>Grounding and privacy.</strong> The rule engine, <code>assets/simulator.js</code> version 2.0.0, is a port of the fungible token coloring logic in the Bitcoin Universe Atomicals indexer, a fork of atomicals-electrumx (<code>electrumx/lib/atomicals_blueprint_builder.py</code>), using Bitcoin mainnet activation heights. Everything runs locally in your browser and nothing you enter is logged or transmitted. It models token coloring only, not signatures, fees, or mempool policy, and it is not wallet software: verify any real transaction in a compatible wallet before signing.</p>
+    </div>
+
+    <figure class="fig">
+      <div class="fig-scroll">
+      <svg viewBox="0 0 640 200" width="640" role="img" aria-labelledby="fig-sim-t fig-sim-d">
+        <title id="fig-sim-t">How the simulator maps colored inputs to outputs</title>
+        <desc id="fig-sim-d">A colored input of 10000 units on the left flows into a transaction box and out to two outputs of 3000 and 6800 sats. An annotation marks the 200 sat fee as burned token value.</desc>
+        <rect x="250" y="34" width="140" height="132" rx="8" class="d-hair d-fill-wash"/>
+        <text x="320" y="56" text-anchor="middle" class="d-text">transaction</text>
+        <circle cx="80" cy="90" r="30" class="d-accent d-fill-paper"/>
+        <text x="80" y="87" text-anchor="middle" class="d-text-mono">10000</text>
+        <text x="80" y="102" text-anchor="middle" class="d-text-mono-soft">sats + units</text>
+        <text x="80" y="136" text-anchor="middle" class="d-text-soft">input 0, colored</text>
+        <path d="M112 92 C 180 92 210 96 248 100" class="d-orbit"/>
+        <circle cx="460" cy="70" r="24" class="d-accent d-fill-paper"/>
+        <text x="460" y="67" text-anchor="middle" class="d-text-mono">3000</text>
+        <text x="460" y="82" text-anchor="middle" class="d-text-mono-soft">units</text>
+        <text x="500" y="74" class="d-text-soft">output 0</text>
+        <circle cx="460" cy="136" r="28" class="d-accent d-fill-paper"/>
+        <text x="460" y="133" text-anchor="middle" class="d-text-mono">6800</text>
+        <text x="460" y="148" text-anchor="middle" class="d-text-mono-soft">units</text>
+        <text x="504" y="140" class="d-text-soft">output 1</text>
+        <path d="M392 88 C 410 82 420 76 434 72" class="d-orbit"/>
+        <path d="M392 116 C 408 122 418 128 432 132" class="d-orbit"/>
+        <text x="320" y="112" text-anchor="middle" class="d-text-mono-soft">9800 of 10000 units</text>
+        <text x="320" y="126" text-anchor="middle" class="d-text-mono-soft">covered by outputs</text>
+        <text x="320" y="150" text-anchor="middle" class="d-text-bad">200 to fee = burned</text>
+      </svg>
+      </div>
+      <figcaption><b>Fig. 1:</b> the default scenario. A 10000 unit colored input paid into 3000 and 6800 satoshi outputs leaves 200 units in the miner fee, and those units burn. Change the numbers below and run the rules yourself.</figcaption>
+    </figure>
+
+    <noscript>
+      <div class="sim-noscript">
+        <p><strong>This instrument needs JavaScript.</strong> The simulator is a progressive enhancement. Every rule it applies is written out on the <a href="specification.html#coloring">specification page</a> as rules C1 to C12, and worked through by hand on the <a href="test-vectors.html">test vectors page</a>.</p>
+      </div>
+    </noscript>
+    <div class="sim-noscript" id="sim-noscript-hint">
+      <p>Loading the simulator. If it does not appear, JavaScript is disabled: the rules are written out on the <a href="specification.html#coloring">specification page</a> and worked through on the <a href="test-vectors.html">test vectors page</a>.</p>
+    </div>
+
+    <div id="sim-app" class="sim" hidden>
+      <fieldset>
+        <legend>Rule set</legend>
+        <div class="sim-row">
+          <div>
+            <label for="sim-era">Era, by Bitcoin mainnet activation height</label>
+            <select id="sim-era">
+              <option value="current" selected>Current: height 848484 and later, partial coloring and z</option>
+              <option value="mid">Height 819181 to 848483, exact cover required</option>
+            </select>
+          </div>
+          <div>
+            <label for="sim-op">Operation in the witness payload</label>
+            <select id="sim-op">
+              <option value="none" selected>None, a plain spend of colored UTXOs</option>
+              <option value="y">y: split</option>
+              <option value="z">z: custom color</option>
+            </select>
+          </div>
+        </div>
+        <div id="sim-op-fields" class="sim-row"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Inputs</legend>
+        <div class="table-wrap">
+          <table id="sim-inputs">
+            <thead><tr><th scope="col">#</th><th scope="col">Satoshi value</th><th scope="col">Token id, blank for none</th><th scope="col">Token units carried</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button type="button" class="btn secondary" id="sim-add-input">Add input</button>
+        <p style="font-size:0.85rem" class="measure">Use any label as the token id; a ticker works well. Two inputs sharing an id carry the same token. Under current rules an input's token units may be fewer than its satoshis, which is a partially colored UTXO from an earlier transaction.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Outputs</legend>
+        <div class="table-wrap">
+          <table id="sim-outputs">
+            <thead><tr><th scope="col">#</th><th scope="col">Satoshi value</th><th scope="col">OP_RETURN</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button type="button" class="btn secondary" id="sim-add-output">Add output</button>
+        <p style="font-size:0.85rem" class="measure">The difference between total input and total output satoshis is the miner fee. OP_RETURN outputs are unspendable and are skipped by regular assignment.</p>
+      </fieldset>
+
+      <button type="button" class="btn" id="sim-run">Run the coloring rules</button>
+
+      <div class="sim-out">
+        <h2 style="border-top:0;margin-top:1.2rem">Step by step</h2>
+        <div id="sim-log" aria-live="polite"></div>
+        <div id="sim-table"></div>
+        <div id="sim-summary"></div>
+      </div>
+    </div>
+
+    <h2 id="what-it-models">What this instrument models</h2>
+    <ul class="measure">
+      <li><strong>Regular transfer.</strong> Tokens are ordered first in, first out by input index, then each colors outputs left to right. Before height 848484 an output was colored only when the remaining token value covered its full satoshi value; from that height the last output may be partially colored and any excess burns.</li>
+      <li><strong>The non-clean fallback.</strong> If a token cannot be placed, every token restarts from output 0, which can stack several tokens onto the same outputs. Rule C7.</li>
+      <li><strong>Split (y).</strong> Each token can skip a declared amount of output satoshis before its coloring begins, which is how two tokens sharing one input UTXO are separated.</li>
+      <li><strong>Custom color (z).</strong> From height 848484 the payload can direct exact token values at exact outputs. Requests are clamped to the output's satoshis and to the remaining balance, and unassigned value burns.</li>
+      <li><strong>Burns.</strong> Whenever token value fails to land on a spendable output, the indexer records it as burned. It never returns.</li>
+    </ul>
+    <p class="measure">The written rules, with numbers you can cite, are on the <a href="specification.html#coloring">specification page</a>. Worked examples with expected outcomes, including cases transcribed from the indexer's own tests, are on the <a href="test-vectors.html">test vectors page</a>.</p>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <p><strong>Atomicals + ARC-20 protocol documentation</strong><br>
+          Owning repository: <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20">bitcoinuniverseio/atomicals-and-arc-20</a><br>
+          Source path: <code>/simulator.html</code> · <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/edit/main/simulator.html">Edit on GitHub</a></p>
+        </div>
+        <div>
+          <p>Document version 2.0.0 · Engine 2.0.0 · Lifecycle: beta<br>
+          Chain: Bitcoin mainnet · Last verified: 2026-09-01<br>
+          <a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></p>
+        </div>
+      </div>
+      <p class="footer-meta">Upstream protocol by the Atomicals project. This site documents the protocol as indexed by Bitcoin Universe and marks Universe-specific decisions explicitly.</p>
+    </div>
+  </footer>
+</body>
+</html>

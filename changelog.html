@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Changelog | Atomicals + ARC-20</title>
+  <meta name="description" content="Version history of the Atomicals + ARC-20 protocol documentation published by Bitcoin Universe.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/changelog.html">
+  <meta property="og:title" content="Changelog | Atomicals + ARC-20">
+  <meta property="og:description" content="Version history of the Atomicals + ARC-20 protocol documentation.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/changelog.html">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="2.4" class="d-fill-accent"/><ellipse cx="11" cy="11" rx="9.5" ry="4" class="d-orbit"/><ellipse cx="11" cy="11" rx="9.5" ry="4" transform="rotate(60 11 11)" class="d-orbit"/></svg>
+        Atomicals + ARC-20
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./">Overview</a>
+        <a href="specification.html">Specification</a>
+        <a href="guide.html">Guide</a>
+        <a href="reference.html">Reference</a>
+        <a href="test-vectors.html">Test vectors</a>
+        <a href="simulator.html">Simulator</a>
+      </nav>
+      <div class="header-tools">
+        <div class="search-box">
+          <label for="search-input" class="visually-hidden">Search this site</label>
+          <input type="search" id="search-input" placeholder="Search docs" autocomplete="off">
+          <span class="search-hint" aria-hidden="true">/</span>
+          <ul id="search-results" class="search-results" aria-label="Search results"></ul>
+        </div>
+        <button type="button" id="theme-toggle" class="theme-toggle">Theme</button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <p class="kicker">Document history</p>
+    <h1>Changelog</h1>
+    <p class="lede measure">History of this documentation. Protocol rule changes are dated by Bitcoin activation height and listed on the <a href="specification.html#activation">specification page</a>; this page tracks the documents themselves.</p>
+
+    <h2 id="v2-0-0">2.0.0, 2026-09-01</h2>
+    <ul class="measure">
+      <li>Complete rebuild as a protocol dossier. Specification, guide, reference, test vectors, simulator, and changelog pages replace the previous single landing page.</li>
+      <li>Normative specification added, grounded in the Bitcoin Universe Atomicals indexer, a fork of atomicals-electrumx: envelope grammar, commit and reveal windows, CBOR payload requirements, ARC-20 coloring and splitting rules, dmint bitwork rules, and invalidity conditions, all as numbered rules.</li>
+      <li>ARC-20 transfer outcome simulator added: a client-side rule engine mirroring the indexer's FIFO ordering, output filling, split and custom color handling, the non-clean fallback, and burn accounting, with a step by step explanation.</li>
+      <li>Test vectors page added with valid and invalid cases, several transcribed from the indexer's own test suite.</li>
+      <li>Reference page added covering indexer semantics for confirmation, mempool, and reorg behavior, plus a list of Universe-specific indexing decisions kept separate from upstream protocol rules.</li>
+      <li>Product support matrix restricted to actions verifiable in Bitcoin Universe code, with the single-host order book durability limit and the open settlement reorg reconciliation item stated explicitly rather than glossed over.</li>
+      <li>Local search, dark and light themes, keyboard operability, and figure-style SVG diagrams introduced. The site works without JavaScript for all ordinary content.</li>
+      <li>Machine readable manifest, sitemap, robots.txt, and llms.txt added.</li>
+      <li>Accurate content preserved from the previous site: the one unit equals one satoshi model, UTXO ownership, the direct and decentralized issuance paths, the warning about keeping colored UTXOs intact before signing, the live ARC-20 workspace link, and the Atomicals CLI artwork credit.</li>
+    </ul>
+
+    <h2 id="v1">1.x, 2026-07-18 to 2026-08-19</h2>
+    <ul class="measure">
+      <li>2026-08-19: described Universe-operated Atomicals production data behind the live ARC-20 workspace.</li>
+      <li>2026-08-07: linked the live ARC-20 workspace in Bitcoin Inscribe.</li>
+      <li>2026-07-30: reworked the landing page around the ownership journey.</li>
+      <li>2026-07-18: first published pages for Atomicals and ARC-20 under this repository.</li>
+    </ul>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <p><strong>Atomicals + ARC-20 protocol documentation</strong><br>
+          Owning repository: <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20">bitcoinuniverseio/atomicals-and-arc-20</a><br>
+          Source path: <code>/changelog.html</code> · <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/edit/main/changelog.html">Edit on GitHub</a></p>
+        </div>
+        <div>
+          <p>Document version 2.0.0 · Lifecycle: beta<br>
+          Chain: Bitcoin mainnet · Last verified: 2026-09-01<br>
+          <a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></p>
+        </div>
+      </div>
+      <p class="footer-meta">Upstream protocol by the Atomicals project. This site documents the protocol as indexed by Bitcoin Universe and marks Universe-specific decisions explicitly.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Specification | Atomicals + ARC-20</title>
+  <meta name="description" content="Normative Atomicals and ARC-20 specification: atom envelope grammar, commit and reveal windows, CBOR payload fields, dmint bitwork rules, coloring rules, and invalidity conditions.">
+  <link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/specification.html">
+  <meta property="og:title" content="Atomicals + ARC-20 specification">
+  <meta property="og:description" content="Envelope grammar, commit and reveal, CBOR fields, dmint bitwork, ARC-20 coloring rules, and invalidity conditions with numbered rules.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/specification.html">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="2.4" class="d-fill-accent"/><ellipse cx="11" cy="11" rx="9.5" ry="4" class="d-orbit"/><ellipse cx="11" cy="11" rx="9.5" ry="4" transform="rotate(60 11 11)" class="d-orbit"/></svg>
+        Atomicals + ARC-20
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="./">Overview</a>
+        <a href="specification.html" aria-current="page">Specification</a>
+        <a href="guide.html">Guide</a>
+        <a href="reference.html">Reference</a>
+        <a href="test-vectors.html">Test vectors</a>
+        <a href="simulator.html">Simulator</a>
+      </nav>
+      <div class="header-tools">
+        <div class="search-box">
+          <label for="search-input" class="visually-hidden">Search this site</label>
+          <input type="search" id="search-input" placeholder="Search docs" autocomplete="off">
+          <span class="search-hint" aria-hidden="true">/</span>
+          <ul id="search-results" class="search-results" aria-label="Search results"></ul>
+        </div>
+        <button type="button" id="theme-toggle" class="theme-toggle">Theme</button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+    <p class="kicker">Normative document</p>
+    <h1>Atomicals + ARC-20 specification</h1>
+    <p class="lede measure">The rules below are stated as the indexer enforces them. The normative source is the Bitcoin Universe Atomicals indexer, a pinned fork of atomicals-electrumx; file references name modules inside it. The protocol originated with the upstream Atomicals project, and where this fork adds or narrows behavior the rule says so.</p>
+    <p class="page-meta">Rule identifiers (E envelope, I identifiers, R commit and reveal, T tickers, F direct mints, D dmint deploys, M dmint claims, B bitwork, C coloring, S state, N names, X invalidity) are stable within document version 2.0.0.</p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <strong>Contents</strong>
+      <ol>
+        <li><a href="#envelope">The atom envelope</a></li>
+        <li><a href="#payload">CBOR payload</a></li>
+        <li><a href="#identifiers">Identifiers</a></li>
+        <li><a href="#commit-reveal">Commit and reveal</a></li>
+        <li><a href="#operations">Operations</a></li>
+        <li><a href="#arc20">ARC-20 issuance</a></li>
+        <li><a href="#bitwork">Bitwork proof-of-work</a></li>
+        <li><a href="#coloring">ARC-20 coloring rules</a></li>
+        <li><a href="#state">State, sealing, immutability</a></li>
+        <li><a href="#names">Realms, containers, dmitems</a></li>
+        <li><a href="#activation">Activation heights</a></li>
+        <li><a href="#invalidity">Invalidity conditions</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="envelope">1. The atom envelope</h2>
+    <p class="measure">Atomicals operations travel inside taproot leaf scripts revealed in witness data. The carrier is an ordinary Bitcoin transaction; consensus never sees the protocol.</p>
+
+    <figure class="fig">
+      <div class="fig-scroll">
+      <svg viewBox="0 0 660 150" width="660" role="img" aria-labelledby="fig-env-t fig-env-d">
+        <title id="fig-env-t">Anatomy of the atom envelope in a tapscript</title>
+        <desc id="fig-env-d">A row of labelled script segments: a 32 byte pubkey push, OP_CHECKSIG, OP_IF, a push of the four bytes atom, a push of the operation code such as dmt, one or more payload pushes holding CBOR, and OP_ENDIF.</desc>
+        <rect x="10" y="40" width="120" height="44" rx="4" class="d-hair d-fill-wash"/><text x="70" y="59" text-anchor="middle" class="d-text-mono">0x20 &lt;32B key&gt;</text><text x="70" y="75" text-anchor="middle" class="d-text-mono-soft">pubkey push</text>
+        <rect x="134" y="40" width="88" height="44" rx="4" class="d-hair d-fill-paper"/><text x="178" y="59" text-anchor="middle" class="d-text-mono">OP_CHECKSIG</text><text x="178" y="75" text-anchor="middle" class="d-text-mono-soft">not parsed</text>
+        <rect x="226" y="40" width="56" height="44" rx="4" class="d-hair d-fill-paper"/><text x="254" y="59" text-anchor="middle" class="d-text-mono">OP_IF</text><text x="254" y="75" text-anchor="middle" class="d-text-mono-soft">0x63</text>
+        <rect x="286" y="40" width="96" height="44" rx="4" class="d-accent d-fill-wash"/><text x="334" y="59" text-anchor="middle" class="d-text-mono">"atom"</text><text x="334" y="75" text-anchor="middle" class="d-text-mono-soft">0461746f6d</text>
+        <rect x="386" y="40" width="72" height="44" rx="4" class="d-hair d-fill-warmwash"/><text x="422" y="59" text-anchor="middle" class="d-text-mono">"dmt"</text><text x="422" y="75" text-anchor="middle" class="d-text-mono-soft">op push</text>
+        <rect x="462" y="40" width="116" height="44" rx="4" class="d-hair d-fill-warmwash"/><text x="520" y="59" text-anchor="middle" class="d-text-mono">CBOR pushes</text><text x="520" y="75" text-anchor="middle" class="d-text-mono-soft">concatenated</text>
+        <rect x="582" y="40" width="70" height="44" rx="4" class="d-hair d-fill-paper"/><text x="617" y="59" text-anchor="middle" class="d-text-mono">OP_ENDIF</text><text x="617" y="75" text-anchor="middle" class="d-text-mono-soft">0x68</text>
+        <text x="10" y="22" class="d-text-soft">taproot leaf script, revealed in the witness of the spending transaction</text>
+        <path d="M334 90 L334 108" class="d-warm-line"/>
+        <text x="334" y="126" text-anchor="middle" class="d-text-soft">the five byte marker the indexer scans for</text>
+      </svg>
+      </div>
+      <figcaption><b>Fig. 1:</b> the atom envelope. The indexer requires a witness element of at least 39 bytes beginning with a 32 byte pubkey push, then finds the first <code>OP_IF</code> and expects the marker <code>0461746f6d</code> immediately after it.</figcaption>
+    </figure>
+
+    <ol class="rules">
+      <li data-rule="E1">A witness element is considered only if it is at least 39 bytes long and its first byte is <code>0x20</code>, a 32 byte push. Source: <code>parse_protocols_operations_from_witness_for_input</code> in <code>electrumx/lib/util_atomicals.py</code>.</li>
+      <li data-rule="E2">After the key push the parser scans forward to the first <code>OP_IF</code> (<code>0x63</code>). The five bytes immediately following it MUST be <code>0461746f6d</code>, a four byte push of ASCII <code>atom</code>. Bytes between the key push and <code>OP_IF</code>, typically <code>OP_CHECKSIG</code>, are not interpreted, and a leading <code>OP_FALSE</code> is not required by this implementation.</li>
+      <li data-rule="E3">The operation name follows as a single push: three letter operations as <code>0x03</code> plus name, two letter as <code>0x02</code> plus name, one letter as <code>0x01</code> plus name. An unknown code causes the envelope to be skipped, not the transaction to be rejected.</li>
+      <li data-rule="E4">The payload is the concatenation of the data of every subsequent push, including <code>OP_PUSHDATA1</code>, <code>OP_PUSHDATA2</code>, and <code>OP_PUSHDATA4</code>, up to <code>OP_ENDIF</code>. This is how payloads exceed the 520 byte single push limit.</li>
+      <li data-rule="E5">All inputs are scanned in order; the first successfully parsed envelope wins and its input index is recorded. Most operations are valid only when that index is 0, see rule R1.</li>
+      <li data-rule="E6">Payment markers use a separate carrier: an <code>OP_RETURN</code> output of the form <code>6a 04 "atom" 01 "p"|"d" 24 &lt;36 byte atomical id&gt;</code>, where <code>p</code> marks a subrealm payment and <code>d</code> a dmitem payment. See rule N10.</li>
+    </ol>
+
+    <h2 id="payload">2. CBOR payload</h2>
+    <ol class="rules">
+      <li data-rule="E7">The payload bytes MUST decode as a single CBOR map. Any other CBOR type, or undecodable bytes, invalidates the operation.</li>
+      <li data-rule="E8">The reserved top level keys <code>meta</code>, <code>args</code>, <code>ctx</code>, and <code>init</code> MUST be maps when present. Values inside them are restricted to integers, floats, strings, lists, and nested maps. Byte strings are rejected inside <code>meta</code> and <code>ctx</code> always, and inside <code>args</code> before activation height 828128. <code>init</code> may always carry bytes.</li>
+      <li data-rule="E9">Functional parameters live in <code>args</code>. Recognized keys include <code>request_ticker</code>, <code>request_realm</code>, <code>request_subrealm</code>, <code>request_container</code>, <code>request_dmitem</code>, <code>mint_ticker</code>, <code>claim_type</code>, <code>parent_realm</code>, <code>parent_container</code>, <code>parents</code>, <code>i</code>, <code>bitworkc</code>, <code>bitworkr</code>, <code>mint_bitworkc</code>, <code>mint_bitworkr</code>, <code>mint_height</code>, <code>mint_amount</code>, <code>max_mints</code>, <code>md</code>, <code>bv</code>, <code>bci</code>, <code>bri</code>, <code>bcs</code>, <code>brs</code>, <code>maxg</code>, <code>proof</code>, and <code>main</code>.</li>
+      <li data-rule="E10">At most one name request may appear per mint. More than one of <code>request_realm</code>, <code>request_subrealm</code>, <code>request_container</code>, <code>request_ticker</code>, or <code>request_dmitem</code> in the same <code>args</code> invalidates the mint.</li>
+      <li data-rule="E11">On an <code>nft</code>, <code>ft</code>, or <code>dft</code> mint, every top level payload key other than <code>args</code> is stored as the object's initial state, equivalent to a first <code>mod</code>. File content conventionally lives under named keys with metadata such as <code>$ct</code> for content type alongside raw bytes.</li>
+      <li data-rule="E12"><code>args.parents</code>, when present, maps compact atomical ids to minimum satoshi values. Each listed parent atomical MUST be spent among the transaction's inputs carrying at least that total input value, or the mint is invalid.</li>
+    </ol>
+
+    <h2 id="identifiers">3. Identifiers</h2>
+    <ol class="rules">
+      <li data-rule="I1">An atomical id is 36 bytes: the commit transaction id (32 bytes) plus the commit output index (4 bytes, little endian). The commit outpoint is the prevout of the input that carried the reveal envelope. Compact text form is <code>&lt;txid_hex&gt;i&lt;index&gt;</code>, with the index bounded to 0 through 100000.</li>
+      <li data-rule="I2">A location id has the same 36 byte shape but names where an atomical currently sits: the transaction id and output index of the UTXO holding it.</li>
+      <li data-rule="I3">On mint the atomical is imprinted at output 0 of the reveal transaction. The reveal location index is always 0.</li>
+      <li data-rule="I4">A secondary reference form is the Crockford base 32 encoding of the byte reversed commit transaction id, lowercased, suffixed <code>i0</code>.</li>
+    </ol>
+
+    <h2 id="commit-reveal">4. Commit and reveal</h2>
+    <figure class="fig">
+      <div class="fig-scroll">
+      <svg viewBox="0 0 660 170" width="660" role="img" aria-labelledby="fig-cr-t fig-cr-d">
+        <title id="fig-cr-t">Commit and reveal timeline</title>
+        <desc id="fig-cr-d">A block height axis. A commit transaction at height h locks the envelope and a reveal spends it. General reveals are valid up to h plus 100 blocks, name reveals only to h plus 3 blocks, and subname payments from h plus 3 to h plus 15.</desc>
+        <line x1="30" y1="70" x2="640" y2="70" class="d-line"/>
+        <circle cx="90" cy="70" r="8" class="d-fill-accent"/>
+        <text x="90" y="50" text-anchor="middle" class="d-text">commit</text>
+        <text x="90" y="94" text-anchor="middle" class="d-text-mono-soft">height h</text>
+        <circle cx="210" cy="70" r="8" class="d-accent d-fill-paper"/>
+        <text x="210" y="50" text-anchor="middle" class="d-text">reveal</text>
+        <path d="M90 112 L250 112" class="d-warm-line"/>
+        <text x="170" y="130" text-anchor="middle" class="d-text-soft">names: reveal by h+3</text>
+        <path d="M90 142 L610 142" class="d-orbit"/>
+        <text x="350" y="160" text-anchor="middle" class="d-text-soft">general mints: reveal by h+100 · subname payment window: h+3 to h+15</text>
+        <text x="628" y="64" text-anchor="end" class="d-text-mono-soft">height</text>
+      </svg>
+      </div>
+      <figcaption><b>Fig. 2:</b> commit and reveal windows. The commit is the transaction that created the outpoint spent by the reveal's envelope input; windows are measured between their block heights.</figcaption>
+    </figure>
+    <ol class="rules">
+      <li data-rule="R1">Every mint operation (<code>nft</code>, <code>ft</code>, <code>dft</code>, <code>dmt</code>, and this fork's <code>def</code> and <code>new</code>) MUST carry its envelope on input 0 of the reveal transaction.</li>
+      <li data-rule="R2">The commit transaction MUST itself be indexed and MUST be at or after the protocol activation height 808080.</li>
+      <li data-rule="R3">General window: a mint reveal is invalid unless <code>commit_height &gt;= reveal_height - 100</code>.</li>
+      <li data-rule="R4">Name window: mints requesting any name (realm, subrealm, container, ticker, dmitem) are additionally invalid unless <code>commit_height &gt;= reveal_height - 3</code>. Late reveals are recorded with status <code>expired_revealed_late</code>.</li>
+      <li data-rule="R5">From activation height 822800 the commit outpoint index MUST be 0 for name type mints and for <code>dmt</code> mints.</li>
+      <li data-rule="R6">The reveal transaction MUST have at least one output; the mint imprints on output 0, see rule I3.</li>
+      <li data-rule="R7"><code>dmt</code> claims are exempt from R3 and R4; their height gates are M3 and M4 instead.</li>
+    </ol>
+
+    <h2 id="operations">5. Operations</h2>
+    <div class="table-wrap">
+      <table>
+        <caption>Recognized operation codes</caption>
+        <thead><tr><th scope="col">Op</th><th scope="col">Push hex</th><th scope="col">Meaning</th><th scope="col">Family</th></tr></thead>
+        <tbody>
+          <tr><td><code>nft</code></td><td><code>036e6674</code></td><td>Mint a non-fungible token</td><td>NFT</td></tr>
+          <tr><td><code>ft</code></td><td><code>026674</code></td><td>Mint a fungible token with a direct fixed supply</td><td>ARC-20</td></tr>
+          <tr><td><code>dft</code></td><td><code>03646674</code></td><td>Deploy a decentralized mint fungible token</td><td>ARC-20</td></tr>
+          <tr><td><code>dmt</code></td><td><code>03646d74</code></td><td>Mint units of a deployed <code>dft</code> token</td><td>ARC-20</td></tr>
+          <tr><td><code>mod</code></td><td><code>036d6f64</code></td><td>Modify general state</td><td>state</td></tr>
+          <tr><td><code>evt</code></td><td><code>03657674</code></td><td>Event or message, no state change</td><td>state</td></tr>
+          <tr><td><code>dat</code></td><td><code>03646174</code></td><td>Store data on a transaction</td><td>data</td></tr>
+          <tr><td><code>sl</code></td><td><code>02736c</code></td><td>Seal an NFT and lock it forever</td><td>NFT</td></tr>
+          <tr><td><code>x</code></td><td><code>0178</code></td><td>Splat: separate co-located NFTs into distinct outputs</td><td>transfer</td></tr>
+          <tr><td><code>y</code></td><td><code>0179</code></td><td>Split: skip output value before coloring, per token</td><td>transfer</td></tr>
+          <tr><td><code>z</code></td><td><code>017a</code></td><td>Custom color: direct token value at chosen outputs, from height 848484</td><td>transfer</td></tr>
+          <tr><td><code>def</code>, <code>new</code></td><td><code>03646566</code>, <code>036e6577</code></td><td>AVM protocol definition and contract instantiation. These are additions in the Bitcoin Universe fork's AVM support, not part of the original upstream operation set.</td><td>AVM</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="measure">A transaction that spends atomicals-bearing UTXOs with no envelope at all is a plain transfer, and the coloring rules in section 8 still apply to it.</p>
+
+    <h2 id="arc20">6. ARC-20 issuance</h2>
+    <h3 id="tickers">6.1 Tickers</h3>
+    <ol class="rules">
+      <li data-rule="T1">A ticker MUST match <code>^[a-z0-9]{1,21}$</code>: lowercase letters and digits only, 1 to 21 characters. No hyphens, no uppercase, no unicode.</li>
+      <li data-rule="T2">Ticker claims resolve by earliest commit: among valid candidates the one with the lowest commit transaction number wins. Bitwork is an admission requirement, never a tiebreaker.</li>
+      <li data-rule="T3">A ticker request MUST carry commit bitwork (<code>args.bitworkc</code>) with a prefix of at least 4 hex characters, like all top level name types. See rule N2.</li>
+      <li data-rule="T4">A ticker claim becomes <code>verified</code> once its commit is at least 3 blocks deep; until then it is <code>pending</code>. A later mint attempt is rejected outright if any existing candidate committed earlier.</li>
+    </ol>
+
+    <h3 id="direct-ft">6.2 Direct mints (<code>ft</code>)</h3>
+    <ol class="rules">
+      <li data-rule="F1">An <code>ft</code> mint MUST include a valid <code>args.request_ticker</code> and MUST NOT set <code>args.i</code>; fungible tokens cannot be immutable.</li>
+      <li data-rule="F2">The entire fixed supply equals the satoshi value of output 0 of the reveal transaction. Every supply unit is one colored satoshi from birth.</li>
+      <li data-rule="F3">The minted token UTXO is recorded at reveal output 0 with token value equal to satoshi value.</li>
+    </ol>
+
+    <h3 id="dft">6.3 Decentralized mint deploys (<code>dft</code>)</h3>
+    <ol class="rules">
+      <li data-rule="D1">A <code>dft</code> deploy MUST include a valid <code>request_ticker</code> and integers <code>mint_amount</code> in 546 to 100000000, <code>mint_height</code> in 0 to 10000000, and <code>max_mints</code> of at least 1. <code>max_mints</code> is capped at 500000 before activation height 828128 and at 21000000 from it.</li>
+      <li data-rule="D2">Optional <code>mint_bitworkc</code> and <code>mint_bitworkr</code> MUST be valid bitwork strings if present; they set the proof-of-work every future claim's commit or reveal transaction id must satisfy.</li>
+      <li data-rule="D3"><code>args.i</code> is forbidden. <code>args.md</code>, the mint mode, MUST be 0, 1, or absent, and <code>md = 1</code> selects perpetual mode which is legal only from height 828128.</li>
+      <li data-rule="D4">Perpetual mode requires a bitwork vector <code>bv</code> matching <code>^[a-z0-9]+$</code> of length at least 4; at least one of <code>bci</code> (commit increment) or <code>bri</code> (reveal increment), each an integer in 0 to 64; a matching start <code>bcs</code> or <code>brs</code> in 64 to 256, defaulting to 64, whenever an increment is set; <code>max_mints</code> of at most 100000 per difficulty phase; and an optional global cap <code>maxg</code> in 1 to 21000000. <code>mint_bitworkc</code> and <code>mint_bitworkr</code> MUST NOT be set in perpetual mode.</li>
+      <li data-rule="D5">Declared maximum supply: in fixed mode <code>mint_amount × max_mints</code>; in perpetual mode with <code>maxg</code>, <code>mint_amount × maxg</code>; in perpetual mode without <code>maxg</code>, unbounded.</li>
+      <li data-rule="D6">The deploy creates no token UTXO. Supply exists only as claims are minted under the M rules.</li>
+    </ol>
+
+    <h3 id="dmt">6.4 Mint claims (<code>dmt</code>)</h3>
+    <ol class="rules">
+      <li data-rule="M1">A claim names its token with <code>args.mint_ticker</code>, which MUST resolve to a <code>verified</code> deploy of the decentralized subtype.</li>
+      <li data-rule="M2">The envelope MUST be on input 0, and from height 822800 the commit outpoint index MUST be 0.</li>
+      <li data-rule="M3">Both the claim's block height and its commit transaction's height MUST be at or above the deploy's mint height. An earlier claim is a premature mint and is invalid.</li>
+      <li data-rule="M4">Output 0 of the claim MUST carry exactly <code>mint_amount</code> satoshis. Any other value invalidates the claim.</li>
+      <li data-rule="M5">In fixed mode the claim is valid only while the number of prior valid claims is below <code>max_mints</code>. If <code>mint_bitworkc</code> is set the commit transaction id MUST satisfy it; if <code>mint_bitworkr</code> is set the reveal transaction id MUST satisfy it.</li>
+      <li data-rule="M6">In perpetual mode the required bitwork for the current claim is derived from the phase schedule in rule B4, checked against the commit transaction id for <code>bci</code> and the reveal transaction id for <code>bri</code>. From height 828628 a transaction id that satisfies the next longer prefix of <code>bv</code> is also accepted, so a miner who overshoots a phase boundary does not lose the work. Where <code>maxg</code> is set, claims stop at the global cap.</li>
+      <li data-rule="M7">A valid claim writes a token UTXO at output 0 with token value equal to satoshi value. At each block boundary the indexer re-counts claims from durable state and fails hard on any count above the cap, so no inflation is possible.</li>
+    </ol>
+
+    <h2 id="bitwork">7. Bitwork proof-of-work</h2>
+    <ol class="rules">
+      <li data-rule="B1">A bitwork string is <code>&lt;prefix&gt;</code> or <code>&lt;prefix&gt;.&lt;ext&gt;</code>, where the prefix is 1 to 64 lowercase hex characters and <code>ext</code> is an integer 0 to 15. Example: <code>123af.15</code>.</li>
+      <li data-rule="B2">A transaction id satisfies bitwork when its hex form starts with the prefix, and, when <code>ext</code> is present, the hex digit immediately after the prefix has numeric value at least <code>ext</code>. An <code>ext</code> of 0 is equivalent to no extension and an <code>ext</code> of 15 is equivalent to one more prefix character.</li>
+      <li data-rule="B3">A bitwork string encodes a difficulty target of <code>16 × prefix_length + ext</code>.</li>
+      <li data-rule="B4">Perpetual dmint difficulty: with <code>prior_mints</code> claims recorded, <code>current_target = start + floor(prior_mints / max_mints) × increment</code>. The required string is derived by padding <code>bv</code> with zeros to 32 characters, taking <code>floor(target / 16)</code> characters, and appending <code>.&lt;target mod 16&gt;</code> when that remainder is nonzero. Valid ranges are start 64 to 256, increment 1 to 64, and <code>max_mints</code> 1 to 100000.</li>
+      <li data-rule="B5">Request level bitwork on any mint: <code>args.bitworkc</code> is validated against the commit transaction id and <code>args.bitworkr</code> against the reveal transaction id. A declared but unmet bitwork invalidates the whole operation.</li>
+    </ol>
+
+    <h2 id="coloring">8. ARC-20 coloring rules</h2>
+    <p class="measure">Coloring decides, for every transaction that spends token bearing UTXOs, which outputs inherit which token value. Two era switches matter: FIFO ordering from height 819181, and partial coloring plus the <code>z</code> operation from height 848484. Source: <code>electrumx/lib/atomicals_blueprint_builder.py</code>. The <a href="simulator.html">simulator</a> executes exactly these rules.</p>
+
+    <figure class="fig">
+      <div class="fig-scroll">
+      <svg viewBox="0 0 660 250" width="660" role="img" aria-labelledby="fig-col-t fig-col-d">
+        <title id="fig-col-t">An ARC-20 transfer splitting colored sats by output order</title>
+        <desc id="fig-col-d">Two inputs on the left, the first carrying 8000 units of token A and the second 2000 units of token B. Three outputs on the right of 6000, 2000, and 2000 sats. Token A fills outputs 0 and 1 and token B then colors output 2.</desc>
+        <text x="20" y="28" class="d-text">inputs (FIFO order)</text>
+        <circle cx="70" cy="80" r="30" class="d-accent d-fill-wash"/>
+        <text x="70" y="76" text-anchor="middle" class="d-text-mono">A: 8000</text>
+        <text x="70" y="92" text-anchor="middle" class="d-text-mono-soft">in 0</text>
+        <circle cx="70" cy="170" r="24" class="d-warm-line d-fill-warmwash"/>
+        <text x="70" y="166" text-anchor="middle" class="d-text-mono">B: 2000</text>
+        <text x="70" y="182" text-anchor="middle" class="d-text-mono-soft">in 1</text>
+        <text x="430" y="28" class="d-text">outputs (colored left to right)</text>
+        <rect x="430" y="48" width="200" height="44" rx="5" class="d-accent d-fill-wash"/>
+        <text x="530" y="67" text-anchor="middle" class="d-text-mono">out 0 · 6000 sats</text>
+        <text x="530" y="83" text-anchor="middle" class="d-text-mono-soft">A: 6000 units</text>
+        <rect x="430" y="104" width="200" height="44" rx="5" class="d-accent d-fill-wash"/>
+        <text x="530" y="123" text-anchor="middle" class="d-text-mono">out 1 · 2000 sats</text>
+        <text x="530" y="139" text-anchor="middle" class="d-text-mono-soft">A: 2000 units</text>
+        <rect x="430" y="160" width="200" height="44" rx="5" class="d-warm-line d-fill-warmwash"/>
+        <text x="530" y="179" text-anchor="middle" class="d-text-mono">out 2 · 2000 sats</text>
+        <text x="530" y="195" text-anchor="middle" class="d-text-mono-soft">B: 2000 units</text>
+        <path d="M104 72 C 250 50 330 55 426 64" class="d-orbit"/>
+        <path d="M102 92 C 250 105 330 112 426 120" class="d-orbit"/>
+        <path d="M96 172 C 260 176 370 178 426 180" class="d-warm-line"/>
+        <text x="20" y="232" class="d-text-soft">Token A, first seen on input 0, colors first and stops when exhausted. Token B then begins at the next output. Color follows output order, never intent.</text>
+      </svg>
+      </div>
+      <figcaption><b>Fig. 3:</b> an ARC-20 transfer splits colored sats by output order. Token A's 8000 units cover outputs 0 and 1 exactly, so token B starts at output 2. Had A's value not ended on an output boundary, rule C7 would have restarted every token from output 0.</figcaption>
+    </figure>
+
+    <ol class="rules">
+      <li data-rule="C1"><strong>Value model.</strong> Each token bearing UTXO records a satoshi value and a token value. Classically they are equal, one unit to one satoshi. From height 848484 the token value may be lower than the satoshi value, a partially colored output, but never higher.</li>
+      <li data-rule="C2"><strong>Ordering.</strong> When several tokens enter one transaction they are processed first in, first out: by the first input index where each token appears, ties broken by ascending atomical id. Before height 819181 the order was ascending atomical id alone.</li>
+      <li data-rule="C3"><strong>Regular assignment.</strong> Each token, in order, colors outputs left to right starting at the output after the last one the previous token colored.</li>
+      <li data-rule="C4"><strong>Unspendable outputs.</strong> Outputs whose script is <code>OP_RETURN</code>, with or without a leading <code>OP_FALSE</code>, are skipped by regular assignment and never carry color. The split and custom color paths do not apply this filter, so directing value at an unspendable output under <code>z</code> destroys that value.</li>
+      <li data-rule="C5"><strong>Exact cover era, heights 819181 to 848483.</strong> An output could be colored only when the token's remaining value covered its entire satoshi value. Leftover value burned, and a token that could not be placed at all triggered rule C7.</li>
+      <li data-rule="C6"><strong>Partial coloring era, height 848484 onward.</strong> A token colors consecutive outputs and the final output it touches may be partially colored with whatever value remains. Value exceeding the total satoshis of the remaining outputs burns.</li>
+      <li data-rule="C7"><strong>Non-clean fallback.</strong> If any token fails to produce a clean assignment, or finds no colorable output at its starting position, the entire map is discarded and every token restarts assignment from output 0. In this fallback multiple tokens can color the same outputs, and leftovers burn per token.</li>
+      <li data-rule="C8"><strong>Split (<code>y</code>).</strong> With a split envelope on input 0 the payload maps each compact atomical id to a non-negative satoshi amount to skip: outputs are passed over until their cumulative satoshi value reaches that amount, then coloring proceeds as in C5 or C6. This is how two tokens sharing one input UTXO are separated. NFTs present in a split transaction are forced to output 0.</li>
+      <li data-rule="C9"><strong>Custom color (<code>z</code>), from height 848484.</strong> The payload maps each compact atomical id to a map of output index to token value. Requested values are clamped to the output's satoshi value and to the token's remaining value, so no inflation is possible; value assigned to no output burns; an output colored below its satoshi value is partial.</li>
+      <li data-rule="C10"><strong>NFT movement.</strong> NFTs move by input order: the n-th NFT bearing input maps to output n in the FIFO era. An out of range or unspendable target, or a split transaction, sends the NFT to output 0. The <code>x</code> splat operation gives each co-located NFT its own output in ascending id order, overflowing to output 0. NFTs are deliberately hard to burn by accident.</li>
+      <li data-rule="C11"><strong>Burns.</strong> Token value that lands on no spendable output under these rules is recorded as burned and permanently leaves the supply. Burned value is reported per token by the indexer.</li>
+      <li data-rule="C12"><strong>Inflation guard.</strong> The summed colored output value of a token can never exceed its summed input value; the indexer treats any violation as a fatal error, and its broadcast time validator rejects raw transactions whose blueprint would burn or inflate unexpectedly.</li>
+    </ol>
+
+    <h2 id="state">9. State, sealing, immutability</h2>
+    <ol class="rules">
+      <li data-rule="S1"><code>mod</code> updates an atomical's state. History folds in ascending transaction order: a payload with <code>$a = 1</code> deletes the named keys, where a value of <code>true</code> deletes and a nested map recurses; any other payload sets keys by recursive merge. <code>args</code> and <code>$a</code> are never stored.</li>
+      <li data-rule="S2"><code>evt</code> records a message against an atomical without changing state, and like mints must ride input 0.</li>
+      <li data-rule="S3">An NFT minted with <code>args.i = true</code> is immutable, and no <code>mod</code> or <code>evt</code> is ever applied to it. Realms, subrealms, and containers can never be immutable, and neither can fungible tokens.</li>
+      <li data-rule="S4"><code>sl</code> permanently seals an NFT: the indexer records the sealed location and stops advancing the atomical's UTXO, so it can never move or change again.</li>
+    </ol>
+
+    <h2 id="names">10. Realms, containers, dmitems</h2>
+    <ol class="rules">
+      <li data-rule="N1">Name shapes, each segment 1 to 64 characters with no leading or trailing hyphen: realm <code>^[a-z][a-z0-9-]{0,63}$</code>; subrealm, container, and dmitem <code>^[a-z0-9][a-z0-9-]{0,63}$</code>. Names are ASCII at the protocol layer; unicode display forms are an application convention.</li>
+      <li data-rule="N2">Top level names (realm, container, ticker) MUST carry commit bitwork with a prefix of at least 4 hex characters. Subrealms and dmitems are exempt.</li>
+      <li data-rule="N3">Name races resolve by earliest commit transaction number among valid candidates, the same rule as tickers. A claim is <code>verified</code> when its commit is at least 3 blocks deep and it is the earliest candidate.</li>
+      <li data-rule="N4">A subrealm mint declares <code>args.parent_realm</code> and an <code>args.claim_type</code> of <code>direct</code> or <code>rule</code>. Direct claims require the parent realm to be spent in the same transaction. Rule claims are evaluated against the parent's subrealm rule set as of one block before the commit.</li>
+      <li data-rule="N5">A subname rule set is a list of 1 to 100 entries. Each entry carries a regex <code>p</code> of 1 to 100000 characters which MUST compile and MUST NOT contain parentheses, plus at least one of payment outputs <code>o</code>, <code>bitworkc</code>, or <code>bitworkr</code>, where a bitwork value may be the literal <code>any</code>. One invalid entry invalidates the entire rule set.</li>
+      <li data-rule="N6">Payment outputs <code>o</code> map an output script in hex to <code>{"v": &lt;sats&gt;}</code> or <code>{"v": &lt;amount&gt;, "id": &lt;compact atomical id&gt;}</code>. With <code>id</code>, payment is measured in colored units of that ARC-20 token at the paying output. The minimum payment value is 0, so free subnames are legal.</li>
+      <li data-rule="N7">Subname payment window: payment may be made from <code>commit_height + 3</code> and MUST confirm by <code>commit_height + 15</code>, or the candidate expires.</li>
+      <li data-rule="N8">A container's dmint configuration requires <code>v</code> equal to the string <code>"1"</code>, a 64 hex character <code>merkle</code> root, a non-negative <code>mint_height</code>, an optional boolean <code>immutable</code>, and a valid rule set per N5.</li>
+      <li data-rule="N9">A dmitem mint proves membership: <code>args.proof</code> is a non-empty list of <code>{"p": bool, "d": &lt;64 hex&gt;}</code> merkle steps, and <code>args.main</code> names a payload key whose bytes hash into the leaf, accepted under the four combinations of any or specific bitwork against the container's merkle root. Both the commit height and the current height must be at or above the container's mint height.</li>
+      <li data-rule="N10">Subname payments are matched only in transactions carrying the OP_RETURN marker of rule E6, and never in a transaction that also carries a split operation, because a split can reassign ARC-20 value within the paying transaction.</li>
+    </ol>
+
+    <h2 id="activation">11. Activation heights, Bitcoin mainnet</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Height</th><th scope="col">Name</th><th scope="col">Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="num">808080</td><td>Activation</td><td>Atomicals parsing and indexing begins</td></tr>
+          <tr><td class="num">819181</td><td>Dmint</td><td>Container dmitems; FIFO input ordering for transfers</td></tr>
+          <tr><td class="num">822800</td><td>Commitz</td><td>Commit outpoint index must be 0 for name type and <code>dmt</code> mints</td></tr>
+          <tr><td class="num">828128</td><td>Density</td><td><code>max_mints</code> cap raised to 21000000; perpetual mint mode; bytes permitted in <code>args</code></td></tr>
+          <tr><td class="num">828628</td><td>Bitwork rollover</td><td>Perpetual mints may satisfy the next higher difficulty prefix</td></tr>
+          <tr><td class="num">848484</td><td>Custom coloring</td><td>Partial coloring of outputs; the <code>z</code> operation</td></tr>
+          <tr><td class="num">900000</td><td>AVM</td><td><code>def</code> and <code>new</code> handling, Bitcoin Universe fork</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="invalidity">12. Invalidity conditions</h2>
+    <p class="measure">A non-exhaustive checklist of conditions that void an operation. The transaction itself remains a valid Bitcoin transaction; only the protocol meaning is lost.</p>
+    <ol class="rules">
+      <li data-rule="X1">Envelope structural failures: witness element under 39 bytes, missing 32 byte key push, a marker other than <code>atom</code> after <code>OP_IF</code>, an unknown operation code, a payload that is not a CBOR map, or byte values where rule E8 forbids them.</li>
+      <li data-rule="X2">Mint placement failures: envelope not on input 0; commit not indexed or before height 808080; reveal outside the 100 block general window; name reveal outside the 3 block window; a nonzero commit index after height 822800 for name type or <code>dmt</code> mints; a transaction with no outputs.</li>
+      <li data-rule="X3">Name failures: a malformed ticker, realm, container, or dmitem string; multiple name requests in one mint; missing or short commit bitwork on a top level name; an earlier committed candidate already exists; an immutable flag on a realm, subrealm, container, or fungible token.</li>
+      <li data-rule="X4">Deploy failures: <code>mint_amount</code> outside 546 to 100000000; <code>max_mints</code> outside its era cap; <code>mint_height</code> outside 0 to 10000000; malformed mint bitwork; perpetual mode before height 828128, without a valid <code>bv</code>, with static mint bitwork, or with out of range <code>bci</code>, <code>bri</code>, <code>bcs</code>, <code>brs</code>, or <code>maxg</code>.</li>
+      <li data-rule="X5">Claim failures: an unknown or unverified ticker; a claim or its commit before the deploy's mint height; an output 0 value that is not exactly <code>mint_amount</code>; a mint count at or above the cap; a commit or reveal transaction id failing the required or phase derived bitwork.</li>
+      <li data-rule="X6">Payment failures: a subname payment inside a split transaction; a payment after <code>commit_height + 15</code>; a payment output below the rule's value or in the wrong token; a missing OP_RETURN marker.</li>
+      <li data-rule="X7">Declared but unmet request bitwork on any operation, and unmet <code>args.parents</code> minimums per rule E12.</li>
+      <li data-rule="X8">Coloring never fails a transaction. A spend that violates no Bitcoin rule always confirms, and the coloring rules then decide assignment and burns. Invalid protocol intent shows up as burned or unmoved value, not as a rejected transaction. This is the single most important safety fact for wallet authors.</li>
+    </ol>
+
+    <div class="warn">
+      <p><strong>Attribution and scope.</strong> Sections 1 to 11 describe behavior implemented in the atomicals-electrumx lineage and are believed to match upstream Atomicals behavior, except where a rule is marked as a Bitcoin Universe fork addition. Where upstream documentation and this indexer's code disagree, this document follows the code and says so. The full list of Universe-specific indexing decisions is on the <a href="reference.html#universe-decisions">reference page</a>.</p>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <p><strong>Atomicals + ARC-20 protocol documentation</strong><br>
+          Owning repository: <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20">bitcoinuniverseio/atomicals-and-arc-20</a><br>
+          Source path: <code>/specification.html</code> · <a href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/edit/main/specification.html">Edit on GitHub</a></p>
+        </div>
+        <div>
+          <p>Document version 2.0.0 · Lifecycle: beta<br>
+          Chain: Bitcoin mainnet · Last verified: 2026-09-01<br>
+          <a href="https://docs.bitcoinuniverse.io">docs.bitcoinuniverse.io</a></p>
+        </div>
+      </div>
+      <p class="footer-meta">Upstream protocol by the Atomicals project. This site documents the protocol as indexed by Bitcoin Universe and marks Universe-specific decisions explicitly.</p>
+    </div>
+  </footer>
+</body>
+</html>
