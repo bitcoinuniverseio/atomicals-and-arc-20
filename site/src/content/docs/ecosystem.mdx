@@ -1,0 +1,76 @@
+---
+title: Ecosystem registry
+description: Wallets, indexers, explorers, marketplaces, and tools, with the evidence behind every status and the date it was checked.
+sidebar:
+  order: 1
+  label: Registry
+provenance:
+  pageId: ecosystem/index
+  area: ecosystem
+  audience: [everyone, developer]
+  applicability: third-party
+  authority: third-party
+  networks: [mainnet]
+  verified: '2026-08-31'
+  tags: [ecosystem, directory]
+  limitations:
+    - Listing is not endorsement.
+    - Availability is recorded only from a reachable source. Where none established a state, the record says unknown.
+    - A network failure produces unreachable, never deprecated or closed.
+---
+
+import EcosystemRegistry from '../../components/EcosystemRegistry.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+<Aside type="caution" title="Listing is not endorsement">
+A record exists so you can find something and judge it. It is not a recommendation, a security
+review, or a statement that a product is safe to use with your assets.
+</Aside>
+
+## How a status is decided
+
+| State | What it means |
+| --- | --- |
+| `verified-active` | A reachable source established that it is operating |
+| `degraded` | Reachable, and a reachable source established that it is not fully operating |
+| `unreachable` | Could not be reached at the last check. This is not evidence of closure |
+| `deprecated` | A reachable source from the operator established that it is being retired |
+| `closed` | A reachable source from the operator established that it has shut down |
+| `unknown` | No reachable source established any state |
+
+Three rules follow, and they are the reason this registry is shorter than an aggregated directory:
+
+1. **A network failure is not closure.** It produces `unreachable`, and nothing stronger.
+2. **Conflicting evidence produces `unverified`,** never a guess.
+3. **An old directory entry is not evidence.** A record is not listed as active because someone
+   else listed it.
+
+## The registry
+
+<EcosystemRegistry />
+
+## What is deliberately absent
+
+Third-party marketplaces and explorers are not individually listed. No reachable source was checked
+for any of them during this review, and listing one from an older directory would assert a state
+we did not establish.
+
+That is a gap, and saying so is better than filling it with guesses. To add a record, open an
+issue with the evidence.
+
+## Adding or correcting a record
+
+See [ecosystem records](/contribute/ecosystem-records/). A record needs a category, an operator, a
+custody model, a reachable source for its status, and the date it was checked. Records without
+evidence are not merged.
+
+## Before you use anything listed here
+
+1. A listing on any marketplace is not evidence of ownership. Ownership is verified at settlement,
+   against the chain.
+2. A wallet that cannot show you outpoints is not safe for Atomicals.
+   See [choose a wallet](/guides/choose-a-wallet/).
+3. An indexer answer is version scoped. Ask which revision produced it.
+   See [indexer dependency](/protocol/core/indexer-dependency/).
+4. Nothing on this page changes the rules in [safety fundamentals](/start/safety-fundamentals/).
+

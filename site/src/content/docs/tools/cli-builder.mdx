@@ -1,0 +1,61 @@
+---
+title: CLI command builder
+description: Build a validated, copyable command from the pinned command inventory, with the safety implications shown.
+sidebar:
+  order: 5
+provenance:
+  pageId: tools/cli-builder
+  area: tools
+  audience: [creator, developer, operator]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet, testnet, regtest]
+  sources:
+    - id: atomicals-js-cli
+      path: cliEntry
+      note: the command list is generated from lib/cli.ts
+  verified: '2026-08-31'
+  tags: [tools, cli]
+  limitations:
+    - The builder offers only the arguments and options the pinned source declares. A flag absent here is not accepted by that revision.
+    - It builds a string. It never runs anything.
+---
+
+import CommandBuilder from '../../../components/tools/CommandBuilder.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+<CommandBuilder />
+
+## Why the combinations are constrained
+
+The builder is generated from the same inventory as the [CLI reference](/reference/cli/). It
+cannot offer a flag the pinned revision does not declare, which removes a whole category of
+mistake: building a command against a flag you read somewhere that the revision you run does not
+have.
+
+<Aside type="caution" title="A built command still spends money">
+The builder produces a string. Running it is your decision, and a build command spends outputs.
+Model the allocation first with the [allocation visualizer](/tools/allocation-visualizer/).
+</Aside>
+
+## The flags marked with a star
+
+Options that change what is spent or where a result lands are marked. Check each one twice:
+
+| Flag | What it changes |
+| --- | --- |
+| `--funding` | Which wallet pays. Keep it cardinal |
+| `--owner` | Whose outputs are spent. This is where an asset moves from |
+| `--initialowner` | Where a newly minted object lands |
+| `--satsoutput` | The satoshi value of the output carrying the result |
+| `--satsbyte` | The fee rate. Recompute after any grind |
+| `--rbf` | Signals replaceability. A replacement is a different transaction with a different allocation |
+
+## Before you run anything
+
+1. Confirm you are on the network you think you are.
+2. Confirm the funding input is cardinal.
+3. Confirm the output value is above the relay dust threshold.
+4. For a mint, confirm the deployment reads back the way you expect.
+5. For a transfer, model the allocation and confirm the burn figure is zero.
+

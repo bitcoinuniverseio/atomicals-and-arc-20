@@ -1,0 +1,49 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-atomical-identity"
+  title="Identity, location, and history"
+  summary="An Atomical has three separate facts. Its identity is the Atomical ID assigned at mint and never changes. Its location is whichever unspent output currently carries it, which changes on every move. Its history is the ordered list of operations applied to it. Confusing location with identity is the most common integration mistake."
+>
+  <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="ai-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+    </defs>
+    <g font-family="var(--bu-font-sans)">
+      <rect x="8" y="14" width="224" height="86" rx="10" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="26" y="40" font-size="11" letter-spacing="1.2" fill="var(--d-accent)">IDENTITY</text>
+      <text x="26" y="62" font-size="14" font-weight="640" fill="var(--d-ink)">Atomical ID</text>
+      <text x="26" y="84" font-size="12" font-family="var(--bu-font-mono)" fill="var(--d-ink)">&lt;txid&gt;i&lt;index&gt;</text>
+      <text x="240" y="62" font-size="12" fill="var(--d-soft)">assigned once, never changes</text>
+
+      <rect x="8" y="112" width="224" height="86" rx="10" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="26" y="138" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">LOCATION</text>
+      <text x="26" y="160" font-size="14" font-weight="640" fill="var(--d-ink)">Current UTXO</text>
+      <text x="26" y="182" font-size="12" font-family="var(--bu-font-mono)" fill="var(--d-ink)">&lt;txid&gt;:&lt;vout&gt;</text>
+      <text x="240" y="160" font-size="12" fill="var(--d-soft)">changes on every move</text>
+
+      <line x1="120" y1="206" x2="120" y2="228" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#ai-arrow)" />
+      <text x="136" y="234" font-size="12" fill="var(--d-soft)">spending the output moves or destroys the object</text>
+
+      <rect x="440" y="14" width="272" height="184" rx="10" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="458" y="40" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">HISTORY</text>
+      <g font-size="12.5" fill="var(--d-ink)">
+        <circle cx="466" cy="62" r="4" fill="var(--d-accent)" />
+        <text x="480" y="66">mint</text>
+        <circle cx="466" cy="92" r="4" fill="var(--d-line)" />
+        <text x="480" y="96">state update</text>
+        <circle cx="466" cy="122" r="4" fill="var(--d-line)" />
+        <text x="480" y="126">transfer</text>
+        <circle cx="466" cy="152" r="4" fill="var(--d-line)" />
+        <text x="480" y="156">transfer</text>
+        <circle cx="466" cy="182" r="4" fill="var(--d-ok)" />
+        <text x="480" y="186">current location</text>
+      </g>
+      <line x1="466" y1="66" x2="466" y2="178" stroke="var(--d-line)" stroke-width="1.5" />
+    </g>
+  </svg>
+</Figure>

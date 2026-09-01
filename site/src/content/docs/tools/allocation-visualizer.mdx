@@ -1,0 +1,63 @@
+---
+title: ARC-20 allocation visualizer
+description: Model a transaction and see exactly which output receives which units, and what burns, before you build anything.
+sidebar:
+  order: 2
+provenance:
+  pageId: tools/allocation-visualizer
+  area: tools
+  audience: [everyone, holder, developer]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+      note: the engine is implemented from this revision
+  activation: Custom coloring is activation gated. Normal allocation is not.
+  verified: '2026-08-31'
+  tags: [tools, allocation, safety]
+  limitations:
+    - Models normal allocation and the activation gated custom coloring path only.
+    - Explanatory. Never a substitute for validating a concrete transaction against your target validator revision.
+    - It never signs, broadcasts, or sends anything anywhere.
+---
+
+import AllocationVisualizer from '../../../components/tools/AllocationVisualizer.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+<AllocationVisualizer />
+
+## How to use it
+
+1. Start from a preset, or enter your own coloured inputs.
+2. Enter the outputs in the exact order your transaction will have them, in satoshis.
+3. Read the burn figure. It should be zero.
+4. Add the fee inputs and the cardinal change output, then read it again.
+5. Only build the transaction once the figure is still zero.
+
+Step four is where wallet-added change silently changes the result.
+
+<Aside type="note" title="This runs the same engine as the tests">
+The presets are the executed [conformance vectors](/reference/conformance/), and the computation
+is `conformance/allocation.mjs`, the same module `tests/conformance-allocation.test.mjs` calls. The
+tool and the tests cannot disagree.
+</Aside>
+
+## What it models
+
+| Modelled | Not modelled |
+| --- | --- |
+| Normal allocation, exactly as the pinned builder performs it | Live chain state |
+| The output zero fallback when a plan is not clean | Whether an output is actually coloured today |
+| Unspendable outputs, skipped without consuming value | Whether your wallet will reorder outputs |
+| Activation gated custom coloring | Whether custom coloring is active on your network |
+| The no-inflation rule | Anything on the non-fungible branch |
+
+## Copy as a vector
+
+The copy control produces a JSON object in the same shape as the committed vector set. If you find
+a case this documentation should cover, that object is what to attach to an issue.
+
+See [conformance vectors](/contribute/conformance-vectors/).
+

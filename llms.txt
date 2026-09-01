@@ -1,0 +1,268 @@
+# Atomicals and ARC-20
+
+> The working reference for Atomicals digital objects, ARC-20 tokens, and the Universe services that expose them.
+> Documentation version: 2026.08
+> Home: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/
+> Full content: /atomicals-and-arc-20/llms-full.txt
+> Page manifest: /atomicals-and-arc-20/manifest.json
+> Raw Markdown for any page: /atomicals-and-arc-20/raw/<page-id>.md
+> Verified: 2026-08-31
+
+## How to read this documentation
+
+Three layers are never mixed, and every page states which one it describes:
+
+- Protocol behavior: what a pinned Atomicals validator revision does.
+- Universe implementation: what a Bitcoin Universe service actually exposes today.
+- Proposed or experimental: what exists but is not live.
+
+A protocol capability is not automatically a product feature. A product feature is not
+automatically protocol behavior. A proposal is not an implementation.
+
+## Normative sources, in authority order
+
+1. Executed source code, conformance tests, generated inventories, schemas, and runtime
+   contracts at an exact revision.
+2. Final or Living Atomicals Improvement Proposals.
+3. The Atomicals reference implementation at an exact commit or release.
+4. Official Atomicals protocol and CLI documentation.
+5. Universe implementation documentation at an exact revision.
+6. Third-party integrations, always non-normative.
+
+Explanatory prose, including this documentation, is never independent consensus.
+
+## Pinned sources
+
+- Atomicals ElectrumX (protocol): https://github.com/atomicals/atomicals-electrumx at v1.5.2.0
+- Atomicals JavaScript CLI (protocol): https://github.com/atomicals/atomicals-js at 1333565efbfe5ca4bdb8443a94d72e9f8534c2c4
+- Atomicals protocol guide (protocol): https://github.com/atomicals-community/atomicals-guide at unversioned
+- Atomicals Improvement Proposals (protocol): https://github.com/atomicals-community/aips at be08d7856db7c55c2bfb7c2c08f88a25f1c781f8
+- Universe ARC-20 index and Marketplace v1 authority (universe): https://github.com/bitcoinuniverseio/index-atomicals at 670030e500710aaef77410540768a87a138d8134
+- Universe Atomicals NFT, Realm, and Subrealm index (universe): https://github.com/bitcoinuniverseio/index-atomicals-nfts-and-realms at 1d9109c68d95d5985632a60d6596b3612d3f6ef1
+- Ordex marketplace contract (universe): https://github.com/bitcoinuniverseio/ordex at 2f7d8d3ec59fac534f545bf03ed0d41878f91a0e
+- Bitcoin Inscribe (universe): https://github.com/bitcoinuniverseio/inscribe at unversioned
+- Atomicals Virtual Machine interpreter (protocol): https://github.com/atomicals/avm-interpreter at c185e6216a3ea2cb2e011e508033ca535ece3472
+
+## The ARC-20 model in seven statements
+
+1. One ARC-20 unit is one satoshi in an output a validator recognises as coloured.
+2. Supply is therefore measured in satoshis and bounded by real bitcoin.
+3. Issuance is direct, fixed decentralised, or activation gated perpetual.
+4. A ticker is a globally allocated name resolved to exactly one Atomical. It is not identity.
+5. A transfer is an allocation over the transaction's inputs and outputs, in order.
+6. Value that cannot be placed in an eligible output is destroyed. The transaction still confirms.
+7. Coloured output totals can never exceed coloured input totals.
+
+## Executed allocation vectors
+
+Engine: conformance/allocation.mjs, implemented from atomicals-electrumx-1.5.2.0 at 8df23747835c20230fc8b8097d469e7a1d97c3e0.
+Vectors: /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
+
+- clean-split: Both outputs are exactly covered, so nothing is left to place and nothing burns.
+- oversized-next-output: Output zero takes 700. The next output is 546 satoshis, larger than the 500 units left, so the remainder is destroyed.
+- exact-single-output: One output exactly equal to the coloured value takes everything.
+- first-output-too-large: Nothing can be placed at all, so the entire coloured value is destroyed.
+- too-few-outputs: Every output is covered but value is still left over, so the leftover burns.
+- unspendable-output-skipped: A provably unspendable output is passed over and consumes no coloured value.
+- combine-two-lots: Two coloured inputs of the same token are summed before allocation and land in one output.
+- two-tokens-sequential-slots: The first token fills the outputs it needs, then the next token starts after the last slot the first one used.
+- two-tokens-non-clean-fallback: When the sequential assignment cannot be made cleanly, the reference builder restarts every token from output zero. Both tokens then contend for the same outputs and value burns.
+- dust-remainder-burns: Sending 1000 units from a 1200 unit lot with a 200 satoshi change output fails, because 200 is placed only if it fits after the 1000 is taken. Here it does fit, so nothing burns. Compare with the next case.
+- change-output-too-large: The same intent with a 546 satoshi change output destroys the 200 unit remainder, because 546 does not fit in 200.
+- custom-coloring-partial-fill: With custom coloring active the builder attaches an output even when the value does not cover it fully, and the last output receives only what is left.
+
+## What is never claimed here
+
+- No price, market, ranking, investment, legal, or tax statement.
+- Metadata is never authenticity. A ticker is never creator identity. A listing is never ownership.
+- An indexer result is version scoped, never consensus.
+- A configured service is never automatically ready.
+- A proposal is never an implemented feature.
+
+## Machine readable outputs
+
+- /atomicals-and-arc-20/llms.txt
+- /atomicals-and-arc-20/llms-full.txt
+- /atomicals-and-arc-20/manifest.json
+- /atomicals-and-arc-20/specification.md
+- /atomicals-and-arc-20/sources.md
+- /atomicals-and-arc-20/contracts/openapi/arc20.json
+- /atomicals-and-arc-20/contracts/openapi/atomicals-nfts-realms.json
+- /atomicals-and-arc-20/contracts/openapi/marketplace-v1.json
+- /atomicals-and-arc-20/contracts/schemas/common.schema.json
+- /atomicals-and-arc-20/contracts/source-manifest.json
+- /atomicals-and-arc-20/contracts/cli-inventory.json
+- /atomicals-and-arc-20/contracts/aip-registry.json
+- /atomicals-and-arc-20/contracts/avm-opcodes.json
+- /atomicals-and-arc-20/contracts/ecosystem.json
+- /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
+- /atomicals-and-arc-20/changelog.xml
+- /atomicals-and-arc-20/sitemap.xml
+
+## Page index
+
+### start
+
+- [Atomicals and ARC-20](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/index/) [editorial]: Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.
+- [Choose your path](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/choose-your-path/) [editorial]: Four short routes through this documentation, one for each thing people actually come here to do.
+- [Glossary](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/glossary/) [protocol-behavior]: Every Atomicals and ARC-20 term used on this site, defined once and used consistently everywhere.
+- [Networks and versions](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/networks-and-versions/) [protocol-behavior]: Which network a statement applies to, which validator revision decides it, and which documentation version you are reading.
+- [Protocol family map](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/protocol-family-map/) [protocol-behavior]: Every Atomicals primitive in one place, what it produces, which operation creates it, and where Universe exposes it today.
+- [Safety fundamentals](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/safety-fundamentals/) [protocol-behavior]: The eight checks that separate a clean Atomicals transaction from a permanent loss, and the four claims you must never accept at face value.
+- [Status and known limitations](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/status-and-limitations/) [universe-implementation]: What is live, what is beta, what is proposed, what is not exposed at all, and the limitations we know about and have not hidden.
+- [What are Atomicals?](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/what-are-atomicals/) [protocol-behavior]: Digital objects that live inside ordinary Bitcoin outputs, identified by the transaction that created them and interpreted by an Atomicals validator.
+- [What is ARC-20?](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/what-is-arc-20/) [protocol-behavior]: The Atomicals fungible token model, where one unit is one coloured satoshi and transfers are an allocation problem rather than an account update.
+
+### protocol
+
+- [Atomicals Improvement Proposals](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/aips/) [proposed]: The AIP register, the complete status model, and implementation evidence that is never assumed from a proposal existing.
+- [Allocation](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/allocation/) [protocol-behavior]: The exact rule a validator uses to place coloured value into outputs, with executed vectors for every case.
+- [ARC-20 Bitwork requirements](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/bitwork-requirements/) [protocol-behavior]: Which Bitwork fields apply to a deployment, which apply to its claimants, and how to read them correctly.
+- [Burns](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/burns/) [protocol-behavior]: How ARC-20 value is destroyed, the four shapes that cause it, and the checks that prevent every one of them.
+- [Decentralised mint claims](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/decentralized-mint/) [protocol-behavior]: What makes a dmt claim valid, why a confirmed claim can still be worthless, and what a minter should check first.
+- [Direct FT issuance](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/direct-issuance/) [protocol-behavior]: One transaction, one complete supply, entirely in output zero, and why that makes large supplies expensive.
+- [Fixed DFT deployment](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/fixed-dft/) [protocol-behavior]: The parameters a fixed decentralised deployment sets, what they bound, and what a client must check before treating one as valid.
+- [Metadata and decimals](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/metadata-and-decimals/) [protocol-behavior]: Optional metadata fields, how to treat them, and the exact rule about decimals that prevents an entire class of accounting bug.
+- [ARC-20](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/overview/) [protocol-behavior]: The complete ARC-20 model in one page, from issuance through allocation to the safety boundary, with links to the exact rule for each part.
+- [Perpetual DFT](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/perpetual-dft/) [protocol-behavior]: A separate activation gated mode with progressing Bitwork and an optional global cap, and why it is not fixed DFT with a large number.
+- [PSBT requirements](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/psbt-requirements/) [protocol-behavior]: What a partially signed transaction must contain for an Atomicals aware wallet to sign it safely, and what a wallet must show you.
+- [Split and combine](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/split-and-combine/) [protocol-behavior]: Separating coloured lots with the split operation, recombining them, and the activation gated custom coloring path.
+- [Substantiation Factor](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/substantiation-factor/) [proposed]: What this material is, what status it has, and what evidence would be required before any of it could be presented as behavior.
+- [Tickers and candidates](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/tickers-and-candidates/) [protocol-behavior]: How an ARC-20 name is requested, resolved, and displayed, and what winning it actually means.
+- [Transfers and swaps](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/transfers-and-swaps/) [protocol-behavior]: Ordinary transfers, atomic swaps, and the exact output binding that makes a swap safe to sign.
+- [The unit model](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/unit-model/) [protocol-behavior]: One coloured satoshi is one unit, supply is measured in satoshis, and decimals are presentation only.
+- [Wallet safety](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/wallet-safety/) [protocol-behavior]: What an Atomicals aware wallet must do, what it must never do, and how to tell whether the wallet you use qualifies.
+- [AVM opcodes](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/avm/opcodes/) [experimental]: The complete opcode inventory generated from the interpreter source, with the upstream test annotation preserved per opcode.
+- [AVM](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/avm/overview/) [experimental]: The Atomicals Virtual Machine, split into the four separate status layers people usually collapse into one.
+- [AVM state and execution](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/avm/state-and-execution/) [experimental]: What a contract call receives, what it returns, and how state is expected to be carried between calls.
+- [AVM status and limitations](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/avm/status-and-limitations/) [experimental]: The exact status of every AVM layer, the threat model, and the evidence that would be required to change any of it.
+- [DMINT](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/containers/dmint/) [protocol-behavior]: Decentralised item minting against a sealed manifest, how verification works, and every failure state a claimant can hit.
+- [Item verification](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/containers/item-verification/) [protocol-behavior]: How to prove an item belongs to a Container, what each check establishes, and what a product must show.
+- [Containers](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/containers/overview/) [protocol-behavior]: A named collection identity that items can prove membership in, and what it takes to make that proof meaningful.
+- [Sealing and rules](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/containers/sealing-and-rules/) [protocol-behavior]: What sealing changes, why rule evaluation must be deterministic, and the order of operations that makes a collection trustworthy.
+- [Activation boundaries](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/activation-boundaries/) [protocol-behavior]: Why the same transaction can be valid at one height and invalid at another, and how to reason about rules that turn on.
+- [Bitwork](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/bitwork/) [protocol-behavior]: The proof of work prefix requirement that gates Atomicals mints, what it costs, and what it does not promise.
+- [Candidates and winners](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/candidates-and-winners/) [protocol-behavior]: Why a name request is not a name, how a candidate becomes a verified winner, and what a product must show while resolution is pending.
+- [Commit and reveal](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/commit-and-reveal/) [protocol-behavior]: The two transaction pattern every Atomicals operation uses, and what can go wrong between the two steps.
+- [Confirmation and reorgs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/confirmation-and-reorgs/) [protocol-behavior]: Two separate questions that people constantly merge into one, and what a reorg actually does to an Atomicals result.
+- [Atomicals digital objects](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/digital-objects/) [protocol-behavior]: What an Atomical actually is at the data level, what a validator stores about it, and what it never guarantees.
+- [Envelope and operations](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/envelope-and-operations/) [protocol-behavior]: The structure a validator reads, the operation codes it recognises, and why a JSON object in a user interface is not a wire format.
+- [Identifiers and numbers](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/identifiers/) [protocol-behavior]: Atomical IDs, compact IDs, locations, numbers, and which one to store in your database.
+- [Indexer and validator dependency](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/indexer-dependency/) [protocol-behavior]: Why every Atomicals answer is version scoped, and how to handle two sources that disagree.
+- [Metadata trust boundaries](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/metadata-trust/) [protocol-behavior]: Everything in a payload is attacker controlled. This page says exactly what that means for a renderer, an indexer, and a user interface.
+- [Permanent file storage](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/permanent-storage/) [protocol-behavior]: How Atomicals stores bytes on Bitcoin, what a digest proves, and the limits of treating a chain as a file system.
+- [References and recursion](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/references-and-recursion/) [protocol-behavior]: How one Atomical points at another, why recursive rendering needs an archive, and the failure modes of a broken reference.
+- [State, history, and updates](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/state-and-history/) [protocol-behavior]: How mutable state works on an Atomical, what history records, and what sealing permanently changes.
+- [UTXO ownership and location](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/core/utxo-ownership/) [protocol-behavior]: Ownership in Atomicals is control of a specific unspent output, not an entry against an address.
+- [Collections and Containers](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/nft/collections-and-containers/) [protocol-behavior]: How an NFT proves membership in a collection, what a Container adds, and what a collection label alone proves.
+- [NFT marketplace behavior](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/nft/marketplace/) [universe-implementation]: What the Marketplace authority checks before an NFT listing, purchase, or settlement is allowed to proceed.
+- [Metadata and media](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/nft/metadata-and-media/) [protocol-behavior]: How an NFT carries files, what a digest guarantees, and the rules a renderer must follow to serve hostile content safely.
+- [Minting an NFT](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/nft/minting/) [protocol-behavior]: What a mint payload contains, what output zero receives, and the decisions that cannot be changed later.
+- [Atomicals NFTs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/nft/overview/) [protocol-behavior]: Non-fungible Atomicals, what they carry, how they move, and the hazards that come from sharing an output.
+- [Splat and mixed outputs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/nft/splat-and-mixed-outputs/) [protocol-behavior]: What happens when one output carries several Atomicals, why that is dangerous, and how splat separates them.
+- [NFT transfers](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/nft/transfers/) [protocol-behavior]: Normal transfers, swap transfers, and what a non-fungible move actually commits to.
+- [Atomicals protocol](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/overview/) [protocol-behavior]: One page that puts every Atomicals primitive, operation, and validation boundary in relation to each other.
+- [Claims and rules](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/realms/claims-and-rules/) [protocol-behavior]: How a name claim is evaluated, how payments participate, and why deterministic rules are the whole point.
+- [Realm marketplace behavior](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/realms/marketplace/) [universe-implementation]: What the Marketplace authority checks for Realm and Subrealm listings, and why names have an extra verification step.
+- [Realms](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/realms/overview/) [protocol-behavior]: Top-level Atomicals names, how they are claimed and resolved, and what a name actually establishes.
+- [Paynames](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/realms/paynames/) [protocol-behavior]: Using a Realm as a payment destination, what resolution guarantees, and the checks a payer must run first.
+- [Subrealms](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/realms/subrealms/) [protocol-behavior]: Child names claimed under a parent Realm's rules, how the parent controls them, and what a claimant must satisfy.
+- [Unicode, IDNA, and confusable names](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/realms/unicode-and-idna/) [protocol-behavior]: Why two names that look identical can be different strings, what normalisation does, and the warnings a product must show.
+
+### guides
+
+- [Guides](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/) [editorial]: Task-oriented procedures for holding, inspecting, issuing, moving, and trading Atomicals safely.
+- [Avoid burns](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/avoid-burns/) [protocol-behavior]: The working procedure that prevents every burn shape, with the executed cases that show what each one looks like.
+- [Buy on the marketplace](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/buy-on-marketplace/) [universe-implementation]: Reserve, prepare, sign, and broadcast, with the checks that stop you paying for something that already moved.
+- [Choose a wallet](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/choose-a-wallet/) [protocol-behavior]: The capabilities that make a wallet safe for Atomicals, how to test for them in ten minutes, and what to do if yours fails.
+- [Claim a Realm](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/claim-a-realm/) [protocol-behavior]: Request a top-level name, confirm it resolved to you, and protect the output that carries it.
+- [Claim a Subrealm](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/claim-a-subrealm/) [protocol-behavior]: Satisfy a parent Realm's rules, including any payment, and confirm you actually won the name.
+- [Confirmations and reorgs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/confirmations-and-reorgs/) [protocol-behavior]: When an Atomicals result is settled enough to act on, and what changes when the chain reorganises.
+- [Create a Container](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/create-a-container/) [protocol-behavior]: Mint a collection identity, confirm the name resolved, and prepare for item minting without locking in a mistake.
+- [Create DMINT items](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/create-dmint-items/) [protocol-behavior]: Seal the manifest before opening minting, and check what is on chain before making it permanent.
+- [Deploy a fixed DFT](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/deploy-fixed-dft/) [protocol-behavior]: Publish the mint rules others will claim against, and get the four parameters right the first time.
+- [Deploy a perpetual DFT](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/deploy-perpetual-dft/) [protocol-behavior]: An activation gated mode with progressing Bitwork, and the display rule that stops you publishing a supply cap that does not exist.
+- [Direct FT issuance](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/direct-ft-issuance/) [protocol-behavior]: One transaction, one complete supply, and the bitcoin you must actually commit for it.
+- [Fees and costs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/fees-and-costs/) [protocol-behavior]: Everything you actually pay for an Atomicals action, including the costs people forget until they have already spent them.
+- [Inspect an ARC-20 ticker](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/inspect-a-ticker/) [universe-implementation]: Resolve a name to the Atomical that actually holds it, and read the deployment before you trust any figure about it.
+- [Inspect an address](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/inspect-an-address/) [universe-implementation]: Read outpoints instead of totals, and understand exactly what a balance figure hides.
+- [Inspect an Atomical](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/inspect-an-atomical/) [universe-implementation]: Read identity, location, history, and sealed state, and know which of the four you are actually looking at.
+- [List an ARC-20 lot](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/list-an-arc20-lot/) [universe-implementation]: Prove ownership, prepare a listing, sign it, and finalise, without exposing the asset to an unbound signature.
+- [List an NFT, Realm, or Subrealm](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/list-an-nft-or-realm/) [universe-implementation]: The same lifecycle as an ARC-20 lot, plus the extra name check the Realm lanes carry.
+- [Mint an Atomicals NFT](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/mint-an-nft/) [protocol-behavior]: Build the payload, choose an output value, and understand which decisions become permanent.
+- [Mint ARC-20](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/mint-arc20/) [protocol-behavior]: Claim against a deployment without wasting a fee on a claim that was never going to be valid.
+- [Offers](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/offers/) [universe-implementation]: Make an offer, cancel it, and accept one, with the checks each side owes the other.
+- [Prepare BTC and protected UTXOs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/prepare-utxos/) [protocol-behavior]: Build a cardinal pool for fees so a coloured output is never selected by accident, and size your lots for the transfers you expect.
+- [Protect coloured outputs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/protect-colored-outputs/) [protocol-behavior]: The working separation between asset money and fee money, and the three habits that prevent an accidental spend.
+- [Recover from a rejection](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/recover-from-a-rejection/) [protocol-behavior]: A transaction that has not confirmed is still recoverable. Here is how to work out which situation you are in.
+- [Resolve Unicode names](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/resolve-unicode-names/) [protocol-behavior]: Normalise, compare, and detect confusable names before you act on one.
+- [Split and combine ARC-20](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/split-and-combine-arc20/) [protocol-behavior]: Reshape your lots deliberately, and know when combining makes future transfers harder.
+- [Transfer ARC-20](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/transfer-arc20/) [protocol-behavior]: Build a transfer that places every unit where you intend and burns nothing.
+- [Unavailable index or empty balance](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/unavailable-indexer-vs-empty-balance/) [universe-implementation]: The difference between a service that cannot answer and an answer of zero, and why confusing them causes most false alarms.
+- [Update or remove a listing](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/update-or-remove-a-listing/) [universe-implementation]: Change a price or delist, with the same ownership proof and the same failure-closed checks.
+- [Verify a transaction](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/verify-a-transaction/) [protocol-behavior]: Confirm what a transaction actually did, before signing and after broadcast, including any burn it caused.
+- [Verify settlement](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/verify-settlement/) [universe-implementation]: Confirm a trade actually completed, on chain and in the index, rather than trusting a status label.
+- [Wallet signing failures](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/wallet-signing-failures/) [universe-implementation]: Diagnose a wallet that will not sign, by capability, encoding, and signature hash flag.
+
+### develop
+
+- [Architecture overview](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/) [universe-implementation]: How the Universe Atomicals services fit together, what each one is authoritative for, and where the boundaries are.
+- [Authentication](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/authentication/) [universe-implementation]: What each Universe Atomicals surface requires, which credentials are public and which are internal, and what never appears in a browser.
+- [Consistency and reorgs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/consistency-and-reorgs/) [universe-implementation]: Generations, checkpoints, invalidation, and rollback, and what a consumer must do about each.
+- [Data flow](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/data-flow/) [universe-implementation]: Where every number comes from, which hop can be stale, and what a consumer should record with each answer.
+- [Errors](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/errors/) [universe-implementation]: The error envelope, the codes that matter, and how to tell a client mistake from a service state.
+- [Idempotency and request IDs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/idempotency-and-request-ids/) [universe-implementation]: Making a mutation safe to retry, and making a failure traceable afterwards.
+- [Identifiers and networks](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/identifiers-and-networks/) [universe-implementation]: Protocol identifiers, network identifiers, asset identifiers, and the route prefix contract.
+- [Migration](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/migration/) [universe-implementation]: Moving an integration between versions without discovering the differences in production.
+- [Pagination and cursors](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/pagination-and-cursors/) [universe-implementation]: Signed cursors, what they bind to, and why a cursor stops working after a generation change.
+- [Rate limits](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/rate-limits/) [universe-implementation]: Where a limit is actually implemented, where none exists, and how to behave well regardless.
+- [Readiness and freshness](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/readiness-and-freshness/) [universe-implementation]: Configured, live, ready, degraded, stale, and mixed tip are six different states. A caller must handle each one differently.
+- [Source of truth](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/source-of-truth/) [protocol-behavior]: The authority order every technical statement follows, and how to resolve two sources that disagree.
+- [Versioning and deprecation](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/versioning-and-deprecation/) [universe-implementation]: What is versioned, how a breaking change is announced, and what a deprecation actually promises.
+
+### reference
+
+- [AI and agent access](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/ai-access/) [editorial]: Every machine readable output this documentation publishes, and what each one is for.
+- [Universe ARC-20 API](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/api/arc20/) [universe-implementation]: The complete ARC-20 read contract, with its guarantees, its declared coverage limit, and the OpenAPI document behind it.
+- [Universe NFT and Realm API](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/api/atomicals-nfts-realms/) [universe-implementation]: The complete read contract for plain NFTs, Realms, and Subrealms, including what the projection deliberately excludes.
+- [Marketplace v1](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/api/marketplace-v1/) [universe-implementation]: The complete lifecycle, the signing contract, the exact PSBT shape, and everything the authority refuses.
+- [Ordex contract](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/api/ordex/) [universe-implementation]: Where the Ordex marketplace contract, SDK, conformance vectors, and verifier live, and how the Universe boundary sits around them.
+- [Atomicals CLI reference](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/cli/) [protocol-behavior]: Every command in the reference CLI, generated from the pinned source so the inventory cannot drift.
+- [TypeScript client](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/client-sdk/) [universe-implementation]: A generated, strictly typed client for the public read APIs, with typed errors, pagination helpers, and no embedded secrets.
+- [Conformance vectors](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/conformance/) [protocol-behavior]: The deterministic cases that back the prose, the interactive tools, and the tests, all executed from one engine.
+- [ElectrumX reference](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/electrumx/) [protocol-behavior]: The Atomicals ElectrumX interface, what a Universe proxy adds, and where the boundary between them sits.
+- [Documentation MCP server](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/mcp/) [universe-implementation]: A local, read-only server that lets an agent query this documentation without scraping HTML.
+- [OpenAPI and downloads](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/openapi/) [universe-implementation]: Validated OpenAPI 3.1 documents, JSON Schemas, and every machine readable artefact this site publishes.
+- [JSON Schemas](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/schemas/) [universe-implementation]: The shared component library, what each definition is for, and the rules it encodes.
+- [Wallet integration](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/wallet-integration/) [universe-implementation]: Provider detection, capability discovery, PSBT encodings, signing scopes, and normalised errors.
+
+### tools
+
+- [Tools](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/) [editorial]: Local, read-only tools that model Atomicals behavior without ever signing, broadcasting, or sending your data anywhere.
+- [ARC-20 allocation visualizer](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/allocation-visualizer/) [protocol-behavior]: Model a transaction and see exactly which output receives which units, and what burns, before you build anything.
+- [API explorer](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/api-explorer/) [universe-implementation]: Browse every documented operation, parameter, and example, and copy a request to run in your own environment.
+- [Bitwork estimator](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/bitwork-estimator/) [protocol-behavior]: Model a Bitwork prefix and see the expected search space, with the uncertainty stated rather than hidden.
+- [CLI command builder](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/cli-builder/) [protocol-behavior]: Build a validated, copyable command from the pinned command inventory, with the safety implications shown.
+- [Protocol comparison](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-comparison/) [editorial]: A neutral, source-pinned comparison of Bitcoin metaprotocols, with no rankings, prices, or superiority claims.
+- [Transaction safety inspector](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/transaction-inspector/) [protocol-behavior]: Parse a transaction or PSBT in your browser and read its inputs, outputs, and signature scope before you sign.
+
+### ecosystem
+
+- [Ecosystem registry](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ecosystem/) [third-party]: Wallets, indexers, explorers, marketplaces, and tools, with the evidence behind every status and the date it was checked.
+
+### releases
+
+- [Releases](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/) [editorial]: What changed in this documentation, when, and why, with the machine readable feed alongside.
+- [Deprecations](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/deprecations/) [universe-implementation]: What is scheduled for removal, what replaces it, and what a deprecation does and does not promise.
+- [Migrations](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/migrations/) [universe-implementation]: Step by step moves between versions, and the general procedure for any upgrade.
+- [Versions and compatibility](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/versions/) [universe-implementation]: Every pinned source revision, what it applies to, and how the baselines relate to each other.
+
+### contribute
+
+- [Contribute](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/) [editorial]: Where content belongs, how to update a source-dependent claim, and what CI will check.
+- [Adding an API](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/adding-an-api/) [editorial]: The five artefacts a documented API needs, and the checks that bind them together.
+- [Conformance vectors](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/conformance-vectors/) [editorial]: How to add an executed case that the prose, the tools, and the tests all share.
+- [Content model](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/content-model/) [editorial]: Every frontmatter field, what it means, and what CI requires of it.
+- [Ecosystem records](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/ecosystem-records/) [editorial]: What evidence a record needs before it is merged, and why a missing record is better than a guessed one.
+- [Releasing](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/releasing/) [editorial]: Every gate in order, what each one proves, and why none of them can be skipped.
+- [Translations](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/translations/) [editorial]: The required page set, the shared glossary, the prohibited translations, and how staleness is detected automatically.

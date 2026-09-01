@@ -1,0 +1,54 @@
+---
+import { sourceManifest, shortRevision, sourceUrl } from '../lib/sources'
+
+interface Props {
+  /** Restrict to a subset of source ids. Defaults to every source. */
+  only?: string[]
+}
+const { only } = Astro.props
+const rows = sourceManifest.sources.filter((entry) => !only || only.includes(entry.id))
+---
+
+<div class="bu-matrix">
+  <table>
+    <caption class="sr-only">Pinned source revisions used across this documentation</caption>
+    <thead>
+      <tr>
+        <th scope="col">Source</th>
+        <th scope="col">Authority</th>
+        <th scope="col">Revision</th>
+        <th scope="col">Networks</th>
+        <th scope="col">Visibility</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((entry) => (
+          <tr>
+            <th scope="row">
+              <a href={sourceUrl(entry)} rel="noopener noreferrer">
+                {entry.name}
+              </a>
+              <br />
+              <span style="color:var(--bu-ink-muted)">{entry.role}</span>
+            </th>
+            <td>
+              <span class="bu-chip" data-tone={entry.authority === 'protocol' ? 'protocol' : 'universe'}>
+                {entry.authority === 'protocol' ? 'Protocol' : 'Universe'}
+              </span>
+            </td>
+            <td>
+              <code>{shortRevision(entry)}</code>
+            </td>
+            <td>{entry.network.length ? entry.network.join(', ') : 'not deployed'}</td>
+            <td>
+              <span class="bu-chip" data-tone={entry.visibility === 'public' ? 'ok' : 'idle'}>
+                {entry.visibility}
+              </span>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

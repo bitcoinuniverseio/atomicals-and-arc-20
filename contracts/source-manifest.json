@@ -1,0 +1,198 @@
+{
+  "manifestVersion": "1.0.0",
+  "generatedBy": "contracts/source-manifest.json is hand-maintained. Every entry is verified by scripts/check-sources.mjs.",
+  "lastVerified": "2026-08-31",
+  "sources": [
+    {
+      "id": "atomicals-electrumx-1.5.2.0",
+      "kind": "reference-implementation",
+      "authority": "protocol",
+      "name": "Atomicals ElectrumX",
+      "repository": "https://github.com/atomicals/atomicals-electrumx",
+      "revision": "8df23747835c20230fc8b8097d469e7a1d97c3e0",
+      "release": "v1.5.2.0",
+      "releaseDate": "2025-03-27",
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Version-sensitive ARC-20 and Atomicals validation behavior used as the pinned reference baseline.",
+      "paths": {
+        "constants": "electrumx/lib/util_atomicals.py#L51-L79",
+        "mintParser": "electrumx/lib/util_atomicals.py#L459-L932",
+        "tickerRule": "electrumx/lib/util_atomicals.py#L997-L1004",
+        "dftMintValidation": "electrumx/server/block_processor.py#L3244-L3488",
+        "normalFtAllocation": "electrumx/lib/atomicals_blueprint_builder.py#L643-L718",
+        "splitAndInflation": "electrumx/lib/atomicals_blueprint_builder.py#L902-L946",
+        "allocationValidation": "electrumx/lib/atomicals_blueprint_builder.py#L1052-L1074",
+        "nftAllocation": "electrumx/lib/atomicals_blueprint_builder.py#L369-L530",
+        "networkActivations": "electrumx/lib/coins.py#L659-L1043"
+      }
+    },
+    {
+      "id": "atomicals-js-cli",
+      "kind": "reference-cli",
+      "authority": "protocol",
+      "name": "Atomicals JavaScript CLI",
+      "repository": "https://github.com/atomicals/atomicals-js",
+      "revision": "1333565efbfe5ca4bdb8443a94d72e9f8534c2c4",
+      "release": null,
+      "network": [
+        "mainnet",
+        "testnet",
+        "regtest"
+      ],
+      "visibility": "public",
+      "role": "Reference command surface used for the documented CLI inventory and the visual asset provenance.",
+      "paths": {
+        "commandIndex": "lib/index.ts",
+        "cliEntry": "lib/cli.ts",
+        "visualAsset": "atomicals.jpg",
+        "license": "LICENSE"
+      }
+    },
+    {
+      "id": "atomicals-guide",
+      "kind": "official-documentation",
+      "authority": "protocol",
+      "name": "Atomicals protocol guide",
+      "repository": "https://github.com/atomicals-community/atomicals-guide",
+      "revision": null,
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Concept and command-line explanation. Explicitly states that the specification is defined in code.",
+      "paths": {
+        "home": "https://atomicals-community.github.io/atomicals-guide/",
+        "arc20": "https://atomicals-community.github.io/atomicals-guide/arc20-tokens/",
+        "specification": "https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html",
+        "bitwork": "https://atomicals-community.github.io/atomicals-guide/bitwork-mining.html"
+      }
+    },
+    {
+      "id": "atomicals-aips",
+      "kind": "improvement-proposals",
+      "authority": "protocol",
+      "name": "Atomicals Improvement Proposals",
+      "repository": "https://github.com/atomicals-community/aips",
+      "revision": "be08d7856db7c55c2bfb7c2c08f88a25f1c781f8",
+      "revisionDate": "2026-08-31",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "The AIP register. An AIP existing is not evidence that anything implements it.",
+      "paths": {
+        "index": "AIPs/",
+        "template": "aip-template.md",
+        "aip1": "AIPs/aip-1.md",
+        "aip3": "AIPs/aip-3.md"
+      }
+    },
+    {
+      "id": "universe-index-atomicals",
+      "kind": "runtime",
+      "authority": "universe",
+      "name": "Universe ARC-20 index and Marketplace v1 authority",
+      "repository": "https://github.com/bitcoinuniverseio/index-atomicals",
+      "revision": "670030e500710aaef77410540768a87a138d8134",
+      "revisionDate": "2026-08-27",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "private",
+      "role": "Universe ARC-20 token explorer feed and the durable Marketplace v1 protocol authority.",
+      "paths": {
+        "tokenExplorerServer": "electrumx/token_explorer/server.py",
+        "tokenExplorerDocs": "docs/arc20-token-explorer.rst",
+        "marketplaceDocs": "docs/arc20-marketplace-v1.rst",
+        "marketplaceRpc": "electrumx/token_explorer/marketplace/rpc.py",
+        "marketplaceAuthority": "electrumx/token_explorer/marketplace/authority.py"
+      }
+    },
+    {
+      "id": "universe-index-atomicals-nfts-and-realms",
+      "kind": "runtime",
+      "authority": "universe",
+      "name": "Universe Atomicals NFT, Realm, and Subrealm index",
+      "repository": "https://github.com/bitcoinuniverseio/index-atomicals-nfts-and-realms",
+      "revision": "1d9109c68d95d5985632a60d6596b3612d3f6ef1",
+      "revisionDate": "2026-08-25",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "private",
+      "role": "Materialized read model for plain NFTs, Realms, and Subrealms projected from Atomicals ElectrumX.",
+      "paths": {
+        "server": "src/server.mjs",
+        "provenance": "PROTOCOL-PROVENANCE.json",
+        "apiDocs": "docs/api.md",
+        "architectureDocs": "docs/architecture.md"
+      }
+    },
+    {
+      "id": "universe-ordex",
+      "kind": "contract",
+      "authority": "universe",
+      "name": "Ordex marketplace contract",
+      "repository": "https://github.com/bitcoinuniverseio/ordex",
+      "revision": "2f7d8d3ec59fac534f545bf03ed0d41878f91a0e",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Marketplace OpenAPI contract, SDK, conformance vectors, and purchase verifier reused instead of restated here.",
+      "paths": {
+        "openapi": "spec/openapi.json",
+        "lifecycle": "spec/lifecycle.md",
+        "purchase": "spec/purchase.md",
+        "conformance": "conformance/purchase-vectors.json",
+        "sdk": "sdk/",
+        "verifier": "verifier/"
+      }
+    },
+    {
+      "id": "universe-inscribe",
+      "kind": "product",
+      "authority": "universe",
+      "name": "Bitcoin Inscribe",
+      "repository": "https://github.com/bitcoinuniverseio/inscribe",
+      "revision": null,
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "private",
+      "role": "Product surface that consumes this documentation as the frontend/docs/arc-20-docs submodule.",
+      "paths": {
+        "submodule": "frontend/docs/arc-20-docs",
+        "ci": ".github/workflows/ci.yml"
+      }
+    },
+    {
+      "id": "atomicals-avm-interpreter",
+      "kind": "reference-implementation",
+      "authority": "protocol",
+      "name": "Atomicals Virtual Machine interpreter",
+      "repository": "https://github.com/atomicals/avm-interpreter",
+      "revision": "c185e6216a3ea2cb2e011e508033ca535ece3472",
+      "release": null,
+      "network": [],
+      "visibility": "public",
+      "role": "Beta AVM interpreter. Status layer is separate from any Universe runtime exposure.",
+      "paths": {
+        "readme": "README.md",
+        "opcodes": "src/script/script.h",
+        "interpreter": "src/script/interpreter.cpp",
+        "whitepaper": "https://github.com/atomicals/avm-whitepaper"
+      },
+      "revisionDate": "2026-08-31"
+    }
+  ]
+}

@@ -1,0 +1,382 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Universe ARC-20 index and feed API",
+    "summary": "Verified ticker resolution, token details, holders, and confirmed activity for ARC-20.",
+    "description": "The ARC-20 source discovers every ticker candidate without an upstream verified-only filter, then resolves each name to its verified winning Atomical ID. Only the verified winner is published.\n\nThe scan is all or nothing. Holder rows are aggregated by address and must sum exactly to circulating supply. A mismatch, a null address, a truncated page sequence, a changing declared total, or a changing chain tip aborts the entire poll, so an answer is either complete or absent rather than plausible and wrong.\n\nDeclared coverage is partial. Confirmed authoritative history and complete proven holder snapshots are indexed, but the shipped adapter has no exhaustive mempool feed with stable pending lifecycle and disappearance handling. That limitation applies to pending activity only.",
+    "version": "1.0.0",
+    "x-sourceRevision": "670030e500710aaef77410540768a87a138d8134",
+    "x-sourceRepository": "https://github.com/bitcoinuniverseio/index-atomicals",
+    "x-documentationVersion": "2026.08",
+    "x-coverage": {
+      "declared": "partial",
+      "reason": "Confirmed authoritative history and complete proven holder snapshots are indexed, but the shipped adapter has no exhaustive mempool feed with stable pending lifecycle and disappearance handling.",
+      "appliesTo": "pending activity only"
+    },
+    "contact": {
+      "name": "Atomicals and ARC-20 documentation",
+      "url": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20"
+    },
+    "license": { "name": "MIT", "identifier": "MIT" }
+  },
+  "servers": [
+    {
+      "url": "{origin}",
+      "description": "The deployment origin. No production host is published in this documentation.",
+      "variables": {
+        "origin": {
+          "default": "http://127.0.0.1:3043",
+          "description": "Set this to the origin your deployment exposes."
+        }
+      }
+    }
+  ],
+  "tags": [
+    { "name": "Operational", "description": "Liveness and readiness." },
+    { "name": "Feed", "description": "Status and the immutable feed pages." },
+    { "name": "Operator", "description": "Operator triggered actions." }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sourceBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Feed bearer token. Cursor signatures use a different secret. Provisioned out of band."
+      },
+      "adminToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Indexer-Admin-Token",
+        "description": "Operator token for the poll route. Not a public credential."
+      }
+    },
+    "parameters": {
+      "CursorQuery": {
+        "name": "cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque signed cursor. It refers to a position inside one immutable generation and carries the page and holder chunk sizes it was created with.",
+        "schema": { "$ref": "#/components/schemas/Cursor" }
+      },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "integer", "minimum": 1, "maximum": 999 }
+      }
+    },
+    "schemas": {
+      "Cursor": { "type": "string", "minLength": 1 },
+      "AtomicalId": { "type": "string", "pattern": "^[0-9a-f]{64}i[0-9]{1,10}$" },
+      "AtomicAmount": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,38})$",
+        "description": "Decimal string. JSON numbers are rejected for satoshi and protocol quantities."
+      },
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message"],
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" }
+            }
+          },
+          "requestId": { "type": "string" }
+        }
+      },
+      "Liveness": {
+        "type": "object",
+        "required": ["live"],
+        "properties": {
+          "live": { "type": "boolean", "const": true },
+          "service": { "type": "string" },
+          "version": { "type": "string" }
+        }
+      },
+      "Readiness": {
+        "type": "object",
+        "required": ["ready"],
+        "properties": {
+          "ready": { "type": "boolean" },
+          "migrations": { "type": ["string", "null"] },
+          "snapshot": { "type": ["string", "null"] },
+          "reason": { "type": ["string", "null"] }
+        }
+      },
+      "SourceStatus": {
+        "type": "object",
+        "required": ["coverage"],
+        "properties": {
+          "coverage": {
+            "type": "string",
+            "enum": ["complete", "partial"],
+            "description": "Declared coverage for this source."
+          },
+          "reason": {
+            "type": ["string", "null"],
+            "description": "The exact reason coverage is partial, when it is."
+          },
+          "assets": { "type": "integer", "minimum": 0 },
+          "holders": { "type": "integer", "minimum": 0 },
+          "events": { "type": "integer", "minimum": 0 },
+          "chainTip": { "type": ["integer", "null"], "minimum": 0 },
+          "atomicalsTip": { "type": ["integer", "null"], "minimum": 0 },
+          "generations": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "TokenProtocolDetails": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "winningAtomicalId": { "$ref": "#/components/schemas/AtomicalId" },
+          "mode": {
+            "type": "string",
+            "enum": ["direct", "fixed-dft", "perpetual-dft"],
+            "description": "Perpetual is a separate activation gated mode, not fixed with a large count."
+          },
+          "mintAmountAtomic": { "$ref": "#/components/schemas/AtomicAmount" },
+          "maxMints": { "type": ["integer", "null"], "minimum": 1 },
+          "mintHeight": { "type": ["integer", "null"], "minimum": 0 },
+          "mintBitworkc": { "type": ["string", "null"] },
+          "mintBitworkr": { "type": ["string", "null"] },
+          "globalMaximumAtomic": {
+            "anyOf": [{ "$ref": "#/components/schemas/AtomicAmount" }, { "type": "null" }],
+            "description": "Null means no configured maximum. Do not compute one as if the deployment were fixed."
+          }
+        }
+      },
+      "TokenAsset": {
+        "type": "object",
+        "required": ["reference", "protocolDetails"],
+        "properties": {
+          "reference": {
+            "type": "string",
+            "description": "The lower-case ticker. Always shown with the winning Atomical ID."
+          },
+          "protocolDetails": { "$ref": "#/components/schemas/TokenProtocolDetails" },
+          "circulatingSupplyAtomic": {
+            "$ref": "#/components/schemas/AtomicAmount",
+            "description": "Coloured value actually held after burns, not claims multiplied by mint amount."
+          },
+          "holderCount": { "type": "integer", "minimum": 0 },
+          "coverage": { "type": "string", "enum": ["complete", "partial"] },
+          "metadata": { "type": "object", "additionalProperties": true }
+        }
+      },
+      "HolderChunk": {
+        "type": "object",
+        "required": ["rows", "complete"],
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["address", "balanceAtomic"],
+              "properties": {
+                "address": { "type": "string" },
+                "balanceAtomic": { "$ref": "#/components/schemas/AtomicAmount" },
+                "receivedAtomic": { "$ref": "#/components/schemas/AtomicAmount" },
+                "sentAtomic": { "$ref": "#/components/schemas/AtomicAmount" },
+                "transactionCount": { "type": "integer", "minimum": 0 }
+              }
+            }
+          },
+          "complete": {
+            "type": "boolean",
+            "description": "True only when the holder manifest is fully proven and sums exactly to circulating supply."
+          },
+          "chunkHash": { "type": "string" }
+        }
+      },
+      "ActivityEvent": {
+        "type": "object",
+        "required": ["type", "transactionId", "height"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["deploy", "mint-direct", "mint-decentralized", "transfer", "burn", "operation"]
+          },
+          "transactionId": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+          "height": { "type": "integer", "minimum": 0 },
+          "blockHash": { "type": ["string", "null"] },
+          "blockTime": { "type": ["integer", "null"] },
+          "walletDeltas": {
+            "type": "array",
+            "items": {},
+            "description": "Intentionally empty. Supply and holder snapshots are the authoritative state, so events publish empty deltas to prevent downstream double application."
+          },
+          "supplyDeltas": {
+            "type": "array",
+            "items": {},
+            "description": "Intentionally empty, for the same reason."
+          }
+        }
+      },
+      "FeedPage": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "asset": { "$ref": "#/components/schemas/TokenAsset" },
+                "holders": { "$ref": "#/components/schemas/HolderChunk" },
+                "activity": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ActivityEvent" }
+                }
+              }
+            }
+          },
+          "nextCursor": {
+            "anyOf": [{ "$ref": "#/components/schemas/Cursor" }, { "type": "null" }]
+          },
+          "generationId": { "type": ["string", "null"] }
+        }
+      },
+      "PollAccepted": {
+        "type": "object",
+        "required": ["accepted"],
+        "properties": {
+          "accepted": { "type": "boolean" },
+          "state": { "type": "string" }
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Missing or invalid credentials.",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "RetryableUnavailable": {
+        "description": "A generation is still being built. This is normal during cold bootstrap. Retry with backoff; retries resume and reuse the same source fingerprint.",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/live": {
+      "get": {
+        "operationId": "arc20GetLive",
+        "tags": ["Operational"],
+        "summary": "Process liveness",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The process is running.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Liveness" } }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "arc20GetReady",
+        "tags": ["Operational"],
+        "summary": "Migrations and initial snapshot readiness",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Ready.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Readiness" } }
+            }
+          },
+          "503": {
+            "description": "Not ready.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Readiness" } }
+            }
+          }
+        }
+      }
+    },
+    "/token-explorer/status": {
+      "get": {
+        "operationId": "arc20GetStatus",
+        "tags": ["Feed"],
+        "summary": "Source status and counts",
+        "description": "Read the declared coverage here rather than assuming completeness.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Status.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SourceStatus" },
+                "examples": {
+                  "partial": {
+                    "summary": "Declared partial coverage with its exact reason",
+                    "value": {
+                      "coverage": "partial",
+                      "reason": "Confirmed authoritative history and complete proven holder snapshots are indexed, but the shipped adapter has no exhaustive mempool feed with stable pending lifecycle and disappearance handling.",
+                      "assets": 0,
+                      "holders": 0,
+                      "events": 0,
+                      "chainTip": null,
+                      "atomicalsTip": null,
+                      "generations": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token-explorer/arc20": {
+      "get": {
+        "operationId": "arc20GetFeedPage",
+        "tags": ["Feed"],
+        "summary": "Immutable feed page",
+        "description": "A cursor-free request may need to build an immutable generation first. In that case the service copies a bounded number of rows and returns a retryable unavailable response until the generation is ready. At most 64 unexpired generations are retained.",
+        "security": [{ "sourceBearer": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/CursorQuery" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One feed page.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/FeedPage" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "503": { "$ref": "#/components/responses/RetryableUnavailable" }
+        }
+      }
+    },
+    "/indexer/atomicals/poll": {
+      "post": {
+        "operationId": "arc20Poll",
+        "tags": ["Operator"],
+        "summary": "Operator triggered scan",
+        "description": "Operator only. The scan is all or nothing: any inconsistency aborts it rather than committing a partial snapshot.",
+        "security": [{ "adminToken": [] }],
+        "responses": {
+          "202": {
+            "description": "Accepted.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/PollAccepted" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    }
+  }
+}

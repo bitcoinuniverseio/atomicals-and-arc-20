@@ -1,0 +1,80 @@
+---
+import schema from '../../../contracts/schemas/common.schema.json'
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const definitions = Object.entries(schema.$defs).map(([name, definition]) => ({
+  name,
+  title: (definition as { title?: string }).title ?? name,
+  description: (definition as { description?: string }).description ?? '',
+  type: describeType(definition as Record<string, unknown>),
+  examples: (definition as { examples?: unknown[] }).examples ?? [],
+}))
+
+function describeType(definition: Record<string, unknown>): string {
+  if (typeof definition.type === 'string') {
+    if (definition.enum) return `${definition.type}, enumerated`
+    if (definition.pattern) return `${definition.type}, pattern constrained`
+    return definition.type
+  }
+  if (Array.isArray(definition.type)) return definition.type.join(' or ')
+  if (definition.anyOf) return 'union'
+  return 'object'
+}
+---
+
+<p class="bu-schema-note">
+  <code>{schema.title}</code>, version {schema.version}. Download:
+  <a href={`${base}/contracts/schemas/common.schema.json`}>common.schema.json</a>.
+  {definitions.length} definitions, every example validated in CI.
+</p>
+
+<div class="bu-matrix">
+  <table>
+    <caption class="sr-only">Shared schema definitions</caption>
+    <thead>
+      <tr>
+        <th scope="col">Definition</th>
+        <th scope="col">Type</th>
+        <th scope="col">What it is</th>
+        <th scope="col">Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        definitions.map((definition) => (
+          <tr id={`schema-${definition.name}`}>
+            <th scope="row">
+              <code>{definition.name}</code>
+              {definition.title !== definition.name && (
+                <>
+                  <br />
+                  <span style="color:var(--bu-ink-muted)">{definition.title}</span>
+                </>
+              )}
+            </th>
+            <td>{definition.type}</td>
+            <td>{definition.description || 'No description recorded.'}</td>
+            <td>
+              {definition.examples.length > 0 ? (
+                <code>{String(definition.examples[0])}</code>
+              ) : (
+                <span style="color:var(--bu-ink-muted)">none</span>
+              )}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .bu-schema-note {
+    font-size: var(--bu-step--1);
+    color: var(--bu-ink-muted);
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface-sunken);
+    padding: 0.7rem 0.9rem;
+  }
+</style>

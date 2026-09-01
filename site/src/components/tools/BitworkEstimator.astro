@@ -1,0 +1,201 @@
+---
+---
+
+<div class="bu-tool">
+  <div class="bu-tool-head">
+    <h2 id="estimator">Bitwork estimator</h2>
+    <span class="bu-chip" data-tone="protocol">Probabilistic. Not a schedule</span>
+  </div>
+
+  <noscript>
+    <div class="bu-tool-body">
+      <p class="bu-noscript">
+        This tool needs JavaScript. The expected attempt table is published on
+        <a href="/protocol/core/bitwork/">Bitwork</a>, which works without it.
+      </p>
+    </div>
+  </noscript>
+
+  <bu-bitwork>
+    <div class="bu-tool-body" data-layout="split">
+      <form data-form novalidate>
+        <div class="bu-field">
+          <label for="bw-prefix">Prefix</label>
+          <input
+            id="bw-prefix"
+            type="text"
+            data-prefix
+            value="0000"
+            spellcheck="false"
+            autocomplete="off"
+            inputmode="latin"
+            aria-describedby="bw-prefix-hint"
+          />
+          <span class="bu-hint" id="bw-prefix-hint">
+            Hexadecimal characters only. Each additional character multiplies the expected attempts
+            by sixteen.
+          </span>
+          <span class="bu-error" data-prefix-error role="alert" hidden></span>
+        </div>
+
+        <div class="bu-field">
+          <label for="bw-extension">Partial next character</label>
+          <select id="bw-extension" data-extension>
+            <option value="0">None</option>
+            <option value="1">One extra bit of the next character</option>
+            <option value="2">Two extra bits</option>
+            <option value="3">Three extra bits</option>
+          </select>
+          <span class="bu-hint">
+            Some configurations allow a partial next character, which sits between two whole
+            character levels.
+          </span>
+        </div>
+
+        <div class="bu-field">
+          <label for="bw-rate">Attempts per second you can sustain</label>
+          <input
+            id="bw-rate"
+            type="number"
+            data-rate
+            value="100000"
+            min="1"
+            step="1"
+            aria-describedby="bw-rate-hint"
+          />
+          <span class="bu-hint" id="bw-rate-hint">
+            Your own measured rate. This tool has no idea what hardware you have, and does not
+            estimate cost or profitability.
+          </span>
+        </div>
+      </form>
+
+      <div>
+        <div class="bu-out" data-result aria-live="polite" aria-atomic="true"></div>
+        <p class="bu-hint">
+          Attempts are independent, so a run can finish far under or far over the expected count.
+          No amount of work guarantees a result in any particular time. Nothing here is a
+          profitability statement.
+        </p>
+      </div>
+    </div>
+  </bu-bitwork>
+</div>
+
+<script>
+  class BuBitwork extends HTMLElement {
+    connectedCallback() {
+      for (const selector of ['[data-prefix]', '[data-extension]', '[data-rate]']) {
+        const control = this.querySelector(selector)
+        control?.addEventListener('input', () => this.#compute())
+        control?.addEventListener('change', () => this.#compute())
+      }
+      this.#compute()
+    }
+
+    #compute() {
+      const prefixField = this.querySelector('[data-prefix]') as HTMLInputElement
+      const prefixError = this.querySelector('[data-prefix-error]') as HTMLElement
+      const extension = Number(
+        (this.querySelector('[data-extension]') as HTMLSelectElement).value || '0',
+      )
+      const rate = Math.max(
+        1,
+        Number((this.querySelector('[data-rate]') as HTMLInputElement).value) || 1,
+      )
+      const result = this.querySelector('[data-result]') as HTMLElement
+      if (!prefixField || !result || !prefixError) return
+
+      const prefix = prefixField.value.trim()
+      if (!/^[0-9a-fA-F]*$/.test(prefix)) {
+        prefixError.hidden = false
+        prefixError.textContent = 'Use hexadecimal characters only: 0 to 9 and a to f.'
+        prefixField.setAttribute('aria-invalid', 'true')
+        return
+      }
+      if (prefix.length === 0) {
+        prefixError.hidden = false
+        prefixError.textContent = 'Enter at least one character.'
+        prefixField.setAttribute('aria-invalid', 'true')
+        return
+      }
+      if (prefix.length > 12) {
+        prefixError.hidden = false
+        prefixError.textContent =
+          'Twelve characters is already beyond any practical search. Reduce it.'
+        prefixField.setAttribute('aria-invalid', 'true')
+        return
+      }
+      prefixError.hidden = true
+      prefixField.removeAttribute('aria-invalid')
+
+      // Each hexadecimal character is 4 bits. A partial character adds whole bits.
+      const bits = prefix.length * 4 + extension
+      const expectedAttempts = Math.pow(2, bits)
+      const seconds = expectedAttempts / rate
+
+      // Probability of success after n attempts, where each attempt succeeds with p = 2^-bits.
+      const probabilityAfter = (attempts: number) =>
+        1 - Math.pow(1 - Math.pow(2, -bits), attempts)
+
+      const rows = [0.5, 1, 2, 3]
+        .map((multiple) => {
+          const attempts = expectedAttempts * multiple
+          return `
+            <tr>
+              <th scope="row">${multiple} times the expectation</th>
+              <td class="bu-num">${formatCount(attempts)}</td>
+              <td class="bu-num">${formatDuration(attempts / rate)}</td>
+              <td class="bu-num">${(probabilityAfter(attempts) * 100).toFixed(1)} percent</td>
+            </tr>`
+        })
+        .join('')
+
+      result.innerHTML = `
+        <dl class="bu-facts">
+          <div class="bu-fact"><dt>Search space</dt><dd>2 to the power ${bits}</dd></div>
+          <div class="bu-fact"><dt>Expected attempts</dt><dd>${formatCount(expectedAttempts)}</dd></div>
+          <div class="bu-fact"><dt>At your stated rate</dt><dd>${formatDuration(seconds)}</dd></div>
+        </dl>
+
+        <table>
+          <caption class="sr-only">Probability of success against effort</caption>
+          <thead>
+            <tr>
+              <th scope="col">Effort</th>
+              <th scope="col">Attempts</th>
+              <th scope="col">Time</th>
+              <th scope="col">Chance of having finished</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+
+        <p>
+          <span class="bu-chip" data-tone="${bits > 32 ? 'risk' : bits > 24 ? 'warn' : 'ok'}">
+            ${bits > 32 ? 'impractical for most setups' : bits > 24 ? 'expensive' : 'reasonable'}
+          </span>
+        </p>
+      `
+    }
+  }
+
+  function formatCount(value: number) {
+    if (value < 1000) return value.toFixed(0)
+    if (value < 1e6) return `${(value / 1e3).toFixed(1)} thousand`
+    if (value < 1e9) return `${(value / 1e6).toFixed(1)} million`
+    if (value < 1e12) return `${(value / 1e9).toFixed(1)} billion`
+    return value.toExponential(2)
+  }
+
+  function formatDuration(seconds: number) {
+    if (seconds < 1) return 'under a second'
+    if (seconds < 60) return `${seconds.toFixed(0)} seconds`
+    if (seconds < 3600) return `${(seconds / 60).toFixed(1)} minutes`
+    if (seconds < 86400) return `${(seconds / 3600).toFixed(1)} hours`
+    if (seconds < 31_557_600) return `${(seconds / 86400).toFixed(1)} days`
+    return `${(seconds / 31_557_600).toFixed(1)} years`
+  }
+
+  customElements.define('bu-bitwork', BuBitwork)
+</script>

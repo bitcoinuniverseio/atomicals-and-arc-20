@@ -1,0 +1,80 @@
+---
+title: AVM opcodes
+description: The complete opcode inventory generated from the interpreter source, with the upstream test annotation preserved per opcode.
+sidebar:
+  order: 2
+provenance:
+  pageId: protocol/avm/opcodes
+  area: protocol
+  audience: [developer]
+  applicability: experimental
+  authority: reference-implementation
+  networks: [none]
+  sources:
+    - id: atomicals-avm-interpreter
+      path: opcodes
+      note: src/script/script.h opcode enumeration
+  verified: '2026-08-31'
+  tags: [avm, opcodes]
+  limitations:
+    - The status column reflects the upstream source comment only. It is not a Universe verification result.
+    - Opcodes with no upstream annotation are shown as such rather than assumed working.
+---
+
+import OpcodeTable from '../../../../components/OpcodeTable.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+This inventory is generated from the interpreter's opcode enumeration. It is not hand maintained,
+so it cannot drift from the source.
+
+<Aside type="caution" title="What the status column means">
+`tested upstream` means the source comment marks the opcode as tested by the interpreter's own
+suite. It does not mean any Universe service executes it, and it does not mean the opcode is
+active on any network.
+</Aside>
+
+## Authorisation
+
+Signature checking is replaced. The ordinary Bitcoin signature opcodes are removed and a custom
+authorisation opcode is used instead.
+
+<OpcodeTable group="authorisation" />
+
+## Introspection
+
+Opcodes that read the transaction being evaluated.
+
+<OpcodeTable group="introspection" />
+
+## State storage
+
+Key and value storage private to a contract.
+
+<OpcodeTable group="state-storage" />
+
+## Fungible tokens
+
+Deposit, withdrawal, and inspection of ARC-20 balances held by a contract.
+
+<OpcodeTable group="fungible-tokens" />
+
+## Non-fungible tokens
+
+Deposit, withdrawal, and inspection of non-fungible objects held by a contract.
+
+<OpcodeTable group="non-fungible-tokens" />
+
+## Block information
+
+<OpcodeTable group="block-info" />
+
+## Hashing
+
+<OpcodeTable group="hashing" />
+
+## Large numbers
+
+The interpreter adds support for arbitrarily large numbers, so arithmetic is not bounded the way
+Bitcoin script bounds it. Any integration must treat numeric results as arbitrary precision rather
+than assuming a fixed width.
+

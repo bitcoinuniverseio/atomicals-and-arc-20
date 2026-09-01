@@ -1,0 +1,204 @@
+# Marketplace v1
+
+The complete lifecycle, the signing contract, the exact PSBT shape, and everything the authority refuses.
+
+Page ID: reference/api/marketplace-v1
+Applicability: universe-implementation
+Authority: universe-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: en
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/api/marketplace-v1/
+
+---
+The Marketplace v1 service is a durable protocol authority backed by Atomicals ElectrumX, Bitcoin
+Core, and the token-explorer database. It does not infer ownership from an address string or from
+indexer metadata alone.
+
+## Four isolated lanes
+
+One router exposes four protocol authorities: `arc20`, `atomicals_nft`, `realms`, and `subrealms`.
+They share the durable transaction engine and operational credentials, but every route, cursor,
+idempotency scope, listing, offer, order, reservation, browse query, and status count is protocol
+scoped. Non-ARC-20 storage keys are prefixed internally, and the prefix is never returned as a
+public asset ID.
+
+| Lane | Collateral | Extra check |
+| --- | --- | --- |
+| `arc20` | The verified ticker winner, trading the complete FT value | None beyond the shared set |
+| `atomicals_nft` | An authoritative compact Atomical ID | Rejects realm, subrealm, FT, container, and item subtypes |
+| `realms` | A Realm | Resolves the verified name winner before every mutation |
+| `subrealms` | A Subrealm | Resolves the verified name winner before every mutation |
+
+The three non-fungible lanes always expose `quantityAtomic` as `1`.
+
+## Safety model
+
+All marketplace and action gates default to false. Enabling an action gate while the marketplace
+gate is false is a configuration error. Enabling also requires separate request-HMAC, internal
+execution-bearer, internal execution-HMAC, and Bitcoin Core credentials, and the two HMAC secrets
+must be distinct. Buy or offer execution additionally requires an exact fee script. Enabling
+requires a release SHA identifying the exact deployed indexer commit.
+
+Every internal readiness response binds that revision and the exact
+`index-atomicals-{protocolId}-settlement-v1` authority identity, so a stale binary or a confused
+settlement authority is rejected before wallet preparation.
+
+## What must agree before collateral is accepted
+
+For ARC-20, all of these independent views must agree:
+
+1. The ticker resolves to its verified authoritative FT winner.
+2. Bitcoin Core reports a confirmed, live UTXO with the exact value and owner script, and a mature
+   coinbase where applicable.
+3. `blockchain.atomicals.at_location` reports exactly that location, script, value, and one
+   authoritative FT.
+4. `blockchain.atomicals.listscripthash` reports exactly one active row whose coloured balance is
+   the full UTXO value.
+5. Bitcoin height and hash, and the Atomicals Bitcoin and Atomicals tips, remain unchanged across
+   the verification bracket.
+
+Buyer funding inputs must be confirmed P2WPKH or key-path P2TR outputs, uncoloured in both the
+active script hash view and location history. The Atomicals transaction blueprint must assign the
+selected inputs cleanly to output zero, with no operation, no NFT, no mixed Atomical ID, and no
+burn.
+
+## Always rejected
+
+Mixed collateral, spent outputs, checkpoint drift, ambiguous balances, Atomicals operations inside
+the settlement transaction, burns, output assignments that do not move the exact selected Atomical,
+wallet supplied mutations to a stored reservation projection, and unsupported adapter filters.
+
+## Routes
+
+### Public
+
+### Adapter
+
+Direct, envelope free pages at `/v1/marketplace/protocols/{protocolId}`. Pages have exactly
+`{items, nextCursor?}` and accept the `cursor`, `limit`, `assetId`, `collectionId`, `owner`,
+`status`, `sort`, and `direction` query fields. Unsupported filters fail closed, and ARC-20
+collection pages are empty by design. Listing and offer IDs exposed by this bridge are stable
+lowercase UUIDs reversibly mapped to the authority's prefixed storage keys.
+
+### Operator
+
+### Internal bridge
+
+Not publicly reachable. Documented so integrators understand where the boundary sits.
+
+## Authentication and signing
+
+Reads use a bearer token. Public mutations add a replay-resistant signature:
+
+```text
+v1\n{timestamp}\n{nonce}\n{method}\n{path}\n{sha256(exact_body_bytes)}
+```
+
+Headers: `X-Marketplace-Key-Id: universe-marketplace-v1`, `X-Marketplace-Timestamp`,
+`X-Marketplace-Nonce`, `X-Marketplace-Signature`. Mutations require `Idempotency-Key`.
+
+Owner actions use a short lived `X-Marketplace-Owner-Authorization` session, issued only after a
+BIP-322 simple proof with message type `smp`, for P2WPKH or key-path P2TR.
+
+The internal bridge requires three independent credentials and its own signature over
+`{timestamp}\n{method}\n{path}\n{sha256(exact_body_bytes)}`, with a sixty second acceptance window.
+The signed path is the exact protocol-specific request path, so a signature for another protocol
+path is rejected.
+
+No credential value appears anywhere in this documentation.
+See [authentication](/develop/authentication/).
+
+## The PSBT and signing contract
+
+**Seller preparation.** PSBT v0, one collateral input, one payout output, sequence `0xfffffffd`,
+witness UTXO, and sighash type `0x83`, which is `SIGHASH_SINGLE` with `ANYONECANPAY`. The authority
+verifies the signature before persisting a live listing.
+
+**Purchase preparation is deterministic:**
+
+| Position | Contents |
+| --- | --- |
+| Input 0 | The first buyer funding input |
+| Inputs 1 to N | Seller inputs in request order |
+| Remaining inputs | The remaining buyer funding inputs |
+| Output 0 | The complete asset amount |
+| Outputs 1 to N | The corresponding seller payouts |
+| Next output | The marketplace fee output, when non-zero |
+| Last output | Buyer change, when it is not dust |
+
+Every seller input retains sighash `0x83` after combination. Buyer P2WPKH inputs require
+`SIGHASH_ALL`; key-path P2TR inputs allow default or ALL.
+
+The signed PSBT must preserve the prepared unsigned digest, the exact previous outputs, the output
+ordering, the miner fee, the fee-rate ceiling, and the Atomicals transfer blueprint. The authority
+performs Atomicals dry validation and Bitcoin Core `testmempoolaccept` before writing a durable
+broadcast intent.
+
+A transport failure after a durable broadcast intent is an ambiguous outcome and never triggers a
+blind rebroadcast. Reconciliation resolves it against chain evidence.
+
+## Reservations
+
+A reservation request carries 1 through 63 buyer inputs, leaving one of the maximum 64 ordered
+spend claims for collateral.
+
+The reservation response is the complete projection: authoritative UUID reservation, subject,
+action-intent, claim, and spend-fence identifiers; exactly one non-null `listingId` or `offerId`;
+trusted actor and request context; ordered fees and spend claims; and every fee, payout,
+protocol-data, spend-claim, and economic commitment hash.
+
+The economic hash uses the exact
+`bitcoin-universe:marketplace-v1:purchase-reservation-economics:v1` schema and commits an absent
+optional `requestId` as JSON `null`. Reload and purchase preparation both recompute and compare the
+entire stored projection. Wallet supplied mutations are rejected.
+
+## Exact protocol data
+
+| Action | Accepted shape |
+| --- | --- |
+| Listing validation | `{location, payoutAddress?}` |
+| Update | `{payoutAddress?}` |
+| Delist and offer cancellation | `{}` |
+| Offer creation | `{listingId, expectedListingRevision}` |
+| Purchase reservation | `{buyerInputs, receiveAddress, changeAddress?, feeRateAtomicVb}` |
+
+Anything else is rejected. These shapes are exact, not minimums.
+
+## Amounts
+
+Every amount is a decimal string. JSON numbers are rejected for satoshi and protocol quantities.
+ARC-20 listings and offers cover the complete coloured UTXO. Non-fungible listings have quantity
+one and their price is the exact total Bitcoin consideration.
+
+## Order lifecycle
+
+Orders move through `prepared`, `finalized`, `broadcasting`, `submitted` or `mempool`, and
+`confirmed`, or an explicit failure or recovery state. Reconciliation compares Bitcoin Core
+transaction, mempool, block-header, spending-prevout, and UTXO evidence. Listings settle only after
+the configured confirmation depth. Replacement, drop, conflict, and reorganisation evidence is
+recorded rather than guessed.
+
+Partial unique indexes enforce one live listing per collateral location, one open buyer offer per
+listing, and one active reservation per listing. Every mutation uses an expected revision inside a
+single immediate transaction.
+
+## Composite position source
+
+`position-source` routes join Bitcoin Core's current UTXO, the Atomicals location inventory, active
+script hash balances, the ticker winner, and Realm and Subrealm winners between stable checkpoint
+probes. Responses use `universe-marketplace-protocol-position-v1` and contain only positions from
+that protocol.
+
+ARC-20 returns the exact coloured atomic quantity; non-fungible positions are singletons. Spent and
+unrelated outputs return a complete empty set. Mixed, unknown, non-standard, or internally
+inconsistent Atomicals fail closed rather than disappearing from composite evidence.
+
+## Deprecated aliases
+
+| Deprecated | Replacement |
+| --- | --- |
+| `POST /buys` | `POST /reservations` then `POST /purchases/prepare` |
+| `POST /orders/{orderId}/reconcile` | `POST /settlements/{orderId}/reconcile` |
+
+See [versioning and deprecation](/develop/versioning-and-deprecation/).

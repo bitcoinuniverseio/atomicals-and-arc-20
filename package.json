@@ -1,0 +1,29 @@
+{
+  "name": "@bitcoin-universe/atomicals-and-arc-20",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Atomicals protocol and ARC-20 documentation platform, contracts, and conformance material",
+  "packageManager": "npm@11.17.0",
+  "engines": {
+    "node": "24.19.0",
+    "npm": "11.17.0"
+  },
+  "workspaces": [
+    "site",
+    "packages/client",
+    "packages/mcp"
+  ],
+  "scripts": {
+    "generate": "node scripts/generate-all.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/",
+    "check": "node scripts/check-all.mjs",
+    "verify": "npm run generate && npm run check && npm test && npm run build"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "ajv": "8.17.1",
+    "ajv-formats": "3.0.1"
+  }
+}

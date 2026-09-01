@@ -1,0 +1,39 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-arc20-units"
+  title="One unit is one satoshi"
+  summary="An ARC-20 balance is not a number stored somewhere. It is the satoshi value of the outputs a validator recognises as coloured for that token. An output worth 700 satoshis that a validator colours for a ticker carries exactly 700 units. Spending it spends the units. Splitting it splits the units, subject to the allocation rules."
+>
+  <svg viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g font-family="var(--bu-font-sans)">
+      <text x="8" y="26" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">YOUR WALLET HOLDS OUTPUTS, NOT A BALANCE</text>
+
+      <rect x="8" y="42" width="150" height="76" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="24" y="66" font-size="12" fill="var(--d-soft)">output A</text>
+      <text x="24" y="90" font-size="19" font-weight="640" fill="var(--d-ink)">700 sats</text>
+      <text x="24" y="108" font-size="12" fill="var(--d-accent)">= 700 units</text>
+
+      <rect x="170" y="42" width="150" height="76" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="186" y="66" font-size="12" fill="var(--d-soft)">output B</text>
+      <text x="186" y="90" font-size="19" font-weight="640" fill="var(--d-ink)">546 sats</text>
+      <text x="186" y="108" font-size="12" fill="var(--d-accent)">= 546 units</text>
+
+      <rect x="332" y="42" width="150" height="76" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" stroke-dasharray="5 4" />
+      <text x="348" y="66" font-size="12" fill="var(--d-soft)">output C</text>
+      <text x="348" y="90" font-size="19" font-weight="640" fill="var(--d-ink)">20 000 sats</text>
+      <text x="348" y="108" font-size="12" fill="var(--d-soft)">cardinal, uncoloured</text>
+
+      <rect x="500" y="42" width="212" height="76" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="518" y="66" font-size="12" fill="var(--d-soft)">what a wallet shows you</text>
+      <text x="518" y="92" font-size="19" font-weight="640" fill="var(--d-ink)">1 246 units</text>
+      <text x="518" y="110" font-size="12" fill="var(--d-soft)">a sum, not a stored value</text>
+
+      <text x="8" y="150" font-size="12.5" fill="var(--d-soft)">Output C pays the fee. It must never be mixed into the coloured selection by accident.</text>
+      <text x="8" y="172" font-size="12.5" fill="var(--d-soft)">Spending output A spends all 700 units. There is no partial spend of an output.</text>
+      <text x="8" y="194" font-size="12.5" fill="var(--d-soft)">The 1 246 figure exists only in the wallet interface. Nothing on chain stores it.</text>
+    </g>
+  </svg>
+</Figure>

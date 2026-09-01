@@ -1,0 +1,345 @@
+---
+import arc20 from '../../../../contracts/openapi/arc20.json'
+import nftsRealms from '../../../../contracts/openapi/atomicals-nfts-realms.json'
+import marketplace from '../../../../contracts/openapi/marketplace-v1.json'
+
+const METHODS = new Set(['get', 'put', 'post', 'delete', 'patch', 'head', 'options', 'trace'])
+
+function flatten(id: string, document: Record<string, any>) {
+  const operations = []
+  for (const [path, item] of Object.entries(document.paths ?? {})) {
+    for (const [method, operation] of Object.entries(item as Record<string, any>)) {
+      if (!METHODS.has(method)) continue
+      operations.push({
+        document: id,
+        documentTitle: document.info.title,
+        path,
+        method: method.toUpperCase(),
+        operationId: operation.operationId,
+        summary: operation.summary ?? '',
+        description: operation.description ?? '',
+        tags: operation.tags ?? [],
+        deprecated: Boolean(operation.deprecated),
+        mutating: !['GET', 'HEAD', 'OPTIONS'].includes(method.toUpperCase()),
+        parameters: (operation.parameters ?? []).map((parameter: any) =>
+          parameter.$ref
+            ? resolveRef(document, parameter.$ref)
+            : parameter,
+        ),
+        responses: Object.entries(operation.responses ?? {}).map(([status, response]: any) => ({
+          status,
+          description: response.$ref
+            ? (resolveRef(document, response.$ref)?.description ?? '')
+            : (response.description ?? ''),
+          example: firstExample(document, response),
+        })),
+        requestBodyExample: operation.requestBody
+          ? firstExample(document, operation.requestBody)
+          : null,
+      })
+    }
+  }
+  return operations
+}
+
+function resolveRef(document: Record<string, any>, ref: string) {
+  const parts = ref.replace(/^#\//, '').split('/')
+  let node: any = document
+  for (const part of parts) node = node?.[part]
+  return node
+}
+
+function firstExample(document: Record<string, any>, holder: any) {
+  const resolved = holder?.$ref ? resolveRef(document, holder.$ref) : holder
+  for (const media of Object.values(resolved?.content ?? {}) as any[]) {
+    if (media.examples) {
+      const first = Object.values(media.examples)[0] as any
+      if (first?.value !== undefined) return JSON.stringify(first.value, null, 2)
+    }
+    if (media.example !== undefined) return JSON.stringify(media.example, null, 2)
+  }
+  return null
+}
+
+const operations = [
+  ...flatten('arc20', arc20),
+  ...flatten('atomicals-nfts-realms', nftsRealms),
+  ...flatten('marketplace-v1', marketplace),
+]
+
+const documents = [
+  { id: 'arc20', title: arc20.info.title },
+  { id: 'atomicals-nfts-realms', title: nftsRealms.info.title },
+  { id: 'marketplace-v1', title: marketplace.info.title },
+]
+---
+
+<div class="bu-tool">
+  <div class="bu-tool-head">
+    <h2 id="explorer">API explorer</h2>
+    <span class="bu-chip" data-tone="protocol">Schema and copy only. No requests are sent</span>
+  </div>
+
+  <noscript>
+    <div class="bu-tool-body">
+      <p class="bu-noscript">
+        This tool needs JavaScript. Every operation is listed on the API reference pages, and the
+        <a href="/reference/openapi/">OpenAPI documents</a> are downloadable, both without it.
+      </p>
+    </div>
+  </noscript>
+
+  <bu-api-explorer data-operations={JSON.stringify(operations)}>
+    <div class="bu-tool-body">
+      <form data-form novalidate>
+        <div class="bu-row">
+          <div class="bu-field">
+            <label for="api-document">Document</label>
+            <select id="api-document" data-document>
+              <option value="">All</option>
+              {documents.map((entry) => <option value={entry.id}>{entry.title}</option>)}
+            </select>
+          </div>
+          <div class="bu-field">
+            <label for="api-filter">Filter</label>
+            <input
+              id="api-filter"
+              type="search"
+              data-filter
+              autocomplete="off"
+              placeholder="path, operation id, or summary"
+            />
+          </div>
+          <div class="bu-field">
+            <label for="api-base">Base URL for copied examples</label>
+            <input
+              id="api-base"
+              type="text"
+              data-base
+              value="http://127.0.0.1:3044"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+        </div>
+      </form>
+
+      <div data-list aria-live="polite"></div>
+    </div>
+  </bu-api-explorer>
+</div>
+
+<style>
+  .bu-op {
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    margin-bottom: 0.6rem;
+    background: var(--bu-surface);
+  }
+  .bu-op > summary {
+    cursor: pointer;
+    padding: 0.65rem 0.8rem;
+    min-height: var(--bu-touch);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    list-style: none;
+  }
+  .bu-op > summary::-webkit-details-marker {
+    display: none;
+  }
+  .bu-op-method {
+    font-family: var(--bu-font-mono);
+    font-weight: 700;
+    font-size: 0.75rem;
+    border: 1px solid var(--bu-line-strong);
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+    color: var(--bu-ink);
+    background: var(--bu-surface-sunken);
+  }
+  .bu-op-path {
+    font-family: var(--bu-font-mono);
+    font-size: var(--bu-step--1);
+    color: var(--bu-ink);
+    overflow-wrap: anywhere;
+  }
+  .bu-op-body {
+    border-top: 1px solid var(--bu-line);
+    padding: 0.8rem;
+  }
+  .bu-op-body pre {
+    margin: 0.4rem 0 0.8rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface-sunken);
+    overflow-x: auto;
+    font-size: var(--bu-step--1);
+  }
+  .bu-op-empty {
+    color: var(--bu-ink-muted);
+    padding: 1rem;
+  }
+</style>
+
+<script>
+  interface Operation {
+    document: string
+    documentTitle: string
+    path: string
+    method: string
+    operationId: string
+    summary: string
+    description: string
+    tags: string[]
+    deprecated: boolean
+    mutating: boolean
+    parameters: { name: string; in: string; required?: boolean; description?: string }[]
+    responses: { status: string; description: string; example: string | null }[]
+    requestBodyExample: string | null
+  }
+
+  class BuApiExplorer extends HTMLElement {
+    #operations: Operation[] = []
+
+    connectedCallback() {
+      try {
+        this.#operations = JSON.parse(this.dataset.operations ?? '[]')
+      } catch {
+        this.#operations = []
+      }
+      for (const selector of ['[data-document]', '[data-filter]', '[data-base]']) {
+        const control = this.querySelector(selector)
+        control?.addEventListener('input', () => this.#render())
+        control?.addEventListener('change', () => this.#render())
+      }
+      this.#render()
+    }
+
+    #render() {
+      const host = this.querySelector('[data-list]') as HTMLElement
+      if (!host) return
+
+      const document_ = (this.querySelector('[data-document]') as HTMLSelectElement).value
+      const filter = (this.querySelector('[data-filter]') as HTMLInputElement).value
+        .trim()
+        .toLowerCase()
+      const base = (this.querySelector('[data-base]') as HTMLInputElement).value.replace(/\/$/, '')
+
+      const matches = this.#operations.filter((operation) => {
+        if (document_ && operation.document !== document_) return false
+        if (!filter) return true
+        return (
+          operation.path.toLowerCase().includes(filter) ||
+          operation.operationId.toLowerCase().includes(filter) ||
+          operation.summary.toLowerCase().includes(filter)
+        )
+      })
+
+      if (matches.length === 0) {
+        host.innerHTML = '<p class="bu-op-empty">No operation matches that filter.</p>'
+        return
+      }
+
+      host.innerHTML = matches.map((operation) => this.#renderOne(operation, base)).join('')
+
+      for (const button of host.querySelectorAll('[data-copy-curl]')) {
+        button.addEventListener('click', async (event) => {
+          const target = event.currentTarget as HTMLButtonElement
+          try {
+            await navigator.clipboard.writeText(target.dataset.curl ?? '')
+            target.textContent = 'Copied'
+          } catch {
+            target.textContent = 'Copy failed'
+          }
+          window.setTimeout(() => {
+            target.textContent = 'Copy curl'
+          }, 2400)
+        })
+      }
+    }
+
+    #renderOne(operation: Operation, base: string) {
+      const curl = buildCurl(operation, base)
+      const parameters = operation.parameters.length
+        ? `<h4>Parameters</h4><ul>${operation.parameters
+            .map(
+              (parameter) =>
+                `<li><code>${escapeHtml(parameter.name)}</code> in ${escapeHtml(parameter.in)}${parameter.required ? ', required' : ''}${parameter.description ? `: ${escapeHtml(parameter.description)}` : ''}</li>`,
+            )
+            .join('')}</ul>`
+        : ''
+
+      const responses = operation.responses
+        .map(
+          (response) =>
+            `<li><code>${escapeHtml(response.status)}</code> ${escapeHtml(response.description)}${
+              response.example
+                ? `<pre><code>${escapeHtml(response.example)}</code></pre>`
+                : ''
+            }</li>`,
+        )
+        .join('')
+
+      return `
+        <details class="bu-op">
+          <summary>
+            <span class="bu-op-method">${escapeHtml(operation.method)}</span>
+            <span class="bu-op-path">${escapeHtml(operation.path)}</span>
+            ${operation.deprecated ? '<span class="bu-chip" data-tone="risk">deprecated</span>' : ''}
+            ${operation.mutating ? '<span class="bu-chip" data-tone="warn">mutation, copy only</span>' : '<span class="bu-chip" data-tone="ok">read</span>'}
+          </summary>
+          <div class="bu-op-body">
+            <p><strong>${escapeHtml(operation.summary)}</strong></p>
+            ${operation.description ? `<p>${escapeHtml(operation.description)}</p>` : ''}
+            <p><code>${escapeHtml(operation.operationId)}</code> in ${escapeHtml(operation.documentTitle)}</p>
+            ${parameters}
+            ${operation.requestBodyExample ? `<h4>Request body example</h4><pre><code>${escapeHtml(operation.requestBodyExample)}</code></pre>` : ''}
+            <h4>Responses</h4>
+            <ul>${responses}</ul>
+            <h4>Copy a request</h4>
+            <pre><code>${escapeHtml(curl)}</code></pre>
+            <div class="bu-page-actions">
+              <button type="button" data-copy-curl data-curl="${escapeHtml(curl)}">Copy curl</button>
+            </div>
+            ${
+              operation.mutating
+                ? '<p class="bu-hint">This explorer never sends a request. A mutation belongs in your own environment, with your own credential, against an origin you chose.</p>'
+                : '<p class="bu-hint">This explorer never sends a request. Run the copied command yourself against an origin you chose.</p>'
+            }
+          </div>
+        </details>
+      `
+    }
+  }
+
+  function buildCurl(operation: Operation, base: string) {
+    const path = operation.path.replace(/\{([^}]+)\}/g, (_match, name) => `<${name}>`)
+    const lines = [`curl --request ${operation.method} \\`, `  --url '${base}${path}' \\`]
+    lines.push(`  --header 'accept: application/json'`)
+    if (operation.mutating) {
+      lines[lines.length - 1] += ' \\'
+      lines.push(`  --header 'content-type: application/json' \\`)
+      lines.push(`  --header 'idempotency-key: <one per logical action>' \\`)
+      lines.push(`  --data '<exact body bytes you signed>'`)
+    }
+    return lines.join('\n')
+  }
+
+  function escapeHtml(value: string) {
+    return value.replace(/[&<>"']/g, (character) => {
+      const map: Record<string, string> = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }
+      return map[character] ?? character
+    })
+  }
+
+  customElements.define('bu-api-explorer', BuApiExplorer)
+</script>

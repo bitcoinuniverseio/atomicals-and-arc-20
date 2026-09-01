@@ -1,0 +1,131 @@
+---
+import registry from '../../../contracts/ecosystem.json'
+
+const TONE: Record<string, string> = {
+  'verified-active': 'ok',
+  degraded: 'warn',
+  unreachable: 'warn',
+  deprecated: 'risk',
+  closed: 'risk',
+  unknown: 'idle',
+}
+
+const CATEGORY_LABEL: Record<string, string> = {
+  'validator-indexer': 'Validator and indexer',
+  cli: 'Command line tool',
+  api: 'API',
+  sdk: 'SDK',
+  explorer: 'Explorer',
+  marketplace: 'Marketplace',
+  wallet: 'Wallet',
+  analytics: 'Analytics',
+  'developer-tool': 'Developer tool',
+  'community-resource': 'Community resource',
+  'official-resource': 'Official resource',
+}
+
+const byCategory = new Map<string, typeof registry.records>()
+for (const record of registry.records) {
+  const bucket = byCategory.get(record.category) ?? []
+  bucket.push(record)
+  byCategory.set(record.category, bucket)
+}
+const categories = [...byCategory.keys()].sort((a, b) =>
+  (CATEGORY_LABEL[a] ?? a).localeCompare(CATEGORY_LABEL[b] ?? b),
+)
+---
+
+<p class="bu-registry-note">
+  Last verified {registry.lastVerified}. {registry.records.length} records.
+  {registry.policy.noEndorsement}
+</p>
+
+{
+  categories.map((category) => (
+    <section>
+      <h3 id={`category-${category}`}>{CATEGORY_LABEL[category] ?? category}</h3>
+      <div class="bu-matrix">
+        <table>
+          <caption class="sr-only">{CATEGORY_LABEL[category] ?? category} records</caption>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Status</th>
+              <th scope="col">Availability</th>
+              <th scope="col">Custody</th>
+              <th scope="col">Evidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            {byCategory.get(category)!.map((record) => (
+              <tr id={`record-${record.id}`}>
+                <th scope="row">
+                  {record.url ? (
+                    <a href={record.url} rel="noopener noreferrer nofollow">
+                      {record.name}
+                    </a>
+                  ) : (
+                    record.name
+                  )}
+                  <br />
+                  <span style="color:var(--bu-ink-muted)">{record.operator}</span>
+                  {record.repository && (
+                    <>
+                      <br />
+                      <a href={record.repository} rel="noopener noreferrer nofollow">
+                        source
+                      </a>
+                    </>
+                  )}
+                </th>
+                <td>
+                  <span class="bu-chip" data-tone={record.official ? 'protocol' : 'idle'}>
+                    {record.official ? 'official' : 'third party'}
+                  </span>
+                  {record.networks.length > 0 && (
+                    <>
+                      <br />
+                      <span style="color:var(--bu-ink-muted)">{record.networks.join(', ')}</span>
+                    </>
+                  )}
+                </td>
+                <td>
+                  <span class="bu-chip" data-tone={TONE[record.availability] ?? 'idle'}>
+                    {record.availability}
+                  </span>
+                  <br />
+                  <span style="color:var(--bu-ink-muted)">checked {record.lastVerified}</span>
+                </td>
+                <td>{record.custody}</td>
+                <td>
+                  {record.evidence}
+                  {record.securityNotes && (
+                    <>
+                      <br />
+                      <br />
+                      <strong>Note.</strong> {record.securityNotes}
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  ))
+}
+
+<style>
+  .bu-registry-note {
+    font-size: var(--bu-step--1);
+    color: var(--bu-ink-muted);
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface-sunken);
+    padding: 0.7rem 0.9rem;
+  }
+  section h3 {
+    scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem);
+  }
+</style>

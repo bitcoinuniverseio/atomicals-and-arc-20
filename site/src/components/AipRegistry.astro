@@ -1,0 +1,99 @@
+---
+import registry from '../../../contracts/aip-registry.json'
+import { getSource, sourceUrl, shortRevision } from '../lib/sources'
+
+const STATUS_TONE: Record<string, string> = {
+  Idea: 'idle',
+  Draft: 'idle',
+  Review: 'warn',
+  'Last Call': 'warn',
+  Final: 'ok',
+  Stagnant: 'risk',
+  Withdrawn: 'risk',
+  Living: 'protocol',
+}
+
+const CONFORMANCE_TONE: Record<string, string> = {
+  proven: 'ok',
+  claimed: 'warn',
+  none: 'idle',
+}
+---
+
+<div class="bu-matrix">
+  <table>
+    <caption class="sr-only">
+      Atomicals Improvement Proposal registry generated from {registry.source.repository} at
+      {registry.source.revision}
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">AIP</th>
+        <th scope="col">Type</th>
+        <th scope="col">Status</th>
+        <th scope="col">Created</th>
+        <th scope="col">Implementation evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        registry.aips.map((aip) => (
+          <tr id={`aip-${aip.number}`}>
+            <th scope="row">
+              <a href={aip.sourceUrl} rel="noopener noreferrer">
+                AIP-{aip.number}
+              </a>
+              <br />
+              {aip.title}
+              {aip.abstract && (
+                <>
+                  <br />
+                  <span style="color:var(--bu-ink-muted)">{aip.abstract}</span>
+                </>
+              )}
+            </th>
+            <td>
+              {aip.type ?? 'unstated'}
+              {aip.category && (
+                <>
+                  <br />
+                  <span style="color:var(--bu-ink-muted)">{aip.category}</span>
+                </>
+              )}
+            </td>
+            <td>
+              <span class="bu-chip" data-tone={STATUS_TONE[aip.status] ?? 'idle'}>
+                {aip.status}
+              </span>
+            </td>
+            <td>{aip.created ?? 'unstated'}</td>
+            <td>
+              <span class="bu-chip" data-tone={CONFORMANCE_TONE[aip.conformance] ?? 'idle'}>
+                {aip.conformance}
+              </span>
+              <div style="margin-top:0.4rem">{aip.conformanceNote}</div>
+              {aip.implementations.length > 0 && (
+                <ul style="margin:0.4rem 0 0;padding-inline-start:1.1rem">
+                  {aip.implementations.map((item) => {
+                    const entry = getSource(item.sourceId)
+                    return (
+                      <li>
+                        <a href={sourceUrl(entry, item.path)} rel="noopener noreferrer">
+                          {entry.name}
+                        </a>{' '}
+                        at <code>{shortRevision(entry)}</code>: {item.evidence}
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+              <div style="margin-top:0.4rem;color:var(--bu-ink-muted)">
+                Last checked {aip.lastChecked}
+              </div>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

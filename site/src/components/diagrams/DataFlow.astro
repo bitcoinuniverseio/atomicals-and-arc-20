@@ -1,0 +1,67 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-data-flow"
+  title="Where every Atomicals answer comes from"
+  summary="Universe-operated Bitcoin Core produces blocks. Atomicals ElectrumX reads them and applies the protocol rules, which is where protocol interpretation happens. A Universe index scans that provider and publishes an immutable generation as a materialised read model. Products read the index through a public API. Each hop can be behind the one before it, so every answer carries the generation identifier and indexed height it was computed at. No third-party blockchain data provider sits in any production path."
+>
+  <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="df-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+    </defs>
+    <g font-family="var(--bu-font-sans)" font-size="12.5">
+      <rect x="8" y="20" width="150" height="66" rx="9" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="24" y="44" font-size="11" letter-spacing="1.1" fill="var(--d-soft)">UNIVERSE NODE</text>
+      <text x="24" y="64" font-weight="640" fill="var(--d-ink)">Bitcoin Core</text>
+      <text x="24" y="80" fill="var(--d-soft)">blocks</text>
+
+      <line x1="166" y1="53" x2="196" y2="53" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#df-arrow)" />
+
+      <rect x="204" y="20" width="170" height="66" rx="9" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.6" />
+      <text x="220" y="44" font-size="11" letter-spacing="1.1" fill="var(--d-accent)">PROTOCOL AUTHORITY</text>
+      <text x="220" y="64" font-weight="640" fill="var(--d-ink)">Atomicals ElectrumX</text>
+      <text x="220" y="80" fill="var(--d-soft)">applies the rules</text>
+
+      <line x1="382" y1="53" x2="412" y2="53" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#df-arrow)" />
+
+      <rect x="420" y="8" width="292" height="44" rx="9" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="436" y="26" font-weight="640" fill="var(--d-ink)">ARC-20 index and feed</text>
+      <text x="436" y="43" fill="var(--d-soft)">tickers, holders, confirmed activity</text>
+
+      <rect x="420" y="58" width="292" height="44" rx="9" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="436" y="76" font-weight="640" fill="var(--d-ink)">NFT and Realm index</text>
+      <text x="436" y="93" fill="var(--d-soft)">plain NFTs, Realms, Subrealms</text>
+
+      <rect x="420" y="108" width="292" height="44" rx="9" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="436" y="126" font-weight="640" fill="var(--d-ink)">Marketplace v1 authority</text>
+      <text x="436" y="143" fill="var(--d-soft)">listings, purchases, settlements</text>
+
+      <path d="M300 86 L300 130 L412 130" fill="none" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#df-arrow)" />
+
+      <line x1="566" y1="152" x2="566" y2="180" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#df-arrow)" />
+      <rect x="420" y="186" width="292" height="44" rx="9" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="1.5" />
+      <text x="436" y="204" font-weight="640" fill="var(--d-ink)">Products and integrations</text>
+      <text x="436" y="221" fill="var(--d-soft)">read the public API</text>
+
+      <rect x="8" y="112" width="366" height="118" rx="9" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.3" stroke-dasharray="5 4" />
+      <text x="24" y="136" font-size="11" letter-spacing="1.1" fill="var(--d-soft)">CARRIED WITH EVERY ANSWER</text>
+      <g fill="var(--d-ink)">
+        <text x="24" y="158">generation identifier</text>
+        <text x="24" y="177">indexed height</text>
+        <text x="24" y="196">source revision</text>
+        <text x="200" y="158">request identifier</text>
+        <text x="200" y="177">stale flag</text>
+        <text x="200" y="196">mixed tip flag</text>
+      </g>
+      <text x="24" y="218" fill="var(--d-soft)">Store all six with any cached result.</text>
+
+      <text x="8" y="256" fill="var(--d-soft)">Each hop can be behind the one before it. An index is a projection, never a validator.</text>
+      <text x="8" y="276" fill="var(--d-soft)">No third-party blockchain data provider sits in any production path.</text>
+      <text x="8" y="296" fill="var(--d-risk)">A cached answer without its generation is an answer you cannot explain later.</text>
+    </g>
+  </svg>
+</Figure>

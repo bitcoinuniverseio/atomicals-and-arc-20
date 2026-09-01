@@ -1,0 +1,190 @@
+---
+import arc20 from '../../../contracts/openapi/arc20.json'
+import nftsRealms from '../../../contracts/openapi/atomicals-nfts-realms.json'
+import marketplace from '../../../contracts/openapi/marketplace-v1.json'
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+
+function operationCount(document: { paths?: Record<string, Record<string, unknown>> }) {
+  const methods = new Set(['get', 'put', 'post', 'delete', 'patch', 'head', 'options', 'trace'])
+  let count = 0
+  for (const item of Object.values(document.paths ?? {})) {
+    for (const key of Object.keys(item)) if (methods.has(key)) count += 1
+  }
+  return count
+}
+
+const documents = [
+  {
+    file: 'arc20.json',
+    document: arc20,
+    page: '/reference/api/arc20/',
+  },
+  {
+    file: 'atomicals-nfts-realms.json',
+    document: nftsRealms,
+    page: '/reference/api/atomicals-nfts-realms/',
+  },
+  {
+    file: 'marketplace-v1.json',
+    document: marketplace,
+    page: '/reference/api/marketplace-v1/',
+  },
+]
+---
+
+<div class="bu-matrix">
+  <table>
+    <caption class="sr-only">Published OpenAPI documents</caption>
+    <thead>
+      <tr>
+        <th scope="col">Document</th>
+        <th scope="col">Operations</th>
+        <th scope="col">Source revision</th>
+        <th scope="col">Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        documents.map((entry) => (
+          <tr>
+            <th scope="row">
+              <a href={`${base}${entry.page}`}>{entry.document.info.title}</a>
+              <br />
+              <span style="color:var(--bu-ink-muted)">{entry.document.info.summary}</span>
+            </th>
+            <td class="bu-num">{operationCount(entry.document)}</td>
+            <td>
+              <code>
+                {String(
+                  (entry.document.info as Record<string, unknown>)['x-sourceRevision'] ?? '',
+                ).slice(0, 12)}
+              </code>
+            </td>
+            <td>
+              <a href={`${base}/contracts/openapi/${entry.file}`}>JSON</a>
+            </td>
+          </tr>
+        ))
+      }
+      <tr>
+        <th scope="row">
+          Shared schema library
+          <br />
+          <span style="color:var(--bu-ink-muted)">
+            One component library every document draws from
+          </span>
+        </th>
+        <td class="bu-num">1</td>
+        <td>
+          <code>1.0.0</code>
+        </td>
+        <td>
+          <a href={`${base}/contracts/schemas/common.schema.json`}>JSON</a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          Source manifest
+          <br />
+          <span style="color:var(--bu-ink-muted)">Every consumed source and its revision</span>
+        </th>
+        <td class="bu-num">1</td>
+        <td>
+          <code>1.0.0</code>
+        </td>
+        <td>
+          <a href={`${base}/contracts/source-manifest.json`}>JSON</a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          Conformance vectors
+          <br />
+          <span style="color:var(--bu-ink-muted)">Executed ARC-20 allocation cases</span>
+        </th>
+        <td class="bu-num">1</td>
+        <td>
+          <code>1.0.0</code>
+        </td>
+        <td>
+          <a href={`${base}/conformance/vectors/arc20-allocation.json`}>JSON</a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          CLI inventory
+          <br />
+          <span style="color:var(--bu-ink-muted)">Commands parsed from the pinned CLI source</span>
+        </th>
+        <td class="bu-num">1</td>
+        <td>
+          <code>1.0.0</code>
+        </td>
+        <td>
+          <a href={`${base}/contracts/cli-inventory.json`}>JSON</a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          AIP registry
+          <br />
+          <span style="color:var(--bu-ink-muted)">
+            Proposals with implementation evidence, never assumed
+          </span>
+        </th>
+        <td class="bu-num">1</td>
+        <td>
+          <code>1.0.0</code>
+        </td>
+        <td>
+          <a href={`${base}/contracts/aip-registry.json`}>JSON</a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          AVM opcode inventory
+          <br />
+          <span style="color:var(--bu-ink-muted)">Generated from the beta interpreter source</span>
+        </th>
+        <td class="bu-num">1</td>
+        <td>
+          <code>1.0.0</code>
+        </td>
+        <td>
+          <a href={`${base}/contracts/avm-opcodes.json`}>JSON</a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          Ecosystem registry
+          <br />
+          <span style="color:var(--bu-ink-muted)">Records with evidence and last-verified dates</span>
+        </th>
+        <td class="bu-num">1</td>
+        <td>
+          <code>1.0.0</code>
+        </td>
+        <td>
+          <a href={`${base}/contracts/ecosystem.json`}>JSON</a>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          Page manifest
+          <br />
+          <span style="color:var(--bu-ink-muted)">
+            Every page with its stable ID, status, sources, and content hash
+          </span>
+        </th>
+        <td class="bu-num">1</td>
+        <td>
+          <code>1.0.0</code>
+        </td>
+        <td>
+          <a href={`${base}/manifest.json`}>JSON</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

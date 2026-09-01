@@ -1,0 +1,94 @@
+---
+title: What are Atomicals?
+description: Digital objects that live inside ordinary Bitcoin outputs, identified by the transaction that created them and interpreted by an Atomicals validator.
+sidebar:
+  order: 1
+provenance:
+  pageId: start/what-are-atomicals
+  area: start
+  audience: [everyone]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: constants
+    - id: atomicals-guide
+      path: home
+  verified: '2026-08-31'
+  tags: [concepts, identity]
+  limitations:
+    - The pinned reference revision is one implementation. Another validator version can interpret the same transaction differently.
+---
+
+import Figure from '../../../components/Figure.astro'
+import CommitReveal from '../../../components/diagrams/CommitReveal.astro'
+import AtomicalIdentity from '../../../components/diagrams/AtomicalIdentity.astro'
+import FactStrip from '../../../components/FactStrip.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../components/EntryCards.astro'
+
+An **Atomical** is a digital object created by a Bitcoin transaction and carried by a Bitcoin
+output. There is no side chain, no separate token ledger, and no smart contract account. The
+object exists because a validator reads your transaction and applies the Atomicals rules to it.
+
+<FactStrip
+  facts={[
+    { label: 'Where it lives', value: 'A Bitcoin UTXO' },
+    { label: 'What names it', value: 'The transaction that created it' },
+    { label: 'What decides truth', value: 'A pinned validator revision' },
+  ]}
+/>
+
+## The three parts of an Atomical
+
+<AtomicalIdentity />
+
+**Identity** is the Atomical ID, written `<txid>i<output-index>`. It is assigned once and never
+changes. A number is also assigned in mint order, but the ID is the durable identity to store.
+
+**Location** is the UTXO that currently carries the object. Spending that UTXO moves the object,
+or destroys it, depending on how the outputs are arranged.
+
+**History** is the ordered set of operations applied to the object: the mint, any state updates,
+and every move.
+
+## How an operation is written
+
+<CommitReveal />
+
+The envelope is not executed by Bitcoin. It is data inside a Taproot script path. Bitcoin does
+not know what `atom` means. An Atomicals validator does.
+
+<Aside type="caution" title="Confirmation is not completion">
+A confirmed Bitcoin transaction only tells you the bytes are in a block. Whether the operation
+was valid, which output received the object, and whether anything burned are all answers a
+validator gives you. Always check both.
+</Aside>
+
+## The protocol family
+
+| Kind | What it is | Read |
+| --- | --- | --- |
+| Atomicals NFT | A single non-fungible object with metadata and media | [NFT overview](/protocol/nft/overview/) |
+| ARC-20 | Fungible tokens where one unit is one coloured satoshi | [ARC-20 overview](/protocol/arc20/overview/) |
+| Container | A named collection that items can prove membership in | [Containers](/protocol/containers/overview/) |
+| DMINT | Decentralised minting of Container items against a sealed manifest | [DMINT](/protocol/containers/dmint/) |
+| Realm | A top-level name owned as an Atomical | [Realms](/protocol/realms/overview/) |
+| Subrealm | A child name claimed under a Realm's rules | [Subrealms](/protocol/realms/subrealms/) |
+| Payname | A Realm used as a payment destination | [Paynames](/protocol/realms/paynames/) |
+| AVM | A sandboxed script interpreter, beta and separately scoped | [AVM](/protocol/avm/overview/) |
+
+## What an Atomical is not
+
+- It is not proof of who made something. A ticker or a Realm name is an allocation, not an identity check.
+- It is not a contract account. There is no balance row to debit.
+- It is not safe to infer from metadata. Metadata is arbitrary data supplied by the minter.
+- It is not final because Bitcoin confirmed it. See [confirmation and reorgs](/protocol/core/confirmation-and-reorgs/).
+
+<EntryCards
+  cards={[
+    { title: "What is ARC-20?", body: "The fungible model, and why one unit is one satoshi.", href: "/start/what-is-arc-20/" },
+    { title: "Safety fundamentals", body: "The checks to run before you sign anything.", href: "/start/safety-fundamentals/" },
+  ]}
+/>

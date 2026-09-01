@@ -1,0 +1,183 @@
+{
+  "inventoryVersion": "1.0.0",
+  "service": "Atomicals Marketplace v1 authority",
+  "source": {
+    "id": "universe-index-atomicals",
+    "path": "docs/arc20-marketplace-v1.rst",
+    "revision": "670030e500710aaef77410540768a87a138d8134",
+    "exportedBy": "scripts/export-public-routes.py in the runtime repository",
+    "note": "Sanitized inventory. Internal routes are listed so integrators understand the boundary. They are not publicly reachable and no credential value appears here."
+  },
+  "protocolIds": ["arc20", "atomicals_nft", "realms", "subrealms"],
+  "publicBase": "/api/marketplace/v1/protocols/{protocolId}",
+  "adapterBase": "/v1/marketplace/protocols/{protocolId}",
+  "gating": {
+    "default": "every marketplace and action gate defaults to false",
+    "notes": [
+      "Enabling an action gate while the marketplace gate is false is a configuration error.",
+      "Enabling requires separate request-HMAC, internal execution-bearer, internal execution-HMAC, and Bitcoin Core credentials.",
+      "The two HMAC secrets must be distinct.",
+      "Buy or offer execution additionally requires an exact fee scriptPubKey.",
+      "Enabling requires a release SHA identifying the exact deployed indexer commit."
+    ]
+  },
+  "routes": [
+    { "method": "GET", "path": "/api/marketplace/v1/protocols/{protocolId}", "auth": "bearer", "scope": "public", "summary": "Machine readable route and signing contract" },
+    { "method": "GET", "path": "/api/marketplace/v1/protocols/{protocolId}/status", "auth": "bearer", "scope": "public", "summary": "Non-probing status view" },
+    { "method": "GET", "path": "/api/marketplace/v1/protocols/{protocolId}/readiness", "auth": "bearer", "scope": "public", "summary": "Bitcoin Core and Atomicals checkpoint probe" },
+    { "method": "GET", "path": "/api/marketplace/v1/protocols/{protocolId}/listings", "auth": "bearer", "scope": "public", "summary": "List listings" },
+    { "method": "GET", "path": "/api/marketplace/v1/protocols/{protocolId}/listings/{listingId}", "auth": "bearer", "scope": "public", "summary": "Read one listing" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/auth/challenges", "auth": "bearer+hmac", "scope": "public", "summary": "Request an ownership challenge" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/auth/challenges/{challengeId}/verify", "auth": "bearer+hmac", "scope": "public", "summary": "Verify a BIP-322 simple proof and issue an owner session" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/listings/prepare", "auth": "bearer+hmac+owner", "scope": "public", "summary": "Prepare a listing" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/listings/finalize", "auth": "bearer+hmac+owner", "scope": "public", "summary": "Finalise a signed listing" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/listings/{listingId}/update/prepare", "auth": "bearer+hmac+owner", "scope": "public", "summary": "Prepare a listing update" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/listings/{listingId}/update/finalize", "auth": "bearer+hmac+owner", "scope": "public", "summary": "Finalise a signed listing update" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/listings/{listingId}/delist", "auth": "bearer+hmac+owner", "scope": "public", "summary": "Delist" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/reservations", "auth": "bearer+hmac", "scope": "public", "summary": "Reserve a listing for purchase" },
+    { "method": "GET", "path": "/api/marketplace/v1/protocols/{protocolId}/reservations/{reservationId}", "auth": "bearer", "scope": "public", "summary": "Reload a reservation without mutation" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/purchases/prepare", "auth": "bearer+hmac", "scope": "public", "summary": "Prepare the settlement transaction" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/purchases/{orderId}/validate-signed", "auth": "bearer+hmac", "scope": "public", "summary": "Validate signed material before broadcast" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/purchases/{orderId}/broadcast", "auth": "bearer+hmac", "scope": "public", "summary": "Broadcast after validation passes" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/offers", "auth": "bearer+hmac", "scope": "public", "summary": "Create an offer" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/offers/{offerId}/cancel", "auth": "bearer+hmac+owner", "scope": "public", "summary": "Cancel an offer" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/offers/{offerId}/accept", "auth": "bearer+hmac+owner", "scope": "public", "summary": "Accept an offer" },
+    { "method": "GET", "path": "/api/marketplace/v1/protocols/{protocolId}/settlements/{orderId}", "auth": "bearer", "scope": "public", "summary": "Read settlement state" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/settlements/{orderId}/reconcile", "auth": "bearer+hmac+operator", "scope": "operator", "summary": "Operator reconciliation against chain evidence" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/buys", "auth": "bearer+hmac", "scope": "public", "deprecated": true, "replacedBy": "/reservations and /purchases", "summary": "Legacy alias" },
+    { "method": "POST", "path": "/api/marketplace/v1/protocols/{protocolId}/orders/{orderId}/reconcile", "auth": "bearer+hmac+operator", "scope": "operator", "deprecated": true, "replacedBy": "/settlements/{orderId}/reconcile", "summary": "Legacy alias" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/assets", "auth": "bearer", "scope": "adapter", "summary": "Envelope free adapter page" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/listings", "auth": "bearer", "scope": "adapter", "summary": "Envelope free adapter page" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/listings/{listingId}", "auth": "bearer", "scope": "adapter", "summary": "Envelope free adapter read" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/offers", "auth": "bearer", "scope": "adapter", "summary": "Envelope free adapter page" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/collections", "auth": "bearer", "scope": "adapter", "summary": "Envelope free adapter page. ARC-20 collection pages are empty" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/activity", "auth": "bearer", "scope": "adapter", "summary": "Envelope free adapter page" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/position-source/ready", "auth": "bearer", "scope": "adapter", "summary": "Composite position source readiness" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/position-source/outpoints/{txid}:{vout}", "auth": "bearer", "scope": "adapter", "summary": "Composite position evidence for an outpoint" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/internal/readiness", "auth": "internal", "scope": "internal", "summary": "Trusted bridge readiness probe. Not publicly reachable" },
+    { "method": "POST", "path": "/v1/marketplace/protocols/{protocolId}/internal/actions", "auth": "internal", "scope": "internal", "summary": "Trusted bridge action dispatcher. Not publicly reachable" },
+    { "method": "GET", "path": "/v1/marketplace/protocols/{protocolId}/internal/reservations/{reservationId}", "auth": "internal", "scope": "internal", "summary": "Trusted bridge reservation reload. Not publicly reachable" }
+  ],
+  "adapterQueryFields": ["cursor", "limit", "assetId", "collectionId", "owner", "status", "sort", "direction"],
+  "internalOperations": [
+    "validate_listing_request",
+    "prepare_listing",
+    "validate_signed_listing",
+    "finalize_listing",
+    "prepare_update",
+    "validate_signed_update",
+    "finalize_update",
+    "prepare_delist",
+    "validate_signed_delist",
+    "finalize_delist",
+    "reserve_purchase",
+    "prepare_purchase",
+    "validate_signed_purchase",
+    "broadcast_purchase",
+    "create_offer",
+    "cancel_offer",
+    "prepare_offer_acceptance",
+    "validate_signed_offer_acceptance",
+    "finalize_offer_acceptance",
+    "observe_confirmation",
+    "observe_protocol_settlement",
+    "reconcile_lifecycle"
+  ],
+  "signing": {
+    "publicMutation": {
+      "headers": [
+        "X-Marketplace-Key-Id",
+        "X-Marketplace-Timestamp",
+        "X-Marketplace-Nonce",
+        "X-Marketplace-Signature",
+        "Idempotency-Key"
+      ],
+      "algorithm": "lowercase hex HMAC-SHA256",
+      "material": "v1\\n{timestamp}\\n{nonce}\\n{method}\\n{path}\\n{sha256(exact_body_bytes)}"
+    },
+    "internal": {
+      "headers": [
+        "Authorization",
+        "X-ARC20-Execution-Authorization",
+        "X-ARC20-Execution-Signature",
+        "X-ARC20-Execution-Timestamp"
+      ],
+      "algorithm": "lowercase hex HMAC-SHA256, prefixed v1=",
+      "material": "{timestamp}\\n{method}\\n{path}\\n{sha256(exact_body_bytes)}",
+      "acceptanceWindowSeconds": 60,
+      "note": "The signed path is the exact protocol-specific request path. A signature for another protocol path is rejected."
+    },
+    "ownerSession": {
+      "header": "X-Marketplace-Owner-Authorization",
+      "proof": "BIP-322 simple, message type smp, for P2WPKH or key-path P2TR"
+    }
+  },
+  "psbtContract": {
+    "sellerPreparation": {
+      "psbtVersion": 0,
+      "inputs": "one collateral input",
+      "outputs": "one payout output",
+      "sequence": "0xfffffffd",
+      "utxo": "witness UTXO",
+      "sighash": "0x83, SIGHASH_SINGLE with ANYONECANPAY",
+      "note": "The authority verifies the signature before persisting a live listing."
+    },
+    "purchasePreparation": {
+      "deterministicOrder": [
+        "input 0 is the first buyer funding input",
+        "inputs 1 through N are seller inputs in request order",
+        "remaining inputs are the remaining buyer funding inputs",
+        "output 0 receives the complete asset amount",
+        "outputs 1 through N are the corresponding seller payouts",
+        "the marketplace fee output follows when non-zero",
+        "buyer change is last when it is not dust"
+      ],
+      "sellerSighashAfterCombination": "0x83 retained",
+      "buyerSighash": "P2WPKH requires SIGHASH_ALL; key-path P2TR allows default or ALL",
+      "preserved": [
+        "the prepared unsigned digest",
+        "exact previous outputs",
+        "output ordering",
+        "miner fee",
+        "fee-rate ceiling",
+        "the Atomicals transfer blueprint"
+      ],
+      "preBroadcastChecks": [
+        "Atomicals dry validation",
+        "Bitcoin Core testmempoolaccept"
+      ],
+      "ambiguousOutcome": "A transport failure after a durable broadcast intent is ambiguous and never triggers a blind rebroadcast."
+    },
+    "buyerInputBounds": {
+      "min": 1,
+      "max": 63,
+      "note": "One of the maximum 64 ordered spend claims is reserved for collateral."
+    }
+  },
+  "amountEncoding": {
+    "rule": "Every amount is a decimal string. JSON numbers are rejected for satoshi and protocol quantities.",
+    "arc20": "Listings and offers cover the complete coloured UTXO.",
+    "nonFungible": "Quantity is one and the price is the exact total Bitcoin consideration."
+  },
+  "orderStates": [
+    "prepared",
+    "finalized",
+    "broadcasting",
+    "submitted",
+    "mempool",
+    "confirmed",
+    "failed",
+    "recovery"
+  ],
+  "rejects": [
+    "mixed collateral",
+    "spent outputs",
+    "checkpoint drift",
+    "ambiguous balances",
+    "Atomicals operations inside the settlement transaction",
+    "burns",
+    "output assignments that do not move the exact selected Atomical",
+    "wallet supplied mutations to a stored reservation projection",
+    "unsupported adapter filters"
+  ]
+}

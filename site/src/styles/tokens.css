@@ -1,0 +1,119 @@
+/*
+ * Bitcoin Universe documentation design tokens.
+ *
+ * Light is the primary treatment. Dark and system modes are complete, not an afterthought.
+ * Every pairing below is checked against WCAG 2.2 AA in tests/a11y/contrast.test.mjs.
+ * Colours are declared once here and consumed everywhere else through these names.
+ */
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bu-paper: #fbfaf7;
+  --bu-paper-deep: #f3f1ec;
+  --bu-surface: #ffffff;
+  --bu-surface-raised: #ffffff;
+  --bu-surface-sunken: #f6f4ef;
+
+  /* Text */
+  --bu-ink: #171512;
+  --bu-ink-soft: #45403a;
+  --bu-ink-muted: #635d53;
+
+  /* Lines */
+  --bu-line: #e2ddd3;
+  --bu-line-strong: #c8c1b4;
+
+  /* Accent */
+  --bu-accent: #8a5a12;
+  --bu-accent-strong: #6e4710;
+  --bu-accent-quiet: #f2ead9;
+  --bu-accent-edge: #d8c391;
+
+  /* Status */
+  --bu-ok: #1d6b3f;
+  --bu-ok-quiet: #e6f2ea;
+  --bu-warn: #8a5314;
+  --bu-warn-quiet: #f8eddc;
+  --bu-risk: #a32718;
+  --bu-risk-quiet: #fbe9e6;
+  --bu-info: #1d4f79;
+  --bu-info-quiet: #e6eff7;
+  --bu-idle: #5b564d;
+  --bu-idle-quiet: #efece6;
+
+  --bu-shadow-1: 0 1px 2px rgb(23 21 18 / 6%), 0 2px 8px rgb(23 21 18 / 4%);
+  --bu-shadow-2: 0 2px 4px rgb(23 21 18 / 7%), 0 12px 28px rgb(23 21 18 / 8%);
+  --bu-focus: #1d4f79;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bu-paper: #100f0d;
+  --bu-paper-deep: #0a0a08;
+  --bu-surface: #171613;
+  --bu-surface-raised: #1e1c19;
+  --bu-surface-sunken: #131211;
+
+  --bu-ink: #f5f3ee;
+  --bu-ink-soft: #cec8bd;
+  --bu-ink-muted: #a09a8d;
+
+  --bu-line: #2c2925;
+  --bu-line-strong: #433f38;
+
+  --bu-accent: #e0b269;
+  --bu-accent-strong: #f0cd95;
+  --bu-accent-quiet: #241d12;
+  --bu-accent-edge: #5a4622;
+
+  --bu-ok: #7fd1a0;
+  --bu-ok-quiet: #12241a;
+  --bu-warn: #e8b877;
+  --bu-warn-quiet: #251c11;
+  --bu-risk: #f0a094;
+  --bu-risk-quiet: #2a1613;
+  --bu-info: #93c3ea;
+  --bu-info-quiet: #111e29;
+  --bu-idle: #a8a296;
+  --bu-idle-quiet: #1c1a17;
+
+  --bu-shadow-1: 0 1px 2px rgb(0 0 0 / 40%), 0 2px 8px rgb(0 0 0 / 30%);
+  --bu-shadow-2: 0 2px 4px rgb(0 0 0 / 45%), 0 14px 32px rgb(0 0 0 / 40%);
+  --bu-focus: #93c3ea;
+}
+
+/* Typography scale. One family for prose, one for code, both with real fallbacks. */
+:root {
+  --bu-font-sans:
+    'Inter var', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
+  --bu-font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    'Liberation Mono', monospace;
+
+  --bu-step--1: clamp(0.83rem, 0.81rem + 0.1vw, 0.875rem);
+  --bu-step-0: clamp(0.95rem, 0.92rem + 0.15vw, 1rem);
+  --bu-step-1: clamp(1.1rem, 1.04rem + 0.3vw, 1.25rem);
+  --bu-step-2: clamp(1.35rem, 1.22rem + 0.6vw, 1.65rem);
+  --bu-step-3: clamp(1.7rem, 1.45rem + 1.2vw, 2.25rem);
+  --bu-step-4: clamp(2.1rem, 1.6rem + 2.2vw, 3.1rem);
+
+  --bu-radius-s: 6px;
+  --bu-radius-m: 10px;
+  --bu-radius-l: 16px;
+
+  --bu-space-1: 0.25rem;
+  --bu-space-2: 0.5rem;
+  --bu-space-3: 0.75rem;
+  --bu-space-4: 1rem;
+  --bu-space-5: 1.5rem;
+  --bu-space-6: 2rem;
+  --bu-space-7: 3rem;
+
+  /* Minimum primary touch target required by WCAG 2.2 Target Size (Minimum). */
+  --bu-touch: 44px;
+}

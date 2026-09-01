@@ -1,0 +1,27 @@
+---
+/**
+ * Diagram wrapper. Every diagram carries an equivalent text explanation in the caption,
+ * so nothing here depends on seeing the picture.
+ */
+interface Props {
+  title: string
+  /** Plain-language equivalent of the diagram. Required. */
+  summary: string
+  id?: string
+}
+const { title, summary, id } = Astro.props
+---
+
+<figure class="bu-figure" id={id}>
+  <div class="bu-figure-canvas" role="img" aria-labelledby={`${id ?? 'fig'}-title`}>
+    <span class="sr-only" id={`${id ?? 'fig'}-title`}>{title}. {summary}</span>
+    <slot />
+  </div>
+  <figcaption>
+    <details>
+      <summary>{title}</summary>
+      <p>{summary}</p>
+      <slot name="detail" />
+    </details>
+  </figcaption>
+</figure>

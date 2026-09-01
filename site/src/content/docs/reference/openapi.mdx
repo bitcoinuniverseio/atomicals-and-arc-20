@@ -1,0 +1,75 @@
+---
+title: OpenAPI and downloads
+description: Validated OpenAPI 3.1 documents, JSON Schemas, and every machine readable artefact this site publishes.
+sidebar:
+  order: 7
+provenance:
+  pageId: reference/openapi
+  area: reference
+  audience: [developer, integrator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet]
+  sources:
+    - id: universe-index-atomicals
+      path: tokenExplorerServer
+    - id: universe-index-atomicals-nfts-and-realms
+      path: server
+  verified: '2026-08-31'
+  tags: [openapi, contracts, downloads]
+  limitations:
+    - No production host is published in any document. Set the server variable to the origin your deployment exposes.
+---
+
+import ArtifactList from '../../../components/ArtifactList.astro'
+import EntryCards from '../../../components/EntryCards.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+Every document here is validated in CI. A route present in a document but absent from its source
+inventory fails the build, and so does the reverse.
+
+## Documents
+
+<ArtifactList />
+
+## What CI checks
+
+| Check | Effect when it fails |
+| --- | --- |
+| OpenAPI 3.1 structure | Build fails |
+| Operation identifier uniqueness within and across documents | Build fails |
+| Every operation has a summary, a declared tag, and responses | Build fails |
+| Route inventory equals the documented paths, in both directions | Build fails |
+| Every response example validates against its own schema | Build fails |
+| Every deprecated route names a replacement | Build fails |
+| No production host or routable address appears | Build fails |
+
+<Aside type="note" title="Why there is no production server URL">
+Publishing an origin in a contract invites people to point production traffic at it from a browser
+with a credential in the page. The server is a variable. Set it to the origin your deployment
+exposes.
+</Aside>
+
+## Amount encoding
+
+Every satoshi and protocol quantity is a decimal string in these contracts. JSON numbers are
+rejected, so no precision is lost in transit and no client silently converts a large integer into
+a float.
+
+## Using the documents
+
+1. Download the document for the surface you integrate with.
+2. Generate a client rather than hand writing calls.
+   See [TypeScript client](/reference/client-sdk/).
+3. Run the [conformance vectors](/reference/conformance/) against your build.
+4. Pin the document version alongside your service revision.
+5. Regenerate on every upgrade and diff the generated types.
+
+<EntryCards
+  cards={[
+    { title: "Interactive explorer", body: "Browse operations, parameters, and examples without leaving the page.", href: "/tools/api-explorer/" },
+    { title: "Schemas", body: "The shared component library every document draws from.", href: "/reference/schemas/" },
+    { title: "Migration", body: "Moving an integration between versions without discovering the differences in production.", href: "/develop/migration/" },
+  ]}
+/>
+

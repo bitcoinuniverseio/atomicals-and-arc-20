@@ -1,0 +1,133 @@
+---
+title: Atomicals and ARC-20
+description: Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.
+template: splash
+tableOfContents: false
+editUrl: false
+provenance:
+  pageId: home
+  area: start
+  audience: [everyone]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  docsVersion: '2026.08'
+  verified: '2026-08-31'
+  hideProvenance: true
+  tags: [home]
+---
+
+import Hero from '../../components/Hero.astro'
+import EntryCards from '../../components/EntryCards.astro'
+import FactStrip from '../../components/FactStrip.astro'
+
+<Hero />
+
+## Start where you are
+
+<EntryCards
+  cards={[
+    {
+      kicker: 'I hold or want tokens',
+      title: 'Holder path',
+      body: 'Inspect a ticker, confirm what you actually own, move units without burning them.',
+      href: 'start/choose-your-path/#holder',
+    },
+    {
+      kicker: 'I am launching something',
+      title: 'Creator path',
+      body: 'Deploy a fixed or perpetual ARC-20, mint an NFT, claim a Realm, seal a Container.',
+      href: 'start/choose-your-path/#creator',
+    },
+    {
+      kicker: 'I am integrating',
+      title: 'Developer path',
+      body: 'Read the API contracts, generate a client, run the conformance vectors.',
+      href: 'start/choose-your-path/#developer',
+    },
+    {
+      kicker: 'I run the services',
+      title: 'Operator path',
+      body: 'Readiness, generations, reorg handling, and what a degraded index actually means.',
+      href: 'start/choose-your-path/#operator',
+    },
+  ]}
+/>
+
+## What this documentation is
+
+ARC-20 is the Atomicals fungible token model on Bitcoin. One unit is one coloured satoshi.
+Atomicals also covers non-fungible objects, Containers, DMINT collections, Realms, Subrealms,
+and Paynames. All of it lives in ordinary Bitcoin transactions and is interpreted by an
+Atomicals validator.
+
+Three things follow from that, and this site never blurs them:
+
+<FactStrip
+  facts={[
+    { label: 'Protocol behavior', value: 'What a pinned Atomicals validator does' },
+    { label: 'Universe implementation', value: 'What our services expose today' },
+    { label: 'Proposed or beta', value: 'What exists but is not live' },
+  ]}
+/>
+
+A protocol capability is not automatically a product feature. A product feature is not
+automatically protocol behavior. Every page states which layer it describes, at which source
+revision, and when that was last checked.
+
+## The parts that matter most
+
+<EntryCards
+  cards={[
+    {
+      kicker: 'Read first',
+      title: 'What are Atomicals?',
+      body: 'Digital objects that live in Bitcoin outputs. Identity, ownership, and history in one page.',
+      href: 'start/what-are-atomicals/',
+    },
+    {
+      kicker: 'Read first',
+      title: 'What is ARC-20?',
+      body: 'Why one unit is one satoshi, and why that is not an account balance.',
+      href: 'start/what-is-arc-20/',
+    },
+    {
+      kicker: 'Before you sign',
+      title: 'Safety fundamentals',
+      body: 'The eight checks that separate a clean transfer from a permanent burn.',
+      href: 'start/safety-fundamentals/',
+    },
+    {
+      kicker: 'Interactive',
+      title: 'Allocation visualizer',
+      body: 'Model inputs and outputs and see exactly which units land where, and which burn.',
+      href: 'tools/allocation-visualizer/',
+    },
+    {
+      kicker: 'Contracts',
+      title: 'OpenAPI and schemas',
+      body: 'Validated OpenAPI 3.1 documents, JSON Schemas, and a generated TypeScript client.',
+      href: 'reference/openapi/',
+    },
+    {
+      kicker: 'Evidence',
+      title: 'Conformance vectors',
+      body: 'Deterministic vectors executed in CI. The visualizer and the prose share them.',
+      href: 'reference/conformance/',
+    },
+  ]}
+/>
+
+## Built for machines too
+
+Every page has a raw Markdown twin, a stable page ID, and a source record. The site also
+publishes `llms.txt`, `llms-full.txt`, a page manifest, JSON Schemas, OpenAPI documents, and a
+read-only MCP server so an agent can read this documentation without scraping HTML.
+
+See [AI and agent access](reference/ai-access/).
+
+## What we will not tell you
+
+No price talk. No rankings. No investment, legal, or tax advice. No claim that a ticker proves
+who made something, that metadata proves authenticity, or that a marketplace listing proves
+ownership. Where evidence is missing, the page says so instead of guessing.

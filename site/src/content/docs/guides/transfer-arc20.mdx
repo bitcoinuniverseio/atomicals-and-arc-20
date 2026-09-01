@@ -1,0 +1,96 @@
+---
+title: Transfer ARC-20
+description: Build a transfer that places every unit where you intend and burns nothing.
+sidebar:
+  order: 20
+provenance:
+  pageId: guides/transfer-arc20
+  area: guides
+  audience: [everyone, holder]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-js-cli
+      path: commandIndex
+  verified: '2026-08-31'
+  tags: [transfers, safety]
+  limitations:
+    - The Universe visible transfer surface does not construct partial recipient allocations or coloured change from an amount field. Use a compatible builder that works in outpoints and output values.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+import VectorTable from '../../../components/VectorTable.astro'
+
+## Before you start
+
+- Supported networks: mainnet.
+- Status: protocol behavior.
+- You need a wallet or builder that works in outpoints and satoshi values, not in an amount field.
+
+<Aside type="danger" title="The whole risk is in the output sizes">
+Sizes are in satoshis, not in a token amount box. Get one wrong and the remainder burns.
+</Aside>
+
+## The shape that works
+
+| Position | Contents |
+| --- | --- |
+| Input 0 | The coloured lot |
+| Input 1 and later | Cardinal inputs for the fee |
+| Output 0 | The recipient, sized to exactly the units you are sending |
+| Output 1 | Coloured change, sized to exactly the remainder |
+| Output 2 | Cardinal change, if any |
+
+## The procedure
+
+<Steps>
+
+1. List your coloured outpoints and pick the lot to spend.
+2. Decide the amount to send. That number is also the satoshi value of output 0.
+3. Compute the remainder: lot value minus amount sent. That is the satoshi value of output 1.
+4. Model the exact input and output set in the
+   [allocation visualizer](/tools/allocation-visualizer/).
+5. Confirm the burn figure is zero.
+6. Add cardinal inputs for the fee and a cardinal change output last.
+7. Re-model with the fee inputs and outputs included. The burn figure must still be zero.
+8. Build the transaction, preserving your input and output order.
+9. Compare the wallet prompt to your model, line by line.
+10. Sign and broadcast.
+
+</Steps>
+
+## Why step seven exists
+
+Adding a fee input or a change output changes the output set, and the allocation walks outputs in
+order. A transfer that was clean before the wallet added change can burn after it.
+
+## The two vectors that show the risk
+
+<VectorTable only={["dust-remainder-burns", "change-output-too-large"]} />
+
+Same intent, same lot, same amount sent. The only difference is the change output size, and one of
+them destroys 200 units.
+
+## Cost
+
+One Bitcoin fee, paid from a cardinal input. No commit and reveal pair, and no grinding, for an
+ordinary transfer.
+
+## If it fails
+
+- The wallet will not let you set output values in satoshis: use a different builder.
+- The wallet reorders outputs: use a different builder. Order is meaning.
+- The burn figure is not zero: change the output sizes, do not proceed.
+
+## After broadcast
+
+Confirm, wait for indexing, read the asset location, and check the recorded burn figure.
+See [verify a transaction](/guides/verify-a-transaction/).
+
+## Source
+
+[Allocation](/protocol/arc20/allocation/) and [burns](/protocol/arc20/burns/).
+
