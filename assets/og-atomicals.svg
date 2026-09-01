@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-labelledby="ogt ogd">
+  <title id="ogt">Atomicals + ARC-20 protocol documentation</title>
+  <desc id="ogd">A laboratory-white card with an atom diagram: a satoshi nucleus inside three orbital rings, beside the title Atomicals + ARC-20 and the line one token unit equals one satoshi.</desc>
+  <rect width="1200" height="630" fill="#f7f8f9"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#0b5cd6"/>
+  <g transform="translate(880 315)">
+    <ellipse cx="0" cy="0" rx="205" ry="86" fill="none" stroke="#0b5cd6" stroke-width="2" opacity="0.8"/>
+    <ellipse cx="0" cy="0" rx="205" ry="86" transform="rotate(58)" fill="none" stroke="#0b5cd6" stroke-width="2" opacity="0.8"/>
+    <ellipse cx="0" cy="0" rx="205" ry="86" transform="rotate(-58)" fill="none" stroke="#0b5cd6" stroke-width="2" opacity="0.8"/>
+    <circle cx="0" cy="0" r="52" fill="#eaf1fc" stroke="#0b5cd6" stroke-width="2.5"/>
+    <text x="0" y="7" text-anchor="middle" font-family="Georgia, serif" font-size="24" fill="#16202c">1 sat</text>
+    <circle cx="205" cy="0" r="12" fill="#0b5cd6"/>
+    <circle cx="-108" cy="-174" r="12" fill="#7d6234"/>
+    <circle cx="-108" cy="174" r="12" fill="#7d6234"/>
+  </g>
+  <text x="80" y="222" font-family="Georgia, 'Times New Roman', serif" font-size="34" fill="#7d6234" letter-spacing="4">PROTOCOL DOSSIER</text>
+  <text x="80" y="316" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="bold" fill="#16202c">Atomicals + ARC-20</text>
+  <text x="80" y="382" font-family="system-ui, Segoe UI, Arial, sans-serif" font-size="32" fill="#43505f">One token unit is one satoshi.</text>
+  <text x="80" y="428" font-family="system-ui, Segoe UI, Arial, sans-serif" font-size="32" fill="#43505f">Color follows output order.</text>
+  <line x1="80" y1="480" x2="620" y2="480" stroke="#d4dae1" stroke-width="2"/>
+  <text x="80" y="524" font-family="ui-monospace, Consolas, monospace" font-size="24" fill="#626f7e">Bitcoin mainnet · envelope tag "atom" · CBOR payload</text>
+  <text x="80" y="562" font-family="ui-monospace, Consolas, monospace" font-size="24" fill="#626f7e">bitcoinuniverseio.github.io/atomicals-and-arc-20</text>
+</svg>
