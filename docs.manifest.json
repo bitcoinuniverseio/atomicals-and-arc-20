@@ -4,7 +4,7 @@
   "name": "Atomicals + ARC-20",
   "classification": "protocol",
   "repository": "bitcoinuniverseio/atomicals-and-arc-20",
-  "documentationUrl": "https://docs.bitcoinuniverse.io/protocols/atomicals-and-arc-20",
+  "documentationUrl": "https://docs.bitcoinuniverse.io/protocols/atomicals/",
   "docsRoot": ".",
   "sourceRef": "main",
   "releasedRef": "main",
