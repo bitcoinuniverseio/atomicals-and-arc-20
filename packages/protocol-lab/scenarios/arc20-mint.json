@@ -1,0 +1,18 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "arc20-mint",
+  "title": "ARC-20 mint creates coloured satoshis",
+  "description": "A decentralized mint reveal creates 546 units of a ticker. Each unit is one satoshi of the mint output.",
+  "seed": "arc20-mint",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 20000, "address": "bc1qminter" }
+    ] },
+    { "type": "reveal", "label": "mint", "inputs": ["fundo0"], "outputs": [
+      { "value": 546, "address": "bc1qminter" },
+      { "value": 19400, "address": "bc1qminter" }
+    ], "atomical": { "type": "ft", "ticker": "GOLD", "units": 546 } },
+    { "type": "confirm", "blocks": 1 }
+  ]
+}

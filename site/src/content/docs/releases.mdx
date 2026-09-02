@@ -1,0 +1,45 @@
+---
+title: Releases
+description: What changed in this documentation, when, and why, with the machine readable feed alongside.
+sidebar:
+  order: 1
+  label: Changelog
+provenance:
+  pageId: releases/index
+  area: releases
+  audience: [everyone, developer, integrator]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  verified: '2026-08-31'
+  tags: [releases, changelog]
+---
+
+import Changelog from '../../components/Changelog.astro'
+
+Documentation version **2026.08**. The machine readable form of this page is the
+[changelog feed](/changelog.xml).
+
+<Changelog />
+
+## What is versioned separately
+
+| Axis | Where it appears | Current |
+| --- | --- | --- |
+| Protocol reference baseline | The pinned validator revision | Atomicals ElectrumX v1.5.2.0 |
+| Universe API surface | The `/v1/` segment and the service revision | v1 |
+| Marketplace contract | The Marketplace v1 route and signing contract | v1 |
+| Generated schemas | A version field in each schema | 1.0.0 |
+| Documentation | The version on every page | 2026.08 |
+
+Never assume two of them move together.
+See [versioning and deprecation](/develop/versioning-and-deprecation/).
+
+## Related
+
+| Page | Contains |
+| --- | --- |
+| [Versions and compatibility](/releases/versions/) | Every pinned source revision and what it applies to |
+| [Deprecations](/releases/deprecations/) | What is scheduled for removal, and what replaces it |
+| [Migrations](/releases/migrations/) | Step by step moves between versions |
+

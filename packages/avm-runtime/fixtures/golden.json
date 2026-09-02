@@ -1,0 +1,8 @@
+{
+  "goldenVersion": "1.0.0",
+  "note": "Executed against the pinned interpreter builds. Programs are in the interpreter's own script text format; expected outputs come from the native build in CI and the WASM build must match byte for byte.",
+  "fixtures": [
+    { "name": "empty program is refused", "program": "", "expectOk": false },
+    { "name": "oversized program is refused", "program": "PADDING_PLACEHOLDER", "expectOk": false }
+  ]
+}

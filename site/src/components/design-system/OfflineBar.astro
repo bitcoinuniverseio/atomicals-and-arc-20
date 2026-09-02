@@ -1,0 +1,62 @@
+---
+/**
+ * Offline application shell registration.
+ *
+ * Registers the base-path-safe service worker, exposes the explicit install
+ * action, shows offline status and documentation version updates, and can
+ * remove all offline data on request. It stores nothing itself.
+ */
+---
+
+<div class="bu-offline-bar" data-offline-bar hidden>
+  <span data-offline-message role="status"></span>
+  <button type="button" class="bu-btn" data-remove-offline hidden>Remove all offline data</button>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-offline-bar]')
+  if (bar && 'serviceWorker' in navigator) initOffline(bar)
+
+  function initOffline(bar: HTMLElement) {
+    const message = bar.querySelector<HTMLElement>('[data-offline-message]')!
+    const removeButton = bar.querySelector<HTMLButtonElement>('[data-remove-offline]')!
+    const scope = new URL(document.baseURI).pathname
+
+    navigator.serviceWorker.register(`${scope}sw.js`).then(async (registration) => {
+      // Ask the worker to precache the documentation shell for offline use.
+      registration.active?.postMessage({ type: 'precache-docs' })
+      window.addEventListener('online', updateStatus)
+      window.addEventListener('offline', updateStatus)
+      updateStatus()
+    })
+
+    function updateStatus() {
+      if (!navigator.onLine) {
+        message.textContent = 'You are offline. Pages you visited and offline search still work.'
+        bar.hidden = false
+      }
+    }
+
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      const data = event.data as { type?: string }
+      if (data?.type === 'precache-complete') {
+        message.textContent = 'Offline browsing is ready. Pages you visit are kept for offline reading.'
+        bar.hidden = false
+      }
+    })
+
+    registration.addEventListener('updatefound', () => {
+      message.textContent = 'A newer documentation build is available. Reload to update, or remove offline data below.'
+      removeButton.hidden = false
+      bar.hidden = false
+    })
+
+    removeButton.addEventListener('click', async () => {
+      const keys = await caches.keys()
+      for (const key of keys) {
+        if (key.startsWith('atomicals-docs-')) await caches.delete(key)
+      }
+      message.textContent = 'All offline data removed. Browsing continues online.'
+    })
+  }
+</script>

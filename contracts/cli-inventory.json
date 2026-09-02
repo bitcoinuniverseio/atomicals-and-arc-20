@@ -1,0 +1,3791 @@
+{
+  "inventoryVersion": "1.0.0",
+  "generator": "scripts/generate-cli-inventory.mjs",
+  "invocation": "yarn cli <command>",
+  "source": {
+    "id": "atomicals-js-cli",
+    "repository": "https://github.com/atomicals/atomicals-js",
+    "revision": "1333565efbfe5ca4bdb8443a94d72e9f8534c2c4",
+    "path": "lib/cli.ts"
+  },
+  "commandCount": 79,
+  "commands": [
+    {
+      "name": "address",
+      "signature": "address",
+      "description": "Get balances and Atomicals stored at an address",
+      "arguments": [
+        {
+          "name": "address",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--history",
+          "short": null,
+          "long": "--history",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output to include history or not",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "address-atomicals",
+      "signature": "address-atomicals",
+      "description": "List all atomicals owned by an address",
+      "arguments": [
+        {
+          "name": "address",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "address-history",
+      "signature": "address-history",
+      "description": "List address history of an address",
+      "arguments": [
+        {
+          "name": "address",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "address-script",
+      "signature": "address-script",
+      "description": "Encodes an address or wallet alias as the hex output script",
+      "arguments": [
+        {
+          "name": "addressOrAlias",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "address-utxos",
+      "signature": "address-utxos",
+      "description": "List all utxos owned by an address",
+      "arguments": [
+        {
+          "name": "address",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "at-location",
+      "signature": "at-location",
+      "description": "Get Atomicals at a utxo location",
+      "arguments": [
+        {
+          "name": "location",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "await-utxo",
+      "signature": "await-utxo",
+      "description": "Finds utxo by address",
+      "arguments": [
+        {
+          "name": "address",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "amount",
+          "required": true,
+          "variadic": false,
+          "description": "number"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "balances",
+      "signature": "balances",
+      "description": "Get balances and atomicals stored at internal wallets",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--address <string>",
+          "short": null,
+          "long": "--address",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Restrict to only showing by address. Using this option with --alias has no effect.",
+          "default": null
+        },
+        {
+          "flags": "--alias <string>",
+          "short": null,
+          "long": "--alias",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Restrict to only showing one of the imported wallets identified by the alias",
+          "default": null
+        },
+        {
+          "flags": "--all",
+          "short": null,
+          "long": "--all",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Shows all loaded wallets and not just the primary and funding",
+          "default": null
+        },
+        {
+          "flags": "--noqr",
+          "short": null,
+          "long": "--noqr",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Hide QR codes",
+          "default": null
+        },
+        {
+          "flags": "--utxos",
+          "short": null,
+          "long": "--utxos",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Show utxos too",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "broadcast",
+      "signature": "broadcast",
+      "description": "broadcast a rawtx",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--rawtx <string>",
+          "short": null,
+          "long": "--rawtx",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Rawtx",
+          "default": null
+        },
+        {
+          "flags": "--rawtxfile <string>",
+          "short": null,
+          "long": "--rawtxfile",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "File path to the rawtx",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "compact-outpoint",
+      "signature": "compact-outpoint",
+      "description": "Encodes the compact id to outpoint hex format",
+      "arguments": [
+        {
+          "name": "compactId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "custom-color",
+      "signature": "custom-color",
+      "description": "custom color operation to separate the FT Atomicals at a single UTXOs.",
+      "arguments": [
+        {
+          "name": "locationId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias wif key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "15"
+        }
+      ]
+    },
+    {
+      "name": "decodetx",
+      "signature": "decodetx",
+      "description": "Decode a tx",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--rawtx <string>",
+          "short": null,
+          "long": "--rawtx",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Rawtx",
+          "default": null
+        },
+        {
+          "flags": "--rawtxfile <string>",
+          "short": null,
+          "long": "--rawtxfile",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "File path to the rawtx",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "delete",
+      "signature": "delete",
+      "description": "Delete keys for existing Atomical.",
+      "arguments": [
+        {
+          "name": "atomicalIdAlias",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "filesWithDeleteKeys",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the commit tx",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the reveal tx.",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "diff",
+      "signature": "diff",
+      "description": null,
+      "arguments": [],
+      "options": []
+    },
+    {
+      "name": "disable-subrealms",
+      "signature": "disable-subrealms",
+      "description": "Delete the subrealm minting rules for a realm or subrealm",
+      "arguments": [
+        {
+          "name": "realmOrSubRealm",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the commit tx",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the reveal tx.",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "download",
+      "signature": "download",
+      "description": "Download a file from a locationId or atomicalId",
+      "arguments": [
+        {
+          "name": "locationIdOrTxId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--body",
+          "short": null,
+          "long": "--body",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to include the body bytes in the print out or suppress it",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "dump",
+      "signature": "dump",
+      "description": "dump",
+      "arguments": [],
+      "options": []
+    },
+    {
+      "name": "emit",
+      "signature": "emit",
+      "description": "Emit an event for an existing Atomical with data.",
+      "arguments": [
+        {
+          "name": "atomicalIdAlias",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "data",
+          "required": true,
+          "variadic": true,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "enable-dmint",
+      "signature": "enable-dmint",
+      "description": "Enable dmint for a container with the dmint config file produced from the prepare-dmint command",
+      "arguments": [
+        {
+          "name": "container",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "jsonFilename",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the commit tx",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "enable-subrealms",
+      "signature": "enable-subrealms",
+      "description": "Set and enable subrealm minting rules for a realm or subrealm",
+      "arguments": [
+        {
+          "name": "realmOrSubRealm",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "file",
+          "required": true,
+          "variadic": false,
+          "description": null
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the commit tx",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the reveal tx.",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "signature": "events",
+      "description": "Get the event state history of an Atomical",
+      "arguments": [
+        {
+          "name": "atomicalAliasOrId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "find-containers",
+      "signature": "find-containers",
+      "description": "Search containers",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--asc <string>",
+          "short": null,
+          "long": "--asc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Sort by ascending",
+          "default": "true"
+        },
+        {
+          "flags": "--q <string>",
+          "short": null,
+          "long": "--q",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Search query",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "find-realms",
+      "signature": "find-realms",
+      "description": "Search realms",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--asc <string>",
+          "short": null,
+          "long": "--asc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Sort by ascending",
+          "default": "true"
+        },
+        {
+          "flags": "--q <string>",
+          "short": null,
+          "long": "--q",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Search query",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "find-tickers",
+      "signature": "find-tickers",
+      "description": "Search tickers",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--asc <string>",
+          "short": null,
+          "long": "--asc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Sort by ascending",
+          "default": "true"
+        },
+        {
+          "flags": "--q <string>",
+          "short": null,
+          "long": "--q",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Search query",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "ftinfo",
+      "signature": "ftinfo",
+      "description": "Get FT specific info for an FT atomical",
+      "arguments": [
+        {
+          "name": "atomicalAliasOrId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "get",
+      "signature": "get",
+      "description": "Get the status of an Atomical",
+      "arguments": [
+        {
+          "name": "atomicalAliasOrId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "get-container",
+      "signature": "get-container",
+      "description": "Get Atomical by container name",
+      "arguments": [
+        {
+          "name": "container",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose to show extended information.",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "get-container-item",
+      "signature": "get-container-item",
+      "description": "Get an item in the container",
+      "arguments": [
+        {
+          "name": "container",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "itemId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "get-container-items",
+      "signature": "get-container-items",
+      "description": "Get the items in the container",
+      "arguments": [
+        {
+          "name": "container",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "limit",
+          "required": true,
+          "variadic": false,
+          "description": "number"
+        },
+        {
+          "name": "offset",
+          "required": true,
+          "variadic": false,
+          "description": "number"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "get-realm",
+      "signature": "get-realm",
+      "description": "Resolve a realm or subrealm. Alias for 'resolve'",
+      "arguments": [
+        {
+          "name": "realm_or_subrealm",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose to show extended information.",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "get-ticker",
+      "signature": "get-ticker",
+      "description": "Get Atomical by ticker name",
+      "arguments": [
+        {
+          "name": "ticker",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose to show extended information.",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "global",
+      "signature": "global",
+      "description": "Get global status",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--hashes <number>",
+          "short": null,
+          "long": "--hashes",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "How many atomicals block hashes to retrieve",
+          "default": "10"
+        }
+      ]
+    },
+    {
+      "name": "init-dft",
+      "signature": "init-dft",
+      "description": "Initialize fungible token (FT) atomical in decentralized issuance mode",
+      "arguments": [
+        {
+          "name": "ticker",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "mint_amount",
+          "required": true,
+          "variadic": false,
+          "description": "number"
+        },
+        {
+          "name": "max_mints",
+          "required": true,
+          "variadic": false,
+          "description": "number"
+        },
+        {
+          "name": "mint_height",
+          "required": true,
+          "variadic": false,
+          "description": "number"
+        },
+        {
+          "name": "file",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "mintbitworkc",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for Bitwork mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias wif key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--mintbitworkr <string>",
+          "short": null,
+          "long": "--mintbitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to require any bitwork proof of work to mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--parent <string>",
+          "short": null,
+          "long": "--parent",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to require a parent atomical to be spent along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--parentowner <string>",
+          "short": null,
+          "long": "--parentowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Wallet owner of the parent to spend along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "200"
+        }
+      ]
+    },
+    {
+      "name": "init-dft-fixed",
+      "signature": "init-dft-fixed",
+      "description": "Initialize fixed bitwork mineable fungible token (FT) atomical in decentralized issuance mode",
+      "arguments": [
+        {
+          "name": "ticker",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "mintbitworkc",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias wif key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--max_mints <number>",
+          "short": null,
+          "long": "--max_mints",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The max number of mints allowed",
+          "default": "100000"
+        },
+        {
+          "flags": "--metadata <string>",
+          "short": null,
+          "long": "--metadata",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "File to include for metadata",
+          "default": null
+        },
+        {
+          "flags": "--mint_amount <number>",
+          "short": null,
+          "long": "--mint_amount",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The number of tokens per mint",
+          "default": "10000"
+        },
+        {
+          "flags": "--mint_height <number>",
+          "short": null,
+          "long": "--mint_height",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The starting mint height",
+          "default": "0"
+        },
+        {
+          "flags": "--mintbitworkr <number>",
+          "short": null,
+          "long": "--mintbitworkr",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The amount of bitworkr to add for each mint",
+          "default": null
+        },
+        {
+          "flags": "--noimage <boolean>",
+          "short": null,
+          "long": "--noimage",
+          "valueName": "boolean",
+          "valueRequired": true,
+          "description": "Whether to allow no image when using --metadata file",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "200"
+        }
+      ]
+    },
+    {
+      "name": "init-dft-perpetual",
+      "signature": "init-dft-perpetual",
+      "description": "Initialize perpetual bitwork mineable fungible token (FT) atomical in decentralized issuance mode",
+      "arguments": [
+        {
+          "name": "ticker",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias wif key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--max_mints <number>",
+          "short": null,
+          "long": "--max_mints",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The number of mints allowed per mint phase of max_mints",
+          "default": "2000"
+        },
+        {
+          "flags": "--maxglobalmints <number>",
+          "short": null,
+          "long": "--maxglobalmints",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The global max mints",
+          "default": null
+        },
+        {
+          "flags": "--metadata <string>",
+          "short": null,
+          "long": "--metadata",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "File to include for metadata",
+          "default": null
+        },
+        {
+          "flags": "--mint_amount <number>",
+          "short": null,
+          "long": "--mint_amount",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The number of tokens per mint",
+          "default": "10000"
+        },
+        {
+          "flags": "--mint_height <number>",
+          "short": null,
+          "long": "--mint_height",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The starting mint height",
+          "default": "0"
+        },
+        {
+          "flags": "--mintbitworkcinc <number>",
+          "short": null,
+          "long": "--mintbitworkcinc",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The amount of bitworkc to increase for each phase of max_mints",
+          "default": "1"
+        },
+        {
+          "flags": "--mintbitworkcincstart <number>",
+          "short": null,
+          "long": "--mintbitworkcincstart",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The starting amount of bitworkc to increase for each phase of max_mints",
+          "default": null
+        },
+        {
+          "flags": "--mintbitworkrinc <number>",
+          "short": null,
+          "long": "--mintbitworkrinc",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The amount of bitworkr to increase for each phase of max_mints",
+          "default": null
+        },
+        {
+          "flags": "--mintbitworkrincstart <number>",
+          "short": null,
+          "long": "--mintbitworkrincstart",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "The starting amount of bitworkr to increase for each phase of max_mints",
+          "default": null
+        },
+        {
+          "flags": "--mintbitworkvec <string>",
+          "short": null,
+          "long": "--mintbitworkvec",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "The base bitwork prefix vector to use",
+          "default": null
+        },
+        {
+          "flags": "--noimage <boolean>",
+          "short": null,
+          "long": "--noimage",
+          "valueName": "boolean",
+          "valueRequired": true,
+          "description": "Whether to allow no image when using --metadata file",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        }
+      ]
+    },
+    {
+      "name": "list",
+      "signature": "list",
+      "description": "List feed of Atomicals minted globally",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--asc <string>",
+          "short": null,
+          "long": "--asc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to sort by ascending or descending",
+          "default": "true"
+        },
+        {
+          "flags": "--limit <number>",
+          "short": null,
+          "long": "--limit",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Limit the number of results",
+          "default": "20"
+        },
+        {
+          "flags": "--offset <number>",
+          "short": null,
+          "long": "--offset",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Offset for pagination",
+          "default": "-20"
+        }
+      ]
+    },
+    {
+      "name": "location",
+      "signature": "location",
+      "description": "Get locations of an Atomical",
+      "arguments": [
+        {
+          "name": "atomicalAliasOrId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "merge-atomicals",
+      "signature": "merge-atomicals",
+      "description": "Merge Atomicals UTXOs together for test purposes",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomicals",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "15"
+        }
+      ]
+    },
+    {
+      "name": "mint-container",
+      "signature": "mint-container",
+      "description": "Mint container non-fungible token (NFT) Atomical",
+      "arguments": [
+        {
+          "name": "container",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--container <string>",
+          "short": null,
+          "long": "--container",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Name of the container to request to be a member of. Not to be confused with the 'mint-container' command to create a new container",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--initialowner <string>",
+          "short": null,
+          "long": "--initialowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Initial owner wallet alias to mint the Atomical into",
+          "default": null
+        },
+        {
+          "flags": "--parent <string>",
+          "short": null,
+          "long": "--parent",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to require a parent atomical to be spent along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--parentowner <string>",
+          "short": null,
+          "long": "--parentowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Wallet owner of the parent to spend along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into the minted atomical",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "mint-dft",
+      "signature": "mint-dft",
+      "description": "Mint coins for a decentralized fungible token (FT)",
+      "arguments": [
+        {
+          "name": "ticker",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--current",
+          "short": null,
+          "long": "--current",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Mine the current bitwork. If disabled mines the next.",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for Bitwork mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias wif key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--initialowner <string>",
+          "short": null,
+          "long": "--initialowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Assign claimed tokens into this address",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        }
+      ]
+    },
+    {
+      "name": "mint-ft",
+      "signature": "mint-ft",
+      "description": "Mint fungible token (FT) Atomical in direct issuance mode",
+      "arguments": [
+        {
+          "name": "ticker",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "supply",
+          "required": true,
+          "variadic": false,
+          "description": "number"
+        },
+        {
+          "name": "file",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--initialowner <string>",
+          "short": null,
+          "long": "--initialowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Initial owner wallet alias to mint the Atomical into",
+          "default": null
+        },
+        {
+          "flags": "--parent <string>",
+          "short": null,
+          "long": "--parent",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to require a parent atomical to be spent along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--parentowner <string>",
+          "short": null,
+          "long": "--parentowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Wallet owner of the parent to spend along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        }
+      ]
+    },
+    {
+      "name": "mint-item",
+      "signature": "mint-item",
+      "description": "Mint item non-fungible token (NFT) Atomical from a decentralized container",
+      "arguments": [
+        {
+          "name": "containerName",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "itemName",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "manifestFile",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--container <string>",
+          "short": null,
+          "long": "--container",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Name of the container to request",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--initialowner <string>",
+          "short": null,
+          "long": "--initialowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Initial owner wallet alias to mint the Atomical into",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Owner of the parent Atomical. Used for direct subrealm minting.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into the minted atomical",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "mint-nft",
+      "signature": "mint-nft",
+      "description": "Mint non-fungible token (NFT) Atomical",
+      "arguments": [
+        {
+          "name": "file",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--container <string>",
+          "short": null,
+          "long": "--container",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Name of the container to request",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--initialowner <string>",
+          "short": null,
+          "long": "--initialowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Initial owner wallet alias to mint the Atomical into",
+          "default": null
+        },
+        {
+          "flags": "--parent <string>",
+          "short": null,
+          "long": "--parent",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to require a parent atomical to be spent along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--parentowner <string>",
+          "short": null,
+          "long": "--parentowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Wallet owner of the parent to spend along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into the minted atomical",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "mint-nft-json",
+      "signature": "mint-nft-json",
+      "description": "Mint non-fungible token (NFT) Atomical with JSON only data",
+      "arguments": [
+        {
+          "name": "jsonFile",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--container <string>",
+          "short": null,
+          "long": "--container",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Name of the container to request",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--initialowner <string>",
+          "short": null,
+          "long": "--initialowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Initial owner wallet alias to mint the Atomical into",
+          "default": null
+        },
+        {
+          "flags": "--parent <string>",
+          "short": null,
+          "long": "--parent",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to require a parent atomical to be spent along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--parentowner <string>",
+          "short": null,
+          "long": "--parentowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Wallet owner of the parent to spend along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into the minted atomical",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "mint-realm",
+      "signature": "mint-realm",
+      "description": "Mint top level Realm non-fungible token (NFT) Atomical",
+      "arguments": [
+        {
+          "name": "realm",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--container <string>",
+          "short": null,
+          "long": "--container",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Name of the container to request",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--initialowner <string>",
+          "short": null,
+          "long": "--initialowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Initial owner wallet alias to mint the Atomical into",
+          "default": null
+        },
+        {
+          "flags": "--parent <string>",
+          "short": null,
+          "long": "--parent",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to require a parent atomical to be spent along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--parentowner <string>",
+          "short": null,
+          "long": "--parentowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Wallet owner of the parent to spend along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into the minted atomical",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "mint-subrealm",
+      "signature": "mint-subrealm",
+      "description": "Mint subrealm non-fungible token (NFT) Atomical",
+      "arguments": [
+        {
+          "name": "realm",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--container <string>",
+          "short": null,
+          "long": "--container",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Name of the container to request",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--initialowner <string>",
+          "short": null,
+          "long": "--initialowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Initial owner wallet alias to mint the Atomical into",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Owner of the parent Atomical. Used for direct subrealm minting.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "200"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into the minted atomical",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "outpoint-compact",
+      "signature": "outpoint-compact",
+      "description": "Decodes hex outpoint to compact location id form",
+      "arguments": [
+        {
+          "name": "hex",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "pending-subrealms",
+      "signature": "pending-subrealms",
+      "description": "Display pending subrealm Atomical requests and make payments",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--display",
+          "short": null,
+          "long": "--display",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Show pending subrealms for an address or wallet",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Show pending subrealms for an address or wallet",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Show verbose raw output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "prepare-dmint",
+      "signature": "prepare-dmint",
+      "description": "Prepare the dmint config and item manifest from a folder of images",
+      "arguments": [
+        {
+          "name": "folder",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "mintHeight",
+          "required": true,
+          "variadic": false,
+          "description": "number"
+        },
+        {
+          "name": "bitworkc",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "prepare-dmint-items",
+      "signature": "prepare-dmint-items",
+      "description": "Prepare the dmint config and item manifest from a folder of images",
+      "arguments": [
+        {
+          "name": "folder",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "outputFolderName",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "realm-info",
+      "signature": "realm-info",
+      "description": "Get realm and subrealm information of an atomical",
+      "arguments": [
+        {
+          "name": "atomicalIdAlias",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "resolve",
+      "signature": "resolve",
+      "description": "Resolve a realm or subrealm. Alias for 'get-realm'",
+      "arguments": [
+        {
+          "name": "realm_or_subrealm",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose to show extended information.",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "script-address",
+      "signature": "script-address",
+      "description": "Decodes a script as an address",
+      "arguments": [
+        {
+          "name": "script",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "seal",
+      "signature": "seal",
+      "description": "Seal any NFT Atomical type permanently so that it can never be updated or transferred ever again.",
+      "arguments": [
+        {
+          "name": "atomicalIdAlias",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the commit tx",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        }
+      ]
+    },
+    {
+      "name": "server-version",
+      "signature": "server-version",
+      "description": "Get electrumx server version info",
+      "arguments": [],
+      "options": []
+    },
+    {
+      "name": "set",
+      "signature": "set",
+      "description": "Set (update) an existing Atomical with data.",
+      "arguments": [
+        {
+          "name": "atomicalIdAlias",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "jsonFilename",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the commit tx",
+          "default": null
+        },
+        {
+          "flags": "--disableautoencode",
+          "short": null,
+          "long": "--disableautoencode",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Disables auto encoding of $b variables",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "set-container-data",
+      "signature": "set-container-data",
+      "description": "Update container data with json file contents",
+      "arguments": [
+        {
+          "name": "containerName",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "jsonFilename",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the commit tx",
+          "default": null
+        },
+        {
+          "flags": "--disableautoencode",
+          "short": null,
+          "long": "--disableautoencode",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Disables auto encoding of $b variables",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "set-relation",
+      "signature": "set-relation",
+      "description": "Set relationship an existing Atomical with data.",
+      "arguments": [
+        {
+          "name": "atomicalId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "relationName",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "relationValues",
+          "required": true,
+          "variadic": true,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "15"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "splat",
+      "signature": "splat",
+      "description": "Extract an NFT Atomical from a UTXO which contains multiple Atomicals",
+      "arguments": [
+        {
+          "name": "locationId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to add any bitwork proof of work to the commit tx",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into each output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "split",
+      "signature": "split",
+      "description": "Split operation to separate the FT Atomicals at a single UTXOs.",
+      "arguments": [
+        {
+          "name": "locationId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias wif key to be used for funding",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "15"
+        }
+      ]
+    },
+    {
+      "name": "state",
+      "signature": "state",
+      "description": "Get the state of an Atomical",
+      "arguments": [
+        {
+          "name": "atomicalAliasOrId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "state-history",
+      "signature": "state-history",
+      "description": "Get the state history of an Atomical",
+      "arguments": [
+        {
+          "name": "atomicalAliasOrId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "store-file",
+      "signature": "store-file",
+      "description": "Store general immutable data transaction that is not an NFT or FT",
+      "arguments": [
+        {
+          "name": "filepath",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "givenFileName",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--bitworkc <string>",
+          "short": null,
+          "long": "--bitworkc",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the commit transaction.",
+          "default": null
+        },
+        {
+          "flags": "--bitworkr <string>",
+          "short": null,
+          "long": "--bitworkr",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to put any bitwork proof of work into the token mint. Applies to the reveal transaction.",
+          "default": null
+        },
+        {
+          "flags": "--disablechalk",
+          "short": null,
+          "long": "--disablechalk",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to disable the real-time chalked logging of each hash for mining. Improvements mining performance to set this flag",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--parent <string>",
+          "short": null,
+          "long": "--parent",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Whether to require a parent atomical to be spent along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--parentowner <string>",
+          "short": null,
+          "long": "--parentowner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Wallet owner of the parent to spend along with the mint.",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "-1"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into output",
+          "default": "1000"
+        }
+      ]
+    },
+    {
+      "name": "summary-containers",
+      "signature": "summary-containers",
+      "description": "Show summary of owned containers by wallet",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--filter <string>",
+          "short": null,
+          "long": "--filter",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Filter by status",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Provide alternate wallet alias to query",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "summary-realms",
+      "signature": "summary-realms",
+      "description": "Show summary of owned realms by wallet",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--filter <string>",
+          "short": null,
+          "long": "--filter",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Filter by status",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Provide alternate wallet alias to query",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "summary-subrealms",
+      "signature": "summary-subrealms",
+      "description": "Show summary of owned subrealms by wallet",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--filter <string>",
+          "short": null,
+          "long": "--filter",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Filter by status",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Provide alternate wallet alias to query",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "summary-tickers",
+      "signature": "summary-tickers",
+      "description": "Show summary of owned tokens by tickers by wallet",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--filter <string>",
+          "short": null,
+          "long": "--filter",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Filter by status",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Provide alternate wallet alias to query",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "transfer-builder",
+      "signature": "transfer-builder",
+      "description": "Transfer plain regular UTXOs to another addresses",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--atomicalreceipt <string>",
+          "short": null,
+          "long": "--atomicalreceipt",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Attach an atomical id to a pay receipt",
+          "default": null
+        },
+        {
+          "flags": "--atomicalreceipttype <string>",
+          "short": null,
+          "long": "--atomicalreceipttype",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Attach receipt type p or d",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--nofunding",
+          "short": null,
+          "long": "--nofunding",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Do not ask for seperate funding, use existing utxo",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "15"
+        },
+        {
+          "flags": "--skipvalidation",
+          "short": null,
+          "long": "--skipvalidation",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Do not do FT transfer validation on broadcast (danger)",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "transfer-ft",
+      "signature": "transfer-ft",
+      "description": "Transfer Atomical FT to other addresses",
+      "arguments": [
+        {
+          "name": "atomicalId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--atomicalreceipt <string>",
+          "short": null,
+          "long": "--atomicalreceipt",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Attach an atomical id to a pay receipt",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--nofunding",
+          "short": null,
+          "long": "--nofunding",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Do not ask for separate funding, use existing utxo",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "15"
+        }
+      ]
+    },
+    {
+      "name": "transfer-nft",
+      "signature": "transfer-nft",
+      "description": "Transfer Atomical NFT to new address",
+      "arguments": [
+        {
+          "name": "atomicalId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "address",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "15"
+        },
+        {
+          "flags": "--satsoutput <number>",
+          "short": null,
+          "long": "--satsoutput",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis to put into the transferred atomical",
+          "default": "546"
+        }
+      ]
+    },
+    {
+      "name": "transfer-utxos",
+      "signature": "transfer-utxos",
+      "description": "Transfer plain regular UTXOs to another addresses",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--atomicalreceipt <string>",
+          "short": null,
+          "long": "--atomicalreceipt",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Attach an atomical id to a pay receipt",
+          "default": null
+        },
+        {
+          "flags": "--funding <string>",
+          "short": null,
+          "long": "--funding",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to be used for funding and change",
+          "default": null
+        },
+        {
+          "flags": "--nofunding",
+          "short": null,
+          "long": "--nofunding",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Do not ask for separate funding, use existing utxo",
+          "default": null
+        },
+        {
+          "flags": "--owner <string>",
+          "short": null,
+          "long": "--owner",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Use wallet alias WIF key to move the Atomical",
+          "default": null
+        },
+        {
+          "flags": "--rbf",
+          "short": null,
+          "long": "--rbf",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Whether to enable RBF for transactions.",
+          "default": null
+        },
+        {
+          "flags": "--satsbyte <number>",
+          "short": null,
+          "long": "--satsbyte",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Satoshis per byte in fees",
+          "default": "15"
+        }
+      ]
+    },
+    {
+      "name": "tx",
+      "signature": "tx",
+      "description": "Get any transaction",
+      "arguments": [
+        {
+          "name": "txid",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "tx-history",
+      "signature": "tx-history",
+      "description": "Get the history of an Atomical",
+      "arguments": [
+        {
+          "name": "atomicalAliasOrId",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--verbose",
+          "short": null,
+          "long": "--verbose",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Verbose output",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "validate-container-item",
+      "signature": "validate-container-item",
+      "description": "Validate a container item from the manifest",
+      "arguments": [
+        {
+          "name": "containerName",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "itemName",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "manifestFile",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "--sealed --no-sealed",
+          "short": null,
+          "long": "--sealed",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Validate the item without checking if the container is sealed.",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "wallet-create",
+      "signature": "wallet-create",
+      "description": "Creates and displays new 12-word secret mnemonic phrase along with the primary and funding addresses",
+      "arguments": [],
+      "options": []
+    },
+    {
+      "name": "wallet-decode",
+      "signature": "wallet-decode",
+      "description": "Decode secret mnemonic phrase to display derive address and key at provided path",
+      "arguments": [
+        {
+          "name": "phrase",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": [
+        {
+          "flags": "-p, --path <string>",
+          "short": "-p",
+          "long": "--path",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Derivation path to use', defaultDerivedPath) .option('--passphrase <string>",
+          "default": "Passphrase for the wallet"
+        }
+      ]
+    },
+    {
+      "name": "wallet-import",
+      "signature": "wallet-import",
+      "description": "Import a wallet by WIF and assign it to provided alias",
+      "arguments": [
+        {
+          "name": "wif",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        },
+        {
+          "name": "alias",
+          "required": true,
+          "variadic": false,
+          "description": "string"
+        }
+      ],
+      "options": []
+    },
+    {
+      "name": "wallet-init",
+      "signature": "wallet-init",
+      "description": "Initializes a new wallet at wallet.json",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--n <number>",
+          "short": null,
+          "long": "--n",
+          "valueName": "number",
+          "valueRequired": true,
+          "description": "Provider number of alias",
+          "default": null
+        },
+        {
+          "flags": "--path <string>",
+          "short": null,
+          "long": "--path",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Provide a path base', defaultDerivedPath.substring(0, 11)) .option('--passphrase <string>",
+          "default": "Provide a passphrase for the wallet"
+        },
+        {
+          "flags": "--phrase <string>",
+          "short": null,
+          "long": "--phrase",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Provide a wallet phrase",
+          "default": null
+        }
+      ]
+    },
+    {
+      "name": "wallets",
+      "signature": "wallets",
+      "description": "Get balances and atomicals stored at internal wallets",
+      "arguments": [],
+      "options": [
+        {
+          "flags": "--address <string>",
+          "short": null,
+          "long": "--address",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Show the data and a QR code for an arbitrary address. Not expected to be loaded into local wallets.",
+          "default": null
+        },
+        {
+          "flags": "--alias <string>",
+          "short": null,
+          "long": "--alias",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Restrict to only showing one of the imported wallets identified by the alias",
+          "default": null
+        },
+        {
+          "flags": "--all",
+          "short": null,
+          "long": "--all",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Shows all loaded wallets and not just the primary and funding",
+          "default": null
+        },
+        {
+          "flags": "--balances",
+          "short": null,
+          "long": "--balances",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Show FT token balances",
+          "default": null
+        },
+        {
+          "flags": "--extra",
+          "short": null,
+          "long": "--extra",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Show extended wallet information such as specific utxos. Default is to only show a summary.",
+          "default": null
+        },
+        {
+          "flags": "--history",
+          "short": null,
+          "long": "--history",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Shows history of txids for each wallet if enabled",
+          "default": null
+        },
+        {
+          "flags": "--identify <string>",
+          "short": null,
+          "long": "--identify",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Restrict to only showing one of the imported wallets identified by the address (if it is found)",
+          "default": null
+        },
+        {
+          "flags": "--noqr",
+          "short": null,
+          "long": "--noqr",
+          "valueName": null,
+          "valueRequired": false,
+          "description": "Hide QR codes",
+          "default": null
+        },
+        {
+          "flags": "--type <string>",
+          "short": null,
+          "long": "--type",
+          "valueName": "string",
+          "valueRequired": true,
+          "description": "Show NFT or FT types only. By default shows both. Not compatible with --balances and --extra",
+          "default": null
+        }
+      ]
+    }
+  ]
+}

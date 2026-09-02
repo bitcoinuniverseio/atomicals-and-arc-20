@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test vectors | Atomicals and ARC-20</title>
+<meta name="description" content="Executed ARC-20 allocation vectors with their inputs, outputs, coloured results, and burns.">
+<meta name="generator" content="scripts/generate-artifacts.mjs">
+<link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/conformance/">
+<link rel="icon" href="/atomicals-and-arc-20/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Test vectors">
+<meta property="og:description" content="Executed ARC-20 allocation vectors with their inputs, outputs, coloured results, and burns.">
+<meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/conformance/">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="/atomicals-and-arc-20/theme.css">
+</head>
+<body class="compat">
+<a class="skip" href="#main">Skip to content</a>
+<header class="compat-header">
+  <a class="compat-brand" href="/atomicals-and-arc-20/">Atomicals and ARC-20</a>
+  <nav aria-label="Primary">
+    <a href="/atomicals-and-arc-20/start/what-are-atomicals/">Start</a>
+    <a href="/atomicals-and-arc-20/protocol/overview/">Protocol</a>
+    <a href="/atomicals-and-arc-20/guides/">Guides</a>
+    <a href="/atomicals-and-arc-20/reference/openapi/">Reference</a>
+  </nav>
+</header>
+<main id="main" class="compat-main">
+<div class="compat-notice">
+  <strong>Compatibility page.</strong> This route is preserved so older links keep working. It is
+  generated from the current documentation, so it cannot drift.
+  <a href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/conformance/">Open the current page</a>.
+</div>
+<h1>Test vectors</h1>
+<p>Every row below is produced by running <code>conformance/allocation.mjs</code>, the port of the
+allocation rules from the pinned indexer revision. The expected values are not transcribed. They are
+what the engine returns, checked in CI, so a page that disagrees with the engine cannot be
+published.</p>
+<p>Cases naming an upstream test correspond to a case in the indexer's own
+<code>tests/lib/test_atomicals_blueprint_builder.py</code> at the pinned revision.</p>
+<p>Era is <code>exact-cover</code> for the rules before activation height 848484, where an output had
+to be fully covered or nothing was coloured, and <code>current</code> for the rules at or after it,
+where an output can be partially coloured.</p>
+<p>Machine readable: <a href="/atomicals-and-arc-20/conformance/vectors/arc20-allocation.json">arc20-allocation.json</a>.
+Run them interactively in the <a href="/atomicals-and-arc-20/tools/allocation-visualizer/">allocation visualizer</a>.</p>
+<div class="table-scroll"><table>
+<caption>ARC-20 allocation vectors, executed</caption>
+<thead><tr><th scope="col">Case</th><th scope="col">Era</th><th scope="col">Inputs</th><th scope="col">Outputs</th><th scope="col">Coloured</th><th scope="col">Burned</th><th scope="col">Clean</th></tr></thead>
+<tbody><tr><td><code>clean-split</code><br>Clean split into two outputs</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 700<br>1: 500</td><td>0: 700<br>1: 500</td><td>none</td><td>true</td></tr><tr><td><code>oversized-next-output</code><br>Oversized next output burns the remainder</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 700<br>1: 546</td><td>0: 700<br>1: 0</td><td>TOKENA: 500</td><td>false</td></tr><tr><td><code>exact-single-output</code><br>Whole lot into one output</td><td>current</td><td>0: 10000 of TOKENA</td><td>0: 10000</td><td>0: 10000</td><td>none</td><td>true</td></tr><tr><td><code>first-output-too-large</code><br>First output larger than the whole lot</td><td>current</td><td>0: 500 of TOKENA</td><td>0: 20000</td><td>0: 0</td><td>TOKENA: 500</td><td>false</td></tr><tr><td><code>too-few-outputs</code><br>Outputs run out before the value does</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 700</td><td>0: 700</td><td>TOKENA: 500</td><td>false</td></tr><tr><td><code>unspendable-output-skipped</code><br>Unspendable outputs are skipped, not funded</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 0 (unspendable)<br>1: 700<br>2: 500</td><td>0: 0<br>1: 700<br>2: 500</td><td>none</td><td>true</td></tr><tr><td><code>combine-two-lots</code><br>Combining two lots of the same token</td><td>current</td><td>0: 700 of TOKENA<br>1: 500 of TOKENA</td><td>0: 1200</td><td>0: 1200</td><td>none</td><td>true</td></tr><tr><td><code>two-tokens-sequential-slots</code><br>Two different tokens take sequential output slots</td><td>current</td><td>0: 700 of TOKENA<br>1: 900 of TOKENB</td><td>0: 700<br>1: 900</td><td>0: 700<br>1: 900</td><td>none</td><td>true</td></tr><tr><td><code>two-tokens-non-clean-fallback</code><br>A non-clean slot triggers the output zero fallback</td><td>current</td><td>0: 700 of TOKENA<br>1: 400 of TOKENB</td><td>0: 700<br>1: 546</td><td>0: 700</td><td>TOKENB: 400</td><td>false</td></tr><tr><td><code>dust-remainder-burns</code><br>A remainder smaller than the change output burns</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 1000<br>1: 200</td><td>0: 1000<br>1: 200</td><td>none</td><td>true</td></tr><tr><td><code>change-output-too-large</code><br>A change output larger than the remainder burns it</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 1000<br>1: 546</td><td>0: 1000<br>1: 0</td><td>TOKENA: 200</td><td>false</td></tr><tr><td><code>custom-coloring-partial-fill</code><br>Custom coloring assigns a partial value to the last output</td><td>current</td><td>0: 1200 of TOKENA</td><td>0: 700<br>1: 546</td><td>0: 700<br>1: 500</td><td>none</td><td>false</td></tr><tr><td><code>suite-exact-single-output</code><br>Exact single output, exact-cover era<br><small>Upstream test: <code>test_spends_ft_valid</code></small></td><td>exact-cover</td><td>0: 11000 of TOKENA</td><td>0: 11000</td><td>0: 11000</td><td>none</td><td>true</td></tr><tr><td><code>suite-partially-colored-carry-forward</code><br>Partially coloured output, current era<br><small>Upstream test: <code>test_spends_single_ft_partially_colored_transfer</code></small></td><td>current</td><td>0: 500 of TOKENA</td><td>0: 11000</td><td>0: 500</td><td>none</td><td>false</td></tr><tr><td><code>suite-consolidation-burn</code><br>Eleven inputs consolidated into one small output<br><small>Upstream test: <code>test_spends_ft_burned</code></small></td><td>exact-cover</td><td>0: 1000 of TOKENA<br>1: 1000 of TOKENA<br>2: 1000 of TOKENA<br>3: 1000 of TOKENA<br>4: 1000 of TOKENA<br>5: 1000 of TOKENA<br>6: 1000 of TOKENA<br>7: 1000 of TOKENA<br>8: 1000 of TOKENA<br>9: 1000 of TOKENA<br>10: 1000 of TOKENA</td><td>0: 1000</td><td>0: 1000</td><td>TOKENA: 10000</td><td>false</td></tr><tr><td><code>suite-output-over-balance</code><br>One satoshi short destroys the whole balance<br><small>Upstream test: <code>test_spends_ft_single_burned_under</code></small></td><td>exact-cover</td><td>0: 10999 of TOKENA</td><td>0: 11000</td><td>nothing coloured</td><td>TOKENA: 10999</td><td>false</td></tr><tr><td><code>suite-one-unit-over</code><br>One unit over the output value burns that unit<br><small>Upstream test: <code>test_spends_ft_single_burned_over</code></small></td><td>exact-cover</td><td>0: 11001 of TOKENA</td><td>0: 11000</td><td>0: 11000</td><td>TOKENA: 1</td><td>false</td></tr><tr><td><code>suite-merged-inputs-single-output</code><br>Two lots merged into one output, one unit as fee<br><small>Upstream test: <code>test_spends_ft_split_one_token</code></small></td><td>exact-cover</td><td>0: 900 of TOKENA<br>1: 555 of TOKENA</td><td>0: 1454</td><td>0: 1454</td><td>TOKENA: 1</td><td>false</td></tr><tr><td><code>suite-no-atomicals</code><br>A transaction carrying no tokens<br><small>Upstream test: <code>test_empty_spends</code></small></td><td>current</td><td>none</td><td>0: 1000</td><td>nothing coloured</td><td>none</td><td>true</td></tr><tr><td><code>fee-taken-from-colored-value</code><br>Paying the fee out of coloured value burns it</td><td>current</td><td>0: 10000 of TOKENA</td><td>0: 3000<br>1: 6800</td><td>0: 3000<br>1: 6800</td><td>TOKENA: 200</td><td>false</td></tr><tr><td><code>only-unspendable-outputs</code><br>No output able to take colour</td><td>current</td><td>0: 5000 of TOKENA</td><td>0: 0 (unspendable)</td><td>nothing coloured</td><td>TOKENA: 5000</td><td>false</td></tr><tr><td><code>split-skip-amount</code><br>Split skips a satoshi amount before colouring</td><td>exact-cover</td><td>0: 3000 of TOKENA</td><td>0: 1000<br>1: 2000</td><td>1: 2000</td><td>TOKENA: 1000</td><td>false</td></tr><tr><td><code>custom-color-over-request-clamped</code><br>Custom colouring clamps an over-request<br><small>Upstream test: <code>test_custom_colored_ft_overflow</code></small></td><td>current</td><td>0: 1000 of TOKENA<br>0: 1000 of TOKENB</td><td>0: 1200<br>1: 600<br>2: 600</td><td>0: 1000<br>1: 600<br>2: 400</td><td>none</td><td>false</td></tr><tr><td><code>custom-color-unassigned-value-burns</code><br>Custom colouring burns what the payload does not place</td><td>current</td><td>0: 1000 of TOKENA</td><td>0: 1000<br>1: 500</td><td>0: 400</td><td>TOKENA: 600</td><td>false</td></tr></tbody>
+</table></div>
+</main>
+<footer class="compat-footer">
+  <p>
+    Independent documentation published by Bitcoin Universe. Atomicals and ARC-20 names and artwork
+    stay with their creators. Nothing here is investment, legal, or tax advice.
+  </p>
+  <p>
+    <a href="/atomicals-and-arc-20/llms.txt">llms.txt</a>
+    <a href="/atomicals-and-arc-20/llms-full.txt">llms-full.txt</a>
+    <a href="/atomicals-and-arc-20/specification.md">specification.md</a>
+    <a href="/atomicals-and-arc-20/sources.md">sources.md</a>
+    <a href="/atomicals-and-arc-20/manifest.json">manifest.json</a>
+  </p>
+</footer>
+</body>
+</html>

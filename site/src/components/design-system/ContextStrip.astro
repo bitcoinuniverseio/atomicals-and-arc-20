@@ -1,0 +1,167 @@
+---
+import siteMeta from '../../data/site.json'
+import driftStatus from '../../../../contracts/drift-status.json'
+import {
+  APPLICABILITY_LABELS,
+  getSource,
+  shortRevision,
+  sourceUrl,
+  daysSince,
+  STALE_AFTER_DAYS,
+} from '../../lib/sources'
+
+type Props = {
+  truthLayer?: { label: string; tone: string; meaning: string }
+  locale?: string | undefined
+}
+
+const { truthLayer, locale } = Astro.props
+const route = Astro.locals.starlightRoute
+const data = route?.entry?.data as
+  | { provenance?: { verified: string; networks: string[]; sources: { id: string; path?: string }[] } }
+  | undefined
+const provenance = data?.provenance
+
+const strings =
+  (locale && locale in siteMeta.contextStrip ? siteMeta.contextStrip[locale] : undefined) ??
+  siteMeta.contextStrip.en
+
+const sourceSet = siteMeta.docsVersion
+const baselineEntry = siteMeta.baselineSourceId
+  ? getSource(siteMeta.baselineSourceId)
+  : undefined
+const networks = provenance?.networks ?? []
+const verified = provenance?.verified
+const staleDays = verified ? daysSince(verified) : undefined
+const isStale = staleDays !== undefined && staleDays > STALE_AFTER_DAYS
+const driftCount = (driftStatus as { findings: unknown[] }).findings.length
+
+const pageSources = (provenance?.sources ?? []).map((ref) => {
+  const entry = getSource(ref.id)
+  return { ref, entry }
+})
+const hasSources = pageSources.length > 0
+const drawerId = `bu-sources-${(route?.entry?.id ?? 'index').replace(/[^a-z0-9]+/gi, '-')}`
+---
+
+{verified || truthLayer ? (
+    <div class="bu-context-strip">
+      <ul class="bu-context-items" role="list" tabindex="0" aria-label={strings.region}>
+        <li>
+          <span class="bu-context-label">{strings.set}</span>
+          <span class="bu-context-value bu-mono">{sourceSet}</span>
+        </li>
+        {baselineEntry && (
+          <li>
+            <span class="bu-context-label">{strings.baseline}</span>
+            <span class="bu-context-value bu-mono">{shortRevision(baselineEntry)}</span>
+          </li>
+        )}
+        {networks.length > 0 && (
+          <li>
+            <span class="bu-context-label">{strings.network}</span>
+            <span class="bu-context-value">{networks.join(', ')}</span>
+          </li>
+        )}
+        {verified && (
+          <li data-stale={isStale ? 'true' : undefined}>
+            <span class="bu-context-label">{strings.verified}</span>
+            <span class="bu-context-value">
+              <span class="bu-context-date">{verified}</span>
+              {isStale && <strong class="bu-context-stale">{strings.stale}</strong>}
+            </span>
+          </li>
+        )}
+        {truthLayer && (
+          <li>
+            <span class="bu-chip" data-tone={truthLayer.tone}>{truthLayer.label}</span>
+          </li>
+        )}
+        {driftCount > 0 && (
+          <li>
+            <span class="bu-chip" data-tone="warn">{strings.drift}</span>
+          </li>
+        )}
+      </ul>
+      {hasSources && (
+        <button
+          class="bu-context-sources"
+          type="button"
+          aria-haspopup="dialog"
+          data-open-drawer={drawerId}
+        >
+          {strings.sources}
+        </button>
+      )}
+    </div>
+  ) : (
+    <div class="bu-context-strip" data-empty="true"></div>
+  )}
+
+{
+  hasSources && (
+    <dialog class="bu-source-drawer" id={drawerId} aria-label={strings.drawerTitle}>
+      <div class="bu-drawer-head">
+        <h2>{strings.drawerTitle}</h2>
+        <button class="bu-drawer-close" type="button" aria-label={strings.close} data-close-drawer>
+          &times;
+        </button>
+      </div>
+      <p class="bu-drawer-note">{strings.drawerNote}</p>
+      <dl class="bu-drawer-list">
+        {pageSources.map(({ ref, entry }) => (
+          <div class="bu-drawer-source">
+            <dt class="bu-mono">{entry.id}</dt>
+            <dd>
+              <p class="bu-drawer-name">{entry.name}</p>
+              <p>
+                {strings.revision} <span class="bu-mono">{shortRevision(entry)}</span>
+                {entry.releaseDate && <span> ({entry.releaseDate})</span>}
+              </p>
+              {ref.path && (
+                <p>
+                  <a href={sourceUrl(entry, ref.path)}>
+                    {strings.openPath}: <span class="bu-mono">{ref.path}</span>
+                  </a>
+                </p>
+              )}
+              <p class="bu-drawer-note">{entry.role}</p>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </dialog>
+  )
+}
+
+<script>
+  function wireDrawer() {
+    for (const opener of document.querySelectorAll<HTMLButtonElement>('[data-open-drawer]')) {
+      if (opener.dataset.drawerWired === 'true') continue
+      opener.dataset.drawerWired = 'true'
+      opener.addEventListener('click', () => {
+        const id = opener.getAttribute('data-open-drawer')
+        const drawer = id ? document.getElementById(id) : null
+        if (drawer instanceof HTMLDialogElement) drawer.showModal()
+      })
+    }
+    for (const closer of document.querySelectorAll<HTMLButtonElement>('[data-close-drawer]')) {
+      if (closer.dataset.drawerWired === 'true') continue
+      closer.dataset.drawerWired = 'true'
+      closer.addEventListener('click', () => {
+        const drawer = closer.closest('dialog')
+        if (drawer && drawer.open) drawer.close()
+      })
+    }
+    // Clicking the backdrop closes; a click inside the panel must not.
+    for (const drawer of document.querySelectorAll('dialog.bu-source-drawer')) {
+      if (drawer.dataset.drawerWired === 'true') continue
+      drawer.dataset.drawerWired = 'true'
+      drawer.addEventListener('click', (event) => {
+        if (event.target === drawer && drawer.open) drawer.close()
+      })
+    }
+  }
+  wireDrawer()
+  document.addEventListener('astro:page-load', wireDrawer)
+</script>

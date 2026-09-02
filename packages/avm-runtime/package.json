@@ -1,0 +1,21 @@
+{
+  "name": "@bitcoin-universe/avm-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Resource-limited host for the pinned beta AVM interpreter: native and WASM backends, no JavaScript reimplementation of AVM semantics",
+  "exports": {
+    "./host": "./src/host.mjs",
+    "./limits": "./src/host.mjs"
+  },
+  "scripts": {
+    "build:native": "docker compose -f docker/compose.yaml run --rm native-build",
+    "build:wasm": "docker compose -f docker/compose.yaml run --rm wasm-build",
+    "test": "node --test test/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20"
+  }
+}

@@ -1,0 +1,70 @@
+name: Source drift
+
+# Compares the committed contracts against the private runtime repositories.
+#
+# This is deliberately separate from CI. Public pull request validation must never
+# depend on a private credential, and a secret must never be available to code from
+# an untrusted fork. So this workflow is trusted only: it runs on a schedule, or when
+# someone with write access dispatches it, and never on a pull request event.
+#
+# When it finds drift it opens or updates one issue with the changed contract, the
+# affected pages, and the source revision. It never rewrites normative prose.
+
+on:
+  schedule:
+    # Daily, well outside the busy window for the shared runner fleet.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: atomicals-docs-source-drift
+  cancel-in-progress: false
+
+jobs:
+  drift:
+    name: Compare against private sources
+    # Trusted events only. A pull_request event can never reach this job.
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: [self-hosted, universe-ci, linux-ultra]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install from the lockfile
+        run: npm ci
+
+      # Public sources first, with no credential at all. This half of the check
+      # would also pass on a fork, and it is the half that catches an upstream
+      # protocol change.
+      - name: Check the public pinned sources for drift
+        run: node scripts/check-source-drift.mjs --scope public
+
+      # Private sources second, with a least-privilege read-only credential that
+      # only exists on this trusted path.
+      - name: Check the private runtime contracts for drift
+        env:
+          SOURCE_READ_TOKEN: ${{ secrets.SOURCE_READ_TOKEN }}
+        run: node scripts/check-source-drift.mjs --scope private --report drift-report.json
+
+      - name: Open or update the drift issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Test-Path 'drift-report.json')) {
+            Write-Output 'No drift report was produced, so there is nothing to file.'
+            exit 0
+          }
+          node scripts/report-source-drift.mjs --report drift-report.json

@@ -1,0 +1,14 @@
+# Deterministic native build of the pinned AVM interpreter.
+# Base image pinned by digest; the interpreter source comes from the
+# checksum-verified tarball, never from a moving ref.
+FROM debian:bookworm-20240904-slim@sha256:112613c60573f5b90e31686260fb8b7b9f24a809d105c2cd00ee81c1bbeba812
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential cmake libboost-all-dev libevent-dev libgmp-dev python3 \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /build
+COPY vendor/avm-interpreter-c185e62.tar.gz .
+COPY source-checksum.json .
+RUN tar -xzf avm-interpreter-c185e62.tar.gz \
+    && cmake -S avm-interpreter-c185e62 -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_AVM_CLI=ON \
+    && cmake --build build --target avm-cli -j "$(nproc)" \
+    && install -m 0755 build/src/avm-cli /out/avm-cli

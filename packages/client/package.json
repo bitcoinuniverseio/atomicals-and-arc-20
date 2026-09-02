@@ -1,0 +1,26 @@
+{
+  "name": "@bitcoin-universe/atomicals-client",
+  "version": "1.0.0",
+  "description": "Typed read client for the public Universe Atomicals APIs, generated from the published OpenAPI contracts",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "npm run build && node --test test/"
+  },
+  "keywords": ["atomicals", "arc-20", "bitcoin", "openapi"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitcoinuniverseio/atomicals-and-arc-20.git",
+    "directory": "packages/client"
+  }
+}

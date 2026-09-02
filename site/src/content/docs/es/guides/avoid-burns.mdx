@@ -1,0 +1,81 @@
+---
+title: Evitar quemas
+description: El procedimiento practico que evita todas las formas de quema, con los casos ejecutados que muestran como se ve cada una.
+sidebar:
+  order: 22
+provenance:
+  pageId: guides/avoid-burns
+  area: guides
+  audience: [everyone, holder, developer]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+  verified: '2026-08-31'
+  tags: [burns, safety]
+  translationSourceHash: 3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44
+  limitations:
+    - Una quema confirmada es permanente. Este procedimiento evita quemas. Nada revierte una.
+---
+
+import VectorTable from '../../../../components/VectorTable.astro'
+import { Steps, Aside } from '@astrojs/starlight/components'
+
+## Antes de empezar
+
+- Redes soportadas: mainnet.
+- Estado: comportamiento de protocolo.
+- La prevencion es el unico control. No hay recuperacion.
+
+## El procedimiento
+
+<Steps>
+
+1. Trabaja en outpoints y satoshis. Nunca en una caja de importe del token.
+2. Mueve un token por transaccion salvo que hayas modelado el caso con varios.
+3. Incluye siempre una salida de cambio coloreada cuando el lote supera lo que estas enviando.
+4. Dimensiona la salida de cambio **exactamente** al resto.
+5. Modela el conjunto exacto de entradas y salidas, en orden, antes de construir.
+6. Confirma que la cifra de quema calculada es cero.
+7. Anade las entradas de comision y el cambio cardinal, y modela de nuevo.
+8. Confirma que la cifra de quema sigue siendo cero.
+9. Compara el aviso de la billetera con tu modelo, linea por linea, antes de firmar.
+
+</Steps>
+
+Los pasos siete y ocho son los que la gente se salta, y son donde el cambio anadido por la
+billetera altera el resultado sin avisar.
+
+## Las cuatro formas, ejecutadas
+
+<VectorTable only={["oversized-next-output", "too-few-outputs", "first-output-too-large", "two-tokens-non-clean-fallback"]} />
+
+| Forma | Prevencion |
+| --- | --- |
+| Siguiente salida demasiado grande | Dimensiona el cambio exactamente al resto |
+| Salidas insuficientes | Incluye siempre cambio coloreado |
+| Primera salida mayor que el lote | Nunca envies un lote pequeno a un primer pago grande |
+| Repliegue con varios tokens | Un token por transaccion |
+
+<Aside type="danger" title="Enviar a un servicio que no entiende Atomicals">
+Una direccion de deposito de un exchange, una billetera Bitcoin normal o cualquier servicio sin
+soporte Atomicals gasta la salida como bitcoin normal. Las unidades desaparecen, y ningun registro
+de quema te va a consolar. Comprueba que el destino soporta Atomicals antes de enviar.
+</Aside>
+
+## El unico caso en que una quema es deliberada
+
+Destruir unidades a proposito es una accion valida. Hazlo explicitamente: construye la transaccion
+que quema exactamente lo que pretendes, confirma la cifra y registra la razon. Nunca dependas de
+una quema accidental.
+
+## Despues de difundir
+
+Lee la transaccion a traves de una fuente que reporte quemas y confirma que la cifra es la que
+esperabas. Compara el total coloreado de entrada con la suma de los totales coloreados de salida.
+
+## Fuente
+
+[Quemas](/protocol/arc20/burns/) y [asignacion](/protocol/arc20/allocation/).

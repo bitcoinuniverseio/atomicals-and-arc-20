@@ -1,0 +1,83 @@
+# Estado y limitaciones conocidas
+
+Que esta activo, que esta en beta, que es solo propuesta, que no esta expuesto, y las limitaciones que conocemos y no ocultamos.
+
+Page ID: start/status-and-limitations
+Applicability: universe-implementation
+Authority: universe-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: es
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/start/status-and-limitations/
+
+---
+## ARC-20
+
+| Capacidad | Estado | Notas |
+| --- | --- | --- |
+| Resolucion de ticker verificado y detalles del token | Implementacion Universe | Se publica el Atomical ID ganador, no solo el nombre |
+| Instantaneas de tenedores | Implementacion Universe | Las filas de tenedores deben sumar exactamente el suministro en circulacion o el escaneo se aborta |
+| Historial de actividad confirmada | Implementacion Universe | Despliegue, acunacion directa y descentralizada, transferencia, quema, operaciones de protocolo |
+| Cobertura de actividad pendiente | Limitada | Sin feed exhaustivo de mempool con manejo estable del ciclo de vida pendiente |
+| Saldos de cartera y UTXOs coloreadas | Implementacion Universe | Vistas de lectura, no prueba de liquidacion |
+| Emision directa `mint-ft` desde un producto Universe | No expuesta | El protocolo lo soporta. Ninguna superficie Universe lo ofrece |
+| Material del Substantiation Factor | Preliminar | Ver [Substantiation Factor](/protocol/arc20/substantiation-factor/) |
+
+La fuente ARC-20 reporta cobertura `partial` con una razon explicita: el historial confirmado
+autoritativo y las instantaneas completas y probadas de tenedores estan indexados, pero el
+adaptador entregado no tiene un feed exhaustivo de mempool con manejo estable del ciclo de vida
+pendiente y de la desaparicion. Esa limitacion se aplica solo a la actividad pendiente. No debilita
+el escaneo confirmado ni los requisitos de prueba de tenedores.
+
+## Atomicals NFTs, Realms y Subrealms
+
+| Capacidad | Estado | Notas |
+| --- | --- | --- |
+| Modelo de lectura de NFT simple, Realm y Subrealm | Implementacion Universe | Un escaneo, generacion, punto de control y puntero activo compartidos |
+| Resolucion de Realm, jerarquia y listado de Subrealms | Implementacion Universe | Evidencia de candidatura y pago retenida por activo |
+| Consulta por transaccion, bloque y UTXO | Implementacion Universe | Limitada a la generacion activa |
+| Entrega de medios con verificacion de integridad | Implementacion Universe | Se aplican restricciones de MIME y limites de tamano |
+| Tokens fungibles en esta proyeccion | Excluidos por diseno | Servidos por el lado ARC-20 |
+| Containers e items DMINT en esta proyeccion | Excluidos por diseno | Declarado en el manifiesto de procedencia del indice |
+| Operaciones de escritura | Ninguna | La proyeccion es de solo lectura |
+
+## Mercado
+
+| Capacidad | Estado | Notas |
+| --- | --- | --- |
+| Cuatro autoridades de protocolo aisladas | Implementacion Universe | `arc20`, `atomicals_nft`, `realms`, `subrealms` |
+| Anuncio, reserva, compra, oferta, liquidacion | Implementacion Universe | Cada compuerta de accion esta apagada por defecto |
+| Prueba de propiedad | Implementacion Universe | Prueba BIP-322 simple para P2WPKH y P2TR por ruta de clave |
+| Colateral mixto, quemas, salidas gastadas, desviacion del punto de control | Rechazados | Las cuatro vias fallan cerradas |
+| Alias heredados `/buys` y `/orders/{orderId}/reconcile` | Obsoletos | Usa `/reservations`, `/purchases`, `/settlements` |
+
+## AVM
+
+| Capa | Estado |
+| --- | --- |
+| Conceptos arquitectonicos del documento tecnico | Propuesto |
+| Interprete beta oficial | Experimental o beta |
+| Integracion en el runtime Universe | No expuesta |
+| Atestacion del runtime Universe | Ninguna publicada |
+
+Nada sobre el AVM en este sitio debe leerse como soporte de produccion en mainnet. Ver
+[estado y limitaciones del AVM](/protocol/avm/status-and-limitations/).
+
+## Limitaciones que conocemos
+
+1. La actividad ARC-20 pendiente no tiene cobertura exhaustiva. El historial confirmado si.
+2. Containers y DMINT estan documentados como comportamiento de protocolo. Ninguna proyeccion de
+   lectura Universe los expone hoy.
+3. La emision directa de FT es comportamiento de protocolo sin superficie de producto Universe.
+4. El AVM esta en beta aguas arriba y no esta expuesto aqui. Cualquier afirmacion de implementacion
+   requeriria una atestacion que no hemos publicado.
+5. Algunos servicios del ecosistema Atomicals listados en el [registro](/ecosystem/) no pudieron
+   verificarse desde una fuente alcanzable. Esas filas dicen `unknown` en lugar de adivinar.
+6. Los limites de tasa se documentan solo donde existen de verdad. Donde un servicio no tiene
+   ninguno, la pagina lo dice en lugar de inventar una politica.
+
+## Como reportar algo incorrecto
+
+Abre una issue en el [repositorio de documentacion](https://github.com/bitcoinuniverseio/atomicals-and-arc-20/issues).
+Usa la plantilla **incorrect protocol claim** o **API mismatch** e incluye el page ID del panel de
+fuentes.

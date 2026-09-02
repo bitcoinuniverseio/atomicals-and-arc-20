@@ -1,0 +1,22 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "accidental-burn",
+  "title": "Accidental burn through an oversized receiver output",
+  "description": "The holder sends coloured units to an output that cannot carry them all: the leftover units have nowhere to land and burn. This is the loss pattern the UTXO Safety Planner exists to catch.",
+  "seed": "arc20-burn",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 30000, "address": "bc1qholder" }
+    ] },
+    { "type": "reveal", "label": "mint", "inputs": ["fundo0"], "outputs": [
+      { "value": 1092, "address": "bc1qholder" },
+      { "value": 28900, "address": "bc1qholder" }
+    ], "atomical": { "type": "ft", "ticker": "GOLD", "units": 1092 } },
+    { "type": "confirm", "blocks": 1 },
+    { "type": "transfer", "label": "send-carelessly", "inputs": ["minto0", "minto1"], "outputs": [
+      { "value": 20000, "address": "bc1qreceiver" }
+    ] },
+    { "type": "confirm", "blocks": 1 }
+  ]
+}

@@ -1,0 +1,100 @@
+---
+title: Transferir ARC-20
+description: Construa uma transferencia que coloca cada unidade onde pretende e nao queima nada.
+sidebar:
+  order: 20
+provenance:
+  pageId: guides/transfer-arc20
+  area: guides
+  audience: [everyone, holder]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-js-cli
+      path: commandIndex
+  verified: '2026-08-31'
+  tags: [transfers, safety]
+  translationSourceHash: bb3ddccf620a041ef5916b64ea5bdbc7372c88782da36cad50cadb7fa4ab512c
+  limitations:
+    - A superficie visivel de transferencia da Universe nao constroi alocacoes parciais para destinatarios nem troco colorido a partir de um campo de montante. Use um construtor compativel que trabalhe em outpoints e valores de saida.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components'
+import VectorTable from '../../../../components/VectorTable.astro'
+
+## Antes de comecar
+
+- Redes suportadas: mainnet.
+- Estado: comportamento de protocolo.
+- Precisa de uma carteira ou construtor que trabalhe em outpoints e valores em satoshis, nao num
+  campo de montante.
+
+<Aside type="danger" title="Todo o risco esta nos tamanhos das saidas">
+Os tamanhos sao em satoshis, nao numa caixa de montante do token. Erre um e o resto queima.
+</Aside>
+
+## A forma que funciona
+
+| Posicao | Conteudo |
+| --- | --- |
+| Entrada 0 | O lote colorido |
+| Entrada 1 e seguintes | Entradas cardinais para a taxa |
+| Saida 0 | O destinatario, dimensionada exatamente para as unidades que envia |
+| Saida 1 | Troco colorido, dimensionado exatamente para o resto |
+| Saida 2 | Troco cardinal, se existir |
+
+## O procedimento
+
+<Steps>
+
+1. Liste os seus outpoints coloridos e escolha o lote a gastar.
+2. Decida o montante a enviar. Esse numero e tambem o valor em satoshis da saida 0.
+3. Calcule o resto: valor do lote menos montante enviado. Esse e o valor em satoshis da saida 1.
+4. Modele o conjunto exato de entradas e saidas no
+   [visualizador de alocacao](/tools/allocation-visualizer/).
+5. Confirme que o valor queimado e zero.
+6. Adicione entradas cardinais para a taxa e uma saida de troco cardinal no fim.
+7. Modele de novo com as entradas e saidas de taxa incluidas. O valor queimado tem de continuar a
+   ser zero.
+8. Construa a transacao, preservando a ordem das entradas e das saidas.
+9. Compare o pedido da carteira com o seu modelo, linha a linha.
+10. Assine e difunda.
+
+</Steps>
+
+## Por que o passo sete existe
+
+Adicionar uma entrada de taxa ou uma saida de troco muda o conjunto de saidas, e a alocacao percorre
+as saidas por ordem. Uma transferencia que estava limpa antes de a carteira adicionar troco pode
+queimar depois.
+
+## Os dois vetores que mostram o risco
+
+<VectorTable only={["dust-remainder-burns", "change-output-too-large"]} />
+
+A mesma intencao, o mesmo lote, o mesmo montante enviado. A unica diferenca e o tamanho da saida de
+troco, e uma delas destroi 200 unidades.
+
+## Custo
+
+Uma taxa Bitcoin, paga a partir de uma entrada cardinal. Sem par commit e reveal, e sem mineracao,
+para uma transferencia comum.
+
+## Se falhar
+
+- A carteira nao o deixa definir valores de saida em satoshis: use outro construtor.
+- A carteira reordena as saidas: use outro construtor. A ordem e o significado.
+- O valor queimado nao e zero: mude os tamanhos das saidas, nao prossiga.
+
+## Depois de difundir
+
+Confirme, aguarde a indexacao, leia a localizacao do ativo e verifique o valor queimado registado.
+Veja [verificar uma transacao](/guides/verify-a-transaction/).
+
+## Fonte
+
+[Alocacao](/protocol/arc20/allocation/) e [queimas](/protocol/arc20/burns/).
+

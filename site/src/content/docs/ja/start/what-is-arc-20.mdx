@@ -1,0 +1,98 @@
+---
+title: ARC-20 とは
+description: Atomicals の代替性トークンモデル。1 単位が 1 個の色付きサトシであり、送付はアカウントの更新ではなく割り当ての問題です。
+sidebar:
+  order: 2
+provenance:
+  pageId: start/what-is-arc-20
+  area: start
+  audience: [everyone]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-guide
+      path: arc20
+  verified: '2026-08-31'
+  tags: [arc-20, concepts]
+  translationSourceHash: 4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49
+  limitations:
+    - 割り当ての挙動はバージョンに依存します。このページの数値は固定された参照リビジョンにのみ従います。
+---
+
+import Arc20Units from '../../../../components/diagrams/Arc20Units.astro'
+import ModelComparison from '../../../../components/diagrams/ModelComparison.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../../components/EntryCards.astro'
+
+ARC-20 は Atomicals における代替性トークンのモデルです。ルールは短いものです。
+
+> **ARC-20 の 1 単位は、バリデータが色付きと認識する Bitcoin の出力に含まれる 1 サトシです。**
+
+この一文がほかのすべてを決めます。供給量はサトシで測られます。送付とは、どの出力がどれだけの価値を
+受け取るかという問いです。置き場所のない価値は破棄されます。
+
+<Arc20Units />
+
+## これがアカウント残高ではない理由
+
+<ModelComparison />
+
+アカウントモデルでは、送付はある行から差し引き別の行に加算し、トランザクションは成功するか失敗
+します。ARC-20 では、Bitcoin 上のトランザクションはどちらにせよ成功します。変わるのは、色付きの
+価値がどこに着地するかです。
+
+| 問い | アカウントモデル | ARC-20 |
+| --- | --- | --- |
+| 残高はどこにあるか | 台帳の行 | 未使用の出力に分散している |
+| 送付とは何か | 借方と貸方 | 入力の価値を出力へ順に割り当てること |
+| 価値は消えうるか | いいえ | はい。置けない価値は焼失します |
+| 結果を決めるのは誰か | コントラクト | インデクサが実行するバリデータのリビジョン |
+| 確認は成功を意味するか | はい | いいえ。確認と割り当ては別の答えです |
+
+<Aside type="danger" title="最初に理解すべき失敗の形">
+次の対象となる出力が、まだ置いていない色付きの価値より大きい場合、その価値は繰り越されません。
+焼失します。これは Bitcoin 上のエラー状態ではありません。トランザクションは通常どおり確認され
+ます。何かを動かす前に [焼失](/protocol/arc20/burns/) を読んでください。
+</Aside>
+
+## 単位が生まれる三つの方法
+
+| 方式 | 操作 | 形 |
+| --- | --- | --- |
+| 直接発行 | `ft` | 供給量の全体が一つのトランザクションの出力ゼロに置かれる |
+| 固定分散型 | `dft` のあと `dmt` | デプロイがルールを定め、請求者がそれぞれ固定量を発行する |
+| 恒久分散型 | 恒久パラメータ付きの `dft` | 有効化に依存し、Bitwork が進行し、任意で全体上限を持つ |
+
+[直接発行](/protocol/arc20/direct-issuance/)、
+[固定 DFT](/protocol/arc20/fixed-dft/)、
+[恒久 DFT](/protocol/arc20/perpetual-dft/) を参照してください。
+
+## ティッカーが意味すること、意味しないこと
+
+ティッカーはグローバルに割り当てられる名前です。獲得したということは、Atomicals のルールが候補を
+検証済みの勝者として解決したという意味です。次のことは意味しません。
+
+- プロジェクトが名乗るとおりの主体であること
+- メタデータが正確であること
+- 画像が発行者に帰属すること
+- 誰かが供給量に責任を負うこと
+
+ティッカーを表示するときは、解決済みの **Atomical ID** を必ず併記して保存してください。
+[ティッカーと候補](/protocol/arc20/tickers-and-candidates/) を参照してください。
+
+## 小数点は分割を生みません
+
+`decimals` は表示用のメタデータです。ウォレットが画面上で数値をどう整形するかを変えるだけです。
+サトシ未満の単位を作ることは決してありません。ARC-20 のネイティブ数量は常に整数です。
+[メタデータと小数点](/protocol/arc20/metadata-and-decimals/) を参照してください。
+
+<EntryCards
+  cards={[
+    { title: "割り当ての手順", body: "バリデータが色付きの価値を出力にどう置くかを正確に説明します。", href: "/protocol/arc20/allocation/" },
+    { title: "試してみる", body: "トランザクションをモデル化し、作る前に焼失を確認します。", href: "/tools/allocation-visualizer/" },
+  ]}
+/>
+

@@ -1,0 +1,62 @@
+# Realms
+
+Top-level Atomicals names, how they are claimed and resolved, and what a name actually establishes.
+
+Page ID: protocol/realms/overview
+Applicability: protocol-behavior
+Authority: reference-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: en
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/realms/overview/
+
+---
+A Realm is a top-level Atomicals name, owned as a non-fungible Atomical. Whoever controls the
+output carrying that Atomical controls the name.
+
+## Claiming
+
+A Realm is requested inside an `nft` mint payload as `request_realm`. The request is a candidate
+until the rules resolve it into a verified winner.
+See [candidates and winners](/protocol/core/candidates-and-winners/).
+
+Reference commands: `mint-realm <realm>`, `get-realm`, `realm-info`, `find-realms`,
+`summary-realms`, `resolve`. See the [CLI reference](/reference/cli/).
+
+## What a Realm gives you
+
+| It gives you | It does not give you |
+| --- | --- |
+| A globally allocated name | Any claim to a trademark or identity |
+| The right to define Subrealm rules | Control over what people do with similar names |
+| A resolvable destination for Paynames | Any guarantee that a lookalike is not deceiving someone |
+| A transferable Atomical | Any protection against confusable characters |
+
+## Ownership and transfer
+
+Ownership is control of the output carrying the Realm Atomical. Transferring it is an ordinary
+non-fungible transfer. Losing the output loses the name.
+
+Practical consequences:
+
+- Never hold a valuable Realm in a wallet that can spend its output for fees.
+- Never leave a Realm on an output shared with other Atomicals. Splat first.
+  See [splat and mixed outputs](/protocol/nft/splat-and-mixed-outputs/).
+
+## Resolution and search
+
+Resolution turns a name into the Atomical that holds it. It is computed at a chain position, so it
+can change after a reorg. Always record the height and generation a resolution came from.
+
+The Universe read model exposes realm resolution, hierarchy, and Subrealm listing. See
+[NFT and Realm API](/reference/api/atomicals-nfts-realms/).
+
+## Read next
+
+| Topic | Page |
+| --- | --- |
+| Child names under a Realm | [Subrealms](/protocol/realms/subrealms/) |
+| Using a Realm as a payment destination | [Paynames](/protocol/realms/paynames/) |
+| How claims and payments are evaluated | [Claims and rules](/protocol/realms/claims-and-rules/) |
+| Unicode, normalisation, and confusable names | [Unicode and IDNA](/protocol/realms/unicode-and-idna/) |
+| Listing and buying names | [Marketplace](/protocol/realms/marketplace/) |

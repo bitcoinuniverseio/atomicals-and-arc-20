@@ -1,0 +1,105 @@
+---
+title: 指南
+description: 面向任务的操作步骤，帮助你安全地持有、检查、发行、移动与交易 Atomicals。
+sidebar:
+  order: 1
+  label: 全部指南
+provenance:
+  pageId: guides/index
+  area: guides
+  audience: [everyone]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  verified: '2026-08-31'
+  tags: [navigation]
+  translationSourceHash: 372004f305d0803498a8d1bd98472c56190042bd7f1745b319f200196db45244
+---
+
+import EntryCards from '../../../components/EntryCards.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+这里的每一篇指南结构一致，让你在动手之前就清楚将要做什么。
+
+| 章节 | 它告诉你什么 |
+| --- | --- |
+| 开始之前 | 前置条件、支持的网络以及当前支持状态 |
+| 你需要什么 | 确切的输入 |
+| 会发生什么 | 预期输出，以及钱包会询问什么 |
+| 成本 | 这一具体操作的手续费行为 |
+| 签署前检查 | 这一操作的安全检查 |
+| 如果失败 | 具名的失败情形及其含义 |
+| 广播之后 | 如何验证结果，以及重组方面的注意事项 |
+| 来源 | 支撑该步骤的规范页面 |
+
+<Aside type="danger" title="两条永不改变的规则">
+绝不要分享助记词、私钥或钱包导出文件。绝不要让通用比特币钱包从包含你着色输出的集合中挑选手续费
+输入。
+</Aside>
+
+## 准备
+
+<EntryCards
+  cards={[
+    { title: "选择钱包", body: "让钱包适合 Atomicals 的能力，以及如何验证它们。", href: "/guides/choose-a-wallet/" },
+    { title: "准备 BTC 与 UTXO", body: "建立手续费用的基数储备，让着色输出永远不会被误选。", href: "/guides/prepare-utxos/" },
+    { title: "保护着色输出", body: "把资产资金与手续费资金实际分开。", href: "/guides/protect-colored-outputs/" },
+    { title: "手续费与成本", body: "你真正支付的部分：commit、reveal、Bitwork 计算、市场费用。", href: "/guides/fees-and-costs/" },
+  ]}
+/>
+
+## 检查
+
+<EntryCards
+  cards={[
+    { title: "检查一个地址", body: "读取 outpoint 而不是总额，并理解总额掩盖了什么。", href: "/guides/inspect-an-address/" },
+    { title: "检查一个 Atomical", body: "身份、位置、历史与封存状态。", href: "/guides/inspect-an-atomical/" },
+    { title: "检查一个代号", body: "把名称解析为真正持有它的那个 Atomical。", href: "/guides/inspect-a-ticker/" },
+    { title: "验证一笔交易", body: "在广播前后确认这笔交易做了什么。", href: "/guides/verify-a-transaction/" },
+    { title: "确认与重组", body: "结果何时稳定到足以据此行动。", href: "/guides/confirmations-and-reorgs/" },
+    { title: "索引不可用还是余额为空", body: "造成大多数误报的那个区别。", href: "/guides/unavailable-indexer-vs-empty-balance/" },
+  ]}
+/>
+
+## 发行
+
+<EntryCards
+  cards={[
+    { title: "直接 FT 发行", body: "一笔交易，完整供应量。属于协议行为，Universe 未开放。", href: "/guides/direct-ft-issuance/" },
+    { title: "部署固定 DFT", body: "设定他人将据以申领的铸造规则。", href: "/guides/deploy-fixed-dft/" },
+    { title: "部署永续 DFT", body: "受激活条件约束，Bitwork 递进。", href: "/guides/deploy-perpetual-dft/" },
+    { title: "铸造 ARC-20", body: "针对部署申领，同时不白白浪费手续费。", href: "/guides/mint-arc20/" },
+    { title: "铸造一个 NFT", body: "payload、媒体，以及那些永久性的决定。", href: "/guides/mint-an-nft/" },
+    { title: "创建一个 Container", body: "让条目能够证明归属的集合身份。", href: "/guides/create-a-container/" },
+    { title: "创建 DMINT 条目", body: "先封存清单，再开放铸造。", href: "/guides/create-dmint-items/" },
+    { title: "申领一个 Realm", body: "申请顶级名称，并确认它已被解析。", href: "/guides/claim-a-realm/" },
+    { title: "申领一个 Subrealm", body: "满足父级规则，包括支付。", href: "/guides/claim-a-subrealm/" },
+    { title: "解析 Unicode 名称", body: "归一化、比较，并识别易混淆的名称。", href: "/guides/resolve-unicode-names/" },
+  ]}
+/>
+
+## 移动与恢复
+
+<EntryCards
+  cards={[
+    { title: "转移 ARC-20", body: "构建一笔放置所有单位且不销毁任何价值的转移。", href: "/guides/transfer-arc20/" },
+    { title: "拆分与合并", body: "有意识地重整你的批次结构。", href: "/guides/split-and-combine-arc20/" },
+    { title: "避免销毁", body: "预防所有销毁形态的操作步骤。", href: "/guides/avoid-burns/" },
+    { title: "从拒绝中恢复", body: "被拒绝的交易是可以挽回的，方法如下。", href: "/guides/recover-from-a-rejection/" },
+    { title: "钱包签名失败", body: "逐项排查能力、编码与签名范围问题。", href: "/guides/wallet-signing-failures/" },
+  ]}
+/>
+
+## 交易
+
+<EntryCards
+  cards={[
+    { title: "挂单一批 ARC-20", body: "证明所有权，准备，签署，完成。", href: "/guides/list-an-arc20-lot/" },
+    { title: "挂单 NFT 或 Realm", body: "名称所需的额外检查。", href: "/guides/list-an-nft-or-realm/" },
+    { title: "更新或撤下挂单", body: "安全地改价或撤单。", href: "/guides/update-or-remove-a-listing/" },
+    { title: "报价", body: "创建、取消与接受报价。", href: "/guides/offers/" },
+    { title: "在市场购买", body: "预留、准备、签署、广播。", href: "/guides/buy-on-marketplace/" },
+    { title: "验证结算", body: "确认交易确实完成。", href: "/guides/verify-settlement/" },
+  ]}
+/>
+

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Source ledger | Atomicals and ARC-20</title>
+<meta name="description" content="Every source this documentation consumes, its exact revision, and why it is used.">
+<meta name="generator" content="scripts/generate-artifacts.mjs">
+<link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/versions/">
+<link rel="icon" href="/atomicals-and-arc-20/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Source ledger">
+<meta property="og:description" content="Every source this documentation consumes, its exact revision, and why it is used.">
+<meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/versions/">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="/atomicals-and-arc-20/theme.css">
+</head>
+<body class="compat">
+<a class="skip" href="#main">Skip to content</a>
+<header class="compat-header">
+  <a class="compat-brand" href="/atomicals-and-arc-20/">Atomicals and ARC-20</a>
+  <nav aria-label="Primary">
+    <a href="/atomicals-and-arc-20/start/what-are-atomicals/">Start</a>
+    <a href="/atomicals-and-arc-20/protocol/overview/">Protocol</a>
+    <a href="/atomicals-and-arc-20/guides/">Guides</a>
+    <a href="/atomicals-and-arc-20/reference/openapi/">Reference</a>
+  </nav>
+</header>
+<main id="main" class="compat-main">
+<div class="compat-notice">
+  <strong>Compatibility page.</strong> This route is preserved so older links keep working. It is
+  generated from the current documentation, so it cannot drift.
+  <a href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/versions/">Open the current page</a>.
+</div>
+<h1 id="atomicals-and-arc-20-source-ledger">Atomicals and ARC-20 source ledger</h1>
+<p>Documentation version: 2026.08 Generated: 2026-08-31 Last verified: 2026-08-31</p>
+<p>This ledger is generated from contracts/source-manifest.json. It distinguishes explanatory documentation from behavior that is validated in code, because ARC-20 transaction allocation and deployment rules are version sensitive.</p>
+<h2 id="authority-model">Authority model</h2>
+<ol><li>Executed source code, conformance tests, generated route inventories, schemas, deployment manifests, and runtime contracts at an exact revision.</li><li>Final or Living Atomicals Improvement Proposals applicable to the feature.</li><li>The official Atomicals reference implementation or released validator at an exact commit or release.</li><li>Official Atomicals protocol and CLI documentation.</li><li>Universe implementation documentation at an exact revision.</li><li>Third-party integrations, always identified as third-party and non-normative.</li></ol>
+<p>Explanatory prose, including this documentation, is never independent consensus.</p>
+<h2 id="pinned-sources">Pinned sources</h2>
+<h3 id="atomicals-electrumx">Atomicals ElectrumX</h3>
+<ul><li>Identifier: <code>atomicals-electrumx-1.5.2.0</code></li><li>Authority: protocol</li><li>Repository: https://github.com/atomicals/atomicals-electrumx</li><li>Revision: <code>8df23747835c20230fc8b8097d469e7a1d97c3e0</code> (released as v1.5.2.0)</li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Version-sensitive ARC-20 and Atomicals validation behavior used as the pinned reference baseline.</li><li>Paths:</li><li>constants: electrumx/lib/util_atomicals.py#L51-L79</li><li>mintParser: electrumx/lib/util_atomicals.py#L459-L932</li><li>tickerRule: electrumx/lib/util_atomicals.py#L997-L1004</li><li>dftMintValidation: electrumx/server/block_processor.py#L3244-L3488</li><li>normalFtAllocation: electrumx/lib/atomicals_blueprint_builder.py#L643-L718</li><li>splitAndInflation: electrumx/lib/atomicals_blueprint_builder.py#L902-L946</li><li>allocationValidation: electrumx/lib/atomicals_blueprint_builder.py#L1052-L1074</li><li>nftAllocation: electrumx/lib/atomicals_blueprint_builder.py#L369-L530</li><li>networkActivations: electrumx/lib/coins.py#L659-L1043</li></ul>
+<h3 id="atomicals-javascript-cli">Atomicals JavaScript CLI</h3>
+<ul><li>Identifier: <code>atomicals-js-cli</code></li><li>Authority: protocol</li><li>Repository: https://github.com/atomicals/atomicals-js</li><li>Revision: <code>1333565efbfe5ca4bdb8443a94d72e9f8534c2c4</code></li><li>Networks: mainnet, testnet, regtest</li><li>Visibility: public</li><li>Role: Reference command surface used for the documented CLI inventory and the visual asset provenance.</li><li>Paths:</li><li>commandIndex: lib/index.ts</li><li>cliEntry: lib/cli.ts</li><li>visualAsset: atomicals.jpg</li><li>license: LICENSE</li></ul>
+<h3 id="atomicals-protocol-guide">Atomicals protocol guide</h3>
+<ul><li>Identifier: <code>atomicals-guide</code></li><li>Authority: protocol</li><li>Repository: https://github.com/atomicals-community/atomicals-guide</li><li>Revision: unversioned</li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Concept and command-line explanation. Explicitly states that the specification is defined in code.</li><li>Paths:</li><li>home: https://atomicals-community.github.io/atomicals-guide/</li><li>arc20: https://atomicals-community.github.io/atomicals-guide/arc20-tokens/</li><li>specification: https://atomicals-community.github.io/atomicals-guide/reference-and-tools/specification.html</li><li>bitwork: https://atomicals-community.github.io/atomicals-guide/bitwork-mining.html</li></ul>
+<h3 id="atomicals-improvement-proposals">Atomicals Improvement Proposals</h3>
+<ul><li>Identifier: <code>atomicals-aips</code></li><li>Authority: protocol</li><li>Repository: https://github.com/atomicals-community/aips</li><li>Revision: <code>be08d7856db7c55c2bfb7c2c08f88a25f1c781f8</code></li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: The AIP register. An AIP existing is not evidence that anything implements it.</li><li>Paths:</li><li>index: AIPs/</li><li>template: aip-template.md</li><li>aip1: AIPs/aip-1.md</li><li>aip3: AIPs/aip-3.md</li></ul>
+<h3 id="universe-arc-20-index-and-marketplace-v1-authority">Universe ARC-20 index and Marketplace v1 authority</h3>
+<ul><li>Identifier: <code>universe-index-atomicals</code></li><li>Authority: universe</li><li>Repository: https://github.com/bitcoinuniverseio/index-atomicals</li><li>Revision: <code>670030e500710aaef77410540768a87a138d8134</code></li><li>Networks: mainnet</li><li>Visibility: private</li><li>Role: Universe ARC-20 token explorer feed and the durable Marketplace v1 protocol authority.</li><li>Paths:</li><li>tokenExplorerServer: electrumx/token_explorer/server.py</li><li>tokenExplorerDocs: docs/arc20-token-explorer.rst</li><li>marketplaceDocs: docs/arc20-marketplace-v1.rst</li><li>marketplaceRpc: electrumx/token_explorer/marketplace/rpc.py</li><li>marketplaceAuthority: electrumx/token_explorer/marketplace/authority.py</li></ul>
+<h3 id="universe-atomicals-nft-realm-and-subrealm-index">Universe Atomicals NFT, Realm, and Subrealm index</h3>
+<ul><li>Identifier: <code>universe-index-atomicals-nfts-and-realms</code></li><li>Authority: universe</li><li>Repository: https://github.com/bitcoinuniverseio/index-atomicals-nfts-and-realms</li><li>Revision: <code>1d9109c68d95d5985632a60d6596b3612d3f6ef1</code></li><li>Networks: mainnet</li><li>Visibility: private</li><li>Role: Materialized read model for plain NFTs, Realms, and Subrealms projected from Atomicals ElectrumX.</li><li>Paths:</li><li>server: src/server.mjs</li><li>provenance: PROTOCOL-PROVENANCE.json</li><li>apiDocs: docs/api.md</li><li>architectureDocs: docs/architecture.md</li></ul>
+<h3 id="ordex-marketplace-contract">Ordex marketplace contract</h3>
+<ul><li>Identifier: <code>universe-ordex</code></li><li>Authority: universe</li><li>Repository: https://github.com/bitcoinuniverseio/ordex</li><li>Revision: <code>2f7d8d3ec59fac534f545bf03ed0d41878f91a0e</code></li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Marketplace OpenAPI contract, SDK, conformance vectors, and purchase verifier reused instead of restated here.</li><li>Paths:</li><li>openapi: spec/openapi.json</li><li>lifecycle: spec/lifecycle.md</li><li>purchase: spec/purchase.md</li><li>conformance: conformance/purchase-vectors.json</li><li>sdk: sdk/</li><li>verifier: verifier/</li></ul>
+<h3 id="bitcoin-inscribe">Bitcoin Inscribe</h3>
+<ul><li>Identifier: <code>universe-inscribe</code></li><li>Authority: universe</li><li>Repository: https://github.com/bitcoinuniverseio/inscribe</li><li>Revision: unversioned</li><li>Networks: mainnet</li><li>Visibility: private</li><li>Role: Product surface that consumes this documentation as the frontend/docs/arc-20-docs submodule.</li><li>Paths:</li><li>submodule: frontend/docs/arc-20-docs</li><li>ci: .github/workflows/ci.yml</li></ul>
+<h3 id="atomicals-virtual-machine-interpreter">Atomicals Virtual Machine interpreter</h3>
+<ul><li>Identifier: <code>atomicals-avm-interpreter</code></li><li>Authority: protocol</li><li>Repository: https://github.com/atomicals/avm-interpreter</li><li>Revision: <code>c185e6216a3ea2cb2e011e508033ca535ece3472</code></li><li>Networks: not deployed</li><li>Visibility: public</li><li>Role: Beta AVM interpreter. Status layer is separate from any Universe runtime exposure.</li><li>Paths:</li><li>readme: README.md</li><li>opcodes: src/script/script.h</li><li>interpreter: src/script/interpreter.cpp</li><li>whitepaper: https://github.com/atomicals/avm-whitepaper</li></ul>
+<h3 id="ordinals-and-runes-reference-indexer-ord">Ordinals and Runes reference indexer (ord)</h3>
+<ul><li>Identifier: <code>ordinals-ord</code></li><li>Authority: protocol</li><li>Repository: https://github.com/ordinals/ord</li><li>Revision: <code>899e309424dd60e1c8065a7727a76d9b675a6ac4</code></li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Comparative context only. The ord indexer defines Ordinals inscription tracking and the Runes ledger used in the Protocol Atlas.</li><li>Paths:</li><li>home: README.md</li><li>runes: src/rune.rs</li><li>inscriptions: src/inscriptions.rs</li></ul>
+<h3 id="brc-20-experiment-specification-domo">BRC-20 experiment specification (domo)</h3>
+<ul><li>Identifier: <code>brc-20-spec</code></li><li>Authority: third-party</li><li>Repository: https://domo-2.gitbook.io/brc-20-experiment</li><li>Revision: unversioned</li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Comparative context only. The original BRC-20 rule text. Indexer implementations diverge, so behavior is implementation-specific.</li><li>Paths:</li><li>home: https://domo-2.gitbook.io/brc-20-experiment/</li></ul>
+<h3 id="bitcoin-stamps-and-src-20-reference-indexer">Bitcoin Stamps and SRC-20 reference indexer</h3>
+<ul><li>Identifier: <code>bitcoin-stamps</code></li><li>Authority: third-party</li><li>Repository: https://github.com/stampchain-io/btc_stamps</li><li>Revision: <code>8a7365bf951a66f3a5e25dc15e8702f65b5d23d8</code></li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Comparative context only. Reference indexer for Stamps and SRC-20 used in the Protocol Atlas.</li><li>Paths:</li><li>home: README.md</li><li>indexers: indexer/</li></ul>
+<h3 id="alkanes-and-protorunes-reference-implementation">Alkanes and Protorunes reference implementation</h3>
+<ul><li>Identifier: <code>alkanes-alkanes-rs</code></li><li>Authority: third-party</li><li>Repository: https://github.com/kungfuflex/alkanes-rs</li><li>Revision: <code>62511e9371a3f9e448841140c51cfe428cfcb955</code></li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Comparative context only. Reference Rust implementation of the Alkanes metaprotocol and Protorunes tokens.</li><li>Paths:</li><li>home: README.md</li></ul>
+<h3 id="counterparty-reference-library">Counterparty reference library</h3>
+<ul><li>Identifier: <code>counterparty-lib</code></li><li>Authority: third-party</li><li>Repository: https://github.com/CounterpartyXCP/counterparty-lib</li><li>Revision: <code>4f39fe25a266e44ccddd0eb50d97d2b8759d2b57</code></li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Comparative context only. Reference implementation of the Counterparty ledger used in the Protocol Atlas.</li><li>Paths:</li><li>home: README.rst</li></ul>
+<h3 id="rgb-core-consensus-library">RGB core consensus library</h3>
+<ul><li>Identifier: <code>rgb-core</code></li><li>Authority: third-party</li><li>Repository: https://github.com/RGB-WG/rgb-core</li><li>Revision: <code>388d9c386117cf74f67f185b65adf946e775091c</code></li><li>Networks: mainnet</li><li>Visibility: public</li><li>Role: Comparative context only. Client-side validation consensus library for RGB used in the Protocol Atlas.</li><li>Paths:</li><li>home: README.md</li></ul>
+<h2 id="generated-inventories">Generated inventories</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">Inventory</th><th scope="col">Generated from</th><th scope="col">Path</th></tr></thead><tbody><tr><td>CLI commands</td><td>https://github.com/atomicals/atomicals-js at 1333565efbfe5ca4bdb8443a94d72e9f8534c2c4, lib/cli.ts</td><td>/atomicals-and-arc-20/contracts/cli-inventory.json</td></tr><tr><td>AVM opcodes</td><td>The beta interpreter&#39;s opcode enumeration</td><td>/atomicals-and-arc-20/contracts/avm-opcodes.json</td></tr><tr><td>AIP registry</td><td>The upstream proposals plus a separate implementation evidence file</td><td>/atomicals-and-arc-20/contracts/aip-registry.json</td></tr><tr><td>Route inventories</td><td>Sanitized exports from the runtime repositories</td><td>/atomicals-and-arc-20/contracts/routes/</td></tr><tr><td>Conformance vectors</td><td>The allocation engine, executed in CI</td><td>/atomicals-and-arc-20/conformance/vectors/arc20-allocation.json</td></tr></tbody></table></div>
+<h2 id="visual-asset-provenance">Visual asset provenance</h2>
+<p>The site includes <code>assets/atomicals-cli-lockup.jpg</code>, an unchanged copy of <code>atomicals.jpg</code> from the Atomicals CLI repository at commit 1333565efbfe5ca4bdb8443a94d72e9f8534c2c4. That repository declares an MIT License. No separate logo-use policy or brand colour palette was located during review.</p>
+<p>The visual treatment on this site is a documentation interface choice, not an asserted Atomicals brand. The asset and its use do not imply official status, endorsement, affiliation, or a trademark licence.</p>
+<h2 id="how-to-update-source-dependent-text">How to update source-dependent text</h2>
+<ol><li>Select and record an implementation release or commit.</li><li>Check the active network and the activation conditions relevant to the behavior.</li><li>Re-run the conformance vectors for allocation, split, burn handling, and custom coloring.</li><li>Update contracts/source-manifest.json, then run <code>npm run generate</code>.</li><li>Commit the regenerated artefacts. CI fails when generation leaves the tree dirty.</li><li>Do not turn a metadata convention, a third-party product feature, or an inactive code path into a protocol-wide claim.</li></ol>
+<h2 id="out-of-scope">Out of scope</h2>
+<ul><li>Price, market capitalisation, liquidity, legal, tax, and investment claims.</li><li>Third-party wallet, marketplace, or indexer endorsements.</li><li>A standalone ARC-721 standard. No official source located during review establishes one.</li></ul>
+</main>
+<footer class="compat-footer">
+  <p>
+    Independent documentation published by Bitcoin Universe. Atomicals and ARC-20 names and artwork
+    stay with their creators. Nothing here is investment, legal, or tax advice.
+  </p>
+  <p>
+    <a href="/atomicals-and-arc-20/llms.txt">llms.txt</a>
+    <a href="/atomicals-and-arc-20/llms-full.txt">llms-full.txt</a>
+    <a href="/atomicals-and-arc-20/specification.md">specification.md</a>
+    <a href="/atomicals-and-arc-20/sources.md">sources.md</a>
+    <a href="/atomicals-and-arc-20/manifest.json">manifest.json</a>
+  </p>
+</footer>
+</body>
+</html>

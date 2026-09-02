@@ -1,0 +1,60 @@
+{
+  "inventoryVersion": "1.0.0",
+  "service": "index-atomicals token explorer",
+  "routePrefixRule": "/<indexer-name>/<endpoint-name> with the index- prefix removed",
+  "source": {
+    "id": "universe-index-atomicals",
+    "path": "electrumx/token_explorer/server.py",
+    "revision": "670030e500710aaef77410540768a87a138d8134",
+    "note": "Sanitized inventory. No hostname, credential, or internal topology is included.",
+    "derivation": "Derived by reading the pinned runtime source named above, then reviewed by hand. Drift against the runtime repository is detected by scripts/check-source-drift.mjs --scope private on the trusted scheduled path."
+  },
+  "coverage": {
+    "declared": "partial",
+    "reason": "Confirmed authoritative history and complete proven holder snapshots are indexed, but the shipped adapter has no exhaustive mempool feed with stable pending lifecycle and disappearance handling.",
+    "appliesTo": "pending activity only"
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/live",
+      "auth": "none",
+      "summary": "Process liveness"
+    },
+    {
+      "method": "GET",
+      "path": "/ready",
+      "auth": "none",
+      "summary": "Migrations and initial snapshot readiness"
+    },
+    {
+      "method": "GET",
+      "path": "/token-explorer/status",
+      "auth": "none",
+      "summary": "Source status and counts"
+    },
+    {
+      "method": "GET",
+      "path": "/token-explorer/arc20",
+      "auth": "bearer",
+      "summary": "Immutable feed page with a signed cursor"
+    },
+    {
+      "method": "POST",
+      "path": "/indexer/atomicals/poll",
+      "auth": "admin-token",
+      "summary": "Operator triggered scan"
+    }
+  ],
+  "guarantees": [
+    "Every ticker candidate is discovered without an upstream verified-only filter, then resolved to its verified winning Atomical ID.",
+    "Only the verified winning Atomical ID is published. The reference is the lower-case ticker and the winning compact Atomical ID is retained in protocol details.",
+    "Holder rows are aggregated by address and must sum exactly to circulating supply.",
+    "A mismatch, a null address, a truncated page sequence, a changing declared total, or a changing chain tip aborts the entire poll. No partial authoritative snapshot is committed.",
+    "Activity contains authoritative deployment, direct and decentralised mint, transfer, burn, and protocol-operation records.",
+    "Supply and holder snapshots are the authoritative state, so activity events publish empty wallet and supply deltas to prevent downstream double application.",
+    "Cursor signatures use a secret separate from the feed bearer token.",
+    "A cursor-free request copies a bounded number of rows per request and returns a retryable unavailable response until the generation is ready.",
+    "At most 64 unexpired generations are retained."
+  ]
+}

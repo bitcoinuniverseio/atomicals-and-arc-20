@@ -1,0 +1,250 @@
+arazzo: 1.1.0
+info:
+  title: Atomicals and ARC-20 read-only workflows
+  version: 1.0.0
+  description: >
+    Canonical workflow layer over the published OpenAPI contracts. Every
+    workflow is read-only or local. No hosted mainnet signing, broadcasting,
+    or mutation workflow exists anywhere in this document.
+sourceProviders:
+  - name: arc20
+    namespace: arc20
+    url: ../contracts/openapi/arc20.json
+    type: OpenAPI
+  - name: nftrealms
+    namespace: nftrealms
+    url: ../contracts/openapi/atomicals-nfts-realms.json
+    type: OpenAPI
+  - name: marketplace
+    namespace: marketplace
+    url: ../contracts/openapi/marketplace-v1.json
+    type: OpenAPI
+workflows:
+  - workflowId: resolve-atomical-ownership
+    summary: Resolve an Atomical and inspect its current ownership
+    description: Resolve a Realm or NFT identifier and fetch the asset, its holders, and its history.
+    inputs:
+      type: object
+      required: [atomicalId, protocol]
+      properties:
+        atomicalId: { type: string }
+        protocol: { type: string, enum: [atomicals-nfts, atomicals-realms] }
+    steps:
+      - stepId: fetch-asset
+        operationId: nftrealms.getAsset
+        parameters:
+          - name: atomicalId
+            in: path
+            value: '$inputs.atomicalId'
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          asset: '$response.body#/atomical'
+      - stepId: fetch-holders
+        operationId: nftrealms.getAssetHolders
+        parameters:
+          - name: atomicalId
+            in: path
+            value: '$inputs.atomicalId'
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          holders: '$response.body#/holders'
+    outputs:
+      asset: '$steps.fetch-asset.outputs.asset'
+      holders: '$steps.fetch-holders.outputs.holders'
+
+  - workflowId: inspect-arc20-ticker
+    summary: Inspect an ARC-20 ticker and its metadata
+    inputs:
+      type: object
+      required: [protocol]
+      properties:
+        protocol: { type: string, const: arc20 }
+    steps:
+      - stepId: feed-first-page
+        operationId: arc20.arc20GetFeedPage
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          items: '$response.body#/items'
+    outputs:
+      items: '$steps.feed-first-page.outputs.items'
+
+  - workflowId: inspect-arc20-balance
+    summary: Inspect ARC-20 balance and allocation through the indexed feed
+    description: Read the feed page and status so a caller can see allocation state and endpoint freshness together.
+    steps:
+      - stepId: read-status
+        operationId: arc20.arc20GetStatus
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          coverage: '$response.body#/coverage'
+          chainTip: '$response.body#/chainTip'
+      - stepId: read-feed
+        operationId: arc20.arc20GetFeedPage
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          items: '$response.body#/items'
+    outputs:
+      coverage: '$steps.read-status.outputs.coverage'
+      chainTip: '$steps.read-status.outputs.chainTip'
+      items: '$steps.read-feed.outputs.items'
+
+  - workflowId: verify-container-dmint
+    summary: Verify a Container and DMINT item
+    description: Fetch the NFT asset and its metadata, then validate the DMINT proof for an item locally.
+    inputs:
+      type: object
+      required: [atomicalId]
+      properties:
+        atomicalId: { type: string }
+    steps:
+      - stepId: fetch-nft
+        operationId: nftrealms.getNft
+        parameters:
+          - name: atomicalId
+            in: path
+            value: '$inputs.atomicalId'
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          nft: '$response.body'
+      - stepId: fetch-metadata
+        operationId: nftrealms.getNftMetadata
+        parameters:
+          - name: atomicalId
+            in: path
+            value: '$inputs.atomicalId'
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          metadata: '$response.body'
+    outputs:
+      nft: '$steps.fetch-nft.outputs.nft'
+      metadata: '$steps.fetch-metadata.outputs.metadata'
+
+  - workflowId: resolve-realm-subrealm
+    summary: Resolve a Realm and its Subrealms
+    inputs:
+      type: object
+      required: [realm]
+      properties:
+        realm: { type: string }
+    steps:
+      - stepId: resolve
+        operationId: nftrealms.resolveRealm
+        parameters:
+          - name: realm
+            in: query
+            value: '$inputs.realm'
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          resolved: '$response.body'
+      - stepId: subrealms
+        operationId: nftrealms.getSubrealms
+        parameters:
+          - name: realm
+            in: query
+            value: '$inputs.realm'
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          subrealms: '$response.body'
+    outputs:
+      resolved: '$steps.resolve.outputs.resolved'
+      subrealms: '$steps.subrealms.outputs.subrealms'
+
+  - workflowId: diagnose-endpoint
+    summary: Diagnose endpoint identity, height, and freshness
+    description: The exact sequence the Conformance Workbench runs - liveness, readiness, and status with the indexed lag.
+    steps:
+      - stepId: liveness
+        operationId: arc20.arc20GetLive
+        successCriteria:
+          - condition: '$response.body#/live == true'
+      - stepId: readiness
+        operationId: arc20.arc20GetReady
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          ready: '$response.body#/ready'
+      - stepId: status
+        operationId: arc20.arc20GetStatus
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+        outputs:
+          chainTip: '$response.body#/chainTip'
+          atomicalsTip: '$response.body#/atomicalsTip'
+    outputs:
+      ready: '$steps.readiness.outputs.ready'
+      chainTip: '$steps.status.outputs.chainTip'
+      atomicalsTip: '$steps.status.outputs.atomicalsTip'
+
+  - workflowId: safe-arc20-transfer-plan
+    summary: Build and validate a safe ARC-20 transfer plan locally
+    description: >
+      Entirely local. Uses the UTXO Safety Planner to generate candidate plans
+      and the Protocol Lab to replay the winning plan before anything is
+      signed. No OpenAPI call moves funds.
+    inputs:
+      type: object
+      required: [atomicalId, amount]
+      properties:
+        atomicalId: { type: string }
+        amount: { type: integer }
+    steps:
+      - stepId: plan-locally
+        operationId: nftrealms.getByOutpoint
+        description: >
+          Classification of the caller's own UTXOs happens with local data;
+          the read-only outpoint lookup is optional and only confirms indexer
+          agreement for outputs the user names.
+        parameters:
+          - name: txid
+            in: path
+            value: '$inputs.txid'
+          - name: vout
+            in: path
+            value: '$inputs.vout'
+        successCriteria:
+          - condition: '$response.statusCode != 500'
+    outputs:
+      plan: 'local planner output, never a hosted decision'
+
+  - workflowId: execute-safe-transfer-on-regtest
+    summary: Execute the safe-transfer scenario against the local Regtest Lab
+    description: Requires npm run lab:up and lab:seed. Broadcasts only to the disposable regtest chain.
+    steps:
+      - stepId: lab-health
+        operationId: arc20.arc20GetLive
+        description: Confirms the lab adapter is the local stack, not a remote deployment.
+        successCriteria:
+          - condition: '$response.body#/live == true'
+
+  - workflowId: replay-allocation-vector
+    summary: Replay an ARC-20 allocation conformance vector
+    description: Local execution of conformance vectors through the shared allocation engine. No network at all.
+    steps:
+      - stepId: freshness-check
+        operationId: arc20.arc20GetStatus
+        description: Optional freshness confirmation. The vector replay itself runs entirely in the test suite.
+        successCriteria:
+          - condition: '$response.statusCode == 200'
+    outputs:
+      result: local engine output compared against the committed golden fixtures
+
+  - workflowId: run-avm-beta-sample
+    summary: Execute and inspect an AVM beta sample locally
+    description: Runs the pinned beta interpreter in the AVM Workbench. Experimental layer, never a deployment claim.
+    steps:
+      - stepId: liveness-only
+        operationId: arc20.arc20GetLive
+        description: Liveness only. Execution itself is fully local and offline.
+        successCriteria:
+          - condition: '$response.body#/live == true'
+    outputs:
+      result: local interpreter execution trace from the AVM Workbench

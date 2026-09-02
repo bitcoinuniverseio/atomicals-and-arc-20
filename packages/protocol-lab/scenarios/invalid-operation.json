@@ -1,0 +1,17 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "invalid-operation",
+  "title": "Invalid transfer that spends more than it holds",
+  "description": "The step list asks for outputs beyond the input value. The engine refuses with a fee rule failure and a fatal trace entry instead of inventing money.",
+  "seed": "invalid-tx",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 10000, "address": "bc1qholder" }
+    ] },
+    { "type": "transfer", "label": "overspend", "inputs": ["fundo0"], "outputs": [
+      { "value": 9000, "address": "bc1qreceiver" },
+      { "value": 5000, "address": "bc1qholder" }
+    ] }
+  ]
+}

@@ -1,0 +1,59 @@
+---
+title: Bitwork estimator
+description: Model a Bitwork prefix and see the expected search space, with the uncertainty stated rather than hidden.
+sidebar:
+  order: 4
+provenance:
+  pageId: tools/bitwork-estimator
+  area: tools
+  audience: [creator, developer]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: mintParser
+    - id: atomicals-guide
+      path: bitwork
+  verified: '2026-08-31'
+  tags: [tools, bitwork]
+  limitations:
+    - Probabilistic. Attempts are independent, so a run can finish far under or far over the expectation.
+    - No amount of work guarantees a result in any particular time.
+    - Nothing here estimates cost, revenue, or profitability.
+---
+
+import BitworkEstimator from '../../../components/tools/BitworkEstimator.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+<BitworkEstimator />
+
+## How the numbers are derived
+
+Each hexadecimal character of prefix fixes four bits of the transaction id, so the expected number
+of attempts is two to the power of the fixed bits. A partial next character fixes whole bits
+between two character levels.
+
+The probability of having finished after a given number of attempts assumes independent attempts,
+each succeeding with probability two to the negative power of the fixed bits.
+
+<Aside type="caution" title="Expectation is not a schedule">
+There is a real chance of finishing in a fraction of the expected time, and a real chance of taking
+several times longer. Plan for the range, not the average.
+</Aside>
+
+## What this does not tell you
+
+- Your actual attempt rate. Measure it; the tool takes your figure.
+- Electricity, hardware, or opportunity cost.
+- Whether the mint will still have quota left when you finish.
+- Whether a perpetual deployment's requirement will have progressed by then.
+
+## For deployers
+
+Setting a mint Bitwork requirement raises the cost of automated claiming, and it raises the cost
+for every ordinary participant equally. Model the level you are considering before publishing it,
+because it cannot be changed afterwards for a fixed deployment.
+
+See [ARC-20 Bitwork requirements](/protocol/arc20/bitwork-requirements/).
+

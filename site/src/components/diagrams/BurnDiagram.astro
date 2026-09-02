@@ -1,0 +1,49 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-burn"
+  title="How coloured value is destroyed"
+  summary="A coloured input of 1200 satoshis is spent. Output zero is 700 satoshis and receives 700 units. The next eligible output is 546 satoshis, which is larger than the 500 units still to place, so it receives nothing and those 500 units are recorded as burned. The Bitcoin transaction is valid and confirms. Making output one 500 satoshis instead would have placed all the value cleanly."
+>
+  <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="bd-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+      <marker id="bd-arrow-risk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-risk)" />
+      </marker>
+    </defs>
+    <g font-family="var(--bu-font-sans)" font-size="12.5">
+      <text x="8" y="24" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">INPUT</text>
+      <rect x="8" y="36" width="168" height="72" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="26" y="60" fill="var(--d-soft)">coloured outpoint</text>
+      <text x="26" y="84" font-size="18" font-weight="640" fill="var(--d-ink)">1 200 sats</text>
+      <text x="26" y="101" fill="var(--d-accent)">1 200 units to place</text>
+
+      <text x="300" y="24" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">OUTPUTS, IN ORDER</text>
+
+      <line x1="184" y1="60" x2="292" y2="60" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#bd-arrow)" />
+      <rect x="300" y="34" width="200" height="52" rx="8" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="1.5" />
+      <text x="316" y="54" fill="var(--d-soft)">output 0, 700 sats</text>
+      <text x="316" y="74" font-weight="640" fill="var(--d-ink)">receives 700 units</text>
+      <text x="512" y="64" fill="var(--d-ok)">fits, 500 left</text>
+
+      <line x1="184" y1="88" x2="292" y2="122" stroke="var(--d-risk)" stroke-width="1.5" marker-end="url(#bd-arrow-risk)" />
+      <rect x="300" y="98" width="200" height="52" rx="8" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="1.5" />
+      <text x="316" y="118" fill="var(--d-soft)">output 1, 546 sats</text>
+      <text x="316" y="138" font-weight="640" fill="var(--d-ink)">receives 0 units</text>
+      <text x="512" y="128" fill="var(--d-risk)">546 &gt; 500, does not fit</text>
+
+      <rect x="300" y="164" width="200" height="46" rx="8" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="2" stroke-dasharray="6 4" />
+      <text x="316" y="192" font-weight="640" fill="var(--d-risk)">500 units burned</text>
+
+      <text x="8" y="192" fill="var(--d-soft)">The transaction is</text>
+      <text x="8" y="210" fill="var(--d-soft)">valid on Bitcoin.</text>
+
+      <text x="8" y="244" font-size="12.5" fill="var(--d-ok)">Fix: make output 1 exactly 500 sats. Then 700 and 500 both fit and nothing burns.</text>
+    </g>
+  </svg>
+</Figure>

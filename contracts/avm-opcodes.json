@@ -1,0 +1,294 @@
+{
+  "inventoryVersion": "1.0.0",
+  "generator": "scripts/generate-avm-opcodes.mjs",
+  "applicability": "experimental",
+  "statusNote": "The AVM interpreter is beta. A tested opcode is tested upstream. It is not a statement that any Universe service executes AVM contracts.",
+  "source": {
+    "id": "atomicals-avm-interpreter",
+    "repository": "https://github.com/atomicals/avm-interpreter",
+    "revision": "c185e6216a3ea2cb2e011e508033ca535ece3472",
+    "path": "src/script/script.h"
+  },
+  "opcodeCount": 30,
+  "groups": [
+    "authorisation",
+    "block-info",
+    "fungible-tokens",
+    "hashing",
+    "introspection",
+    "non-fungible-tokens",
+    "state-storage"
+  ],
+  "opcodes": [
+    {
+      "name": "OP_CHECKAUTHSIG",
+      "hex": "0xc0",
+      "value": 192,
+      "group": "authorisation",
+      "status": "tested",
+      "description": null,
+      "sourceComment": "TESTED."
+    },
+    {
+      "name": "OP_CHECKAUTHSIGVERIFY",
+      "hex": "0xc1",
+      "value": 193,
+      "group": "authorisation",
+      "status": "tested",
+      "description": null,
+      "sourceComment": "TESTED."
+    },
+    {
+      "name": "OP_TXVERSION",
+      "hex": "0xc2",
+      "value": 194,
+      "group": "introspection",
+      "status": "undeclared",
+      "description": null,
+      "sourceComment": null
+    },
+    {
+      "name": "OP_TXINPUTCOUNT",
+      "hex": "0xc3",
+      "value": 195,
+      "group": "introspection",
+      "status": "undeclared",
+      "description": null,
+      "sourceComment": null
+    },
+    {
+      "name": "OP_TXOUTPUTCOUNT",
+      "hex": "0xc4",
+      "value": 196,
+      "group": "introspection",
+      "status": "undeclared",
+      "description": null,
+      "sourceComment": null
+    },
+    {
+      "name": "OP_TXLOCKTIME",
+      "hex": "0xc5",
+      "value": 197,
+      "group": "introspection",
+      "status": "undeclared",
+      "description": null,
+      "sourceComment": null
+    },
+    {
+      "name": "OP_OUTPOINTTXHASH",
+      "hex": "0xc8",
+      "value": 200,
+      "group": "introspection",
+      "status": "undeclared",
+      "description": null,
+      "sourceComment": null
+    },
+    {
+      "name": "OP_OUTPOINTINDEX",
+      "hex": "0xc9",
+      "value": 201,
+      "group": "introspection",
+      "status": "undeclared",
+      "description": null,
+      "sourceComment": null
+    },
+    {
+      "name": "OP_INPUTBYTECODE",
+      "hex": "0xca",
+      "value": 202,
+      "group": "introspection",
+      "status": "tested",
+      "description": null,
+      "sourceComment": "TESTED."
+    },
+    {
+      "name": "OP_INPUTSEQUENCENUMBER",
+      "hex": "0xcb",
+      "value": 203,
+      "group": "introspection",
+      "status": "tested",
+      "description": null,
+      "sourceComment": "TESTED."
+    },
+    {
+      "name": "OP_INPUTWITNESSBYTECODE",
+      "hex": "0xcc",
+      "value": 204,
+      "group": "introspection",
+      "status": "not-working",
+      "description": null,
+      "sourceComment": "NOT WORKING. NOT USED"
+    },
+    {
+      "name": "OP_OUTPUTVALUE",
+      "hex": "0xcd",
+      "value": 205,
+      "group": "introspection",
+      "status": "undeclared",
+      "description": null,
+      "sourceComment": null
+    },
+    {
+      "name": "OP_OUTPUTBYTECODE",
+      "hex": "0xce",
+      "value": 206,
+      "group": "introspection",
+      "status": "undeclared",
+      "description": null,
+      "sourceComment": null
+    },
+    {
+      "name": "OP_NFT_PUT",
+      "hex": "0xd1",
+      "value": 209,
+      "group": "non-fungible-tokens",
+      "status": "tested",
+      "description": "Add NFT to internal token table storage",
+      "sourceComment": "TESTED. Add NFT to internal token table storage"
+    },
+    {
+      "name": "OP_FT_BALANCE_ADD",
+      "hex": "0xd3",
+      "value": 211,
+      "group": "fungible-tokens",
+      "status": "tested",
+      "description": "Add to FT balance internal token table storage",
+      "sourceComment": "TESTED. Add to FT balance internal token table storage"
+    },
+    {
+      "name": "OP_KV_EXISTS",
+      "hex": "0xed",
+      "value": 237,
+      "group": "state-storage",
+      "status": "tested",
+      "description": "Check if KV exists.",
+      "sourceComment": "TESTED. Check if KV exists."
+    },
+    {
+      "name": "OP_KV_GET",
+      "hex": "0xef",
+      "value": 239,
+      "group": "state-storage",
+      "status": "tested",
+      "description": "Get KV.",
+      "sourceComment": "TESTED. Get KV."
+    },
+    {
+      "name": "OP_KV_PUT",
+      "hex": "0xf0",
+      "value": 240,
+      "group": "state-storage",
+      "status": "tested",
+      "description": "Put KV.",
+      "sourceComment": "TESTED. Put KV."
+    },
+    {
+      "name": "OP_KV_DELETE",
+      "hex": "0xf1",
+      "value": 241,
+      "group": "state-storage",
+      "status": "tested",
+      "description": "Delete KV.",
+      "sourceComment": "TESTED. Delete KV."
+    },
+    {
+      "name": "OP_FT_WITHDRAW",
+      "hex": "0xf2",
+      "value": 242,
+      "group": "fungible-tokens",
+      "status": "tested",
+      "description": "Mark an output for withdraw FT",
+      "sourceComment": "TESTED. Mark an output for withdraw FT"
+    },
+    {
+      "name": "OP_NFT_WITHDRAW",
+      "hex": "0xf3",
+      "value": 243,
+      "group": "non-fungible-tokens",
+      "status": "tested",
+      "description": "Mark an output for withdraw NFT",
+      "sourceComment": "TESTED. Mark an output for withdraw NFT"
+    },
+    {
+      "name": "OP_FT_BALANCE",
+      "hex": "0xf4",
+      "value": 244,
+      "group": "fungible-tokens",
+      "status": "tested",
+      "description": "Get balance of FT held in contract",
+      "sourceComment": "TESTED. Get balance of FT held in contract"
+    },
+    {
+      "name": "OP_FT_COUNT",
+      "hex": "0xf6",
+      "value": 246,
+      "group": "fungible-tokens",
+      "status": "tested",
+      "description": "Get count of different unique FTs",
+      "sourceComment": "TESTED. Get count of different unique FTs"
+    },
+    {
+      "name": "OP_FT_ITEM",
+      "hex": "0xf7",
+      "value": 247,
+      "group": "fungible-tokens",
+      "status": "tested",
+      "description": "Get a specific FT atomical id in sorted order",
+      "sourceComment": "TESTED. Get a specific FT atomical id in sorted order"
+    },
+    {
+      "name": "OP_NFT_EXISTS",
+      "hex": "0xf8",
+      "value": 248,
+      "group": "non-fungible-tokens",
+      "status": "tested",
+      "description": "Get specific NFT that exists",
+      "sourceComment": "TESTED. Get specific NFT that exists"
+    },
+    {
+      "name": "OP_NFT_COUNT",
+      "hex": "0xf9",
+      "value": 249,
+      "group": "non-fungible-tokens",
+      "status": "tested",
+      "description": "Get count of different unique NFTs",
+      "sourceComment": "TESTED. Get count of different unique NFTs"
+    },
+    {
+      "name": "OP_NFT_ITEM",
+      "hex": "0xfa",
+      "value": 250,
+      "group": "non-fungible-tokens",
+      "status": "tested",
+      "description": "Get a specfic NFT atomical id in sorted order",
+      "sourceComment": "TESTED. Get a specfic NFT atomical id in sorted order"
+    },
+    {
+      "name": "OP_GETBLOCKINFO",
+      "hex": "0xfb",
+      "value": 251,
+      "group": "block-info",
+      "status": "tested",
+      "description": "Get block info for height.",
+      "sourceComment": "TESTED. Get block info for height."
+    },
+    {
+      "name": "OP_DECODEBLOCKINFO",
+      "hex": "0xfc",
+      "value": 252,
+      "group": "block-info",
+      "status": "tested",
+      "description": "Decode a block header into the parts",
+      "sourceComment": "TESTED. Decode a block header into the parts"
+    },
+    {
+      "name": "OP_HASH_FN",
+      "hex": "0xfd",
+      "value": 253,
+      "group": "hashing",
+      "status": "tested",
+      "description": "Various hash functions",
+      "sourceComment": "TESTED. Various hash functions"
+    }
+  ]
+}

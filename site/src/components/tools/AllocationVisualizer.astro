@@ -1,0 +1,394 @@
+---
+import vectors from '../../../../conformance/vectors/arc20-allocation.json'
+
+const presets = vectors.cases.map((testCase) => ({
+  id: testCase.id,
+  title: testCase.title,
+  inputs: testCase.inputs,
+  outputs: testCase.outputs,
+  options: testCase.options,
+}))
+import { docHref } from '../../lib/href'
+const locale = Astro.locals.starlightRoute?.locale
+---
+
+<div class="bu-tool">
+  <div class="bu-tool-head">
+    <h2 id="visualizer">ARC-20 allocation visualizer</h2>
+    <span class="bu-chip" data-tone="protocol">Local only. Never signs or broadcasts</span>
+  </div>
+
+  <noscript>
+    <div class="bu-tool-body">
+      <p class="bu-noscript">
+        This tool needs JavaScript. The same cases are published as executed vectors on the
+        <a href={docHref("/reference/conformance/", locale)}>conformance page</a>, which works without it.
+      </p>
+    </div>
+  </noscript>
+
+  <bu-allocation data-presets={JSON.stringify(presets)}>
+    <div class="bu-tool-body" data-layout="split">
+      <form data-form novalidate>
+        <fieldset>
+          <legend>Implementation</legend>
+          <div class="bu-field">
+            <label for="alloc-preset">Start from a known case</label>
+            <select id="alloc-preset" data-preset>
+              <option value="">Blank</option>
+              {presets.map((preset) => <option value={preset.id}>{preset.title}</option>)}
+            </select>
+            <span class="bu-hint">
+              Every preset is an executed conformance vector, so the result here matches the tests.
+            </span>
+          </div>
+
+          <div class="bu-field">
+            <label for="alloc-ordering">Input ordering</label>
+            <select id="alloc-ordering" data-ordering>
+              <option value="fifo">FIFO, by first input index then Atomical ID</option>
+              <option value="legacy">Legacy, by Atomical ID</option>
+            </select>
+          </div>
+
+          <div class="bu-field">
+            <label for="alloc-custom">Custom coloring</label>
+            <select id="alloc-custom" data-custom>
+              <option value="off">Off, normal allocation</option>
+              <option value="on">On, activation gated</option>
+            </select>
+            <span class="bu-hint">
+              Custom coloring is activation gated. Do not assume it is available on your network.
+            </span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Coloured inputs</legend>
+          <div class="bu-rows" data-inputs></div>
+          <button type="button" class="bu-btn" data-add-input>Add input</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Outputs, in order</legend>
+          <div class="bu-rows" data-outputs></div>
+          <button type="button" class="bu-btn" data-add-output>Add output</button>
+        </fieldset>
+
+        <p class="bu-error" data-error role="alert" hidden></p>
+      </form>
+
+      <div>
+        <div class="bu-out" data-result aria-live="polite" aria-atomic="true"></div>
+        <div class="bu-page-actions">
+          <button type="button" data-copy-vector>Copy as a vector</button>
+        </div>
+        <p class="bu-hint">
+          Explanatory only. It models normal allocation from the pinned reference revision. Validate
+          a concrete transaction against the validator revision you target before broadcasting.
+        </p>
+      </div>
+    </div>
+  </bu-allocation>
+</div>
+
+<style>
+  fieldset {
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    padding: 0.9rem;
+    margin: 0 0 1rem;
+  }
+  legend {
+    font-weight: 640;
+    color: var(--bu-ink);
+    padding: 0 0.4rem;
+    font-size: var(--bu-step--1);
+  }
+  .bu-rows {
+    margin-bottom: 0.6rem;
+  }
+</style>
+
+<script>
+  import { allocate } from '../../../../conformance/allocation.mjs'
+
+  interface PresetInput {
+    atomicalId: string
+    txinIndex: number
+    atomicalValue: number
+  }
+  interface PresetOutput {
+    value: number
+    unspendable?: boolean
+  }
+  /**
+   * One row of the engine's result. The engine lives in conformance/allocation.mjs,
+   * which is plain JavaScript and not type checked from here, so its shape is named
+   * once rather than inferred as any at each use.
+   */
+  interface AllocOutput {
+    index: number
+    value: number
+    unspendable?: boolean
+    coloredTotal: number
+    assignments: { atomicalId: string; coloredValue: number }[]
+  }
+  interface Preset {
+    id: string
+    title: string
+    inputs: PresetInput[]
+    outputs: PresetOutput[]
+    options: { sortByFifo?: boolean; customColoring?: boolean }
+  }
+
+  class BuAllocation extends HTMLElement {
+    #presets: Preset[] = []
+    #inputs: PresetInput[] = []
+    #outputs: PresetOutput[] = []
+
+    connectedCallback() {
+      try {
+        this.#presets = JSON.parse(this.dataset.presets ?? '[]')
+      } catch {
+        this.#presets = []
+      }
+
+      this.querySelector('[data-preset]')?.addEventListener('change', (event) => {
+        const id = (event.currentTarget as HTMLSelectElement).value
+        const preset = this.#presets.find((entry) => entry.id === id)
+        if (preset) {
+          this.#inputs = preset.inputs.map((input) => ({ ...input }))
+          this.#outputs = preset.outputs.map((output) => ({ ...output }))
+          const ordering = this.querySelector('[data-ordering]') as HTMLSelectElement | null
+          const custom = this.querySelector('[data-custom]') as HTMLSelectElement | null
+          if (ordering) ordering.value = preset.options.sortByFifo === false ? 'legacy' : 'fifo'
+          if (custom) custom.value = preset.options.customColoring ? 'on' : 'off'
+        } else {
+          this.#inputs = [{ atomicalId: 'TOKENA', txinIndex: 0, atomicalValue: 1200 }]
+          this.#outputs = [{ value: 700 }, { value: 500 }]
+        }
+        this.#renderRows()
+        this.#compute()
+      })
+
+      this.querySelector('[data-add-input]')?.addEventListener('click', () => {
+        this.#inputs.push({
+          atomicalId: 'TOKENA',
+          txinIndex: this.#inputs.length,
+          atomicalValue: 546,
+        })
+        this.#renderRows()
+        this.#compute()
+      })
+
+      this.querySelector('[data-add-output]')?.addEventListener('click', () => {
+        this.#outputs.push({ value: 546 })
+        this.#renderRows()
+        this.#compute()
+      })
+
+      for (const selector of ['[data-ordering]', '[data-custom]']) {
+        this.querySelector(selector)?.addEventListener('change', () => this.#compute())
+      }
+
+      this.querySelector('[data-copy-vector]')?.addEventListener('click', () => {
+        void this.#copyVector()
+      })
+
+      this.#inputs = [{ atomicalId: 'TOKENA', txinIndex: 0, atomicalValue: 1200 }]
+      this.#outputs = [{ value: 700 }, { value: 546 }]
+      this.#renderRows()
+      this.#compute()
+    }
+
+    #renderRows() {
+      const inputsHost = this.querySelector('[data-inputs]') as HTMLElement
+      const outputsHost = this.querySelector('[data-outputs]') as HTMLElement
+      if (!inputsHost || !outputsHost) return
+
+      inputsHost.replaceChildren(
+        ...this.#inputs.map((input, index) => {
+          const row = document.createElement('div')
+          row.className = 'bu-row'
+          row.innerHTML = `
+            <div class="bu-field">
+              <label for="in-token-${index}">Token</label>
+              <input id="in-token-${index}" type="text" value="${escapeAttr(input.atomicalId)}" data-field="atomicalId" data-index="${index}" data-kind="input" />
+            </div>
+            <div class="bu-field">
+              <label for="in-idx-${index}">Input index</label>
+              <input id="in-idx-${index}" type="number" min="0" step="1" value="${input.txinIndex}" data-field="txinIndex" data-index="${index}" data-kind="input" />
+            </div>
+            <div class="bu-field">
+              <label for="in-val-${index}">Units</label>
+              <input id="in-val-${index}" type="number" min="0" step="1" value="${input.atomicalValue}" data-field="atomicalValue" data-index="${index}" data-kind="input" />
+            </div>
+            <button type="button" class="bu-btn" data-remove="input" data-index="${index}">Remove</button>
+          `
+          return row
+        }),
+      )
+
+      outputsHost.replaceChildren(
+        ...this.#outputs.map((output, index) => {
+          const row = document.createElement('div')
+          row.className = 'bu-row'
+          row.innerHTML = `
+            <div class="bu-field">
+              <label for="out-val-${index}">Output ${index}, satoshis</label>
+              <input id="out-val-${index}" type="number" min="0" step="1" value="${output.value}" data-field="value" data-index="${index}" data-kind="output" />
+            </div>
+            <div class="bu-field">
+              <label for="out-uns-${index}">Unspendable</label>
+              <select id="out-uns-${index}" data-field="unspendable" data-index="${index}" data-kind="output">
+                <option value="no"${output.unspendable ? '' : ' selected'}>No</option>
+                <option value="yes"${output.unspendable ? ' selected' : ''}>Yes</option>
+              </select>
+            </div>
+            <button type="button" class="bu-btn" data-remove="output" data-index="${index}">Remove</button>
+          `
+          return row
+        }),
+      )
+
+      for (const control of this.querySelectorAll('[data-field]')) {
+        control.addEventListener('input', (event) => this.#onFieldChange(event))
+        control.addEventListener('change', (event) => this.#onFieldChange(event))
+      }
+      for (const button of this.querySelectorAll('[data-remove]')) {
+        button.addEventListener('click', (event) => {
+          const target = event.currentTarget as HTMLButtonElement
+          const index = Number(target.dataset.index)
+          if (target.dataset.remove === 'input') this.#inputs.splice(index, 1)
+          else this.#outputs.splice(index, 1)
+          this.#renderRows()
+          this.#compute()
+        })
+      }
+    }
+
+    #onFieldChange(event: Event) {
+      const target = event.currentTarget as HTMLInputElement | HTMLSelectElement
+      const index = Number(target.dataset.index)
+      const field = target.dataset.field
+      if (target.dataset.kind === 'input') {
+        const input = this.#inputs[index]
+        if (!input || !field) return
+        if (field === 'atomicalId') input.atomicalId = target.value.trim() || 'TOKENA'
+        else (input as unknown as Record<string, number>)[field] = Math.max(0, Number(target.value) || 0)
+      } else {
+        const output = this.#outputs[index]
+        if (!output || !field) return
+        if (field === 'unspendable') output.unspendable = target.value === 'yes'
+        else output.value = Math.max(0, Number(target.value) || 0)
+      }
+      this.#compute()
+    }
+
+    #currentOptions() {
+      const ordering = (this.querySelector('[data-ordering]') as HTMLSelectElement | null)?.value
+      const custom = (this.querySelector('[data-custom]') as HTMLSelectElement | null)?.value
+      return { sortByFifo: ordering !== 'legacy', customColoring: custom === 'on' }
+    }
+
+    #compute() {
+      const host = this.querySelector('[data-result]') as HTMLElement
+      const errorHost = this.querySelector('[data-error]') as HTMLElement
+      if (!host || !errorHost) return
+
+      if (this.#inputs.length === 0 || this.#outputs.length === 0) {
+        errorHost.hidden = false
+        errorHost.textContent = 'Add at least one coloured input and one output.'
+        host.replaceChildren()
+        return
+      }
+      errorHost.hidden = true
+
+      const result = allocate(this.#outputs, this.#inputs, this.#currentOptions())
+      const totalIn = this.#inputs.reduce((sum, input) => sum + input.atomicalValue, 0)
+      const totalOut = result.outputs.reduce(
+        (sum: number, output: { coloredTotal: number }) => sum + output.coloredTotal,
+        0,
+      )
+      const burned = result.burned.reduce((sum, entry) => sum + entry.value, 0)
+
+      const rows = result.outputs
+        .map(
+          (output: AllocOutput) => `
+            <tr>
+              <th scope="row">output ${output.index}</th>
+              <td class="bu-num">${output.value}</td>
+              <td class="bu-num">${output.coloredTotal}</td>
+              <td>${output.unspendable ? 'unspendable, skipped' : output.assignments.map((a: { atomicalId: string }) => escapeHtml(a.atomicalId)).join(', ') || 'nothing'}</td>
+            </tr>`,
+        )
+        .join('')
+
+      host.innerHTML = `
+        <table>
+          <caption class="sr-only">Computed allocation</caption>
+          <thead>
+            <tr>
+              <th scope="col">Output</th>
+              <th scope="col">Satoshis</th>
+              <th scope="col">Units received</th>
+              <th scope="col">Assigned to</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <dl class="bu-facts" style="margin-top:1rem">
+          <div class="bu-fact"><dt>Coloured in</dt><dd>${totalIn}</dd></div>
+          <div class="bu-fact"><dt>Placed</dt><dd>${totalOut}</dd></div>
+          <div class="bu-fact"><dt>Burned</dt><dd>${burned}</dd></div>
+        </dl>
+        <p>
+          <span class="bu-chip" data-tone="${burned > 0 ? 'risk' : 'ok'}">
+            ${burned > 0 ? `${burned} units destroyed` : 'nothing burned'}
+          </span>
+          <span class="bu-chip" data-tone="${result.cleanlyAssigned ? 'ok' : 'warn'}">
+            ${result.cleanlyAssigned ? 'cleanly assigned' : 'not cleanly assigned'}
+          </span>
+          ${result.inflationRejected ? '<span class="bu-chip" data-tone="risk">inflation rejected</span>' : ''}
+        </p>
+      `
+    }
+
+    async #copyVector() {
+      const vector = {
+        options: this.#currentOptions(),
+        inputs: this.#inputs,
+        outputs: this.#outputs,
+        expected: allocate(this.#outputs, this.#inputs, this.#currentOptions()),
+      }
+      const button = this.querySelector('[data-copy-vector]') as HTMLButtonElement
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(vector, null, 2))
+        button.textContent = 'Copied'
+      } catch {
+        button.textContent = 'Copy failed'
+      }
+      window.setTimeout(() => {
+        button.textContent = 'Copy as a vector'
+      }, 2400)
+    }
+  }
+
+  function escapeHtml(value: string) {
+    return value.replace(/[&<>"']/g, (character) => {
+      const map: Record<string, string> = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }
+      return map[character] ?? character
+    })
+  }
+
+  const escapeAttr = escapeHtml
+
+  customElements.define('bu-allocation', BuAllocation)
+</script>

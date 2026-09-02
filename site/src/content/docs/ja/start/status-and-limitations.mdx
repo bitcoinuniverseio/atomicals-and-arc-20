@@ -1,0 +1,103 @@
+---
+title: 状態と既知の制限
+description: 何が稼働中で、何がベータで、何が提案にすぎず、何が公開されていないか。そして把握していて隠していない制限。
+sidebar:
+  order: 7
+provenance:
+  pageId: start/status-and-limitations
+  area: start
+  audience: [everyone, developer, operator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet]
+  sources:
+    - id: universe-index-atomicals
+      path: tokenExplorerDocs
+    - id: universe-index-atomicals-nfts-and-realms
+      path: provenance
+    - id: atomicals-avm-interpreter
+      path: readme
+  verified: '2026-08-31'
+  tags: [status, limitations]
+  translationSourceHash: 19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0
+  limitations:
+    - このページは上記の検証日時点の内容です。いずれかの行に依拠する前にソースパネルを確認してください。
+---
+
+import StatusLegend from '../../../../components/StatusLegend.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+<StatusLegend />
+
+## ARC-20
+
+| 機能 | 状態 | 注記 |
+| --- | --- | --- |
+| 検証済みティッカーの解決とトークン詳細 | Universe 実装 | 名前だけでなく勝者の Atomical ID を公開します |
+| 保有者スナップショット | Universe 実装 | 保有者の行は流通供給量と正確に一致しなければならず、一致しなければ走査を中止します |
+| 確認済みアクティビティ履歴 | Universe 実装 | デプロイ、直接発行と分散発行、送付、焼失、プロトコル操作 |
+| 保留中アクティビティのカバレッジ | 限定的 | 保留ライフサイクルを安定的に扱う網羅的な mempool フィードはありません |
+| ポートフォリオ残高と色付き UTXO | Universe 実装 | 読み取りビューであり、決済の証明ではありません |
+| Universe 製品からの直接 `mint-ft` 発行 | 非公開 | プロトコルは対応しています。Universe の提供面はありません |
+| Substantiation Factor の資料 | 暫定 | [Substantiation Factor](/protocol/arc20/substantiation-factor/) を参照 |
+
+<Aside type="caution" title="宣言されたカバレッジは意図的に partial です">
+ARC-20 ソースは `partial` のカバレッジを、明示的な理由とともに報告します。確認済みの権威ある履歴と
+完全に証明された保有者スナップショットはインデックス化されていますが、出荷されたアダプタには、
+保留ライフサイクルと消失を安定的に扱う網羅的な mempool フィードがありません。この制限は保留中の
+アクティビティにのみ適用されます。確認済みの走査や保有者の証明要件を弱めるものではありません。
+</Aside>
+
+## Atomicals NFT、Realm、Subrealm
+
+| 機能 | 状態 | 注記 |
+| --- | --- | --- |
+| 通常 NFT、Realm、Subrealm の読み取りモデル | Universe 実装 | 走査、世代、チェックポイント、有効ポインタを共有します |
+| Realm の解決、階層、Subrealm の一覧 | Universe 実装 | 候補と支払いの証拠を資産ごとに保持します |
+| トランザクション、ブロック、UTXO による検索 | Universe 実装 | 有効な世代に限定されます |
+| 整合性検証付きのメディア配信 | Universe 実装 | MIME 制限とサイズ上限が適用されます |
+| この投影における代替性トークン | 設計上除外 | ARC-20 側が提供します |
+| この投影における Container と DMINT アイテム | 設計上除外 | インデックスの来歴マニフェストで宣言されています |
+| 書き込み操作 | なし | この投影は読み取り専用です |
+
+## マーケットプレイス
+
+| 機能 | 状態 | 注記 |
+| --- | --- | --- |
+| 四つの独立したプロトコル権限 | Universe 実装 | `arc20`、`atomicals_nft`、`realms`、`subrealms` |
+| 出品、予約、購入、オファー、決済 | Universe 実装 | すべての操作ゲートは既定で無効です |
+| 所有権の証明 | Universe 実装 | P2WPKH と鍵パス P2TR に対する BIP-322 simple 証明 |
+| 混在担保、焼失、使用済み出力、チェックポイントのずれ | 拒否 | 四つの経路すべてが閉じる形で失敗します |
+| 旧来の `/buys` と `/orders/{orderId}/reconcile` | 非推奨 | `/reservations`、`/purchases`、`/settlements` を使用してください |
+
+## AVM
+
+| 層 | 状態 |
+| --- | --- |
+| ホワイトペーパーの設計概念 | 提案 |
+| 公式ベータインタプリタ | 実験的またはベータ |
+| Universe ランタイムへの統合 | 非公開 |
+| Universe ランタイムの証明 | 公開なし |
+
+このサイトの AVM に関する記述を、mainnet の本番サポートと読むべきではありません。
+[AVM の状態と制限](/protocol/avm/status-and-limitations/) を参照してください。
+
+## 把握している制限
+
+1. 保留中の ARC-20 アクティビティは網羅されていません。確認済みの履歴は網羅されています。
+2. Container と DMINT はプロトコルの挙動として文書化されています。現在それらを公開する Universe の
+   読み取り投影はありません。
+3. 直接 FT 発行はプロトコルの挙動であり、Universe の製品提供面はありません。
+4. AVM は上流でベータであり、ここでは公開していません。実装の主張には、公開していない証明が必要に
+   なります。
+5. [レジストリ](/ecosystem/) に掲載された一部の Atomicals エコシステムのサービスは、到達可能な情報源
+   から検証できませんでした。それらの行は推測せず `unknown` と記載しています。
+6. レート制限は実際に存在する場合にのみ記載しています。存在しないサービスについては、方針を捏造せず
+   その旨を記載します。
+
+## 誤りの報告方法
+
+[ドキュメントリポジトリ](https://github.com/bitcoinuniverseio/atomicals-and-arc-20/issues) で issue を
+作成してください。**incorrect protocol claim** または **API mismatch** のテンプレートを使い、ソース
+パネルの page ID を記載してください。
+

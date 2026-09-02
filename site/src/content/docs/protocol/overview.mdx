@@ -1,0 +1,73 @@
+---
+title: Atomicals protocol
+description: One page that puts every Atomicals primitive, operation, and validation boundary in relation to each other.
+sidebar:
+  order: 1
+provenance:
+  pageId: protocol/overview
+  area: protocol
+  audience: [everyone, developer]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: mintParser
+    - id: atomicals-guide
+      path: specification
+  verified: '2026-08-31'
+  tags: [protocol, overview]
+  limitations:
+    - The Atomicals specification is defined in code. This page summarises one pinned revision and is not an independent consensus specification.
+---
+
+import FamilyMap from '../../../components/diagrams/FamilyMap.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../components/EntryCards.astro'
+
+The Atomicals specification is defined in code. The official guide says so directly. Everything
+below describes what the pinned reference revision does, not what a standard document declares.
+
+<Aside type="note" title="What that means for you">
+Concepts are stable. Exact validation is version sensitive. Pin a revision, record the network,
+and re-test on every upgrade. See [networks and versions](/start/networks-and-versions/).
+</Aside>
+
+<FamilyMap />
+
+## The pipeline every operation follows
+
+1. A builder constructs a commit transaction paying to a Taproot output that commits to a script
+   containing the envelope.
+2. A reveal transaction spends that output and exposes the envelope in its witness.
+3. A validator reads `atom`, the operation code, and the CBOR payload.
+4. The validator checks the operation against the rules active at that block height on that
+   network.
+5. On success it assigns the result, usually to output zero for a mint.
+6. Transfers of existing Atomicals are decided by allocation over the transaction's inputs and
+   outputs.
+
+## Where each rule lives
+
+| Question | Decided by | Read |
+| --- | --- | --- |
+| Is this envelope well formed? | Mint parser | [Envelope and operations](/protocol/core/envelope-and-operations/) |
+| Is this ticker name legal? | Ticker rule at the active revision | [Tickers and candidates](/protocol/arc20/tickers-and-candidates/) |
+| Does this claim satisfy Bitwork? | Bitwork check | [Bitwork](/protocol/core/bitwork/) |
+| Which output gets the value? | Blueprint builder allocation | [Allocation](/protocol/arc20/allocation/) |
+| Did anything burn? | Allocation remainder handling | [Burns](/protocol/arc20/burns/) |
+| Can this create value from nothing? | No-inflation validation | [Allocation](/protocol/arc20/allocation/) |
+| Is this rule active yet? | Per-network activation table | [Activation boundaries](/protocol/core/activation-boundaries/) |
+
+## Read next
+
+<EntryCards
+  cards={[
+    { kicker: "Concepts", title: "Core concepts", body: "Identity, ownership, state, references, and the trust boundaries.", href: "/protocol/core/digital-objects/" },
+    { kicker: "Fungible", title: "ARC-20", body: "The fungible model, issuance, allocation, and safety.", href: "/protocol/arc20/overview/" },
+    { kicker: "Non-fungible", title: "Atomicals NFTs", body: "Non-fungible objects, media, transfers, and collections.", href: "/protocol/nft/overview/" },
+    { kicker: "Names", title: "Realms and names", body: "Names, candidates, hierarchy, and confusable risk.", href: "/protocol/realms/overview/" },
+    { kicker: "Collections", title: "Containers and DMINT", body: "Collections, sealed manifests, and item verification.", href: "/protocol/containers/overview/" },
+    { kicker: "Beta", title: "AVM", body: "The beta script interpreter, carefully scoped.", href: "/protocol/avm/overview/" },
+  ]}
+/>

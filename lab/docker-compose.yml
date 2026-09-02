@@ -1,0 +1,93 @@
+# Local Regtest Lab.
+#
+# Ephemeral, deterministic, loopback-only. Images are pinned by digest or built
+# from an exact pinned source revision; "latest" appears nowhere. Every port
+# binds to 127.0.0.1. Credentials are generated per run by the seeder and are
+# regtest-only.
+#
+# Profiles:
+#   (default)      bitcoin core, electrumx, read-only adapter
+#   docs           the built documentation site on 127.0.0.1:4321
+
+services:
+  bitcoin-core:
+    image: bitcoin/bitcoin@sha256:2397a7d51f65de032f9dc260e2f804c7f257e8a26853ae584fe0081b7882ee57 # v27.0, linux/amd64
+    command:
+      -printtoconsole
+      -regtest=1
+      -server=1
+      -txindex=1
+      -listen=0
+      -rpcbind=127.0.0.1
+      -rpcallowip=10.0.0.0/8
+      -rpcallowip=172.16.0.0/12
+      -rpcallowip=192.168.0.0/16
+      -rpcauth=${LAB_RPC_AUTH}
+      -fallbackfee=0.0002
+    ports:
+      - "127.0.0.1:18443:18443"
+    volumes:
+      - core-data:/root/.bitcoin
+    healthcheck:
+      test: ["CMD", "bitcoin-cli", "-regtest", "-rpcauth=${LAB_RPC_AUTH}", "getblockcount"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+
+  electrumx:
+    build:
+      context: .
+      dockerfile: electrumx.Dockerfile
+      args:
+        # The exact reference revision the documentation pins.
+        ELECTRUMX_REVISION: 8df23747835c20230fc8b8097d469e7a1d97c3e0
+    environment:
+      # Regtest inherits the testnet activation heights in the pinned source
+      # (electrumx/lib/coins.py, BitcoinRegtest has no overrides). The seeder
+      # mines past ATOMICALS_ACTIVATION_HEIGHT = 2505238 before creating
+      # protocol fixtures, and the runner asserts that derivation.
+      NET: regtest
+      DAEMON_URL: http://lab:${LAB_RPC_PASSWORD}@bitcoin-core:18443
+      COIN: BitcoinRegtest
+      PEER_DISCOVERY: "off"
+      PEER_ANNOUNCE: "off"
+      SERVICES: tcp://0.0.0.0:51001
+      MAX_SESSIONS: 64
+      DB_DIRECTORY: /data
+    depends_on:
+      bitcoin-core:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:51001:51001"
+    volumes:
+      - electrumx-data:/data
+
+  adapter:
+    build:
+      context: .
+      dockerfile: adapter.Dockerfile
+    environment:
+      LAB_CORE_RPC: http://lab:${LAB_RPC_PASSWORD}@bitcoin-core:18443
+      LAB_ELECTRUMX: electrumx:51001
+      LAB_FEED_FILE: /fixtures/feed.json
+      LAB_PORT: "3043"
+    depends_on:
+      bitcoin-core:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3043:3043"
+    volumes:
+      - ./fixtures:/fixtures:ro
+
+  docs:
+    profiles: ["docs"]
+    image: node:24.19.0-bookworm-slim
+    command: ["npx", "serve", "-l", "4321", "/site"]
+    volumes:
+      - ../dist:/site:ro
+    ports:
+      - "127.0.0.1:4321:4321"
+
+volumes:
+  core-data:
+  electrumx-data:

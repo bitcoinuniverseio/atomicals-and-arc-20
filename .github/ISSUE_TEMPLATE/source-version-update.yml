@@ -1,0 +1,36 @@
+name: Source version update
+description: A pinned source revision should move.
+labels: [source-version-update]
+body:
+  - type: input
+    id: source-id
+    attributes:
+      label: Source id
+      description: From contracts/source-manifest.json.
+      placeholder: atomicals-electrumx-1.5.2.0
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Target revision or release
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What behavior changed between the two
+      description: |
+        If nothing this documentation describes changed, say so. If something did,
+        name it, and say which pages need updating.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before this can be merged
+      options:
+        - label: The conformance vectors were re-run against the target revision
+        - label: The affected pages were updated, or confirmed unaffected
+        - label: New limitations were recorded, if any appeared
+

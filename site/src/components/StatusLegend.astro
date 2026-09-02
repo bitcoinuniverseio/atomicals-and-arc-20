@@ -1,0 +1,42 @@
+---
+import { APPLICABILITY_LABELS } from '../lib/sources'
+
+const order = [
+  'protocol-behavior',
+  'universe-implementation',
+  'experimental',
+  'proposed',
+  'deprecated',
+  'unavailable',
+  'third-party',
+]
+---
+
+<div class="bu-matrix">
+  <table>
+    <caption class="sr-only">Meaning of each status label used across this documentation</caption>
+    <thead>
+      <tr>
+        <th scope="col">Label</th>
+        <th scope="col">What it means</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        order.map((key) => {
+          const item = APPLICABILITY_LABELS[key]!
+          return (
+            <tr>
+              <th scope="row">
+                <span class="bu-chip" data-tone={item.tone}>
+                  {item.label}
+                </span>
+              </th>
+              <td>{item.meaning}</td>
+            </tr>
+          )
+        })
+      }
+    </tbody>
+  </table>
+</div>

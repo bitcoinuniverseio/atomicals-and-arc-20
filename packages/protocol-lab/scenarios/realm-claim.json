@@ -1,0 +1,18 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "realm-claim",
+  "title": "Realm claim through commit and reveal",
+  "description": "A Realm is an Atomical object claimed by a reveal whose commitment satisfies the naming rules. The claimant owns it by owning output zero.",
+  "seed": "realm-claim",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 15000, "address": "bc1qnameclaimer" }
+    ] },
+    { "type": "reveal", "label": "claim", "inputs": ["fundo0"], "outputs": [
+      { "value": 546, "address": "bc1qnameclaimer" },
+      { "value": 14400, "address": "bc1qnameclaimer" }
+    ], "atomical": { "type": "realm" } },
+    { "type": "confirm", "blocks": 1 }
+  ]
+}

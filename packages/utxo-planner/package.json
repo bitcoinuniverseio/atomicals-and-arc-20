@@ -1,0 +1,21 @@
+{
+  "name": "@bitcoin-universe/utxo-planner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic UTXO classification, risk detection, and safe plan generation for Atomicals and ARC-20 outputs",
+  "exports": {
+    "./planner": "./src/planner.mjs"
+  },
+  "dependencies": {
+    "@bitcoin-universe/protocol-core": "1.0.0"
+  },
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20"
+  }
+}

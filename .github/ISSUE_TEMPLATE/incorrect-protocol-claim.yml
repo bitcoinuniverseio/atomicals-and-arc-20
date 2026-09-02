@@ -1,0 +1,49 @@
+name: Incorrect protocol claim
+description: A statement about protocol behavior that does not match the source it cites.
+labels: [incorrect-protocol-claim]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most serious defect class here. A wrong protocol claim can cost
+        someone money, so please include the source that establishes the correct behavior.
+  - type: input
+    id: page-id
+    attributes:
+      label: Page ID
+      placeholder: protocol/arc20/allocation
+    validations:
+      required: true
+  - type: textarea
+    id: claim
+    attributes:
+      label: The claim as written
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: What the source actually says
+      description: Name the repository, the exact revision, and the file and line range.
+    validations:
+      required: true
+  - type: dropdown
+    id: layer
+    attributes:
+      label: Which layer is wrong
+      options:
+        - Protocol behavior described incorrectly
+        - Universe behavior described as protocol behavior
+        - Protocol behavior described as Universe behavior
+        - A proposal or beta described as live
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: network
+    attributes:
+      label: Network and height, if the behavior is activation sensitive
+      placeholder: mainnet
+    validations:
+      required: false
+

@@ -1,0 +1,7 @@
+# Atomicals and ARC-20
+# Prefer /atomicals-and-arc-20/manifest.json and /atomicals-and-arc-20/raw/<page-id>.md over scraping rendered HTML.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/sitemap.xml

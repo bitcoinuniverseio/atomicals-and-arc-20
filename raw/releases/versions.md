@@ -1,0 +1,59 @@
+# Versions and compatibility
+
+Every pinned source revision, what it applies to, and how the baselines relate to each other.
+
+Page ID: releases/versions
+Applicability: universe-implementation
+Authority: universe-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: en
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/versions/
+
+---
+## The verified source set
+
+## Every pinned source
+
+## The two baselines
+
+The protocol baseline is preserved as history. The Universe revisions move. Rewriting the
+historical baseline whenever a service upgrades would erase the record of what a transaction meant
+when it was made.
+
+**Protocol reference baseline.** Atomicals ElectrumX v1.5.2.0, commit `8df23747`, released
+2025-03-27. Every version-sensitive protocol statement on this site is pinned to it. It is not
+silently updated.
+
+**Universe implementation revisions.** Listed separately, per page, in each source panel. They move
+with deployments.
+
+A page that describes both says which is which.
+
+## Documentation versions
+
+| Version | Status | Covers |
+| --- | --- | --- |
+| 2026.08 | Current | The full platform: protocol, guides, contracts, tools, and machine readable outputs |
+
+Earlier documentation existed as a small set of standalone files. Those routes are preserved as
+compatibility artefacts and are regenerated from this content, so they cannot drift.
+See [deprecations](/releases/deprecations/).
+
+## Compatibility matrix
+
+| Consumer | Requires | Notes |
+| --- | --- | --- |
+| Universe NFT and Realm index | Provider version, tag, commit, and the exact AIP set `[1, 3]` | Refuses a provider that does not match |
+| Universe ARC-20 index | The pinned Atomicals proxy contract | Declares partial coverage with an explicit reason |
+| Marketplace v1 | A release SHA identifying the exact deployed indexer commit | Binds the settlement authority identity per protocol lane |
+| Generated TypeScript client | An OpenAPI document version | Regenerate rather than hand editing |
+| Documentation MCP server | Built site artefacts | Works offline once installed |
+
+## Pinning your own integration
+
+1. Choose a validator revision or release, and record it.
+2. Record the network and its active rule set.
+3. Record the Universe service revision from `GET /version`.
+4. Re-run the [conformance vectors](/reference/conformance/) against that combination.
+5. Re-check before every upgrade, not after.

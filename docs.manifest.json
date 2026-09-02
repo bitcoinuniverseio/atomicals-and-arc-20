@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "id": "atomicals-and-arc-20",
+  "name": "Atomicals + ARC-20",
+  "classification": "protocol",
+  "repository": "bitcoinuniverseio/atomicals-and-arc-20",
+  "documentationUrl": "https://docs.bitcoinuniverse.io/protocols/atomicals/",
+  "docsRoot": ".",
+  "sourceRef": "main",
+  "releasedRef": "main",
+  "releaseVersion": "2026.08",
+  "lifecycle": "beta",
+  "chains": [
+    {
+      "chain": "bitcoin",
+      "networks": [
+        "mainnet"
+      ]
+    }
+  ],
+  "protocols": [
+    "atomicals",
+    "arc-20",
+    "atomicals-nft",
+    "realms",
+    "subrealms"
+  ],
+  "audiences": [
+    "user",
+    "collector",
+    "app-developer",
+    "protocol-implementer",
+    "indexer-operator"
+  ],
+  "specifications": [
+    "specification.html",
+    "test-vectors.html",
+    "sources.html"
+  ],
+  "owners": [
+    "bitcoinuniverseio"
+  ],
+  "upstream": {
+    "project": "Atomicals",
+    "url": "https://github.com/atomicals",
+    "license": "MIT",
+    "relationship": "derived",
+    "divergenceSummary": "Documents the Atomicals protocol and its ARC-20 fungible token model as indexed by Bitcoin Universe, whose indexer is a pinned fork of atomicals-electrumx. Universe-specific indexing decisions (AVM def and new operations, split-transaction payment refusal, envelope prefix tolerance, the split of fungible and NFT serving surfaces) are listed separately on the reference page rather than presented as upstream protocol rules."
+  },
+  "lastVerified": {
+    "timestamp": "2026-09-01T00:00:00Z",
+    "sourceManifest": "contracts/source-manifest.json"
+  },
+  "securityClassification": "public"
+}

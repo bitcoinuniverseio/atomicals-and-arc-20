@@ -1,0 +1,1518 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Atomicals Marketplace v1 authority",
+    "summary": "Four isolated protocol authorities for ARC-20, plain NFTs, Realms, and Subrealms.",
+    "description": "A durable protocol authority backed by Atomicals ElectrumX, Bitcoin Core, and the token-explorer database. It does not infer ownership from an address string or from indexer metadata alone. Every listing, reservation, purchase preparation, signed transaction, and broadcast is checked against one stable Bitcoin and Atomicals checkpoint.\n\nOne router exposes four isolated protocol authorities. They share the durable transaction engine and operational credentials, but every route, cursor, idempotency scope, listing, offer, order, reservation, browse query, and status count is protocol scoped.\n\nEvery marketplace and action gate defaults to false. Documentation of a capability is not a statement that it is enabled on any deployment.\n\nEvery amount is a decimal string. JSON numbers are rejected for satoshi and protocol quantities.",
+    "version": "1.0.0",
+    "x-sourceRevision": "670030e500710aaef77410540768a87a138d8134",
+    "x-sourceRepository": "https://github.com/bitcoinuniverseio/index-atomicals",
+    "x-documentationVersion": "2026.08",
+    "contact": {
+      "name": "Atomicals and ARC-20 documentation",
+      "url": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20"
+    },
+    "license": { "name": "MIT", "identifier": "MIT" }
+  },
+  "servers": [
+    {
+      "url": "{origin}",
+      "description": "The deployment origin. No production host is published in this documentation.",
+      "variables": {
+        "origin": {
+          "default": "http://127.0.0.1:3043",
+          "description": "Set this to the origin your deployment exposes."
+        }
+      }
+    }
+  ],
+  "tags": [
+    { "name": "Status", "description": "Contract, status, and readiness." },
+    { "name": "Ownership", "description": "Challenge and BIP-322 verification." },
+    { "name": "Listings", "description": "Prepare, finalise, update, and delist." },
+    { "name": "Purchases", "description": "Reserve, prepare, validate, and broadcast." },
+    { "name": "Offers", "description": "Create, cancel, and accept." },
+    { "name": "Settlement", "description": "Settlement reads and operator reconciliation." },
+    { "name": "Adapter", "description": "Envelope free adapter pages consumed by the main service." },
+    { "name": "Internal", "description": "Trusted bridge routes. Not publicly reachable." }
+  ],
+  "security": [{ "sourceBearer": [] }],
+  "components": {
+    "securitySchemes": {
+      "sourceBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Read credential. Provisioned out of band."
+      },
+      "marketplaceSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Marketplace-Signature",
+        "description": "Lowercase hex HMAC-SHA256 over v1\\n{timestamp}\\n{nonce}\\n{method}\\n{path}\\n{sha256(exact_body_bytes)}. The signature covers the exact body bytes, so re-serialising the body invalidates it."
+      },
+      "ownerSession": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Marketplace-Owner-Authorization",
+        "description": "Short lived owner session, issued only after a BIP-322 simple proof for P2WPKH or key-path P2TR."
+      },
+      "internalExecution": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-ARC20-Execution-Authorization",
+        "description": "Internal bridge credential. These routes are not publicly reachable."
+      }
+    },
+    "parameters": {
+      "ProtocolId": {
+        "name": "protocolId",
+        "in": "path",
+        "required": true,
+        "description": "One of the four isolated protocol lanes.",
+        "schema": { "$ref": "#/components/schemas/ProtocolId" }
+      },
+      "ListingId": {
+        "name": "listingId",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "OfferId": {
+        "name": "offerId",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "OrderId": {
+        "name": "orderId",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "ReservationId": {
+        "name": "reservationId",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "ChallengeId": {
+        "name": "challengeId",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string", "format": "uuid" }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "description": "One key per logical action, reused for every retry of that action. Scoped per protocol lane.",
+        "schema": { "type": "string", "minLength": 1, "maxLength": 255 }
+      },
+      "MarketplaceTimestamp": {
+        "name": "X-Marketplace-Timestamp",
+        "in": "header",
+        "required": true,
+        "schema": { "type": "string" }
+      },
+      "MarketplaceNonce": {
+        "name": "X-Marketplace-Nonce",
+        "in": "header",
+        "required": true,
+        "schema": { "type": "string" }
+      },
+      "MarketplaceKeyId": {
+        "name": "X-Marketplace-Key-Id",
+        "in": "header",
+        "required": true,
+        "schema": { "type": "string", "const": "universe-marketplace-v1" }
+      },
+      "AdapterCursor": {
+        "name": "cursor",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string" }
+      },
+      "AdapterLimit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "integer", "minimum": 1, "maximum": 200 }
+      },
+      "AdapterAssetId": {
+        "name": "assetId",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string" }
+      },
+      "AdapterCollectionId": {
+        "name": "collectionId",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string" }
+      },
+      "AdapterOwner": {
+        "name": "owner",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string" }
+      },
+      "AdapterStatus": {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string" }
+      },
+      "AdapterSort": {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string" }
+      },
+      "AdapterDirection": {
+        "name": "direction",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "enum": ["asc", "desc"] }
+      }
+    },
+    "schemas": {
+      "ProtocolId": {
+        "type": "string",
+        "enum": ["arc20", "atomicals_nft", "realms", "subrealms"]
+      },
+      "AtomicAmount": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,38})$",
+        "description": "Decimal string. JSON numbers are rejected for satoshi and protocol quantities."
+      },
+      "Location": { "type": "string", "pattern": "^[0-9a-f]{64}:[0-9]{1,10}$" },
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message"],
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" },
+              "details": { "type": "object", "additionalProperties": true }
+            }
+          },
+          "requestId": { "type": "string" }
+        }
+      },
+      "Contract": {
+        "type": "object",
+        "description": "Machine readable route and signing contract for this protocol lane.",
+        "required": ["protocolId", "routes", "signing"],
+        "properties": {
+          "protocolId": { "$ref": "#/components/schemas/ProtocolId" },
+          "routes": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "signing": { "type": "object", "additionalProperties": true },
+          "releaseSha": { "type": "string" }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "description": "A non-probing status view. It does not contact Bitcoin Core or the Atomicals provider.",
+        "required": ["protocolId", "gates"],
+        "properties": {
+          "protocolId": { "$ref": "#/components/schemas/ProtocolId" },
+          "gates": {
+            "type": "object",
+            "additionalProperties": { "type": "boolean" },
+            "description": "Every gate defaults to false."
+          },
+          "counts": { "type": "object", "additionalProperties": true },
+          "releaseSha": { "type": "string" }
+        }
+      },
+      "Readiness": {
+        "type": "object",
+        "description": "Performs the Bitcoin Core and Atomicals checkpoint probe. Binds the deployed revision and the settlement authority identity so a stale binary or a confused authority is rejected before wallet preparation.",
+        "required": ["ready", "protocolId"],
+        "properties": {
+          "ready": { "type": "boolean" },
+          "protocolId": { "$ref": "#/components/schemas/ProtocolId" },
+          "authorityIdentity": {
+            "type": "string",
+            "description": "index-atomicals-{protocolId}-settlement-v1"
+          },
+          "releaseSha": { "type": "string" },
+          "bitcoinHeight": { "type": ["integer", "null"], "minimum": 0 },
+          "bitcoinHash": { "type": ["string", "null"] },
+          "atomicalsHeight": { "type": ["integer", "null"], "minimum": 0 },
+          "reason": { "type": ["string", "null"] }
+        }
+      },
+      "Listing": {
+        "type": "object",
+        "required": ["listingId", "protocolId", "status", "quantityAtomic", "priceAtomic"],
+        "properties": {
+          "listingId": { "type": "string", "format": "uuid" },
+          "protocolId": { "$ref": "#/components/schemas/ProtocolId" },
+          "status": {
+            "type": "string",
+            "enum": ["live", "reserved", "settling", "settled", "delisted", "expired"]
+          },
+          "assetId": {
+            "type": "string",
+            "description": "For ARC-20 the resolved ticker winner. For the non-fungible lanes an authoritative compact Atomical ID. Never a prefixed storage key."
+          },
+          "location": { "$ref": "#/components/schemas/Location" },
+          "quantityAtomic": {
+            "$ref": "#/components/schemas/AtomicAmount",
+            "description": "Always 1 for the three non-fungible lanes."
+          },
+          "priceAtomic": {
+            "$ref": "#/components/schemas/AtomicAmount",
+            "description": "The exact total Bitcoin consideration."
+          },
+          "payoutAddress": { "type": ["string", "null"] },
+          "revision": { "type": "integer", "minimum": 0 },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ListingPage": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/Listing" } },
+          "nextCursor": { "type": ["string", "null"] }
+        }
+      },
+      "Challenge": {
+        "type": "object",
+        "required": ["challengeId", "message"],
+        "properties": {
+          "challengeId": { "type": "string", "format": "uuid" },
+          "message": {
+            "type": "string",
+            "description": "The exact message to sign with a BIP-322 simple proof. Signing it moves nothing."
+          },
+          "expiresAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ChallengeVerifyRequest": {
+        "type": "object",
+        "required": ["address", "signature"],
+        "properties": {
+          "address": { "type": "string" },
+          "signature": {
+            "type": "string",
+            "description": "BIP-322 simple proof, message type smp, for P2WPKH or key-path P2TR."
+          }
+        }
+      },
+      "OwnerSession": {
+        "type": "object",
+        "required": ["session", "expiresAt"],
+        "properties": {
+          "session": {
+            "type": "string",
+            "description": "Present it in X-Marketplace-Owner-Authorization. Short lived by design."
+          },
+          "expiresAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PreparedAction": {
+        "type": "object",
+        "description": "Everything the wallet must sign, with the exact scope it must use.",
+        "required": ["psbt", "sighash"],
+        "properties": {
+          "psbt": {
+            "type": "string",
+            "description": "PSBT v0. Seller preparations have one collateral input, one payout output, sequence 0xfffffffd, and a witness UTXO."
+          },
+          "sighash": {
+            "type": "string",
+            "description": "Seller preparations use 0x83, SIGHASH_SINGLE with ANYONECANPAY. Buyer P2WPKH inputs require SIGHASH_ALL; key-path P2TR allows default or ALL."
+          },
+          "unsignedDigest": { "type": "string" },
+          "expiresAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "SignedSubmission": {
+        "type": "object",
+        "required": ["psbt"],
+        "properties": {
+          "psbt": {
+            "type": "string",
+            "description": "The signed PSBT. It must preserve the prepared unsigned digest, exact previous outputs, output ordering, miner fee, fee-rate ceiling, and the Atomicals transfer blueprint."
+          }
+        }
+      },
+      "ListingPrepareRequest": {
+        "type": "object",
+        "required": ["protocolData", "priceAtomic"],
+        "properties": {
+          "protocolData": {
+            "type": "object",
+            "description": "Exact. Listing validation accepts location and an optional payoutAddress.",
+            "required": ["location"],
+            "properties": {
+              "location": { "$ref": "#/components/schemas/Location" },
+              "payoutAddress": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "priceAtomic": { "$ref": "#/components/schemas/AtomicAmount" }
+        }
+      },
+      "UpdatePrepareRequest": {
+        "type": "object",
+        "required": ["priceAtomic"],
+        "properties": {
+          "protocolData": {
+            "type": "object",
+            "description": "Exact. Update accepts an optional payoutAddress only.",
+            "properties": { "payoutAddress": { "type": "string" } },
+            "additionalProperties": false
+          },
+          "priceAtomic": { "$ref": "#/components/schemas/AtomicAmount" },
+          "expectedRevision": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "DelistRequest": {
+        "type": "object",
+        "properties": {
+          "protocolData": {
+            "type": "object",
+            "description": "Exact. Delist accepts an empty object.",
+            "additionalProperties": false
+          },
+          "expectedRevision": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "BuyerInput": {
+        "type": "object",
+        "required": ["location", "valueAtomic", "scriptHex"],
+        "properties": {
+          "location": { "$ref": "#/components/schemas/Location" },
+          "valueAtomic": { "$ref": "#/components/schemas/AtomicAmount" },
+          "scriptHex": { "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "ReservationRequest": {
+        "type": "object",
+        "required": ["buyerInputs", "receiveAddress", "feeRateAtomicVb"],
+        "properties": {
+          "listingId": { "type": "string", "format": "uuid" },
+          "buyerInputs": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 63,
+            "description": "One of the maximum 64 ordered spend claims is reserved for collateral. Inputs must be confirmed and uncoloured.",
+            "items": { "$ref": "#/components/schemas/BuyerInput" }
+          },
+          "receiveAddress": { "type": "string" },
+          "changeAddress": { "type": "string" },
+          "feeRateAtomicVb": { "$ref": "#/components/schemas/AtomicAmount" }
+        }
+      },
+      "Reservation": {
+        "type": "object",
+        "description": "The complete stored projection. Reload and purchase preparation both recompute and compare it, and wallet supplied mutations are rejected.",
+        "required": ["reservationId", "protocolId"],
+        "properties": {
+          "reservationId": { "type": "string", "format": "uuid" },
+          "protocolId": { "$ref": "#/components/schemas/ProtocolId" },
+          "subjectId": { "type": "string", "format": "uuid" },
+          "actionIntentId": { "type": "string", "format": "uuid" },
+          "claimId": { "type": "string", "format": "uuid" },
+          "spendFenceId": { "type": "string", "format": "uuid" },
+          "listingId": { "type": ["string", "null"], "format": "uuid" },
+          "offerId": { "type": ["string", "null"], "format": "uuid" },
+          "fees": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "spendClaims": {
+            "type": "array",
+            "maxItems": 64,
+            "items": { "type": "object", "additionalProperties": true }
+          },
+          "economicHash": {
+            "type": "string",
+            "description": "Uses the bitcoin-universe:marketplace-v1:purchase-reservation-economics:v1 schema and commits an absent optional requestId as JSON null."
+          },
+          "expiresAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "OfferCreateRequest": {
+        "type": "object",
+        "required": ["protocolData", "amountAtomic"],
+        "properties": {
+          "protocolData": {
+            "type": "object",
+            "description": "Exact. Offer creation accepts listingId and expectedListingRevision.",
+            "required": ["listingId", "expectedListingRevision"],
+            "properties": {
+              "listingId": { "type": "string", "format": "uuid" },
+              "expectedListingRevision": { "type": "integer", "minimum": 0 }
+            },
+            "additionalProperties": false
+          },
+          "amountAtomic": { "$ref": "#/components/schemas/AtomicAmount" },
+          "expiresAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Offer": {
+        "type": "object",
+        "required": ["offerId", "protocolId", "status", "amountAtomic"],
+        "properties": {
+          "offerId": { "type": "string", "format": "uuid" },
+          "protocolId": { "$ref": "#/components/schemas/ProtocolId" },
+          "listingId": { "type": "string", "format": "uuid" },
+          "status": {
+            "type": "string",
+            "enum": ["open", "cancelled", "accepted", "settled", "expired"]
+          },
+          "amountAtomic": { "$ref": "#/components/schemas/AtomicAmount" }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "required": ["orderId", "protocolId", "state"],
+        "properties": {
+          "orderId": { "type": "string", "format": "uuid" },
+          "protocolId": { "$ref": "#/components/schemas/ProtocolId" },
+          "state": {
+            "type": "string",
+            "enum": [
+              "prepared",
+              "finalized",
+              "broadcasting",
+              "submitted",
+              "mempool",
+              "confirmed",
+              "failed",
+              "recovery"
+            ]
+          },
+          "transactionId": { "type": ["string", "null"], "pattern": "^[0-9a-fA-F]{64}$" }
+        }
+      },
+      "Settlement": {
+        "type": "object",
+        "required": ["orderId", "state"],
+        "properties": {
+          "orderId": { "type": "string", "format": "uuid" },
+          "state": { "type": "string" },
+          "transactionId": { "type": ["string", "null"], "pattern": "^[0-9a-fA-F]{64}$" },
+          "confirmations": { "type": ["integer", "null"], "minimum": 0 },
+          "evidence": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Bitcoin Core transaction, mempool, block header, spending prevout, and UTXO evidence. Replacement, drop, conflict, and reorganisation evidence is recorded rather than guessed."
+          }
+        }
+      },
+      "AdapterPage": {
+        "type": "object",
+        "description": "Envelope free adapter page. Exactly items and an optional nextCursor.",
+        "required": ["items"],
+        "properties": {
+          "items": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "nextCursor": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      },
+      "PositionSourceReady": {
+        "type": "object",
+        "required": ["ready"],
+        "properties": {
+          "ready": { "type": "boolean" },
+          "reason": { "type": ["string", "null"] }
+        }
+      },
+      "PositionSourceResult": {
+        "type": "object",
+        "description": "Uses universe-marketplace-protocol-position-v1 and contains only positions from that protocol. Spent and unrelated outputs return a complete empty set. Mixed, unknown, non-standard, or internally inconsistent Atomicals fail closed rather than disappearing from composite evidence.",
+        "required": ["schema", "positions"],
+        "properties": {
+          "schema": { "type": "string", "const": "universe-marketplace-protocol-position-v1" },
+          "positions": {
+            "type": "array",
+            "items": { "type": "object", "additionalProperties": true }
+          }
+        }
+      },
+      "InternalActionRequest": {
+        "type": "object",
+        "description": "Exactly three fields. It must contain no walletAuth key.",
+        "required": ["version", "operation", "input"],
+        "properties": {
+          "version": { "type": "string", "const": "1" },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "validate_listing_request",
+              "prepare_listing",
+              "validate_signed_listing",
+              "finalize_listing",
+              "prepare_update",
+              "validate_signed_update",
+              "finalize_update",
+              "prepare_delist",
+              "validate_signed_delist",
+              "finalize_delist",
+              "reserve_purchase",
+              "prepare_purchase",
+              "validate_signed_purchase",
+              "broadcast_purchase",
+              "create_offer",
+              "cancel_offer",
+              "prepare_offer_acceptance",
+              "validate_signed_offer_acceptance",
+              "finalize_offer_acceptance",
+              "observe_confirmation",
+              "observe_protocol_settlement",
+              "reconcile_lifecycle"
+            ]
+          },
+          "input": { "type": "object", "additionalProperties": true }
+        },
+        "additionalProperties": false
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Missing or invalid credentials, or an invalid signature.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      },
+      "Conflict": {
+        "description": "An idempotency mismatch, a revision conflict, or an active reservation. Inspect rather than retrying with a new key.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      },
+      "FailedClosed": {
+        "description": "A verification view disagreed, or the checkpoint moved mid-check. Nothing was spent.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      },
+      "NotFound": {
+        "description": "Missing, expired, consumed, or out of scope.",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+      }
+    }
+  },
+  "paths": {
+    "/api/marketplace/v1/protocols/{protocolId}": {
+      "get": {
+        "operationId": "marketplaceGetContract",
+        "tags": ["Status"],
+        "summary": "Machine readable route and signing contract",
+        "parameters": [{ "$ref": "#/components/parameters/ProtocolId" }],
+        "responses": {
+          "200": {
+            "description": "The contract for this lane.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Contract" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/status": {
+      "get": {
+        "operationId": "marketplaceGetStatus",
+        "tags": ["Status"],
+        "summary": "Non-probing status view",
+        "parameters": [{ "$ref": "#/components/parameters/ProtocolId" }],
+        "responses": {
+          "200": {
+            "description": "Status and gate state.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Status" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/readiness": {
+      "get": {
+        "operationId": "marketplaceGetReadiness",
+        "tags": ["Status"],
+        "summary": "Bitcoin Core and Atomicals checkpoint probe",
+        "parameters": [{ "$ref": "#/components/parameters/ProtocolId" }],
+        "responses": {
+          "200": {
+            "description": "Ready.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Readiness" } }
+            }
+          },
+          "503": {
+            "description": "Not ready.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Readiness" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/listings": {
+      "get": {
+        "operationId": "marketplaceListListings",
+        "tags": ["Listings"],
+        "summary": "List listings",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/AdapterCursor" },
+          { "$ref": "#/components/parameters/AdapterLimit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of listings.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ListingPage" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/listings/{listingId}": {
+      "get": {
+        "operationId": "marketplaceGetListing",
+        "tags": ["Listings"],
+        "summary": "Read one listing",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/ListingId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The listing.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Listing" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/auth/challenges": {
+      "post": {
+        "operationId": "marketplaceCreateChallenge",
+        "tags": ["Ownership"],
+        "summary": "Request an ownership challenge",
+        "description": "Signing the returned message proves control of the address without moving anything.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["address"],
+                "properties": { "address": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A challenge to sign.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Challenge" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "$ref": "#/components/responses/Conflict" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/auth/challenges/{challengeId}/verify": {
+      "post": {
+        "operationId": "marketplaceVerifyChallenge",
+        "tags": ["Ownership"],
+        "summary": "Verify a BIP-322 proof and issue an owner session",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/ChallengeId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChallengeVerifyRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A short lived owner session.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/OwnerSession" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/listings/prepare": {
+      "post": {
+        "operationId": "marketplacePrepareListing",
+        "tags": ["Listings"],
+        "summary": "Prepare a listing",
+        "description": "Resolves the asset to its verified winner and verifies the collateral against Bitcoin Core and the Atomicals provider under one stable checkpoint. Mixed collateral, spent outputs, checkpoint drift, ambiguous balances, Atomicals operations, and burns are all rejected.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [], "ownerSession": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ListingPrepareRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What the wallet must sign.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/PreparedAction" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/listings/finalize": {
+      "post": {
+        "operationId": "marketplaceFinalizeListing",
+        "tags": ["Listings"],
+        "summary": "Finalise a signed listing",
+        "description": "The authority verifies the signature before persisting a live listing.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [], "ownerSession": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/SignedSubmission" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The live listing.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Listing" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/listings/{listingId}/update/prepare": {
+      "post": {
+        "operationId": "marketplacePrepareUpdate",
+        "tags": ["Listings"],
+        "summary": "Prepare a listing update",
+        "description": "A price change is not a metadata edit. Collateral is re-verified at a fresh checkpoint.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [], "ownerSession": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/ListingId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdatePrepareRequest" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What the wallet must sign.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/PreparedAction" } }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/listings/{listingId}/update/finalize": {
+      "post": {
+        "operationId": "marketplaceFinalizeUpdate",
+        "tags": ["Listings"],
+        "summary": "Finalise a signed listing update",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [], "ownerSession": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/ListingId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/SignedSubmission" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated listing.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Listing" } }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/listings/{listingId}/delist": {
+      "post": {
+        "operationId": "marketplaceDelist",
+        "tags": ["Listings"],
+        "summary": "Delist",
+        "description": "Removes the offer to sell. It moves nothing on chain, because a listing never moved anything.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [], "ownerSession": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/ListingId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/DelistRequest" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The delisted listing.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Listing" } }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/reservations": {
+      "post": {
+        "operationId": "marketplaceCreateReservation",
+        "tags": ["Purchases"],
+        "summary": "Reserve a listing for purchase",
+        "description": "Buyer funding inputs must be confirmed P2WPKH or key-path P2TR outputs and must be uncoloured in both the active script hash view and location history.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ReservationRequest" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The complete reservation projection.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Reservation" } }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/reservations/{reservationId}": {
+      "get": {
+        "operationId": "marketplaceGetReservation",
+        "tags": ["Purchases"],
+        "summary": "Reload a reservation without mutation",
+        "description": "Recomputes and compares the entire stored projection. Wallet supplied mutations are rejected.",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/ReservationId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The reservation.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Reservation" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/purchases/prepare": {
+      "post": {
+        "operationId": "marketplacePreparePurchase",
+        "tags": ["Purchases"],
+        "summary": "Prepare the settlement transaction",
+        "description": "Deterministic ordering: input 0 is the first buyer funding input, inputs 1 through N are seller inputs in request order, remaining inputs are the remaining buyer funding inputs, output 0 receives the complete asset amount, outputs 1 through N are the seller payouts, the marketplace fee output follows when non-zero, and buyer change is last when it is not dust.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["reservationId"],
+                "properties": { "reservationId": { "type": "string", "format": "uuid" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What the wallet must sign.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/PreparedAction" } }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/purchases/{orderId}/validate-signed": {
+      "post": {
+        "operationId": "marketplaceValidateSignedPurchase",
+        "tags": ["Purchases"],
+        "summary": "Validate signed material before broadcast",
+        "description": "Performs Atomicals dry validation and Bitcoin Core testmempoolaccept before writing a durable broadcast intent. A failure here costs nothing.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/OrderId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/SignedSubmission" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validated.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Order" } }
+            }
+          },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/purchases/{orderId}/broadcast": {
+      "post": {
+        "operationId": "marketplaceBroadcastPurchase",
+        "tags": ["Purchases"],
+        "summary": "Broadcast after validation passes",
+        "description": "A transport failure after a durable broadcast intent is an ambiguous outcome and never triggers a blind rebroadcast.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/OrderId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "responses": {
+          "202": {
+            "description": "Broadcast intent recorded.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Order" } }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/offers": {
+      "post": {
+        "operationId": "marketplaceCreateOffer",
+        "tags": ["Offers"],
+        "summary": "Create an offer",
+        "description": "Buy or offer execution additionally requires an exact fee scriptPubKey to be configured on the deployment.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/OfferCreateRequest" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The offer.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Offer" } }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/offers/{offerId}/cancel": {
+      "post": {
+        "operationId": "marketplaceCancelOffer",
+        "tags": ["Offers"],
+        "summary": "Cancel an offer",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [], "ownerSession": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/OfferId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The cancelled offer.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Offer" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/offers/{offerId}/accept": {
+      "post": {
+        "operationId": "marketplaceAcceptOffer",
+        "tags": ["Offers"],
+        "summary": "Accept an offer",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [], "ownerSession": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/OfferId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "responses": {
+          "200": {
+            "description": "What the wallet must sign to settle.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/PreparedAction" } }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/settlements/{orderId}": {
+      "get": {
+        "operationId": "marketplaceGetSettlement",
+        "tags": ["Settlement"],
+        "summary": "Read settlement state",
+        "description": "A settlement status is a product state. Verify the chain and the index separately before treating a trade as complete.",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/OrderId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Settlement state and evidence.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Settlement" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/settlements/{orderId}/reconcile": {
+      "post": {
+        "operationId": "marketplaceReconcileSettlement",
+        "tags": ["Settlement"],
+        "summary": "Operator reconciliation against chain evidence",
+        "description": "Operator only. Reconciliation resolves a service-side record against the chain. It is not a way to undo a confirmed settlement.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/OrderId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reconciled settlement state.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Settlement" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/buys": {
+      "post": {
+        "operationId": "marketplaceLegacyBuy",
+        "tags": ["Purchases"],
+        "summary": "Legacy alias",
+        "deprecated": true,
+        "description": "Deprecated. New integrations use POST /reservations followed by POST /purchases/prepare, which separate the steps this alias merged.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Legacy response.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/PreparedAction" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/marketplace/v1/protocols/{protocolId}/orders/{orderId}/reconcile": {
+      "post": {
+        "operationId": "marketplaceLegacyReconcile",
+        "tags": ["Settlement"],
+        "summary": "Legacy alias",
+        "deprecated": true,
+        "description": "Deprecated. New integrations use POST /settlements/{orderId}/reconcile.",
+        "security": [{ "sourceBearer": [], "marketplaceSignature": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/OrderId" },
+          { "$ref": "#/components/parameters/MarketplaceKeyId" },
+          { "$ref": "#/components/parameters/MarketplaceTimestamp" },
+          { "$ref": "#/components/parameters/MarketplaceNonce" },
+          { "$ref": "#/components/parameters/IdempotencyKey" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Legacy response.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Settlement" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/assets": {
+      "get": {
+        "operationId": "adapterListAssets",
+        "tags": ["Adapter"],
+        "summary": "Envelope free adapter page",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/AdapterCursor" },
+          { "$ref": "#/components/parameters/AdapterLimit" },
+          { "$ref": "#/components/parameters/AdapterAssetId" },
+          { "$ref": "#/components/parameters/AdapterOwner" },
+          { "$ref": "#/components/parameters/AdapterStatus" },
+          { "$ref": "#/components/parameters/AdapterSort" },
+          { "$ref": "#/components/parameters/AdapterDirection" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AdapterPage" } }
+            }
+          },
+          "400": {
+            "description": "An unsupported filter. Adapter filters fail closed.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/listings": {
+      "get": {
+        "operationId": "adapterListListings",
+        "tags": ["Adapter"],
+        "summary": "Envelope free adapter page",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/AdapterCursor" },
+          { "$ref": "#/components/parameters/AdapterLimit" },
+          { "$ref": "#/components/parameters/AdapterStatus" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AdapterPage" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/listings/{listingId}": {
+      "get": {
+        "operationId": "adapterGetListing",
+        "tags": ["Adapter"],
+        "summary": "Envelope free adapter read",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/ListingId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The listing.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Listing" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/offers": {
+      "get": {
+        "operationId": "adapterListOffers",
+        "tags": ["Adapter"],
+        "summary": "Envelope free adapter page",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/AdapterCursor" },
+          { "$ref": "#/components/parameters/AdapterLimit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AdapterPage" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/collections": {
+      "get": {
+        "operationId": "adapterListCollections",
+        "tags": ["Adapter"],
+        "summary": "Envelope free adapter page",
+        "description": "ARC-20 collection pages are empty by design.",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/AdapterCursor" },
+          { "$ref": "#/components/parameters/AdapterLimit" },
+          { "$ref": "#/components/parameters/AdapterCollectionId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AdapterPage" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/activity": {
+      "get": {
+        "operationId": "adapterListActivity",
+        "tags": ["Adapter"],
+        "summary": "Envelope free adapter page",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/AdapterCursor" },
+          { "$ref": "#/components/parameters/AdapterLimit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AdapterPage" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/position-source/ready": {
+      "get": {
+        "operationId": "adapterPositionSourceReady",
+        "tags": ["Adapter"],
+        "summary": "Composite position source readiness",
+        "parameters": [{ "$ref": "#/components/parameters/ProtocolId" }],
+        "responses": {
+          "200": {
+            "description": "Readiness.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PositionSourceReady" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/position-source/outpoints/{outpoint}": {
+      "get": {
+        "operationId": "adapterPositionSourceOutpoint",
+        "tags": ["Adapter"],
+        "summary": "Composite position evidence for an outpoint",
+        "description": "Joins Bitcoin Core's current UTXO, the Atomicals location inventory, active script hash balances, the ticker winner, and Realm and Subrealm winners between stable checkpoint probes.",
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          {
+            "name": "outpoint",
+            "in": "path",
+            "required": true,
+            "description": "In the form txid:vout.",
+            "schema": { "type": "string", "pattern": "^[0-9a-fA-F]{64}:[0-9]{1,10}$" }
+          },
+          {
+            "name": "heightAtomic",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "blockHash", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Composite positions for that outpoint.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PositionSourceResult" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/internal/readiness": {
+      "get": {
+        "operationId": "internalReadiness",
+        "tags": ["Internal"],
+        "summary": "Trusted bridge readiness probe",
+        "description": "Not publicly reachable. Documented so integrators understand the boundary. Requires the read bearer, a separate internal execution bearer, and a separate internal execution signature.",
+        "security": [{ "sourceBearer": [], "internalExecution": [] }],
+        "parameters": [{ "$ref": "#/components/parameters/ProtocolId" }],
+        "responses": {
+          "200": {
+            "description": "Readiness bound to the deployed revision and settlement authority identity.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Readiness" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/internal/actions": {
+      "post": {
+        "operationId": "internalActions",
+        "tags": ["Internal"],
+        "summary": "Trusted bridge action dispatcher",
+        "description": "Not publicly reachable. The request has exactly three fields and must contain no walletAuth key. The authority durably binds operation, idempotency key, request hash, actor, input hash, and transport hash before invoking the same lifecycle the public API uses.",
+        "security": [{ "sourceBearer": [], "internalExecution": [] }],
+        "parameters": [{ "$ref": "#/components/parameters/ProtocolId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InternalActionRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The direct JSON adapter result for the operation.",
+            "content": {
+              "application/json": { "schema": { "type": "object", "additionalProperties": true } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "422": { "$ref": "#/components/responses/FailedClosed" }
+        }
+      }
+    },
+    "/v1/marketplace/protocols/{protocolId}/internal/reservations/{reservationId}": {
+      "get": {
+        "operationId": "internalGetReservation",
+        "tags": ["Internal"],
+        "summary": "Trusted bridge reservation reload",
+        "description": "Not publicly reachable. Uses the same headers and signs the SHA-256 of empty bytes. Missing, expired, consumed, or non-internal reservations return not found.",
+        "security": [{ "sourceBearer": [], "internalExecution": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProtocolId" },
+          { "$ref": "#/components/parameters/ReservationId" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The reservation.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Reservation" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    }
+  }
+}

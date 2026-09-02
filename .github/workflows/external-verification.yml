@@ -1,0 +1,65 @@
+name: External verification
+
+# Checks the external links and the ecosystem registry against reality.
+#
+# Scheduled rather than part of pull request validation, because a network
+# failure is not a code defect and must never block a merge. When something is
+# unreachable it is recorded as unreachable, never as closed.
+
+on:
+  schedule:
+    # Weekly, on Monday, outside the busy window for the shared runner fleet.
+    - cron: '41 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: atomicals-docs-external-verification
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: External links and ecosystem records
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: [self-hosted, universe-ci, linux-ultra]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install from the lockfile
+        run: npm ci
+
+      - name: Build the site so the checker sees the published links
+        run: node scripts/build.mjs
+
+      - name: Verify external links with caching, retries, and rate-limit handling
+        run: node scripts/check-external-links.mjs --report external-links.json
+
+      - name: Verify the ecosystem registry against reachable sources
+        run: node scripts/check-ecosystem.mjs --report ecosystem-report.json
+
+      - name: File what needs a human decision
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/report-external-verification.mjs
+
+      - name: Upload the verification reports
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: external-verification-${{ github.run_id }}
+          path: |
+            external-links.json
+            ecosystem-report.json
+          retention-days: 30
+          if-no-files-found: warn

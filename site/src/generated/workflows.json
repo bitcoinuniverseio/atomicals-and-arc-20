@@ -1,0 +1,325 @@
+{
+  "generatedBy": "scripts/generate-workflows.mjs",
+  "workflows": [
+    {
+      "workflowId": "resolve-atomical-ownership",
+      "summary": "Resolve an Atomical and inspect its current ownership",
+      "description": "Resolve a Realm or NFT identifier and fetch the asset, its holders, and its history.",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "fetch-asset",
+          "operationId": "nftrealms.getAsset",
+          "method": "GET",
+          "path": "/v1/atomicals/assets/{atomicalId}",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/v1/atomicals/assets/REPLACE_ME",
+          "typescript": "const response = await client.get_asset(/* parameters per atomicals-nfts-realms contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/v1/atomicals/assets/{atomicalId}', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step fetch-asset failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        },
+        {
+          "stepId": "fetch-holders",
+          "operationId": "nftrealms.getAssetHolders",
+          "method": "GET",
+          "path": "/v1/atomicals/assets/{atomicalId}/holders",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/v1/atomicals/assets/REPLACE_ME/holders",
+          "typescript": "const response = await client.get_asset_holders(/* parameters per atomicals-nfts-realms contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/v1/atomicals/assets/{atomicalId}/holders', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step fetch-holders failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "inspect-arc20-ticker",
+      "summary": "Inspect an ARC-20 ticker and its metadata",
+      "description": "",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "feed-first-page",
+          "operationId": "arc20.arc20GetFeedPage",
+          "method": "GET",
+          "path": "/token-explorer/arc20",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/token-explorer/arc20",
+          "typescript": "const response = await client.arc20_get_feed_page(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/token-explorer/arc20', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step feed-first-page failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "inspect-arc20-balance",
+      "summary": "Inspect ARC-20 balance and allocation through the indexed feed",
+      "description": "Read the feed page and status so a caller can see allocation state and endpoint freshness together.",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "read-status",
+          "operationId": "arc20.arc20GetStatus",
+          "method": "GET",
+          "path": "/token-explorer/status",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/token-explorer/status",
+          "typescript": "const response = await client.arc20_get_status(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/token-explorer/status', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step read-status failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        },
+        {
+          "stepId": "read-feed",
+          "operationId": "arc20.arc20GetFeedPage",
+          "method": "GET",
+          "path": "/token-explorer/arc20",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/token-explorer/arc20",
+          "typescript": "const response = await client.arc20_get_feed_page(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/token-explorer/arc20', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step read-feed failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "verify-container-dmint",
+      "summary": "Verify a Container and DMINT item",
+      "description": "Fetch the NFT asset and its metadata, then validate the DMINT proof for an item locally.",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "fetch-nft",
+          "operationId": "nftrealms.getNft",
+          "method": "GET",
+          "path": "/v1/atomicals-nfts/assets/{atomicalId}",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/v1/atomicals-nfts/assets/REPLACE_ME",
+          "typescript": "const response = await client.get_nft(/* parameters per atomicals-nfts-realms contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/v1/atomicals-nfts/assets/{atomicalId}', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step fetch-nft failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        },
+        {
+          "stepId": "fetch-metadata",
+          "operationId": "nftrealms.getNftMetadata",
+          "method": "GET",
+          "path": "/v1/atomicals-nfts/assets/{atomicalId}/metadata",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/v1/atomicals-nfts/assets/REPLACE_ME/metadata",
+          "typescript": "const response = await client.get_nft_metadata(/* parameters per atomicals-nfts-realms contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/v1/atomicals-nfts/assets/{atomicalId}/metadata', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step fetch-metadata failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "resolve-realm-subrealm",
+      "summary": "Resolve a Realm and its Subrealms",
+      "description": "",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "resolve",
+          "operationId": "nftrealms.resolveRealm",
+          "method": "GET",
+          "path": "/v1/atomicals-realms/resolve",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/v1/atomicals-realms/resolve",
+          "typescript": "const response = await client.resolve_realm(/* parameters per atomicals-nfts-realms contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/v1/atomicals-realms/resolve', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step resolve failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        },
+        {
+          "stepId": "subrealms",
+          "operationId": "nftrealms.getSubrealms",
+          "method": "GET",
+          "path": "/v1/atomicals-realms/subrealms",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/v1/atomicals-realms/subrealms",
+          "typescript": "const response = await client.get_subrealms(/* parameters per atomicals-nfts-realms contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/v1/atomicals-realms/subrealms', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step subrealms failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "diagnose-endpoint",
+      "summary": "Diagnose endpoint identity, height, and freshness",
+      "description": "The exact sequence the Conformance Workbench runs - liveness, readiness, and status with the indexed lag.",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "liveness",
+          "operationId": "arc20.arc20GetLive",
+          "method": "GET",
+          "path": "/live",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/live",
+          "typescript": "const response = await client.arc20_get_live(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/live', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step liveness failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.body#/live == true"
+            }
+          ]
+        },
+        {
+          "stepId": "readiness",
+          "operationId": "arc20.arc20GetReady",
+          "method": "GET",
+          "path": "/ready",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/ready",
+          "typescript": "const response = await client.arc20_get_ready(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/ready', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step readiness failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        },
+        {
+          "stepId": "status",
+          "operationId": "arc20.arc20GetStatus",
+          "method": "GET",
+          "path": "/token-explorer/status",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/token-explorer/status",
+          "typescript": "const response = await client.arc20_get_status(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/token-explorer/status', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step status failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "safe-arc20-transfer-plan",
+      "summary": "Build and validate a safe ARC-20 transfer plan locally",
+      "description": "Entirely local. Uses the UTXO Safety Planner to generate candidate plans and the Protocol Lab to replay the winning plan before anything is signed. No OpenAPI call moves funds.\n",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "plan-locally",
+          "operationId": "nftrealms.getByOutpoint",
+          "method": "GET",
+          "path": "/v1/atomicals/utxos/{txid}/{vout}",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/v1/atomicals/utxos/REPLACE_ME/REPLACE_ME",
+          "typescript": "const response = await client.get_by_outpoint(/* parameters per atomicals-nfts-realms contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/v1/atomicals/utxos/{txid}/{vout}', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step plan-locally failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode != 500"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "execute-safe-transfer-on-regtest",
+      "summary": "Execute the safe-transfer scenario against the local Regtest Lab",
+      "description": "Requires npm run lab:up and lab:seed. Broadcasts only to the disposable regtest chain.",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "lab-health",
+          "operationId": "arc20.arc20GetLive",
+          "method": "GET",
+          "path": "/live",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/live",
+          "typescript": "const response = await client.arc20_get_live(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/live', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step lab-health failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.body#/live == true"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "replay-allocation-vector",
+      "summary": "Replay an ARC-20 allocation conformance vector",
+      "description": "Local execution of conformance vectors through the shared allocation engine. No network at all.",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "freshness-check",
+          "operationId": "arc20.arc20GetStatus",
+          "method": "GET",
+          "path": "/token-explorer/status",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/token-explorer/status",
+          "typescript": "const response = await client.arc20_get_status(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/token-explorer/status', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step freshness-check failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.statusCode == 200"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "workflowId": "run-avm-beta-sample",
+      "summary": "Execute and inspect an AVM beta sample locally",
+      "description": "Runs the pinned beta interpreter in the AVM Workbench. Experimental layer, never a deployment claim.",
+      "document": "atomicals-read-only.arazzo.yaml",
+      "steps": [
+        {
+          "stepId": "liveness-only",
+          "operationId": "arc20.arc20GetLive",
+          "method": "GET",
+          "path": "/live",
+          "origin": "http://127.0.0.1:3043",
+          "curl": "curl -sS -H 'accept: application/json' http://127.0.0.1:3043/live",
+          "typescript": "const response = await client.arc20_get_live(/* parameters per arc20 contract */)\nassert(response.ok)",
+          "javascript": "const response = await fetch('http://127.0.0.1:3043/live', { headers: { accept: 'application/json' } })\nif (!response.ok) throw new Error('step liveness-only failed')",
+          "successCriteria": [
+            {
+              "condition": "$response.body#/live == true"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

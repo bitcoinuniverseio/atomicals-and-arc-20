@@ -1,0 +1,7 @@
+{
+  "statusVersion": "1.0.0",
+  "scope": "public",
+  "checkedAt": "2026-08-31",
+  "note": "Written by the scheduled source-drift workflow. A finding means an upstream repository has moved past its pinned revision. The documentation keeps describing the pinned revision until a person re-verifies it.",
+  "findings": []
+}

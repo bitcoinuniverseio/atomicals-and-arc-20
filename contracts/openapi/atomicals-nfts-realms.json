@@ -1,0 +1,1317 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Universe Atomicals NFT, Realm, and Subrealm API",
+    "summary": "Read model for plain NFTs, Realms, and Subrealms projected from Atomicals ElectrumX.",
+    "description": "A materialised read model, not a validator. It projects plain NFTs, Realms, and Subrealms and deliberately excludes fungible tokens, Containers, and DMINT items. Every read answer carries the generation and indexed height it was computed at, and a caller should store both alongside any cached result.\n\nThis document is validated in CI against contracts/routes/atomicals-nfts-realms.json. A route present in one and absent from the other fails the build.",
+    "version": "1.0.0",
+    "x-sourceRevision": "1d9109c68d95d5985632a60d6596b3612d3f6ef1",
+    "x-sourceRepository": "https://github.com/bitcoinuniverseio/index-atomicals-nfts-and-realms",
+    "x-documentationVersion": "2026.08",
+    "x-projection": {
+      "included": ["nft", "realm", "subrealm"],
+      "excluded": ["ft", "dft", "container", "dmitem"],
+      "readOnly": true
+    },
+    "contact": {
+      "name": "Atomicals and ARC-20 documentation",
+      "url": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20"
+    },
+    "license": { "name": "MIT", "identifier": "MIT" }
+  },
+  "servers": [
+    {
+      "url": "{origin}",
+      "description": "The deployment origin. No production host is published in this documentation.",
+      "variables": {
+        "origin": {
+          "default": "http://127.0.0.1:3044",
+          "description": "Set this to the origin your deployment exposes."
+        }
+      }
+    }
+  ],
+  "tags": [
+    { "name": "Operational", "description": "Liveness, readiness, health, version, and metrics." },
+    { "name": "Index", "description": "Index status, events, refresh, and rollback." },
+    { "name": "Assets", "description": "Projected NFT, Realm, and Subrealm reads." },
+    { "name": "Names", "description": "Realm resolution and hierarchy." },
+    { "name": "Chain", "description": "Transaction, block, and outpoint lookups." },
+    { "name": "Media", "description": "Stored media bytes." },
+    { "name": "Token explorer", "description": "Feed pages consumed by product surfaces." }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sourceBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Feed bearer token. Provisioned out of band. Never place it in browser delivered code."
+      },
+      "adminToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Indexer-Admin-Token",
+        "description": "Operator token for refresh and rollback. Not a public credential."
+      }
+    },
+    "parameters": {
+      "AtomicalIdPath": {
+        "name": "atomicalId",
+        "in": "path",
+        "required": true,
+        "description": "Durable Atomical identity.",
+        "schema": { "$ref": "#/components/schemas/AtomicalId" }
+      },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximum items to return.",
+        "schema": { "type": "integer", "minimum": 1, "maximum": 999 }
+      },
+      "CursorQuery": {
+        "name": "cursor",
+        "in": "query",
+        "required": false,
+        "description": "Opaque cursor from a previous page. Valid only within its generation.",
+        "schema": { "$ref": "#/components/schemas/Cursor" }
+      },
+      "PageQuery": {
+        "name": "page",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "integer", "minimum": 1, "maximum": 1000000 }
+      },
+      "NameQuery": {
+        "name": "name",
+        "in": "query",
+        "required": true,
+        "description": "Exact name bytes. The service normalises for comparison and keeps the original.",
+        "schema": { "type": "string", "minLength": 1, "maxLength": 4096 }
+      }
+    },
+    "headers": {
+      "RequestId": {
+        "description": "Per-request identifier. Log it on success as well as failure.",
+        "schema": { "type": "string" }
+      },
+      "GenerationId": {
+        "description": "The immutable snapshot this answer came from.",
+        "schema": { "type": "string" }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request was malformed or a value was invalid.",
+        "headers": { "x-request-id": { "$ref": "#/components/headers/RequestId" } },
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "examples": {
+              "malformedAtomicalId": {
+                "summary": "Malformed Atomical ID",
+                "value": {
+                  "error": { "code": "VALIDATION_FAILED", "message": "Atomical ID is malformed." },
+                  "requestId": "req_01J0000000000000000000"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The route does not exist, or the asset is not in the active generation, or it is outside this projection. Check readiness before concluding anything is missing.",
+        "headers": { "x-request-id": { "$ref": "#/components/headers/RequestId" } },
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "examples": {
+              "nftNotFound": {
+                "summary": "Not in the active generation",
+                "value": {
+                  "error": {
+                    "code": "NFT_NOT_FOUND",
+                    "message": "NFT was not found in the active generation."
+                  },
+                  "requestId": "req_01J0000000000000000001"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MethodNotAllowed": {
+        "description": "A known route with the wrong method. The allow header names the correct one.",
+        "headers": {
+          "allow": { "schema": { "type": "string" } },
+          "x-request-id": { "$ref": "#/components/headers/RequestId" }
+        },
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "Unauthorized": {
+        "description": "Missing or invalid credentials.",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+        }
+      },
+      "Unavailable": {
+        "description": "Not ready, unavailable, or degraded. The body carries the reason.",
+        "content": {
+          "application/json": { "schema": { "$ref": "#/components/schemas/Readiness" } }
+        }
+      }
+    },
+    "schemas": {
+      "AtomicalId": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}i[0-9]{1,10}$",
+        "description": "Durable identity of an Atomical."
+      },
+      "Location": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}:[0-9]{1,10}$"
+      },
+      "AtomicAmount": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]{0,38})$",
+        "description": "Decimal string. JSON numbers are rejected for satoshi and protocol quantities."
+      },
+      "Cursor": { "type": "string", "minLength": 1 },
+      "GenerationId": { "type": "string", "minLength": 1, "maxLength": 64 },
+      "AssetType": { "type": "string", "enum": ["nft", "realm", "subrealm"] },
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message"],
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" },
+              "details": { "type": "object", "additionalProperties": true }
+            }
+          },
+          "requestId": { "type": "string" }
+        }
+      },
+      "MediaDescriptor": {
+        "type": "object",
+        "required": ["field"],
+        "properties": {
+          "field": { "type": "string", "pattern": "^[A-Za-z0-9._-]{1,128}$" },
+          "contentType": { "type": "string" },
+          "byteLength": { "type": "integer", "minimum": 0 },
+          "digest": { "type": "string" }
+        }
+      },
+      "Asset": {
+        "type": "object",
+        "required": ["atomicalId", "type"],
+        "properties": {
+          "atomicalId": { "$ref": "#/components/schemas/AtomicalId" },
+          "atomicalNumber": { "type": "integer", "minimum": 0 },
+          "type": { "$ref": "#/components/schemas/AssetType" },
+          "name": { "type": ["string", "null"] },
+          "normalizedName": { "type": ["string", "null"] },
+          "parentRealm": { "type": ["string", "null"] },
+          "location": { "$ref": "#/components/schemas/Location" },
+          "ownerAddress": { "type": ["string", "null"] },
+          "ownerScriptHex": { "type": ["string", "null"] },
+          "valueAtomic": { "$ref": "#/components/schemas/AtomicAmount" },
+          "mintHeight": { "type": "integer", "minimum": 0 },
+          "mintTransactionId": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+          "sealed": { "type": ["boolean", "null"] },
+          "metadata": { "type": "object", "additionalProperties": true },
+          "media": {
+            "anyOf": [{ "$ref": "#/components/schemas/MediaDescriptor" }, { "type": "null" }]
+          },
+          "generationId": { "$ref": "#/components/schemas/GenerationId" }
+        }
+      },
+      "AssetPage": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/Asset" } },
+          "nextCursor": {
+            "anyOf": [{ "$ref": "#/components/schemas/Cursor" }, { "type": "null" }]
+          },
+          "truncated": { "type": "boolean" },
+          "generationId": { "$ref": "#/components/schemas/GenerationId" }
+        }
+      },
+      "HistoryEntry": {
+        "type": "object",
+        "required": ["height", "transactionId"],
+        "properties": {
+          "height": { "type": "integer", "minimum": 0 },
+          "transactionId": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+          "operation": { "type": ["string", "null"] },
+          "location": { "$ref": "#/components/schemas/Location" },
+          "ownerAddress": { "type": ["string", "null"] }
+        }
+      },
+      "HistoryResponse": {
+        "type": "object",
+        "required": ["atomicalId", "items"],
+        "properties": {
+          "atomicalId": { "$ref": "#/components/schemas/AtomicalId" },
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/HistoryEntry" } }
+        }
+      },
+      "HoldersResponse": {
+        "type": "object",
+        "required": ["atomicalId", "page", "limit", "total", "data", "holderScope"],
+        "properties": {
+          "atomicalId": { "$ref": "#/components/schemas/AtomicalId" },
+          "assetType": { "$ref": "#/components/schemas/AssetType" },
+          "page": { "type": "integer", "minimum": 1 },
+          "limit": { "type": "integer", "minimum": 1 },
+          "total": { "type": "integer", "minimum": 0 },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["rank", "address", "holding", "balance"],
+              "properties": {
+                "rank": { "type": "integer", "minimum": 1 },
+                "address": { "type": "string" },
+                "holding": { "$ref": "#/components/schemas/AtomicAmount" },
+                "balance": { "$ref": "#/components/schemas/AtomicAmount" }
+              }
+            }
+          },
+          "holderScope": {
+            "type": "string",
+            "const": "current-owner",
+            "description": "A non-fungible object has exactly one holder, which is its current owner."
+          },
+          "generationId": { "$ref": "#/components/schemas/GenerationId" }
+        }
+      },
+      "MetadataResponse": {
+        "type": "object",
+        "required": ["atomicalId", "metadata"],
+        "properties": {
+          "atomicalId": { "$ref": "#/components/schemas/AtomicalId" },
+          "metadata": { "type": "object", "additionalProperties": true },
+          "media": {
+            "anyOf": [{ "$ref": "#/components/schemas/MediaDescriptor" }, { "type": "null" }]
+          },
+          "sealed": { "type": ["boolean", "null"] },
+          "generationId": { "$ref": "#/components/schemas/GenerationId" }
+        }
+      },
+      "Liveness": {
+        "type": "object",
+        "required": ["live", "service", "version", "now"],
+        "properties": {
+          "live": { "type": "boolean", "const": true },
+          "service": { "type": "string" },
+          "version": { "type": "string" },
+          "now": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Version": {
+        "type": "object",
+        "required": ["service", "version", "protocol", "projection", "assetTypes"],
+        "properties": {
+          "service": { "type": "string" },
+          "version": { "type": "string" },
+          "sourceRevision": { "type": ["string", "null"] },
+          "sourceRevisionEvidence": { "type": ["string", "null"] },
+          "declaredGitRevision": { "type": ["string", "null"] },
+          "node": { "type": "string" },
+          "protocol": {
+            "type": "object",
+            "required": ["providerVersion", "providerTag", "providerCommit", "requiredAips"],
+            "properties": {
+              "providerVersion": { "type": "string" },
+              "providerTag": { "type": "string" },
+              "providerCommit": { "type": "string" },
+              "requiredAips": { "type": "array", "items": { "type": "integer" } }
+            }
+          },
+          "projection": { "type": "string" },
+          "assetTypes": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AssetType" }
+          }
+        }
+      },
+      "Readiness": {
+        "type": "object",
+        "required": ["ready", "state"],
+        "properties": {
+          "ready": { "type": "boolean" },
+          "state": { "type": "string" },
+          "source": { "type": ["string", "null"] },
+          "network": { "type": ["string", "null"] },
+          "generationId": {
+            "anyOf": [{ "$ref": "#/components/schemas/GenerationId" }, { "type": "null" }]
+          },
+          "indexedHeight": { "type": ["integer", "null"], "minimum": 0 },
+          "sourceRevision": { "type": ["string", "null"] },
+          "stale": { "type": "boolean" },
+          "mixedTip": { "type": "boolean" },
+          "counts": { "type": "object", "additionalProperties": true },
+          "reason": { "type": ["string", "null"] }
+        }
+      },
+      "Health": {
+        "type": "object",
+        "required": ["state"],
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": ["ready", "degraded", "stale", "mixed-tip", "unavailable", "initialising"]
+          },
+          "generationId": {
+            "anyOf": [{ "$ref": "#/components/schemas/GenerationId" }, { "type": "null" }]
+          },
+          "indexedHeight": { "type": ["integer", "null"], "minimum": 0 },
+          "reason": { "type": ["string", "null"] }
+        }
+      },
+      "IndexStatus": {
+        "type": "object",
+        "required": ["state"],
+        "properties": {
+          "state": { "type": "string" },
+          "generationId": {
+            "anyOf": [{ "$ref": "#/components/schemas/GenerationId" }, { "type": "null" }]
+          },
+          "indexedHeight": { "type": ["integer", "null"], "minimum": 0 },
+          "stale": { "type": "boolean" },
+          "mixedTip": { "type": "boolean" },
+          "counts": { "type": "object", "additionalProperties": true },
+          "reason": { "type": ["string", "null"] }
+        }
+      },
+      "IndexEvents": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "generationId": {
+            "anyOf": [{ "$ref": "#/components/schemas/GenerationId" }, { "type": "null" }]
+          }
+        }
+      },
+      "RefreshAccepted": {
+        "type": "object",
+        "required": ["accepted", "state"],
+        "properties": {
+          "accepted": { "type": "boolean" },
+          "state": { "type": "string", "enum": ["queued", "already-running"] }
+        }
+      },
+      "RollbackResult": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "generationId": {
+            "anyOf": [{ "$ref": "#/components/schemas/GenerationId" }, { "type": "null" }]
+          },
+          "rolledBack": { "type": "boolean" }
+        }
+      },
+      "RealmResolution": {
+        "type": "object",
+        "required": ["name", "status"],
+        "properties": {
+          "name": { "type": "string", "description": "Exact requested bytes." },
+          "normalizedName": { "type": ["string", "null"] },
+          "status": {
+            "type": "string",
+            "enum": ["verified", "candidate", "losing", "not-found", "invalid"],
+            "description": "Only verified means the rules awarded the name."
+          },
+          "atomicalId": {
+            "anyOf": [{ "$ref": "#/components/schemas/AtomicalId" }, { "type": "null" }]
+          },
+          "candidates": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "reason": { "type": ["string", "null"] }
+        }
+      },
+      "RealmHierarchy": {
+        "type": "object",
+        "required": ["root"],
+        "properties": {
+          "root": { "type": "object", "additionalProperties": true },
+          "path": { "type": "array", "items": { "type": "string" } },
+          "directSubrealms": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "directSubrealmsTruncated": { "type": "boolean" }
+        }
+      },
+      "SubrealmPage": {
+        "type": "object",
+        "required": ["realm", "items", "truncated"],
+        "properties": {
+          "realm": { "type": "object", "additionalProperties": true },
+          "items": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "truncated": { "type": "boolean" }
+        }
+      },
+      "ChainLookup": {
+        "type": "object",
+        "required": ["items", "truncated"],
+        "properties": {
+          "transactionId": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+          "height": { "type": "integer", "minimum": 0 },
+          "txid": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+          "vout": { "type": "integer", "minimum": 0 },
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/Asset" } },
+          "truncated": { "type": "boolean" },
+          "generationId": { "$ref": "#/components/schemas/GenerationId" }
+        }
+      },
+      "TokenExplorerStatus": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "coverage": { "type": "string", "enum": ["complete", "partial"] },
+          "reason": { "type": ["string", "null"] },
+          "counts": { "type": "object", "additionalProperties": true }
+        }
+      },
+      "TokenExplorerPage": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "nextCursor": {
+            "anyOf": [{ "$ref": "#/components/schemas/Cursor" }, { "type": "null" }]
+          },
+          "complete": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/live": {
+      "get": {
+        "operationId": "getLive",
+        "tags": ["Operational"],
+        "summary": "Process liveness",
+        "description": "Says the process is running. It says nothing about whether an answer would be correct. Read /ready for that.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The process is running.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Liveness" },
+                "examples": {
+                  "live": {
+                    "value": {
+                      "live": true,
+                      "service": "index-atomicals-nfts-and-realms",
+                      "version": "1.0.0",
+                      "now": "2026-08-31T12:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "operationId": "getVersion",
+        "tags": ["Operational"],
+        "summary": "Service and pinned provider revisions",
+        "description": "Record every field returned here alongside anything you cache. Without them a later disagreement is unexplainable.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Version and provenance.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Version" },
+                "examples": {
+                  "version": {
+                    "value": {
+                      "service": "index-atomicals-nfts-and-realms",
+                      "version": "1.0.0",
+                      "sourceRevision": "1d9109c68d95d5985632a60d6596b3612d3f6ef1",
+                      "sourceRevisionEvidence": "git",
+                      "declaredGitRevision": "1d9109c68d95d5985632a60d6596b3612d3f6ef1",
+                      "node": "v24.19.0",
+                      "protocol": {
+                        "providerVersion": "1.5.2.0",
+                        "providerTag": "v1.5.2.0",
+                        "providerCommit": "8df23747835c20230fc8b8097d469e7a1d97c3e0",
+                        "requiredAips": [1, 3]
+                      },
+                      "projection": "unified-atomicals-nft-realm-read-model",
+                      "assetTypes": ["nft", "realm", "subrealm"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "tags": ["Operational"],
+        "summary": "Health state",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Healthy.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Health" } }
+            }
+          },
+          "503": {
+            "description": "Unavailable.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Health" } }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "getReady",
+        "tags": ["Operational"],
+        "summary": "Readiness with the reason when not ready",
+        "description": "Ready requires a generation identifier, a safe integer indexed height, a view that is not stale, a tip that is not mixed, and an integrity check that has not failed. When any of those fails, the reason is returned rather than a bare failure.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Ready to answer correctly.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Readiness" },
+                "examples": {
+                  "ready": {
+                    "value": {
+                      "ready": true,
+                      "state": "ready",
+                      "source": "atomicals-electrumx",
+                      "network": "mainnet",
+                      "generationId": "gen_000000000000000000000001",
+                      "indexedHeight": 900000,
+                      "sourceRevision": "1d9109c68d95d5985632a60d6596b3612d3f6ef1",
+                      "stale": false,
+                      "mixedTip": false,
+                      "counts": { "nft": 0, "realm": 0, "subrealm": 0 },
+                      "reason": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": { "$ref": "#/components/responses/Unavailable" }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "operationId": "getMetrics",
+        "tags": ["Operational"],
+        "summary": "Operational metrics in text form",
+        "description": "Returns 404 with code METRICS_DISABLED when metrics are turned off on a deployment.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Metrics.",
+            "content": { "text/plain": { "schema": { "type": "string" } } }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/token-explorer/status": {
+      "get": {
+        "operationId": "getTokenExplorerStatus",
+        "tags": ["Token explorer"],
+        "summary": "Token explorer source status",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Source status and counts.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenExplorerStatus" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token-explorer/{protocol}": {
+      "get": {
+        "operationId": "getTokenExplorerPage",
+        "tags": ["Token explorer"],
+        "summary": "Token explorer feed page",
+        "security": [{ "sourceBearer": [] }],
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "enum": ["atomicals", "realms"] }
+          },
+          { "$ref": "#/components/parameters/CursorQuery" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One feed page.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/TokenExplorerPage" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/atomicals/index/status": {
+      "get": {
+        "operationId": "getIndexStatus",
+        "tags": ["Index"],
+        "summary": "Index status with a provider probe",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Index status.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/IndexStatus" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/atomicals-nfts/index/status": {
+      "get": {
+        "operationId": "getNftIndexStatus",
+        "tags": ["Index"],
+        "summary": "Index status, NFT scope",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Index status.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/IndexStatus" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/atomicals-realms/index/status": {
+      "get": {
+        "operationId": "getRealmIndexStatus",
+        "tags": ["Index"],
+        "summary": "Index status, Realm scope",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Index status.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/IndexStatus" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/atomicals/index/events": {
+      "get": {
+        "operationId": "getIndexEvents",
+        "tags": ["Index"],
+        "summary": "Recent index events",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/Limit" }],
+        "responses": {
+          "200": {
+            "description": "Recent events.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/IndexEvents" } }
+            }
+          }
+        }
+      }
+    },
+    "/v1/atomicals/index/refresh": {
+      "post": {
+        "operationId": "refreshIndex",
+        "tags": ["Index"],
+        "summary": "Queue a refresh",
+        "description": "Operator only. Requires an empty body.",
+        "security": [{ "adminToken": [] }],
+        "responses": {
+          "202": {
+            "description": "Queued, or already running.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/RefreshAccepted" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "405": { "$ref": "#/components/responses/MethodNotAllowed" }
+        }
+      }
+    },
+    "/v1/atomicals-nfts/index/refresh": {
+      "post": {
+        "operationId": "refreshNftIndex",
+        "tags": ["Index"],
+        "summary": "Queue a refresh, NFT scope",
+        "security": [{ "adminToken": [] }],
+        "responses": {
+          "202": {
+            "description": "Queued, or already running.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/RefreshAccepted" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/atomicals-realms/index/refresh": {
+      "post": {
+        "operationId": "refreshRealmIndex",
+        "tags": ["Index"],
+        "summary": "Queue a refresh, Realm scope",
+        "security": [{ "adminToken": [] }],
+        "responses": {
+          "202": {
+            "description": "Queued, or already running.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/RefreshAccepted" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/atomicals/index/rollback": {
+      "post": {
+        "operationId": "rollbackIndex",
+        "tags": ["Index"],
+        "summary": "Roll the active pointer back to a generation",
+        "description": "Operator only. Changes which immutable snapshot readers see. A consumer detects it by the generation identifier changing to one it has seen before.",
+        "security": [{ "adminToken": [] }],
+        "parameters": [
+          {
+            "name": "generationId",
+            "in": "query",
+            "required": false,
+            "schema": { "$ref": "#/components/schemas/GenerationId" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rollback result.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/RollbackResult" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" }
+        }
+      }
+    },
+    "/v1/atomicals/assets": {
+      "get": {
+        "operationId": "listAssets",
+        "tags": ["Assets"],
+        "summary": "List assets across every projected type",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/CursorQuery" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of assets.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AssetPage" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/v1/atomicals-nfts/assets": {
+      "get": {
+        "operationId": "listNfts",
+        "tags": ["Assets"],
+        "summary": "List plain NFTs",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/CursorQuery" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of plain NFTs.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AssetPage" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/v1/atomicals-realms/assets": {
+      "get": {
+        "operationId": "listRealms",
+        "tags": ["Assets"],
+        "summary": "List Realms and Subrealms",
+        "security": [],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "description": "Restrict to one kind. Any other value is rejected.",
+            "schema": { "type": "string", "enum": ["realm", "subrealm"] }
+          },
+          { "$ref": "#/components/parameters/CursorQuery" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of Realms and Subrealms.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/AssetPage" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/v1/atomicals/assets/{atomicalId}": {
+      "get": {
+        "operationId": "getAsset",
+        "tags": ["Assets"],
+        "summary": "Read one asset of any projected type",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/AtomicalIdPath" }],
+        "responses": {
+          "200": {
+            "description": "The asset in the active generation.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Asset" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-nfts/assets/{atomicalId}": {
+      "get": {
+        "operationId": "getNft",
+        "tags": ["Assets"],
+        "summary": "Read one plain NFT",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/AtomicalIdPath" }],
+        "responses": {
+          "200": {
+            "description": "The NFT.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Asset" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-realms/assets/{atomicalId}": {
+      "get": {
+        "operationId": "getRealm",
+        "tags": ["Assets"],
+        "summary": "Read one Realm or Subrealm",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/AtomicalIdPath" }],
+        "responses": {
+          "200": {
+            "description": "The Realm or Subrealm.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Asset" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals/assets/{atomicalId}/history": {
+      "get": {
+        "operationId": "getAssetHistory",
+        "tags": ["Assets"],
+        "summary": "Asset history",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/AtomicalIdPath" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ordered history.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HistoryResponse" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-nfts/assets/{atomicalId}/history": {
+      "get": {
+        "operationId": "getNftHistory",
+        "tags": ["Assets"],
+        "summary": "NFT history",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/AtomicalIdPath" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ordered history.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HistoryResponse" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-realms/assets/{atomicalId}/history": {
+      "get": {
+        "operationId": "getRealmHistory",
+        "tags": ["Assets"],
+        "summary": "Realm history",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/AtomicalIdPath" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ordered history.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HistoryResponse" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals/assets/{atomicalId}/holders": {
+      "get": {
+        "operationId": "getAssetHolders",
+        "tags": ["Assets"],
+        "summary": "Current owner",
+        "description": "A non-fungible object has exactly one holder, so holderScope is always current-owner.",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/AtomicalIdPath" },
+          { "$ref": "#/components/parameters/PageQuery" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current owner.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HoldersResponse" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-nfts/assets/{atomicalId}/holders": {
+      "get": {
+        "operationId": "getNftHolders",
+        "tags": ["Assets"],
+        "summary": "Current owner, NFT scope",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/AtomicalIdPath" },
+          { "$ref": "#/components/parameters/PageQuery" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current owner.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HoldersResponse" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-realms/assets/{atomicalId}/holders": {
+      "get": {
+        "operationId": "getRealmHolders",
+        "tags": ["Assets"],
+        "summary": "Current owner, Realm scope",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/AtomicalIdPath" },
+          { "$ref": "#/components/parameters/PageQuery" },
+          { "$ref": "#/components/parameters/Limit" }
+        ],
+        "responses": {
+          "200": {
+            "description": "The current owner.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HoldersResponse" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals/assets/{atomicalId}/metadata": {
+      "get": {
+        "operationId": "getAssetMetadata",
+        "tags": ["Assets"],
+        "summary": "Metadata, media descriptor, and sealed state",
+        "description": "Metadata is supplied by the minter and is never checked. Treat every field as hostile input.",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/AtomicalIdPath" }],
+        "responses": {
+          "200": {
+            "description": "Metadata.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/MetadataResponse" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-nfts/assets/{atomicalId}/metadata": {
+      "get": {
+        "operationId": "getNftMetadata",
+        "tags": ["Assets"],
+        "summary": "Metadata, NFT scope",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/AtomicalIdPath" }],
+        "responses": {
+          "200": {
+            "description": "Metadata.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/MetadataResponse" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/atomicals/media/{atomicalId}/{field}": {
+      "get": {
+        "operationId": "getMedia",
+        "tags": ["Media"],
+        "summary": "Stored media bytes",
+        "description": "Served with MIME restrictions, a size limit, and digest validation. The service chooses the content type; it does not trust the one the payload declared.",
+        "security": [],
+        "parameters": [
+          { "$ref": "#/components/parameters/AtomicalIdPath" },
+          {
+            "name": "field",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "pattern": "^[A-Za-z0-9._-]{1,128}$" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The stored bytes.",
+            "content": {
+              "application/octet-stream": { "schema": { "type": "string", "format": "binary" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-realms/resolve": {
+      "get": {
+        "operationId": "resolveRealm",
+        "tags": ["Names"],
+        "summary": "Resolve a name to its verified winner",
+        "description": "Only a status of verified means the rules awarded the name. Re-resolve immediately before acting rather than trusting a cached answer.",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/NameQuery" }],
+        "responses": {
+          "200": {
+            "description": "Resolution result.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RealmResolution" },
+                "examples": {
+                  "verified": {
+                    "summary": "A verified winner",
+                    "value": {
+                      "name": "example",
+                      "normalizedName": "example",
+                      "status": "verified",
+                      "atomicalId": "4d0b1f1c9c53a5b1e0b1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061i0",
+                      "candidates": [],
+                      "reason": null
+                    }
+                  },
+                  "candidate": {
+                    "summary": "Still a candidate, not owned",
+                    "value": {
+                      "name": "example",
+                      "normalizedName": "example",
+                      "status": "candidate",
+                      "atomicalId": null,
+                      "candidates": [],
+                      "reason": "Resolution has not completed."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/v1/atomicals-realms/hierarchy": {
+      "get": {
+        "operationId": "getRealmHierarchy",
+        "tags": ["Names"],
+        "summary": "Realm hierarchy for a name",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/NameQuery" }],
+        "responses": {
+          "200": {
+            "description": "The hierarchy.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/RealmHierarchy" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals-realms/subrealms": {
+      "get": {
+        "operationId": "getSubrealms",
+        "tags": ["Names"],
+        "summary": "Direct Subrealms of a name",
+        "description": "Honour the truncated flag. It means there was more and the response stopped.",
+        "security": [],
+        "parameters": [{ "$ref": "#/components/parameters/NameQuery" }],
+        "responses": {
+          "200": {
+            "description": "Direct Subrealms.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/SubrealmPage" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/v1/atomicals/transactions/{txid}": {
+      "get": {
+        "operationId": "getByTransaction",
+        "tags": ["Chain"],
+        "summary": "Projected assets touched by a transaction",
+        "security": [],
+        "parameters": [
+          {
+            "name": "txid",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projected assets.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ChainLookup" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/v1/atomicals/blocks/{height}": {
+      "get": {
+        "operationId": "getByBlock",
+        "tags": ["Chain"],
+        "summary": "Projected assets at a block height",
+        "security": [],
+        "parameters": [
+          {
+            "name": "height",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "minimum": 0, "maximum": 4294967295 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projected assets.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ChainLookup" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/v1/atomicals/utxos/{txid}/{vout}": {
+      "get": {
+        "operationId": "getByOutpoint",
+        "tags": ["Chain"],
+        "summary": "Projected assets at an outpoint",
+        "description": "Use this to discover whether an output carries more than one Atomical before spending it.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "txid",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+          },
+          {
+            "name": "vout",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "minimum": 0, "maximum": 4294967295 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projected assets at that outpoint.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ChainLookup" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    }
+  }
+}

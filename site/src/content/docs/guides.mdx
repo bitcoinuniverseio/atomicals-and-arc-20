@@ -1,0 +1,105 @@
+---
+title: Guides
+description: Task-oriented procedures for holding, inspecting, issuing, moving, and trading Atomicals safely.
+sidebar:
+  order: 1
+  label: All guides
+provenance:
+  pageId: guides/index
+  area: guides
+  audience: [everyone]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  verified: '2026-08-31'
+  tags: [navigation]
+---
+
+import EntryCards from '../../components/EntryCards.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+Every guide here follows the same shape, so you always know what you are about to do before you
+do it.
+
+| Section | What it tells you |
+| --- | --- |
+| Before you start | Prerequisites, supported networks, and current support status |
+| What you need | Exact inputs |
+| What happens | Expected outputs and what your wallet will ask |
+| Cost | Fee behavior for this specific action |
+| Check before signing | The safety checks for this action |
+| If it fails | Named failure cases and what each means |
+| After broadcast | How to verify the result, and reorg considerations |
+| Source | The normative page behind the procedure |
+
+<Aside type="danger" title="Two rules that never change">
+Never share a seed phrase, private key, or wallet export file. Never let a general purpose Bitcoin
+wallet select fee inputs from a set that includes your coloured outputs.
+</Aside>
+
+## Set up
+
+<EntryCards
+  cards={[
+    { title: "Choose a wallet", body: "The capabilities that make a wallet safe for Atomicals, and how to test for them.", href: "/guides/choose-a-wallet/" },
+    { title: "Prepare BTC and UTXOs", body: "Build a cardinal pool for fees so a coloured output is never selected by accident.", href: "/guides/prepare-utxos/" },
+    { title: "Protect coloured outputs", body: "The working separation between asset money and fee money.", href: "/guides/protect-colored-outputs/" },
+    { title: "Fees and costs", body: "What you actually pay: commit, reveal, grinding, marketplace fees.", href: "/guides/fees-and-costs/" },
+  ]}
+/>
+
+## Inspect
+
+<EntryCards
+  cards={[
+    { title: "Inspect an address", body: "Read outpoints, not totals, and understand what a total hides.", href: "/guides/inspect-an-address/" },
+    { title: "Inspect an Atomical", body: "Identity, location, history, and sealed state.", href: "/guides/inspect-an-atomical/" },
+    { title: "Inspect a ticker", body: "Resolve a name to the Atomical that actually holds it.", href: "/guides/inspect-a-ticker/" },
+    { title: "Verify a transaction", body: "Confirm what a transaction did before and after broadcast.", href: "/guides/verify-a-transaction/" },
+    { title: "Confirmations and reorgs", body: "When a result is settled enough to act on.", href: "/guides/confirmations-and-reorgs/" },
+    { title: "Unavailable index or empty balance", body: "The difference that causes most false alarms.", href: "/guides/unavailable-indexer-vs-empty-balance/" },
+  ]}
+/>
+
+## Issue and mint
+
+<EntryCards
+  cards={[
+    { title: "Direct FT issuance", body: "One transaction, one complete supply. Protocol behavior, not exposed by Universe.", href: "/guides/direct-ft-issuance/" },
+    { title: "Deploy a fixed DFT", body: "Set the mint rules others will claim against.", href: "/guides/deploy-fixed-dft/" },
+    { title: "Deploy a perpetual DFT", body: "Activation gated, with progressing Bitwork.", href: "/guides/deploy-perpetual-dft/" },
+    { title: "Mint ARC-20", body: "Claim against a deployment without wasting a fee.", href: "/guides/mint-arc20/" },
+    { title: "Mint an NFT", body: "Payload, media, and the decisions that are permanent.", href: "/guides/mint-an-nft/" },
+    { title: "Create a Container", body: "A collection identity that items can prove membership in.", href: "/guides/create-a-container/" },
+    { title: "Create DMINT items", body: "Seal the manifest first, then open minting.", href: "/guides/create-dmint-items/" },
+    { title: "Claim a Realm", body: "Request a top-level name and confirm it resolved.", href: "/guides/claim-a-realm/" },
+    { title: "Claim a Subrealm", body: "Satisfy a parent's rules, including payment.", href: "/guides/claim-a-subrealm/" },
+    { title: "Resolve Unicode names", body: "Normalise, compare, and detect confusable names.", href: "/guides/resolve-unicode-names/" },
+  ]}
+/>
+
+## Move and recover
+
+<EntryCards
+  cards={[
+    { title: "Transfer ARC-20", body: "Build a transfer that places every unit and burns nothing.", href: "/guides/transfer-arc20/" },
+    { title: "Split and combine", body: "Reshape your lots deliberately.", href: "/guides/split-and-combine-arc20/" },
+    { title: "Avoid burns", body: "The procedure that prevents every burn shape.", href: "/guides/avoid-burns/" },
+    { title: "Recover from a rejection", body: "A rejected transaction is recoverable. Here is how.", href: "/guides/recover-from-a-rejection/" },
+    { title: "Wallet signing failures", body: "Capability, encoding, and flag problems, diagnosed.", href: "/guides/wallet-signing-failures/" },
+  ]}
+/>
+
+## Trade
+
+<EntryCards
+  cards={[
+    { title: "List an ARC-20 lot", body: "Prove ownership, prepare, sign, finalise.", href: "/guides/list-an-arc20-lot/" },
+    { title: "List an NFT or Realm", body: "The extra check names carry.", href: "/guides/list-an-nft-or-realm/" },
+    { title: "Update or remove a listing", body: "Change a price or delist safely.", href: "/guides/update-or-remove-a-listing/" },
+    { title: "Offers", body: "Make, cancel, and accept an offer.", href: "/guides/offers/" },
+    { title: "Buy on the marketplace", body: "Reserve, prepare, sign, broadcast.", href: "/guides/buy-on-marketplace/" },
+    { title: "Verify settlement", body: "Confirm the trade actually completed.", href: "/guides/verify-settlement/" },
+  ]}
+/>
+

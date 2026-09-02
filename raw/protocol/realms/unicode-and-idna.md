@@ -1,0 +1,67 @@
+# Unicode, IDNA, and confusable names
+
+Why two names that look identical can be different strings, what normalisation does, and the warnings a product must show.
+
+Page ID: protocol/realms/unicode-and-idna
+Applicability: protocol-behavior
+Authority: reference-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: en
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/realms/unicode-and-idna/
+
+---
+Names can contain characters beyond ASCII. That is useful and it is dangerous, because two
+different strings can render identically.
+
+Someone registers a name that renders exactly like one you trust, using a different code point.
+You read it, recognise it, and pay. The bytes were never the same.
+
+## Three different strings
+
+A reader sees one word. A comparison sees three:
+
+| Appearance | What differs |
+| --- | --- |
+| A Latin lowercase a | The ordinary code point |
+| A Cyrillic lowercase a | A different code point that renders the same in most fonts |
+| A Latin a with a combining mark | Two code points that compose to one glyph |
+
+## Normalisation
+
+Normalisation maps different byte sequences that mean the same thing to one form, so comparison
+works. Two rules follow:
+
+1. **Normalise before comparing.** Two names are the same only after both are normalised the same
+   way.
+2. **Keep the exact original bytes.** The authoritative name is what was minted. The normalised
+   form is for comparison, not for display or for identity.
+
+Never store only the normalised form, and never display it as if it were the name.
+
+## Authoritative against display
+
+| Form | Use |
+| --- | --- |
+| Exact minted bytes | Identity, storage, and what a validator saw |
+| Normalised form | Comparison, deduplication, confusable detection |
+| Display form | What a reader sees, escaped and marked when risky |
+
+## What a product must do
+
+1. Reject names that fail validation for the target rule set, with a clear reason.
+2. Normalise before comparing, never before storing.
+3. Detect mixed scripts within one name and warn.
+4. Detect confusability against names the user already uses and warn prominently.
+5. Escape names everywhere they are displayed, including in link text and error messages.
+6. Neutralise bidirectional control characters so a name cannot reorder surrounding text.
+7. Show the Atomical ID next to any name the user is about to act on.
+
+## Error reporting
+
+A rejected name deserves a specific reason: which character, which rule. A generic failure teaches
+the user nothing and pushes them to guess.
+
+The Universe read model surfaces Unicode and IDNA errors explicitly rather than returning a
+generic validation failure. See
+[NFT and Realm API](/reference/api/atomicals-nfts-realms/).

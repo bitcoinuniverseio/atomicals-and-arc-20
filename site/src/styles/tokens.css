@@ -1,0 +1,140 @@
+/*
+ * Atomic Universe design tokens.
+ *
+ * The visual language: a satoshi as the nucleus, UTXOs and assignments as
+ * orbiting units, commit and reveal paths as precise trajectories, blocks as a
+ * restrained technical grid, source revisions as observation points.
+ *
+ * Light is the primary treatment. Dark and system modes are complete, not an
+ * afterthought. Every pairing is checked against WCAG 2.2 AA in
+ * tests/accessibility.test.mjs. Colours are declared once here and consumed
+ * everywhere else through these names.
+ */
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bu-paper: #f7f7f2;
+  --bu-paper-deep: #eff1ec;
+  --bu-surface: #ffffff;
+  --bu-surface-raised: #ffffff;
+  --bu-surface-sunken: #eff1ec;
+
+  /* Text */
+  --bu-ink: #111318;
+  --bu-ink-soft: #596170;
+  --bu-ink-muted: #5f6875;
+
+  /* Lines */
+  --bu-line: #d9dde3;
+  --bu-line-strong: #b7bec9;
+  /* Boundary of an interactive control. Meets 3:1 against every surface, because
+     a control the reader cannot find is a control they cannot use. */
+  --bu-line-control: #737d8c;
+
+  /* Brand violet: the identity accent of the Atomic Universe system. */
+  --bu-accent: #594bdb;
+  --bu-accent-strong: #4234ce;
+  --bu-accent-quiet: #ebe9fc;
+  --bu-accent-edge: #c9c4f4;
+
+  /* Bitcoin accent: reserved for satoshi- and fee-related meaning. */
+  --bu-bitcoin: #d96800;
+  --bu-bitcoin-strong: #9a4a00;
+  --bu-bitcoin-quiet: #f9ecdd;
+  --bu-bitcoin-edge: #e8c193;
+
+  /* Status */
+  --bu-ok: #087f5b;
+  --bu-ok-quiet: #ecf7f2;
+  --bu-warn: #956000;
+  --bu-warn-quiet: #f7f0dc;
+  --bu-risk: #b42318;
+  --bu-risk-quiet: #fbedeb;
+  --bu-info: #1d4f79;
+  --bu-info-quiet: #e7eef5;
+  --bu-idle: #57606b;
+  --bu-idle-quiet: #edeff2;
+
+  --bu-shadow-1: 0 1px 2px rgb(17 19 24 / 6%), 0 2px 8px rgb(17 19 24 / 4%);
+  --bu-shadow-2: 0 2px 4px rgb(17 19 24 / 7%), 0 12px 28px rgb(17 19 24 / 8%);
+  --bu-focus: #594bdb;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bu-paper: #0d1016;
+  --bu-paper-deep: #0a0d12;
+  --bu-surface: #151a23;
+  --bu-surface-raised: #1c2230;
+  --bu-surface-sunken: #10141c;
+
+  --bu-ink: #f5f7fa;
+  --bu-ink-soft: #c6cdd8;
+  --bu-ink-muted: #aab3c2;
+
+  --bu-line: #303847;
+  --bu-line-strong: #485265;
+  --bu-line-control: #7e8899;
+
+  --bu-accent: #a49bff;
+  --bu-accent-strong: #c6bfff;
+  --bu-accent-quiet: #1b1836;
+  --bu-accent-edge: #4a4390;
+
+  --bu-bitcoin: #ffb15c;
+  --bu-bitcoin-strong: #ffc98f;
+  --bu-bitcoin-quiet: #2a1e10;
+  --bu-bitcoin-edge: #6b4a1e;
+
+  --bu-ok: #57d4aa;
+  --bu-ok-quiet: #0e2620;
+  --bu-warn: #f5c26b;
+  --bu-warn-quiet: #271d0e;
+  --bu-risk: #ff8a80;
+  --bu-risk-quiet: #2b1512;
+  --bu-info: #8fc7f2;
+  --bu-info-quiet: #0f1d2b;
+  --bu-idle: #a7b0bf;
+  --bu-idle-quiet: #1a1d24;
+
+  --bu-shadow-1: 0 1px 2px rgb(0 0 0 / 40%), 0 2px 8px rgb(0 0 0 / 30%);
+  --bu-shadow-2: 0 2px 4px rgb(0 0 0 / 45%), 0 14px 32px rgb(0 0 0 / 40%);
+  --bu-focus: #a49bff;
+}
+
+/* Typography scale. One family for prose, one for code, both with real fallbacks.
+   No font is fetched at runtime; the stack falls back to the system. */
+:root {
+  --bu-font-sans:
+    'Inter var', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
+  --bu-font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    'Liberation Mono', monospace;
+
+  --bu-step--1: clamp(0.83rem, 0.81rem + 0.1vw, 0.875rem);
+  --bu-step-0: clamp(0.95rem, 0.92rem + 0.15vw, 1rem);
+  --bu-step-1: clamp(1.1rem, 1.04rem + 0.3vw, 1.25rem);
+  --bu-step-2: clamp(1.35rem, 1.22rem + 0.6vw, 1.65rem);
+  --bu-step-3: clamp(1.7rem, 1.45rem + 1.2vw, 2.25rem);
+  --bu-step-4: clamp(2.1rem, 1.6rem + 2.2vw, 3.1rem);
+
+  --bu-radius-s: 6px;
+  --bu-radius-m: 10px;
+  --bu-radius-l: 16px;
+
+  --bu-space-1: 0.25rem;
+  --bu-space-2: 0.5rem;
+  --bu-space-3: 0.75rem;
+  --bu-space-4: 1rem;
+  --bu-space-5: 1.5rem;
+  --bu-space-6: 2rem;
+  --bu-space-7: 3rem;
+
+  /* Minimum primary touch target required by WCAG 2.2 Target Size (Minimum). */
+  --bu-touch: 44px;
+}

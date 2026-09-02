@@ -1,0 +1,14 @@
+node_modules/
+site/dist/
+site/.astro/
+*.log
+
+# Ephemeral regtest lab credentials
+lab/.env
+
+# Language build artefacts
+clients/rust/target
+
+# Generated skill archives
+dist-skills
+dist-packs

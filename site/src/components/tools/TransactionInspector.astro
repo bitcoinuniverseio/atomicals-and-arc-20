@@ -1,0 +1,413 @@
+---
+import { docHref } from '../../lib/href'
+const locale = Astro.locals.starlightRoute?.locale
+---
+
+<div class="bu-tool">
+  <div class="bu-tool-head">
+    <h2 id="inspector">Transaction safety inspector</h2>
+    <span class="bu-chip" data-tone="protocol">Parses locally. Nothing is uploaded</span>
+  </div>
+
+  <noscript>
+    <div class="bu-tool-body">
+      <p class="bu-noscript">
+        This tool needs JavaScript. The checks it performs are written out in full on
+        <a href={docHref("/guides/verify-a-transaction/", locale)}>verify a transaction</a>, which works without it.
+      </p>
+    </div>
+  </noscript>
+
+  <bu-tx-inspector>
+    <div class="bu-tool-body" data-layout="split">
+      <form data-form novalidate>
+        <div class="bu-field">
+          <label for="tx-hex">Raw transaction or PSBT, hex or base64</label>
+          <textarea
+            id="tx-hex"
+            data-hex
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="0200000001..."
+            aria-describedby="tx-hex-hint"></textarea>
+          <span class="bu-hint" id="tx-hex-hint">
+            Parsed entirely in your browser. It is never sent anywhere. Never paste a private key
+            or a seed phrase into this or any other field.
+          </span>
+        </div>
+
+        <div class="bu-field">
+          <label for="tx-colored">Coloured inputs, one per line as index:units</label>
+          <textarea
+            id="tx-colored"
+            data-colored
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="0:1200"
+            aria-describedby="tx-colored-hint"></textarea>
+          <span class="bu-hint" id="tx-colored-hint">
+            Optional. Supply what your data source says is coloured, and the inspector computes the
+            expected allocation for the parsed outputs.
+          </span>
+        </div>
+
+        <button type="button" class="bu-btn" data-variant="primary" data-inspect>Inspect</button>
+        <p class="bu-error" data-error role="alert" hidden></p>
+      </form>
+
+      <div>
+        <div class="bu-out" data-result aria-live="polite" aria-atomic="true">
+          <p>Paste a transaction to see its inputs, outputs, and the risks they carry.</p>
+        </div>
+        <p class="bu-hint">
+          Explanatory only. It is not the active validator and it is not a substitute for one.
+          Anything it cannot determine is reported as unknown rather than guessed.
+        </p>
+      </div>
+    </div>
+  </bu-tx-inspector>
+</div>
+
+<style>
+  form > .bu-btn {
+    width: 100%;
+  }
+</style>
+
+<script>
+  import { allocate } from '../../../../conformance/allocation.mjs'
+
+  /** Minimal Bitcoin transaction reader. Fails closed on anything it does not understand. */
+  class Reader {
+    #bytes: Uint8Array
+    #offset = 0
+
+    constructor(bytes: Uint8Array) {
+      this.#bytes = bytes
+    }
+
+    get offset() {
+      return this.#offset
+    }
+
+    get remaining() {
+      return this.#bytes.length - this.#offset
+    }
+
+    u8() {
+      if (this.remaining < 1) throw new Error('unexpected end of data')
+      return this.#bytes[this.#offset++]!
+    }
+
+    read(length: number) {
+      if (length < 0 || this.remaining < length) throw new Error('unexpected end of data')
+      const slice = this.#bytes.subarray(this.#offset, this.#offset + length)
+      this.#offset += length
+      return slice
+    }
+
+    u32() {
+      const bytes = this.read(4)
+      return (bytes[0]! | (bytes[1]! << 8) | (bytes[2]! << 16) | (bytes[3]! << 24)) >>> 0
+    }
+
+    u64() {
+      const bytes = this.read(8)
+      let value = 0n
+      for (let index = 7; index >= 0; index -= 1) value = (value << 8n) | BigInt(bytes[index]!)
+      return value
+    }
+
+    varint(): number {
+      const first = this.u8()
+      if (first < 0xfd) return first
+      if (first === 0xfd) {
+        const bytes = this.read(2)
+        return bytes[0]! | (bytes[1]! << 8)
+      }
+      if (first === 0xfe) return this.u32()
+      const value = this.u64()
+      if (value > BigInt(Number.MAX_SAFE_INTEGER)) throw new Error('length out of range')
+      return Number(value)
+    }
+  }
+
+  function decode(text: string): Uint8Array {
+    const trimmed = text.trim().replace(/\s+/g, '')
+    if (!trimmed) throw new Error('Nothing to parse.')
+    if (/^[0-9a-fA-F]+$/.test(trimmed) && trimmed.length % 2 === 0) {
+      const bytes = new Uint8Array(trimmed.length / 2)
+      for (let index = 0; index < bytes.length; index += 1) {
+        bytes[index] = Number.parseInt(trimmed.slice(index * 2, index * 2 + 2), 16)
+      }
+      return bytes
+    }
+    if (/^[A-Za-z0-9+/=]+$/.test(trimmed)) {
+      const binary = atob(trimmed)
+      const bytes = new Uint8Array(binary.length)
+      for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index)
+      return bytes
+    }
+    throw new Error('Input is neither hex nor base64.')
+  }
+
+  const PSBT_MAGIC = [0x70, 0x73, 0x62, 0x74, 0xff]
+
+  function isPsbt(bytes: Uint8Array) {
+    return PSBT_MAGIC.every((byte, index) => bytes[index] === byte)
+  }
+
+  /** Extract the unsigned transaction from a PSBT global map, key type 0x00. */
+  function unsignedFromPsbt(bytes: Uint8Array): { tx: Uint8Array; sighashTypes: number[] } {
+    const reader = new Reader(bytes)
+    reader.read(5)
+    let tx: Uint8Array | null = null
+    const sighashTypes: number[] = []
+
+    // Global map.
+    for (;;) {
+      const keyLength = reader.varint()
+      if (keyLength === 0) break
+      const key = reader.read(keyLength)
+      const valueLength = reader.varint()
+      const value = reader.read(valueLength)
+      if (key[0] === 0x00) tx = value.slice()
+    }
+
+    // Input maps. Key type 0x03 is the sighash type, a little endian uint32.
+    while (reader.remaining > 0) {
+      for (;;) {
+        if (reader.remaining === 0) break
+        const keyLength = reader.varint()
+        if (keyLength === 0) break
+        const key = reader.read(keyLength)
+        const valueLength = reader.varint()
+        const value = reader.read(valueLength)
+        if (key[0] === 0x03 && value.length === 4) {
+          sighashTypes.push(
+            (value[0]! | (value[1]! << 8) | (value[2]! << 16) | (value[3]! << 24)) >>> 0,
+          )
+        }
+      }
+      // Stop after the input maps: output maps carry no sighash and add nothing here.
+      if (sighashTypes.length > 0 && reader.remaining < 2) break
+      if (reader.remaining === 0) break
+    }
+
+    if (!tx) throw new Error('PSBT carries no unsigned transaction.')
+    return { tx, sighashTypes }
+  }
+
+  interface ParsedInput {
+    index: number
+    txid: string
+    vout: number
+    sequence: number
+  }
+  interface ParsedOutput {
+    index: number
+    value: number
+    scriptHex: string
+    kind: string
+  }
+
+  function classifyScript(script: Uint8Array): string {
+    if (script.length === 0) return 'empty'
+    if (script[0] === 0x6a) return 'OP_RETURN, unspendable'
+    if (script.length === 22 && script[0] === 0x00 && script[1] === 0x14) return 'P2WPKH'
+    if (script.length === 34 && script[0] === 0x00 && script[1] === 0x20) return 'P2WSH'
+    if (script.length === 34 && script[0] === 0x51 && script[1] === 0x20) return 'P2TR'
+    if (script.length === 25 && script[0] === 0x76 && script[1] === 0xa9) return 'P2PKH'
+    if (script.length === 23 && script[0] === 0xa9) return 'P2SH'
+    return 'unrecognised'
+  }
+
+  function toHex(bytes: Uint8Array) {
+    return [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('')
+  }
+
+  function parseTransaction(bytes: Uint8Array) {
+    const reader = new Reader(bytes)
+    const version = reader.u32()
+    let inputCount = reader.varint()
+    let segwit = false
+    if (inputCount === 0) {
+      const flag = reader.u8()
+      if (flag !== 0x01) throw new Error('unrecognised segwit flag')
+      segwit = true
+      inputCount = reader.varint()
+    }
+
+    const inputs: ParsedInput[] = []
+    for (let index = 0; index < inputCount; index += 1) {
+      const hash = reader.read(32)
+      const vout = reader.u32()
+      const scriptLength = reader.varint()
+      reader.read(scriptLength)
+      const sequence = reader.u32()
+      inputs.push({
+        index,
+        txid: toHex(hash.slice().reverse()),
+        vout,
+        sequence,
+      })
+    }
+
+    const outputCount = reader.varint()
+    const outputs: ParsedOutput[] = []
+    for (let index = 0; index < outputCount; index += 1) {
+      const value = Number(reader.u64())
+      const scriptLength = reader.varint()
+      const script = reader.read(scriptLength)
+      outputs.push({
+        index,
+        value,
+        scriptHex: toHex(script),
+        kind: classifyScript(script),
+      })
+    }
+
+    return { version, segwit, inputs, outputs }
+  }
+
+  const SIGHASH_LABEL: Record<number, string> = {
+    0x01: 'SIGHASH_ALL',
+    0x02: 'SIGHASH_NONE',
+    0x03: 'SIGHASH_SINGLE',
+    0x81: 'SIGHASH_ALL with ANYONECANPAY',
+    0x82: 'SIGHASH_NONE with ANYONECANPAY',
+    0x83: 'SIGHASH_SINGLE with ANYONECANPAY',
+  }
+
+  class BuTxInspector extends HTMLElement {
+    connectedCallback() {
+      this.querySelector('[data-inspect]')?.addEventListener('click', () => this.#inspect())
+    }
+
+    #inspect() {
+      const hexField = this.querySelector('[data-hex]') as HTMLTextAreaElement
+      const coloredField = this.querySelector('[data-colored]') as HTMLTextAreaElement
+      const errorHost = this.querySelector('[data-error]') as HTMLElement
+      const result = this.querySelector('[data-result]') as HTMLElement
+      if (!hexField || !result || !errorHost) return
+
+      errorHost.hidden = true
+      hexField.removeAttribute('aria-invalid')
+
+      let parsed
+      let sighashTypes: number[] = []
+      let kind = 'raw transaction'
+      try {
+        const bytes = decode(hexField.value)
+        if (isPsbt(bytes)) {
+          kind = 'PSBT'
+          const extracted = unsignedFromPsbt(bytes)
+          sighashTypes = extracted.sighashTypes
+          parsed = parseTransaction(extracted.tx)
+        } else {
+          parsed = parseTransaction(bytes)
+        }
+      } catch (error) {
+        errorHost.hidden = false
+        errorHost.textContent = `Could not parse this input: ${(error as Error).message}. Nothing was sent anywhere.`
+        hexField.setAttribute('aria-invalid', 'true')
+        result.innerHTML = '<p>Nothing to show. The input could not be parsed.</p>'
+        return
+      }
+
+      const colored: { atomicalId: string; txinIndex: number; atomicalValue: number }[] = []
+      for (const line of coloredField.value.split(/\n+/)) {
+        const match = line.trim().match(/^(\d+)\s*:\s*(\d+)$/)
+        if (match) {
+          colored.push({
+            atomicalId: `INPUT_${match[1]}`,
+            txinIndex: Number(match[1]),
+            atomicalValue: Number(match[2]),
+          })
+        }
+      }
+
+      const outputs = parsed.outputs.map((output) => ({
+        value: output.value,
+        unspendable: output.kind === 'OP_RETURN, unspendable',
+      }))
+
+      const allocation = colored.length > 0 ? allocate(outputs, colored) : null
+      const burned = allocation?.burned.reduce((sum, entry) => sum + entry.value, 0) ?? 0
+
+      const inputRows = parsed.inputs
+        .map(
+          (input) => `
+            <tr>
+              <th scope="row">in ${input.index}</th>
+              <td><code>${input.txid.slice(0, 12)}...:${input.vout}</code></td>
+              <td class="bu-num">${input.sequence === 0xfffffffd ? '0xfffffffd, replaceable' : `0x${input.sequence.toString(16)}`}</td>
+              <td>${colored.some((c) => c.txinIndex === input.index) ? '<span class="bu-chip" data-tone="warn">declared coloured</span>' : '<span class="bu-chip" data-tone="idle">unknown</span>'}</td>
+            </tr>`,
+        )
+        .join('')
+
+      const outputRows = parsed.outputs
+        .map((output) => {
+          const assigned = allocation?.outputs[output.index]
+          return `
+            <tr>
+              <th scope="row">out ${output.index}</th>
+              <td class="bu-num">${output.value}</td>
+              <td>${output.kind}</td>
+              <td class="bu-num">${assigned ? assigned.coloredTotal : 'unknown'}</td>
+            </tr>`
+        })
+        .join('')
+
+      const sighashRows = sighashTypes.length
+        ? sighashTypes
+            .map(
+              (type, index) =>
+                `<li>input ${index}: <code>0x${type.toString(16)}</code> ${SIGHASH_LABEL[type] ?? 'unrecognised, treat as unknown'}</li>`,
+            )
+            .join('')
+        : '<li>No signature hash type was declared in this input. That is unknown, not safe.</li>'
+
+      result.innerHTML = `
+        <p>
+          <span class="bu-chip" data-tone="protocol">${kind}</span>
+          <span class="bu-chip" data-tone="idle">version ${parsed.version}</span>
+          ${parsed.segwit ? '<span class="bu-chip" data-tone="idle">segwit</span>' : ''}
+        </p>
+
+        <h4>Inputs</h4>
+        <table>
+          <thead><tr><th scope="col">Input</th><th scope="col">Outpoint</th><th scope="col">Sequence</th><th scope="col">Coloured</th></tr></thead>
+          <tbody>${inputRows}</tbody>
+        </table>
+
+        <h4>Outputs, in order</h4>
+        <table>
+          <thead><tr><th scope="col">Output</th><th scope="col">Satoshis</th><th scope="col">Script</th><th scope="col">Units</th></tr></thead>
+          <tbody>${outputRows}</tbody>
+        </table>
+
+        <h4>Signature scope</h4>
+        <ul>${sighashRows}</ul>
+
+        <h4>Assessment</h4>
+        <p>
+          ${
+            allocation
+              ? `<span class="bu-chip" data-tone="${burned > 0 ? 'risk' : 'ok'}">${burned > 0 ? `${burned} units would burn` : 'no burn under normal allocation'}</span>`
+              : '<span class="bu-chip" data-tone="idle">coloured state unknown, supply it above</span>'
+          }
+        </p>
+        <ul>
+          <li>Coloured state of an input is only known if you supplied it. The inspector does not query any service.</li>
+          <li>Output values are what allocation walks. Compare each one to your intent, in satoshis.</li>
+          <li>An unrecognised script kind is unknown, not safe.</li>
+          <li>Only the active validator decides the real result. This is explanatory.</li>
+        </ul>
+      `
+    }
+  }
+
+  customElements.define('bu-tx-inspector', BuTxInspector)
+</script>

@@ -1,0 +1,23 @@
+# OpenAPI Overlay 1.1.0
+#
+# Applies the read-only safety classification to the ARC-20 API document.
+# The Conformance Workbench permits only operations marked x-read-only: true
+# here, and the Version Navigator applies the same overlay when it renders
+# request examples for a source set. One overlay per concern, applied to the
+# canonical document: no full OpenAPI copies per variant exist anywhere.
+overlay: 1.1.0
+info:
+  title: ARC-20 read-only safety overlay
+  version: 1.0.0
+  description: >
+    Marks every GET operation in the ARC-20 document as read-only. Mutation,
+    signing, and broadcasting behavior is intentionally not marked: the
+    workbench refuses to send it.
+extends: ../../../contracts/openapi/arc20.json
+actions:
+  - target: '$.paths.*.get'
+    update:
+      x-read-only: true
+  - target: '$.paths.*.head'
+    update:
+      x-read-only: true
