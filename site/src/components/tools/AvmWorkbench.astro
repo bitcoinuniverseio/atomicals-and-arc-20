@@ -1,0 +1,228 @@
+---
+/**
+ * AVM Workbench: execution of the pinned beta interpreter with hard resource
+ * limits and a permanent, unmistakable beta banner. There is no JavaScript
+ * reimplementation of AVM semantics here: execution happens only through the
+ * release-pipeline WASM build, and the interface refuses honestly when that
+ * artifact is not present in the deployment.
+ */
+import opcodes from '../../../../contracts/avm-opcodes.json'
+import { docHref } from '../../lib/href'
+
+const opcodeList = (opcodes as { opcodes: { name: string; description?: string }[] }).opcodes ?? []
+const encodedOpcodes = JSON.stringify(opcodeList.slice(0, 60).map((entry) => ({ name: entry.name, description: entry.description ?? '' })))
+const revision = 'c185e6216a3ea2cb2e011e508033ca535ece3472'
+---
+
+<section class="bu-tool bu-avm" data-avm data-opcodes={encodedOpcodes}>
+  <aside class="bu-avm-banner" role="note">
+    <strong>AVM is beta and experimental.</strong>
+    <span>
+      This workbench executes the pinned beta interpreter at
+      <code>{revision.slice(0, 12)}</code>. It is not evidence of deployment by Bitcoin Universe.
+      Results describe that pinned revision only, and resource behavior can differ across hosts.
+    </span>
+  </aside>
+
+  <noscript>
+    <p class="bu-tool-note">
+      Execution needs JavaScript and the release-pipeline WASM build. The opcode reference below
+      and the execution rules under protocol/avm/ are fully readable without it.
+    </p>
+  </noscript>
+
+  <div class="bu-avm-layout">
+    <div class="bu-avm-side">
+      <h2>Program</h2>
+      <label for="bu-avm-editor" class="bu-tool-note">Interpreter script text, capped at 256 KB</label>
+      <textarea id="bu-avm-editor" data-editor rows="12" spellcheck="false"></textarea>
+      <div class="bu-avm-actions">
+        <button type="button" class="bu-btn" data-variant="primary" data-run>Run</button>
+        <button type="button" class="bu-btn" data-reset>Reset</button>
+        <button type="button" class="bu-btn" data-export-trace>Export trace</button>
+      </div>
+      <p class="bu-tool-note" data-status role="status">The interpreter loads on demand; nothing runs until you press Run.</p>
+
+      <h2>Opcode reference</h2>
+      <details class="bu-avm-opcodes">
+        <summary>Pinned inventory ({opcodeList.length} opcodes)</summary>
+        <dl class="bu-avm-opcode-list" data-opcode-list></dl>
+        <p class="bu-tool-note">
+          Full table with source paths: <a href={docHref('/protocol/avm/opcodes/', locale)}>AVM opcodes</a>.
+        </p>
+      </details>
+    </div>
+
+    <div class="bu-avm-main" data-outcome hidden>
+      <h2>Execution</h2>
+      <dl class="bu-facts">
+        <div class="bu-fact"><dt>Interpreter</dt><dd class="bu-mono">{revision.slice(0, 12)} (beta)</dd></div>
+        <div class="bu-fact"><dt>Status</dt><dd data-backend>loading runtime...</dd></div>
+        <div class="bu-fact"><dt>Wall clock</dt><dd data-time>-</dd></div>
+        <div class="bu-fact"><dt>Output size</dt><dd data-outsize>-</dd></div>
+      </dl>
+      <h2>Output</h2>
+      <pre class="bu-avm-output" data-output></pre>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { createWasmBackend, LIMITS } from '@bitcoin-universe/avm-runtime/host'
+
+  type Opcode = { name: string; description: string }
+
+  const root = document.querySelector<HTMLElement>('[data-avm]')
+  if (root) initAvm(root)
+
+  function initAvm(root: HTMLElement) {
+    const editor = root.querySelector<HTMLTextAreaElement>('[data-editor]')!
+    const status = root.querySelector<HTMLElement>('[data-status]')!
+    const outcome = root.querySelector<HTMLElement>('[data-outcome]')!
+    const backendView = root.querySelector<HTMLElement>('[data-backend]')!
+    const timeView = root.querySelector<HTMLElement>('[data-time]')!
+    const outSizeView = root.querySelector<HTMLElement>('[data-outsize]')!
+    const outputView = root.querySelector<HTMLElement>('[data-output]')!
+    const opcodeList = root.querySelector<HTMLElement>('[data-opcode-list]')!
+    let lastTrace: unknown
+
+    for (const opcode of JSON.parse(root.dataset.opcodes ?? '[]') as Opcode[]) {
+      const term = document.createElement('dt')
+      term.textContent = opcode.name
+      const detail = document.createElement('dd')
+      detail.textContent = opcode.description
+      opcodeList.append(term, detail)
+    }
+
+    let backend: Awaited<ReturnType<typeof createWasmBackend>> | undefined
+
+    async function ensureBackend() {
+      if (backend) return backend
+      // The release pipeline publishes the module under the artifacts tree.
+      // When it is absent the backend refuses and the interface says exactly
+      // why instead of faking a result.
+      backend = await createWasmBackend(async (limits) => {
+        const factory = (await import('/_avm/avm-interpreter.mjs')).default
+        return factory({ limits })
+      })
+      return backend
+    }
+
+    root.querySelector<HTMLButtonElement>('[data-run]')?.addEventListener('click', async () => {
+      const program = editor.value
+      const started = performance.now()
+      try {
+        const instance = await ensureBackend()
+        backendView.textContent = instance.kind === 'wasm' ? (instance.available ? 'pinned WASM build' : 'WASM build not present in this deployment') : instance.kind
+        const result = await instance.run(program)
+        outcome.hidden = false
+        timeView.textContent = `${Math.round(performance.now() - started)} ms (budget ${LIMITS.wallClockMs} ms)`
+        outSizeView.textContent = result.output ? `${result.output.length} bytes (cap ${LIMITS.outputBytes})` : 'none'
+        if (result.ok) {
+          outputView.textContent = result.output ?? '(no output)'
+          status.textContent = 'Execution finished inside the resource limits.'
+        } else {
+          outputView.textContent = `Refused: ${result.error ?? result.status}`
+          status.textContent = 'The host refused or terminated this run. Nothing was faked.'
+        }
+        lastTrace = { program, result, limits: LIMITS, pinnedRevision: 'c185e6216a3ea2cb2e011e508033ca535ece3472' }
+      } catch (error) {
+        status.textContent = `The runtime failed to load: ${error instanceof Error ? error.message : error}`
+      }
+    })
+    root.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () => {
+      outcome.hidden = true
+      editor.value = ''
+      status.textContent = 'Reset. The runtime holds no state between runs.'
+    })
+    root.querySelector<HTMLButtonElement>('[data-export-trace]')?.addEventListener('click', () => {
+      if (!lastTrace) return
+      const blob = new Blob([JSON.stringify(lastTrace, null, 2)], { type: 'application/json;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = 'avm-execution-trace.json'
+      anchor.click()
+      URL.revokeObjectURL(url)
+    })
+  }
+</script>
+
+<style>
+  .bu-avm-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    border: 2px solid var(--bu-warn);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-warn-quiet);
+    color: var(--bu-warn);
+    padding: var(--bu-space-3) var(--bu-space-4);
+    margin-block: var(--bu-space-3);
+  }
+
+  .bu-avm-banner strong {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+  }
+
+  .bu-avm-layout {
+    display: grid;
+    gap: var(--bu-space-5);
+  }
+
+  @media (min-width: 62rem) {
+    .bu-avm-layout {
+      grid-template-columns: 24rem 1fr;
+      align-items: start;
+    }
+  }
+
+  .bu-avm-side h2,
+  .bu-avm-main h2 {
+    font-size: var(--bu-step-1);
+    margin-block: var(--bu-space-3) var(--bu-space-2);
+  }
+
+  .bu-avm textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface-sunken);
+    color: var(--bu-ink);
+    font-family: var(--bu-font-mono);
+    font-size: 0.8rem;
+  }
+
+  .bu-avm-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-2);
+    margin-block: var(--bu-space-2);
+  }
+
+  .bu-avm-opcode-list {
+    max-height: 20rem;
+    overflow-y: auto;
+    font-size: var(--bu-step--1);
+  }
+
+  .bu-avm-opcode-list dt {
+    font-family: var(--bu-font-mono);
+    color: var(--bu-ink);
+    margin-block-start: var(--bu-space-2);
+  }
+
+  .bu-avm-output {
+    max-height: 20rem;
+    overflow: auto;
+    padding: var(--bu-space-3);
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface-sunken);
+    font-family: var(--bu-font-mono);
+    font-size: 0.78rem;
+  }
+</style>

@@ -16,7 +16,8 @@
     "packages/protocol-core",
     "packages/protocol-lab",
     "packages/utxo-planner",
-    "packages/conformance"
+    "packages/conformance",
+    "packages/avm-runtime"
   ],
   "scripts": {
     "generate": "node scripts/generate-all.mjs",

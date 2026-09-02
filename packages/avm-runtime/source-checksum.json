@@ -1,0 +1,9 @@
+{
+  "acquisitionVersion": "1.0.0",
+  "sourceId": "atomicals-avm-interpreter",
+  "repository": "https://github.com/atomicals/avm-interpreter",
+  "revision": "c185e6216a3ea2cb2e011e508033ca535ece3472",
+  "tarball": "vendor/avm-interpreter-c185e62.tar.gz",
+  "sha256": "2f6e5a12aea9d48188b60aaca380fe34bcd776f45a76e92483c3c8e1d5d1197f",
+  "note": "Pinned beta interpreter source. Verified on acquisition; builds use this checksum."
+}
