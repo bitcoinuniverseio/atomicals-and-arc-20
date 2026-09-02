@@ -1,9 +1,14 @@
 /*
- * Bitcoin Universe documentation design tokens.
+ * Atomic Universe design tokens.
  *
- * Light is the primary treatment. Dark and system modes are complete, not an afterthought.
- * Every pairing below is checked against WCAG 2.2 AA in tests/a11y/contrast.test.mjs.
- * Colours are declared once here and consumed everywhere else through these names.
+ * The visual language: a satoshi as the nucleus, UTXOs and assignments as
+ * orbiting units, commit and reveal paths as precise trajectories, blocks as a
+ * restrained technical grid, source revisions as observation points.
+ *
+ * Light is the primary treatment. Dark and system modes are complete, not an
+ * afterthought. Every pairing is checked against WCAG 2.2 AA in
+ * tests/accessibility.test.mjs. Colours are declared once here and consumed
+ * everywhere else through these names.
  */
 
 :root,
@@ -11,86 +16,98 @@
   color-scheme: light;
 
   /* Surfaces */
-  --bu-paper: #fbfaf7;
-  --bu-paper-deep: #f3f1ec;
+  --bu-paper: #f7f7f2;
+  --bu-paper-deep: #eff1ec;
   --bu-surface: #ffffff;
   --bu-surface-raised: #ffffff;
-  --bu-surface-sunken: #f6f4ef;
+  --bu-surface-sunken: #eff1ec;
 
   /* Text */
-  --bu-ink: #171512;
-  --bu-ink-soft: #45403a;
-  --bu-ink-muted: #635d53;
+  --bu-ink: #111318;
+  --bu-ink-soft: #596170;
+  --bu-ink-muted: #5f6875;
 
   /* Lines */
-  --bu-line: #e2ddd3;
-  --bu-line-strong: #c8c1b4;
+  --bu-line: #d9dde3;
+  --bu-line-strong: #b7bec9;
   /* Boundary of an interactive control. Meets 3:1 against every surface, because
      a control the reader cannot find is a control they cannot use. */
-  --bu-line-control: #8b857a;
+  --bu-line-control: #737d8c;
 
-  /* Accent */
-  --bu-accent: #8a5a12;
-  --bu-accent-strong: #6e4710;
-  --bu-accent-quiet: #f2ead9;
-  --bu-accent-edge: #d8c391;
+  /* Brand violet: the identity accent of the Atomic Universe system. */
+  --bu-accent: #594bdb;
+  --bu-accent-strong: #4234ce;
+  --bu-accent-quiet: #ebe9fc;
+  --bu-accent-edge: #c9c4f4;
+
+  /* Bitcoin accent: reserved for satoshi- and fee-related meaning. */
+  --bu-bitcoin: #d96800;
+  --bu-bitcoin-strong: #9a4a00;
+  --bu-bitcoin-quiet: #f9ecdd;
+  --bu-bitcoin-edge: #e8c193;
 
   /* Status */
-  --bu-ok: #1d6b3f;
-  --bu-ok-quiet: #e6f2ea;
-  --bu-warn: #8a5314;
-  --bu-warn-quiet: #f8eddc;
-  --bu-risk: #a32718;
-  --bu-risk-quiet: #fbe9e6;
+  --bu-ok: #087f5b;
+  --bu-ok-quiet: #ecf7f2;
+  --bu-warn: #956000;
+  --bu-warn-quiet: #f7f0dc;
+  --bu-risk: #b42318;
+  --bu-risk-quiet: #fbedeb;
   --bu-info: #1d4f79;
-  --bu-info-quiet: #e6eff7;
-  --bu-idle: #5b564d;
-  --bu-idle-quiet: #efece6;
+  --bu-info-quiet: #e7eef5;
+  --bu-idle: #57606b;
+  --bu-idle-quiet: #edeff2;
 
-  --bu-shadow-1: 0 1px 2px rgb(23 21 18 / 6%), 0 2px 8px rgb(23 21 18 / 4%);
-  --bu-shadow-2: 0 2px 4px rgb(23 21 18 / 7%), 0 12px 28px rgb(23 21 18 / 8%);
-  --bu-focus: #1d4f79;
+  --bu-shadow-1: 0 1px 2px rgb(17 19 24 / 6%), 0 2px 8px rgb(17 19 24 / 4%);
+  --bu-shadow-2: 0 2px 4px rgb(17 19 24 / 7%), 0 12px 28px rgb(17 19 24 / 8%);
+  --bu-focus: #594bdb;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bu-paper: #100f0d;
-  --bu-paper-deep: #0a0a08;
-  --bu-surface: #171613;
-  --bu-surface-raised: #1e1c19;
-  --bu-surface-sunken: #131211;
+  --bu-paper: #0d1016;
+  --bu-paper-deep: #0a0d12;
+  --bu-surface: #151a23;
+  --bu-surface-raised: #1c2230;
+  --bu-surface-sunken: #10141c;
 
-  --bu-ink: #f5f3ee;
-  --bu-ink-soft: #cec8bd;
-  --bu-ink-muted: #a09a8d;
+  --bu-ink: #f5f7fa;
+  --bu-ink-soft: #c6cdd8;
+  --bu-ink-muted: #aab3c2;
 
-  --bu-line: #2c2925;
-  --bu-line-strong: #433f38;
-  --bu-line-control: #6f6a60;
+  --bu-line: #303847;
+  --bu-line-strong: #485265;
+  --bu-line-control: #7e8899;
 
-  --bu-accent: #e0b269;
-  --bu-accent-strong: #f0cd95;
-  --bu-accent-quiet: #241d12;
-  --bu-accent-edge: #5a4622;
+  --bu-accent: #a49bff;
+  --bu-accent-strong: #c6bfff;
+  --bu-accent-quiet: #1b1836;
+  --bu-accent-edge: #4a4390;
 
-  --bu-ok: #7fd1a0;
-  --bu-ok-quiet: #12241a;
-  --bu-warn: #e8b877;
-  --bu-warn-quiet: #251c11;
-  --bu-risk: #f0a094;
-  --bu-risk-quiet: #2a1613;
-  --bu-info: #93c3ea;
-  --bu-info-quiet: #111e29;
-  --bu-idle: #a8a296;
-  --bu-idle-quiet: #1c1a17;
+  --bu-bitcoin: #ffb15c;
+  --bu-bitcoin-strong: #ffc98f;
+  --bu-bitcoin-quiet: #2a1e10;
+  --bu-bitcoin-edge: #6b4a1e;
+
+  --bu-ok: #57d4aa;
+  --bu-ok-quiet: #0e2620;
+  --bu-warn: #f5c26b;
+  --bu-warn-quiet: #271d0e;
+  --bu-risk: #ff8a80;
+  --bu-risk-quiet: #2b1512;
+  --bu-info: #8fc7f2;
+  --bu-info-quiet: #0f1d2b;
+  --bu-idle: #a7b0bf;
+  --bu-idle-quiet: #1a1d24;
 
   --bu-shadow-1: 0 1px 2px rgb(0 0 0 / 40%), 0 2px 8px rgb(0 0 0 / 30%);
   --bu-shadow-2: 0 2px 4px rgb(0 0 0 / 45%), 0 14px 32px rgb(0 0 0 / 40%);
-  --bu-focus: #93c3ea;
+  --bu-focus: #a49bff;
 }
 
-/* Typography scale. One family for prose, one for code, both with real fallbacks. */
+/* Typography scale. One family for prose, one for code, both with real fallbacks.
+   No font is fetched at runtime; the stack falls back to the system. */
 :root {
   --bu-font-sans:
     'Inter var', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,

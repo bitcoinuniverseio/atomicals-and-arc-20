@@ -1,0 +1,155 @@
+---
+import config from 'virtual:starlight/user-config'
+
+import LanguageSelect from 'virtual:starlight/components/LanguageSelect'
+import Search from 'virtual:starlight/components/Search'
+import SiteTitle from 'virtual:starlight/components/SiteTitle'
+import SocialIcons from 'virtual:starlight/components/SocialIcons'
+import ThemeSelect from 'virtual:starlight/components/ThemeSelect'
+
+import siteMeta from '../../data/site.json'
+import { docHref } from '../../lib/href'
+import { APPLICABILITY_LABELS } from '../../lib/sources'
+import ContextStrip from '../design-system/ContextStrip.astro'
+
+/**
+ * Render the `Search` component if Pagefind is enabled or the default search
+ * component has been overridden. Same rule Starlight's own header applies.
+ */
+const shouldRenderSearch =
+  config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro'
+
+const route = Astro.locals.starlightRoute
+const locale = route?.locale
+const currentSlug = route?.slug ?? 'index'
+
+const globalNav = (siteMeta.globalNav ?? []).map((item) => {
+  const label =
+    locale && item.translations && locale in item.translations
+      ? item.translations[locale]
+      : item.label
+  const href = docHref(item.href, locale)
+  const targetSlug = item.href.replace(/^\//, '').replace(/\/$/, '') || 'index'
+  const isCurrent =
+    currentSlug === targetSlug ||
+    currentSlug.startsWith(`${targetSlug}/`) ||
+    (targetSlug === 'start/choose-your-path' && currentSlug.startsWith('start/'))
+  return { label, href, isCurrent }
+})
+
+const applicability = route?.entry?.data?.provenance?.applicability
+const truthLayer = applicability ? APPLICABILITY_LABELS[applicability] : undefined
+---
+
+<div class="bu-header">
+  <div class="bu-header-main">
+    <div class="title-wrapper sl-flex">
+      <SiteTitle />
+    </div>
+    <nav class="bu-global-nav print:hidden" aria-label="Primary">
+      <ul>
+        {
+          globalNav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={item.isCurrent ? 'true' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="sl-flex print:hidden bu-header-tools">
+      {shouldRenderSearch && <Search />}
+      <div class="sl-hidden md:sl-flex print:hidden right-group">
+        <div class="sl-flex social-icons">
+          <SocialIcons />
+        </div>
+        <ThemeSelect />
+        <LanguageSelect />
+      </div>
+    </div>
+  </div>
+  <ContextStrip truthLayer={truthLayer} locale={locale} />
+</div>
+
+<style>
+  @layer starlight.core {
+    .bu-header {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+      height: 100%;
+    }
+
+    .bu-header-main {
+      display: flex;
+      gap: var(--sl-nav-gap);
+      align-items: center;
+      justify-content: space-between;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .title-wrapper {
+      /* Prevent long titles overflowing and covering the search and menu buttons on narrow viewports. */
+      overflow: clip;
+      /* Avoid clipping focus ring around link inside title wrapper. */
+      padding: 0.25rem;
+      margin: -0.25rem;
+      min-width: 0;
+    }
+
+    .right-group,
+    .social-icons {
+      gap: 1rem;
+      align-items: center;
+    }
+    .social-icons::after {
+      content: '';
+      height: 2rem;
+      border-inline-end: 1px solid var(--sl-color-gray-5);
+    }
+
+    .bu-header-tools {
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @media (min-width: 50rem) {
+      :global(:root[data-has-sidebar]) {
+        --__sidebar-pad: calc(2 * var(--sl-nav-pad-x));
+      }
+      :global(:root:not([data-has-toc])) {
+        --__toc-width: 0rem;
+      }
+      .bu-header-main {
+        --__sidebar-width: max(0rem, var(--sl-content-inline-start, 0rem) - var(--sl-nav-pad-x));
+        --__main-column-fr: calc(
+          (
+              100% + var(--__sidebar-pad, 0rem) - var(--__toc-width, var(--sl-sidebar-width)) -
+                (2 * var(--__toc-width, var(--sl-nav-pad-x))) - var(--sl-content-inline-start, 0rem) -
+                var(--sl-content-width)
+            ) / 2
+        );
+        display: grid;
+        grid-template-columns:
+          /* 1 (site title): up to the main content column or the title width. */
+          minmax(
+            calc(var(--__sidebar-width) + max(0rem, var(--__main-column-fr) - var(--sl-nav-gap))),
+            auto
+          )
+          /* 2 (global navigation): the free space between title and tools. */
+          1fr
+          /* 3 (tools): the space they need. */
+          auto;
+        align-content: center;
+      }
+
+      .bu-global-nav {
+        justify-self: center;
+      }
+    }
+  }
+</style>

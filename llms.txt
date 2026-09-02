@@ -115,7 +115,7 @@ Vectors: /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
 
 ### start
 
-- [Atomicals and ARC-20](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/) [editorial]: Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.
+- [Atomicals and ARC-20](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/) [editorial]: Version-pinned protocol documentation, deterministic labs, API conformance, safe UTXO planning and agent-ready workflows for Atomicals on Bitcoin.
 - [Choose your path](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/choose-your-path/) [editorial]: Four short routes through this documentation, one for each thing people actually come here to do.
 - [Glossary](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/glossary/) [protocol-behavior]: Every Atomicals and ARC-20 term used on this site, defined once and used consistently everywhere.
 - [Networks and versions](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/networks-and-versions/) [protocol-behavior]: Which network a statement applies to, which validator revision decides it, and which documentation version you are reading.
