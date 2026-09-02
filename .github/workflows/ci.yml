@@ -217,3 +217,44 @@ jobs:
       - name: Report the complete dependency risk picture
         continue-on-error: true
         run: npm audit
+
+  # ---------------------------------------------------------------------------
+  # Gate 5. The local Regtest Lab.
+  #
+  # Boots the minimal profile on a Docker-capable self-hosted runner, seeds the
+  # deterministic state, executes the critical read-only expectations, and
+  # tears everything down again.
+  # ---------------------------------------------------------------------------
+  lab:
+    name: Regtest Lab end to end
+    if: >-
+      !cancelled() &&
+      (github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: [self-hosted, universe-ci, linux-ultra, docker]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Prove Docker exists before anything else runs
+        run: docker version
+
+      - name: Boot the minimal profile with ephemeral credentials
+        run: npm run lab:up
+
+      - name: Seed the deterministic fixture state
+        run: npm run lab:seed
+
+      - name: Execute the critical workflows against the running lab
+        run: npm run lab:test
+
+      - name: Reset proves determinism, not luck
+        run: |
+          npm run lab:reset
+          npm run lab:test
+
+      - name: Tear everything down, including volumes
+        if: always()
+        run: npm run lab:down
