@@ -378,6 +378,12 @@ test('the ecosystem registry records evidence and a verified date for every entr
     assert.match(record.lastVerified, /^\d{4}-\d{2}-\d{2}$/, `${record.id} needs a verified date`)
     assert.ok(STATES.has(record.availability), `${record.id} availability: ${record.availability}`)
     assert.ok(record.securityNotes, `${record.id} needs security notes`)
+    // Compatibility Center fields: a record declares its surface honestly.
+    assert.equal(typeof record.readOnly, 'boolean', `${record.id} needs a read-only declaration`)
+    assert.equal(typeof record.publicApi, 'boolean', `${record.id} needs a public API declaration`)
+    assert.ok(Array.isArray(record.workflows), `${record.id} needs a workflow list`)
+    assert.ok(['repository-read', 'endpoint-check'].includes(record.verificationMethod), `${record.id} verification method`)
+    assert.ok(record.evidenceUrl, `${record.id} needs an evidence URL`)
   }
 })
 

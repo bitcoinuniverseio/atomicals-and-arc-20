@@ -1,0 +1,451 @@
+---
+/**
+ * Ecosystem Compatibility Center.
+ *
+ * Reuses the existing registry and its verification workflow; this is the
+ * presentation and evidence layer on top. Reachability and capability remain
+ * separate: a reachable homepage is never evidence that a workflow works.
+ */
+import registry from '../../../../contracts/ecosystem.json'
+import workflowCatalog from '../../../generated/workflows.json'
+
+type Record = {
+  id: string
+  name: string
+  category: string
+  official: boolean
+  operator: string
+  supports: string[]
+  workflows: string[]
+  networks: string[]
+  custody: string
+  readOnly: boolean
+  publicApi: boolean
+  sdkAvailable: boolean
+  repository: string | null
+  url: string | null
+  availability: string
+  evidence: string
+  evidenceUrl: string | null
+  evidenceRevision: string | null
+  verificationMethod: string
+  lastVerified: string
+  securityNotes?: string
+  knownLimitations: string[]
+  deprecationEvidence: string | null
+}
+
+const data = registry as unknown as {
+  registryVersion: string
+  lastVerified: string
+  policy: { noEndorsement: string }
+  records: Record[]
+}
+
+const TONE: Record<string, string> = {
+  'verified-active': 'ok',
+  degraded: 'warn',
+  unreachable: 'warn',
+  deprecated: 'risk',
+  closed: 'risk',
+  unknown: 'idle',
+}
+
+const categoryLabels: Record<string, string> = {
+  'validator-indexer': 'Validator and indexer',
+  cli: 'Command line tool',
+  api: 'API',
+  sdk: 'SDK',
+  explorer: 'Explorer',
+  marketplace: 'Marketplace',
+  wallet: 'Wallet',
+  analytics: 'Analytics',
+  'developer-tool': 'Developer tool',
+  'community-resource': 'Community resource',
+  'official-resource': 'Official resource',
+}
+
+const workflowIds = ((workflowCatalog as unknown as { workflows: { workflowId: string }[] }).workflows ?? []).map((workflow) => workflow.workflowId)
+const custodies = [...new Set(data.records.map((record) => record.custody))].sort()
+const networks = [...new Set(data.records.flatMap((record) => record.networks))].sort()
+const categories = [...new Set(data.records.map((record) => record.category))].sort()
+
+const payload = JSON.stringify({
+  records: data.records,
+  workflowIds,
+  categoryLabels,
+  repository: 'bitcoinuniverseio/atomicals-and-arc-20',
+})
+---
+
+<section class="bu-tool bu-center" data-center data-payload={payload}>
+  <noscript>
+    <p class="bu-tool-note">
+      Filters, drawers, exports, and the suggest flow need JavaScript. The full registry table
+      with every evidence note renders below when JavaScript runs; the
+      <a href="/ecosystem/">registry page</a> and the machine-readable
+      <a href="/contracts/ecosystem.json">ecosystem.json</a> work without it.
+    </p>
+  </noscript>
+
+  <p class="bu-tool-note">
+    {data.records.length} records, last verified {data.lastVerified}. {data.policy.noEndorsement}
+    Reachability and capability are verified separately: a reachable homepage is not evidence
+    that a specific workflow works. A network failure is recorded as unreachable, never as
+    closed or deprecated.
+  </p>
+
+  <div class="bu-center-controls">
+    <label>
+      <span>Search</span>
+      <input type="search" data-search placeholder="Filter by name, operator, capability" />
+    </label>
+    <label><span>Category</span>
+      <select data-filter="category"><option value="">All</option>
+        {categories.map((category) => <option value={category}>{categoryLabels[category] ?? category}</option>)}
+      </select>
+    </label>
+    <label><span>Network</span>
+      <select data-filter="network"><option value="">All</option>
+        {networks.map((network) => <option value={network}>{network}</option>)}
+      </select>
+    </label>
+    <label><span>Custody</span>
+      <select data-filter="custody"><option value="">All</option>
+        {custodies.map((custody) => <option value={custody}>{custody}</option>)}
+      </select>
+    </label>
+    <label><span>Workflow</span>
+      <select data-filter="workflow"><option value="">All</option>
+        {workflowIds.map((workflowId) => <option value={workflowId}>{workflowId}</option>)}
+      </select>
+    </label>
+    <label><span>Operator</span>
+      <select data-filter="official">
+        <option value="">All</option>
+        <option value="official">Official</option>
+        <option value="third">Third party</option>
+      </select>
+    </label>
+    <label><span>Availability</span>
+      <select data-filter="availability"><option value="">All</option>
+        {(registry as unknown as { availabilityStates: string[] }).availabilityStates.map((state) => (
+          <option value={state}>{state}</option>
+        ))}
+      </select>
+    </label>
+  </div>
+
+  <div class="bu-center-actions">
+    <button type="button" class="bu-btn" data-mode="table" aria-pressed="true">Table</button>
+    <button type="button" class="bu-btn" data-mode="cards" aria-pressed="false">Cards</button>
+    <button type="button" class="bu-btn" data-export="csv">CSV</button>
+    <button type="button" class="bu-btn" data-export="json">JSON</button>
+    <a class="bu-btn" data-suggest href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/issues/new?template=new-aip.yml">Suggest an update</a>
+  </div>
+  <p class="bu-tool-note" data-count role="status"></p>
+
+  <div class="bu-matrix bu-scroll" data-table-view>
+    <table>
+      <caption>Compatibility records with evidence and verification dates</caption>
+      <thead>
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col">Status</th>
+          <th scope="col">Workflows</th>
+          <th scope="col">Surface</th>
+          <th scope="col">Evidence</th>
+          <th scope="col">Detail</th>
+        </tr>
+      </thead>
+      <tbody data-rows></tbody>
+    </table>
+  </div>
+  <div class="bu-center-cards" data-cards-view hidden></div>
+
+  <dialog class="bu-source-drawer" data-drawer aria-label="Record evidence">
+    <div class="bu-drawer-head">
+      <h2 data-drawer-title></h2>
+      <button class="bu-drawer-close" type="button" aria-label="Close details" data-drawer-close>&times;</button>
+    </div>
+    <div class="bu-drawer-body" data-drawer-body></div>
+  </dialog>
+</section>
+
+<script>
+  import { allocate } from '@bitcoin-universe/protocol-core/allocation'
+
+  type CenterRecord = {
+    id: string
+    name: string
+    category: string
+    official: boolean
+    operator: string
+    supports: string[]
+    workflows: string[]
+    networks: string[]
+    custody: string
+    readOnly: boolean
+    publicApi: boolean
+    sdkAvailable: boolean
+    repository: string | null
+    url: string | null
+    availability: string
+    evidence: string
+    evidenceUrl: string | null
+    evidenceRevision: string | null
+    verificationMethod: string
+    lastVerified: string
+    securityNotes?: string
+    knownLimitations: string[]
+    deprecationEvidence: string | null
+  }
+  type Payload = {
+    records: CenterRecord[]
+    workflowIds: string[]
+    categoryLabels: Record<string, string>
+    repository: string
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-center]')
+  if (root) initCenter(root)
+  // The allocation import keeps the shared engine tree-shaken into the same
+  // chunk graph as the rest of the tools; nothing here executes protocol code.
+  void allocate
+
+  function initCenter(root: HTMLElement) {
+    const payload = JSON.parse(root.dataset.payload!) as Payload
+    const records = payload.records
+    const rows = root.querySelector<HTMLTableSectionElement>('[data-rows]')!
+    const cards = root.querySelector<HTMLElement>('[data-cards-view]')!
+    const tableView = root.querySelector<HTMLElement>('[data-table-view]')!
+    const count = root.querySelector<HTMLElement>('[data-count]')!
+    const search = root.querySelector<HTMLInputElement>('[data-search]')!
+    const drawer = root.querySelector<HTMLDialogElement>('[data-drawer]')!
+    const drawerTitle = root.querySelector<HTMLElement>('[data-drawer-title]')!
+    const drawerBody = root.querySelector<HTMLElement>('[data-drawer-body]')!
+    let mode: 'table' | 'cards' = 'table'
+
+    const filters = { search: '', category: '', network: '', custody: '', workflow: '', official: '', availability: '' }
+
+    function readUrl() {
+      const params = new URLSearchParams(location.search)
+      filters.search = params.get('q') ?? ''
+      for (const key of ['category', 'network', 'custody', 'workflow', 'official', 'availability'] as const) {
+        filters[key] = params.get(key) ?? ''
+      }
+      const mode = params.get('mode')
+      if (mode === 'cards' || mode === 'table') setMode(mode, false)
+    }
+
+    function writeUrl() {
+      const params = new URLSearchParams()
+      if (filters.search) params.set('q', filters.search)
+      for (const key of ['category', 'network', 'custody', 'workflow', 'official', 'availability'] as const) {
+        if (filters[key]) params.set(key, filters[key])
+      }
+      if (mode !== 'table') params.set('mode', mode)
+      const query = params.toString()
+      history.replaceState(null, '', query ? `?${query}` : location.pathname)
+    }
+
+    function matches(record: CenterRecord): boolean {
+      const needle = filters.search.trim().toLowerCase()
+      const searchable = `${record.name} ${record.operator} ${record.supports.join(' ')}`.toLowerCase()
+      if (needle && !searchable.includes(needle)) return false
+      if (filters.category && record.category !== filters.category) return false
+      if (filters.network && !record.networks.includes(filters.network)) return false
+      if (filters.custody && record.custody !== filters.custody) return false
+      if (filters.workflow && !record.workflows.includes(filters.workflow)) return false
+      if (filters.official === 'official' && !record.official) return false
+      if (filters.official === 'third' && record.official) return false
+      if (filters.availability && record.availability !== filters.availability) return false
+      return true
+    }
+
+    const TONE: Record<string, string> = {
+      'verified-active': 'ok', degraded: 'warn', unreachable: 'warn',
+      deprecated: 'risk', closed: 'risk', unknown: 'idle',
+    }
+
+    function render() {
+      const visible = records.filter(matches)
+      count.textContent = `${visible.length} of ${records.length} records shown.`
+      rows.innerHTML = visible
+        .map(
+          (record) => `<tr>
+            <th scope="row">${escapeHtml(record.name)}
+              <br /><span style="color:var(--bu-ink-muted)">${escapeHtml(record.operator)}</span></th>
+            <td><span class="bu-chip" data-tone="${TONE[record.availability] ?? 'idle'}">${record.availability}</span>
+              <br /><span style="color:var(--bu-ink-muted)">checked ${record.lastVerified}</span></td>
+            <td>${record.workflows.length ? record.workflows.map((workflow) => `<code>${workflow}</code>`).join(', ') : 'none declared'}</td>
+            <td>${record.readOnly ? 'read-only' : 'mutation'}${record.publicApi ? ', public API' : ''}${record.sdkAvailable ? ', SDK' : ''}</td>
+            <td>${escapeHtml(record.evidence)}</td>
+            <td><button type="button" class="bu-btn" data-detail="${record.id}">Evidence</button></td>
+          </tr>`,
+        )
+        .join('')
+      cards.innerHTML = visible
+        .map(
+          (record) => `<details class="bu-decision-card">
+            <summary>${escapeHtml(record.name)} - <span class="bu-chip" data-tone="${TONE[record.availability] ?? 'idle'}">${record.availability}</span></summary>
+            <p>${escapeHtml(record.operator)} - ${record.category}</p>
+            <p>${escapeHtml(record.evidence)}</p>
+            <p class="bu-tool-note">checked ${record.lastVerified} via ${record.verificationMethod}</p>
+          </details>`,
+        )
+        .join('')
+      for (const button of root.querySelectorAll<HTMLButtonElement>('[data-detail]')) {
+        button.addEventListener('click', () => openDrawer(button.dataset.detail!))
+      }
+    }
+
+    function openDrawer(id: string) {
+      const record = records.find((entry) => entry.id === id)
+      if (!record) return
+      drawerTitle.textContent = record.name
+      const limitation = record.knownLimitations.length
+        ? `<p><strong>Known limitations.</strong> ${record.knownLimitations.map(escapeHtml).join('; ')}</p>`
+        : ''
+      const deprecation = record.deprecationEvidence
+        ? `<p><strong>Deprecation evidence.</strong> ${escapeHtml(record.deprecationEvidence)}</p>`
+        : ''
+      drawerBody.innerHTML = `
+        <p>${escapeHtml(record.evidence)}</p>
+        <p class="bu-tool-note">Verified ${record.lastVerified} via ${record.verificationMethod}${record.evidenceRevision ? ` at revision <code>${record.evidenceRevision}</code>` : ''}.</p>
+        ${record.evidenceUrl ? `<p><a href="${record.evidenceUrl}" rel="noopener noreferrer nofollow">Evidence source</a></p>` : ''}
+        ${record.securityNotes ? `<p><strong>Security notes.</strong> ${escapeHtml(record.securityNotes)}</p>` : ''}
+        ${limitation}
+        ${deprecation}
+        <p class="bu-tool-note">Verification and endorsement are different things. A record here is evidence, not a recommendation.</p>`
+      drawer.showModal()
+    }
+
+    function setMode(next: 'table' | 'cards', update = true) {
+      mode = next
+      tableView.hidden = mode !== 'table'
+      cards.hidden = mode !== 'cards'
+      for (const button of root.querySelectorAll<HTMLButtonElement>('[data-mode]')) {
+        button.setAttribute('aria-pressed', String(button.dataset.mode === mode))
+      }
+      if (update) writeUrl()
+    }
+
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-mode]')) {
+      button.addEventListener('click', () => setMode(button.dataset.mode as 'table' | 'cards'))
+    }
+    search?.addEventListener('input', () => {
+      filters.search = search.value
+      render()
+      writeUrl()
+    })
+    for (const select of root.querySelectorAll<HTMLSelectElement>('[data-filter]')) {
+      select.addEventListener('change', () => {
+        filters[select.dataset.filter as keyof typeof filters] = select.value
+        render()
+        writeUrl()
+      })
+    }
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-export]')) {
+      button.addEventListener('click', () => {
+        const visible = records.filter(matches)
+        let payloadOut: string
+        if (button.dataset.export === 'json') {
+          payloadOut = JSON.stringify({ exported: visible, policy: { noEndorsement: true } }, null, 2)
+        } else {
+          const lines = [['id', 'name', 'availability', 'workflows', 'verified'].join(',')]
+          for (const record of visible) {
+            lines.push([record.id, record.name, record.availability, record.workflows.join('|'), record.lastVerified].map((value) => `"${String(value).replaceAll('"', '""')}"`).join(','))
+          }
+          payloadOut = lines.join('\n')
+        }
+        const blob = new Blob([payloadOut], { type: 'application/json;charset=utf-8' })
+        const url = URL.createObjectURL(blob)
+        const anchor = document.createElement('a')
+        anchor.href = url
+        anchor.download = `compatibility.${button.dataset.export}`
+        anchor.click()
+        URL.revokeObjectURL(url)
+      })
+    }
+    // Suggest an update: a prefilled issue, never a direct registry write.
+    for (const link of root.querySelectorAll<HTMLAnchorElement>('[data-suggest]')) {
+      link.addEventListener('click', () => {
+        link.href =
+          `https://github.com/${payload.repository}/issues/new?title=${encodeURIComponent('Ecosystem record update suggestion')}&body=${encodeURIComponent(
+            'Proposed record JSON (schema fields: id, name, category, official, operator, supports, workflows, networks, custody, readOnly, publicApi, sdkAvailable, repository, url, availability, evidence, evidenceUrl, verificationMethod, lastVerified, securityNotes, knownLimitations):\n\n<!-- fill in -->\n\nSubmission is not verification or endorsement.',
+          )}`
+      })
+    }
+    root.querySelector<HTMLButtonElement>('[data-drawer-close]')?.addEventListener('click', () => drawer.close())
+    drawer.addEventListener('click', (event) => {
+      if (event.target === drawer && drawer.open) drawer.close()
+    })
+
+    readUrl()
+    if (search) search.value = filters.search
+    render()
+  }
+
+  function escapeHtml(value: string): string {
+    return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
+  }
+</script>
+
+<style>
+  .bu-center-controls {
+    display: grid;
+    gap: var(--bu-space-2);
+    margin-block: var(--bu-space-3);
+  }
+
+  @media (min-width: 48rem) {
+    .bu-center-controls {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .bu-center-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .bu-center-controls input,
+  .bu-center-controls select {
+    min-height: var(--bu-touch);
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface);
+    color: var(--bu-ink);
+    font: inherit;
+  }
+
+  .bu-center-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-2);
+    align-items: center;
+    margin-block-end: var(--bu-space-2);
+  }
+
+  .bu-center-actions a {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .bu-center-cards .bu-decision-card {
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface);
+    padding: var(--bu-space-3);
+    margin-block: var(--bu-space-2);
+  }
+
+  .bu-drawer-body {
+    padding: var(--bu-space-4) var(--bu-space-5) var(--bu-space-5);
+    font-size: var(--bu-step--1);
+  }
+</style>
