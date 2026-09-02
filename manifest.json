@@ -28,7 +28,7 @@
     "guides/transfer-arc20",
     "guides/avoid-burns"
   ],
-  "pageCount": 218,
+  "pageCount": 219,
   "pages": [
     {
       "pageId": "home",
@@ -51,7 +51,7 @@
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "524f386eea1b942ac9eac78a0552a1a41416c8800e2f32f84cb53844f0c65c8b",
+      "contentHash": "e539ace55d608fd476c86d10f4efe80b0f0d4e80d504fcf0533ea713cc550dba",
       "href": "/atomicals-and-arc-20/",
       "raw": "/atomicals-and-arc-20/raw/index.md"
     },
@@ -5946,6 +5946,41 @@
       "contentHash": "0a5e132e790662fd3ddd0d2fd9c7f0a8eb44bb787fd5d7659b8ae196f5f5caaa",
       "href": "/atomicals-and-arc-20/tools/transaction-inspector/",
       "raw": "/atomicals-and-arc-20/raw/tools/transaction-inspector.md"
+    },
+    {
+      "pageId": "tools/utxo-safety",
+      "routeId": "tools/utxo-safety",
+      "locale": "en",
+      "title": "UTXO Safety Planner",
+      "description": "Classify asset-bearing UTXOs, see the risks, and generate deterministic candidate plans before you construct a transaction.",
+      "area": "tools",
+      "audience": [
+        "holder",
+        "developer",
+        "everyone"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "mainnet",
+        "testnet",
+        "signet",
+        "regtest"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [
+        "Classification is only as good as the assignment data you import. Without indexer data the planner says unknown and never claims safety.",
+        "Plans are unsigned intents. The planner never signs, never broadcasts, and never performs an address lookup without an explicit action at a chosen endpoint."
+      ],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "d75560a8ce5ca3dc8e0809f528a2fce690284df0130eff3895389878ff2488f2",
+      "href": "/atomicals-and-arc-20/tools/utxo-safety/",
+      "raw": "/atomicals-and-arc-20/raw/tools/utxo-safety.md"
     },
     {
       "pageId": "guides/index",
