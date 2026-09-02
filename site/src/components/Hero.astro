@@ -1,28 +1,28 @@
 ---
 import siteMeta from '../data/site.json'
 import { docHref } from '../lib/href'
-import CommitReveal from './diagrams/CommitReveal.astro'
+import OrbitalHero from './diagrams/OrbitalHero.astro'
 
 const locale = Astro.locals.starlightRoute?.locale
 ---
 
 <section class="bu-hero">
   <div>
-    <p class="bu-hero-kicker">Atomicals protocol family and ARC-20</p>
-    <h1>One satoshi. One unit. Nothing hidden in between.</h1>
+    <p class="bu-hero-kicker">Bitcoin-native digital objects and fungible units</p>
+    <h1>Atomicals, explained from source to execution.</h1>
     <p>
-      {siteMeta.tagline} Every claim is pinned to a source revision, labelled by what it applies
-      to, and dated.
+      Version-pinned protocol documentation, deterministic labs, API conformance, safe UTXO
+      planning and agent-ready workflows for ARC-20, NFTs, Realms, Containers, DMINT and AVM.
     </p>
     <div class="bu-hero-actions">
-      <a class="bu-btn" data-variant="primary" href={docHref('/start/what-is-arc-20/', locale)}>
-        Understand ARC-20
+      <a class="bu-btn" data-variant="primary" href={docHref('/start/choose-your-path/', locale)}>
+        Start building
       </a>
-      <a class="bu-btn" href={docHref('/start/safety-fundamentals/', locale)}>Before you sign</a>
-      <a class="bu-btn" href={docHref('/reference/openapi/', locale)}>API contracts</a>
+      <a class="bu-btn" href={docHref('/tools/', locale)}>Open Protocol Lab</a>
+      <a class="bu-btn" href={docHref('/releases/versions/', locale)}>Inspect the sources</a>
     </div>
   </div>
-  <CommitReveal />
+  <OrbitalHero />
 </section>
 
 <style>

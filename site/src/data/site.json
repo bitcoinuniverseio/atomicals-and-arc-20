@@ -8,6 +8,129 @@
   "description": "Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.",
   "defaultLocale": "en",
   "docsVersion": "2026.08",
+  "baselineSourceId": "atomicals-electrumx-1.5.2.0",
+  "contextStrip": {
+    "en": {
+      "region": "Page context",
+      "set": "Source set",
+      "baseline": "Protocol baseline",
+      "network": "Network",
+      "verified": "Verified",
+      "stale": "Re-verify",
+      "drift": "Upstream moved; this documentation stays pinned",
+      "sources": "View sources",
+      "drawerTitle": "Sources behind this page",
+      "drawerNote": "Every claim on this page resolves to these pinned revisions. Follow a path to read the exact source the statement was verified against.",
+      "revision": "Revision",
+      "openPath": "Open pinned path",
+      "close": "Close sources"
+    },
+    "pt": {
+      "region": "Contexto da pagina",
+      "set": "Conjunto de fontes",
+      "baseline": "Baseline do protocolo",
+      "network": "Rede",
+      "verified": "Verificado",
+      "stale": "Reverificar",
+      "drift": "A fonte avancou; esta documentacao permanece fixada",
+      "sources": "Ver fontes",
+      "drawerTitle": "Fontes desta pagina",
+      "drawerNote": "Cada afirmacao desta pagina aponta para revisoes fixadas. Abra o caminho para ler a fonte exata da verificacao.",
+      "revision": "Revisao",
+      "openPath": "Abrir caminho fixado",
+      "close": "Fechar fontes"
+    },
+    "es": {
+      "region": "Contexto de la pagina",
+      "set": "Conjunto de fuentes",
+      "baseline": "Base del protocolo",
+      "network": "Red",
+      "verified": "Verificado",
+      "stale": "Reverificar",
+      "drift": "La fuente avanzo; esta documentacion permanece fijada",
+      "sources": "Ver fuentes",
+      "drawerTitle": "Fuentes de esta pagina",
+      "drawerNote": "Cada afirmacion de esta pagina apunta a revisiones fijadas. Abra la ruta para leer la fuente exacta de la verificacion.",
+      "revision": "Revision",
+      "openPath": "Abrir ruta fijada",
+      "close": "Cerrar fuentes"
+    },
+    "fr": {
+      "region": "Contexte de la page",
+      "set": "Jeu de sources",
+      "baseline": "Base du protocole",
+      "network": "Reseau",
+      "verified": "Verifie",
+      "stale": "Reverifier",
+      "drift": "La source a avance; cette documentation reste fixee",
+      "sources": "Voir les sources",
+      "drawerTitle": "Sources de cette page",
+      "drawerNote": "Chaque assertion de cette page renvoie a des revisions fixees. Ouvrez le chemin pour lire la source exacte verifiee.",
+      "revision": "Revision",
+      "openPath": "Ouvrir le chemin fixe",
+      "close": "Fermer les sources"
+    },
+    "ja": {
+      "region": "ページ情報",
+      "set": "ソースセット",
+      "baseline": "プロトコル基準",
+      "network": "ネットワーク",
+      "verified": "検証日",
+      "stale": "要再検証",
+      "drift": "上流が更新されました。この文書は固定された版を示し続けます",
+      "sources": "ソースを見る",
+      "drawerTitle": "このページのソース",
+      "drawerNote": "このページの主張はすべて固定されたリビジョンに紐づいています。検証元のソースを正確に確認できます。",
+      "revision": "リビジョン",
+      "openPath": "固定パスを開く",
+      "close": "ソースを閉じる"
+    },
+    "ru": {
+      "region": "Контекст страницы",
+      "set": "Набор источников",
+      "baseline": "База протокола",
+      "network": "Сеть",
+      "verified": "Проверено",
+      "stale": "Перепроверить",
+      "drift": "Источник обновился; документация остаётся на закреплённой версии",
+      "sources": "Показать источники",
+      "drawerTitle": "Источники страницы",
+      "drawerNote": "Каждое утверждение страницы привязано к закреплённой ревизии. Откройте путь, чтобы увидеть точный источник.",
+      "revision": "Ревизия",
+      "openPath": "Открыть закреплённый путь",
+      "close": "Закрыть источники"
+    },
+    "zh-cn": {
+      "region": "页面上下文",
+      "set": "源集合",
+      "baseline": "协议基线",
+      "network": "网络",
+      "verified": "验证日期",
+      "stale": "需重新验证",
+      "drift": "上游已更新；本文档保持固定版本",
+      "sources": "查看来源",
+      "drawerTitle": "本页面的来源",
+      "drawerNote": "本页面的每条论断都对应固定的修订版本。打开路径即可查看验证所依据的确切来源。",
+      "revision": "修订",
+      "openPath": "打开固定路径",
+      "close": "关闭来源"
+    },
+    "zh-tw": {
+      "region": "頁面資訊",
+      "set": "來源集",
+      "baseline": "協定基準",
+      "network": "網路",
+      "verified": "驗證日期",
+      "stale": "需重新驗證",
+      "drift": "上游已更新；本文件保持固定版本",
+      "sources": "檢視來源",
+      "drawerTitle": "本頁面的來源",
+      "drawerNote": "本頁面的每項論述都對應固定的修訂版本。開啟路徑即可檢視驗證所依據的確切來源。",
+      "revision": "修訂",
+      "openPath": "開啟固定路徑",
+      "close": "關閉來源"
+    }
+  },
   "locales": [
     {
       "code": "en",
@@ -78,6 +201,99 @@
     "guides",
     "guides/transfer-arc20",
     "guides/avoid-burns"
+  ],
+  "globalNav": [
+    {
+      "label": "Learn",
+      "translations": {
+        "pt": "Aprender",
+        "es": "Aprender",
+        "fr": "Apprendre",
+        "ja": "学ぶ",
+        "ru": "Изучение",
+        "zh-CN": "学习",
+        "zh-TW": "學習"
+      },
+      "href": "/start/choose-your-path/"
+    },
+    {
+      "label": "Protocol",
+      "translations": {
+        "pt": "Protocolo",
+        "es": "Protocolo",
+        "fr": "Protocole",
+        "ja": "プロトコル",
+        "ru": "Протокол",
+        "zh-CN": "协议",
+        "zh-TW": "協定"
+      },
+      "href": "/protocol/overview/"
+    },
+    {
+      "label": "Build",
+      "translations": {
+        "pt": "Construir",
+        "es": "Construir",
+        "fr": "Construire",
+        "ja": "構築",
+        "ru": "Разработка",
+        "zh-CN": "构建",
+        "zh-TW": "建構"
+      },
+      "href": "/develop/"
+    },
+    {
+      "label": "Verify",
+      "translations": {
+        "pt": "Verificar",
+        "es": "Verificar",
+        "fr": "Vérifier",
+        "ja": "検証",
+        "ru": "Проверка",
+        "zh-CN": "验证",
+        "zh-TW": "驗證"
+      },
+      "href": "/reference/conformance/"
+    },
+    {
+      "label": "Tools",
+      "translations": {
+        "pt": "Ferramentas",
+        "es": "Herramientas",
+        "fr": "Outils",
+        "ja": "ツール",
+        "ru": "Инструменты",
+        "zh-CN": "工具",
+        "zh-TW": "工具"
+      },
+      "href": "/tools/"
+    },
+    {
+      "label": "Reference",
+      "translations": {
+        "pt": "Referencia",
+        "es": "Referencia",
+        "fr": "Reference",
+        "ja": "リファレンス",
+        "ru": "Справочник",
+        "zh-CN": "参考",
+        "zh-TW": "參考"
+      },
+      "href": "/reference/cli/"
+    },
+    {
+      "label": "Ecosystem",
+      "translations": {
+        "pt": "Ecossistema",
+        "es": "Ecosistema",
+        "fr": "Ecosysteme",
+        "ja": "エコシステム",
+        "ru": "Экосистема",
+        "zh-CN": "生态",
+        "zh-TW": "生態"
+      },
+      "href": "/ecosystem/"
+    }
   ],
   "sidebar": [
     {

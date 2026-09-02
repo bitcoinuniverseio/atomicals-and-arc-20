@@ -359,6 +359,7 @@ a.bu-card:hover {
   --d-fill: var(--bu-surface-sunken);
   --d-accent: var(--bu-accent);
   --d-accent-fill: var(--bu-accent-quiet);
+  --d-bitcoin: var(--bu-bitcoin);
   --d-risk: var(--bu-risk);
   --d-risk-fill: var(--bu-risk-quiet);
   --d-ok: var(--bu-ok);
@@ -689,4 +690,244 @@ dialog.bu-palette::backdrop {
 .bu-num {
   font-variant-numeric: tabular-nums;
   text-align: end;
+}
+
+/* ---------- Monospace values ---------- */
+
+.bu-mono {
+  font-family: var(--bu-font-mono);
+  font-size: 0.86em;
+}
+
+/* ---------- Global navigation in the shell header ---------- */
+
+.bu-global-nav ul {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bu-global-nav li {
+  display: flex;
+}
+
+.bu-global-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.4rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--bu-radius-s);
+  color: var(--bu-ink-soft);
+  font-size: var(--bu-step--1);
+  font-weight: 560;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.bu-global-nav a:hover {
+  color: var(--bu-ink);
+  background: var(--bu-surface-sunken);
+}
+
+.bu-global-nav a[aria-current='true'],
+.bu-global-nav a[aria-current='page'] {
+  color: var(--bu-accent-strong);
+  background: var(--bu-accent-quiet);
+  font-weight: 640;
+}
+
+@media (max-width: 74.9rem) {
+  .bu-global-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 50rem) {
+  .bu-global-nav {
+    display: none;
+  }
+}
+
+/* ---------- Context strip ---------- */
+
+.bu-context-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bu-space-3);
+  min-height: 2.4rem;
+  border-top: 1px solid var(--bu-line);
+  font-size: 0.78rem;
+}
+
+.bu-context-strip[data-empty='true'] {
+  border-top: 0;
+  min-height: 0;
+}
+
+.bu-context-items {
+  display: flex;
+  align-items: center;
+  gap: var(--bu-space-4);
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.bu-context-items li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.bu-context-items li[data-stale='true'] .bu-context-value .bu-context-date {
+  color: var(--bu-warn);
+  font-weight: 640;
+}
+
+.bu-context-label {
+  color: var(--bu-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+}
+
+.bu-context-value {
+  color: var(--bu-ink-soft);
+  font-weight: 560;
+}
+
+.bu-context-stale {
+  margin-inline-start: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--bu-warn);
+  border-radius: 999px;
+  color: var(--bu-warn);
+  font-size: 0.68rem;
+  font-weight: 640;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bu-context-sources {
+  flex: none;
+  min-height: var(--bu-touch);
+  padding: 0.25rem 0.7rem;
+  margin-block: 0.2rem;
+  border: 1px solid var(--bu-line-control);
+  border-radius: var(--bu-radius-s);
+  background: var(--bu-surface);
+  color: var(--bu-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bu-context-sources:hover {
+  border-color: var(--bu-accent);
+  color: var(--bu-accent-strong);
+}
+
+/* ---------- Source drawer ---------- */
+
+.bu-source-drawer {
+  width: min(38rem, calc(100vw - 2rem));
+  max-height: min(80vh, 44rem);
+  padding: 0;
+  border: 1px solid var(--bu-line-strong);
+  border-radius: var(--bu-radius-l);
+  background: var(--bu-surface);
+  color: var(--bu-ink-soft);
+  box-shadow: var(--bu-shadow-2);
+}
+
+.bu-source-drawer::backdrop {
+  background: color-mix(in srgb, var(--bu-paper-deep) 72%, transparent);
+}
+
+.bu-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bu-space-3);
+  padding: var(--bu-space-4) var(--bu-space-5);
+  border-bottom: 1px solid var(--bu-line);
+}
+
+.bu-drawer-head h2 {
+  margin: 0;
+  color: var(--bu-ink);
+  font-size: var(--bu-step-1);
+}
+
+.bu-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bu-touch);
+  height: var(--bu-touch);
+  border: 1px solid var(--bu-line-control);
+  border-radius: var(--bu-radius-s);
+  background: var(--bu-surface);
+  color: var(--bu-ink);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.bu-drawer-close:hover {
+  border-color: var(--bu-accent);
+  color: var(--bu-accent-strong);
+}
+
+.bu-source-drawer .bu-drawer-note {
+  margin: var(--bu-space-3) var(--bu-space-5) 0;
+  font-size: var(--bu-step--1);
+}
+
+.bu-drawer-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bu-space-4);
+  margin: 0;
+  padding: var(--bu-space-4) var(--bu-space-5) var(--bu-space-5);
+  overflow-y: auto;
+}
+
+.bu-drawer-source dt {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--bu-line);
+  border-radius: var(--bu-radius-s);
+  background: var(--bu-surface-sunken);
+  color: var(--bu-ink);
+  font-size: 0.8rem;
+}
+
+.bu-drawer-source dd {
+  margin: 0.5rem 0 0;
+  padding: 0;
+  font-size: var(--bu-step--1);
+}
+
+.bu-drawer-source dd p {
+  margin: 0.25rem 0;
+}
+
+.bu-drawer-name {
+  color: var(--bu-ink);
+  font-weight: 640;
+}
+
+@media (max-width: 50rem) {
+  .bu-context-items {
+    gap: var(--bu-space-3);
+  }
 }

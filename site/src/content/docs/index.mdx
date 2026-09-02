@@ -1,6 +1,6 @@
 ---
 title: Atomicals and ARC-20
-description: Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.
+description: Version-pinned protocol documentation, deterministic labs, API conformance, safe UTXO planning and agent-ready workflows for Atomicals on Bitcoin.
 template: splash
 tableOfContents: false
 editUrl: false
@@ -20,88 +20,127 @@ provenance:
 import Hero from '../../components/Hero.astro'
 import EntryCards from '../../components/EntryCards.astro'
 import FactStrip from '../../components/FactStrip.astro'
+import StatusStrip from '../../components/StatusStrip.astro'
+import VersionMatrix from '../../components/VersionMatrix.astro'
 
 <Hero />
+
+## Where the protocol stands today
+
+<StatusStrip />
 
 ## Start where you are
 
 <EntryCards
   cards={[
     {
-      kicker: 'I hold or want tokens',
-      title: 'Holder path',
-      body: 'Inspect a ticker, confirm what you actually own, move units without burning them.',
-      href: 'start/choose-your-path/#holder',
+      kicker: 'New here',
+      title: 'Newcomers',
+      body: 'What an Atomical is, why one ARC-20 unit is one satoshi, and the safety rules that stop permanent burns.',
+      href: 'start/what-are-atomicals/',
     },
     {
-      kicker: 'I am launching something',
-      title: 'Creator path',
-      body: 'Deploy a fixed or perpetual ARC-20, mint an NFT, claim a Realm, seal a Container.',
-      href: 'start/choose-your-path/#creator',
+      kicker: 'Ship an app',
+      title: 'Application developers',
+      body: 'Read the API contracts, generate a typed client, validate your implementation against conformance vectors.',
+      href: 'develop/',
     },
     {
-      kicker: 'I am integrating',
-      title: 'Developer path',
-      body: 'Read the API contracts, generate a client, run the conformance vectors.',
-      href: 'start/choose-your-path/#developer',
+      kicker: 'Run the services',
+      title: 'Indexer operators',
+      body: 'Readiness, freshness, reorg handling, and what a degraded index actually means for callers.',
+      href: 'develop/readiness-and-freshness/',
     },
     {
-      kicker: 'I run the services',
-      title: 'Operator path',
-      body: 'Readiness, generations, reorg handling, and what a degraded index actually means.',
-      href: 'start/choose-your-path/#operator',
+      kicker: 'Question the claims',
+      title: 'Protocol researchers',
+      body: 'Every rule traced to the pinned reference revision, with activation boundaries and known divergences.',
+      href: 'protocol/overview/',
+    },
+    {
+      kicker: 'Bring a model',
+      title: 'AI agents',
+      body: 'Stable page IDs, raw Markdown, llms.txt, source manifests, and a read-only MCP server.',
+      href: 'reference/ai-access/',
     },
   ]}
 />
 
-## What this documentation is
+## Learn, simulate, verify, reproduce
 
-ARC-20 is the Atomicals fungible token model on Bitcoin. One unit is one coloured satoshi.
-Atomicals also covers non-fungible objects, Containers, DMINT collections, Realms, Subrealms,
-and Paynames. All of it lives in ordinary Bitcoin transactions and is interpreted by an
-Atomicals validator.
-
-Three things follow from that, and this site never blurs them:
-
-<FactStrip
-  facts={[
-    { label: 'Protocol behavior', value: 'What a pinned Atomicals validator does' },
-    { label: 'Universe implementation', value: 'What our services expose today' },
-    { label: 'Proposed or beta', value: 'What exists but is not live' },
-  ]}
-/>
-
-A protocol capability is not automatically a product feature. A product feature is not
-automatically protocol behavior. Every page states which layer it describes, at which source
-revision, and when that was last checked.
-
-## The parts that matter most
+One journey covers everything this platform does. Understand a rule in the protocol pages.
+Replay it deterministically in a browser tool. Check an implementation against the executed
+conformance vectors. Then reproduce the whole workflow yourself with the CLI and the pinned
+sources.
 
 <EntryCards
   cards={[
     {
-      kicker: 'Read first',
-      title: 'What are Atomicals?',
-      body: 'Digital objects that live in Bitcoin outputs. Identity, ownership, and history in one page.',
-      href: 'start/what-are-atomicals/',
-    },
-    {
-      kicker: 'Read first',
-      title: 'What is ARC-20?',
-      body: 'Why one unit is one satoshi, and why that is not an account balance.',
+      kicker: 'Step 1',
+      title: 'Learn',
+      body: 'Protocol pages explain one rule at a time, each pinned to a source revision and a verification date.',
       href: 'start/what-is-arc-20/',
     },
     {
-      kicker: 'Before you sign',
-      title: 'Safety fundamentals',
-      body: 'The eight checks that separate a clean transfer from a permanent burn.',
-      href: 'start/safety-fundamentals/',
+      kicker: 'Step 2',
+      title: 'Simulate',
+      body: 'Browser tools replay allocation, splits, burns, and Bitwork search with no keys and no network.',
+      href: 'tools/',
     },
     {
-      kicker: 'Interactive',
+      kicker: 'Step 3',
+      title: 'Verify',
+      body: 'Conformance vectors execute in CI. The prose, the tools, and the tests share one engine.',
+      href: 'reference/conformance/',
+    },
+    {
+      kicker: 'Step 4',
+      title: 'Reproduce',
+      body: 'CLI reference and pinned source paths let you rerun every documented workflow locally.',
+      href: 'reference/cli/',
+    },
+  ]}
+/>
+
+## Everything on the platform
+
+<EntryCards
+  cards={[
+    {
+      kicker: 'Compare',
+      title: 'Protocol comparison',
+      body: 'Atomicals, ARC-20, Ordinals, Runes, BRC-20, Stamps, TAP, Alkanes, Counterparty, and RGB side by side.',
+      href: 'tools/protocol-comparison/',
+    },
+    {
+      kicker: 'Model units',
       title: 'Allocation visualizer',
       body: 'Model inputs and outputs and see exactly which units land where, and which burn.',
       href: 'tools/allocation-visualizer/',
+    },
+    {
+      kicker: 'Read transactions',
+      title: 'Transaction inspector',
+      body: 'Decode envelopes, operations, and PSBT structure from a raw transaction or hex payload.',
+      href: 'tools/transaction-inspector/',
+    },
+    {
+      kicker: 'Plan mining cost',
+      title: 'Bitwork estimator',
+      body: 'Estimate the search effort a commit needs for a given prefix and charset.',
+      href: 'tools/bitwork-estimator/',
+    },
+    {
+      kicker: 'Compose commands',
+      title: 'CLI builder',
+      body: 'Assemble atomicals-js CLI commands and read what each flag does before you run it.',
+      href: 'tools/cli-builder/',
+    },
+    {
+      kicker: 'Read the contracts',
+      title: 'Offline API explorer',
+      body: 'Browse the OpenAPI operations, schemas, and examples entirely offline by default.',
+      href: 'tools/api-explorer/',
     },
     {
       kicker: 'Contracts',
@@ -115,8 +154,50 @@ revision, and when that was last checked.
       body: 'Deterministic vectors executed in CI. The visualizer and the prose share them.',
       href: 'reference/conformance/',
     },
+    {
+      kicker: 'Agents',
+      title: 'MCP server',
+      body: 'A local stdio MCP server exposes pages, manifests, and contracts to coding agents.',
+      href: 'reference/mcp/',
+    },
+    {
+      kicker: 'TypeScript',
+      title: 'Client SDK',
+      body: 'A typed read-only client generated from the same OpenAPI documents the site validates.',
+      href: 'reference/client-sdk/',
+    },
   ]}
 />
+
+## Why every claim carries a revision
+
+This platform separates three things that other material blurs together:
+
+<FactStrip
+  facts={[
+    { label: 'Protocol behavior', value: 'What a pinned Atomicals validator does' },
+    { label: 'Universe implementation', value: 'What our services expose today' },
+    { label: 'Proposed or beta', value: 'What exists but is not live' },
+  ]}
+/>
+
+A protocol capability is not automatically a product feature. Each page states which layer it
+describes, at which source revision, and when that was last checked. The context strip under
+the site header repeats it on every page, and the drawer behind it opens the exact source
+paths.
+
+## Versions and verification
+
+<VersionMatrix only={['atomicals-electrumx-1.5.2.0', 'atomicals-js-cli', 'atomicals-avm-interpreter', 'atomicals-aips']} />
+
+See [Versions](releases/versions/) for the full manifest and how drift is handled.
+
+## AVM is beta
+
+The AVM interpreter material on this platform describes a pinned beta revision. Executing
+samples locally is supported. Nothing here is evidence of deployment by Bitcoin Universe, and
+no page will describe AVM as live or production-ready until a verified source set says so.
+Start at [AVM overview](protocol/avm/overview/).
 
 ## Built for machines too
 

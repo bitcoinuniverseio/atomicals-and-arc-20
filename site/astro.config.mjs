@@ -87,6 +87,7 @@ export default defineConfig({
       ],
       components: {
         Head: './src/components/overrides/Head.astro',
+        Header: './src/components/overrides/Header.astro',
         PageTitle: './src/components/overrides/PageTitle.astro',
         Footer: './src/components/overrides/Footer.astro',
         SiteTitle: './src/components/overrides/SiteTitle.astro',
@@ -106,7 +107,7 @@ export default defineConfig({
       head: [
         {
           tag: 'meta',
-          attrs: { name: 'theme-color', content: '#f7f5f1' },
+          attrs: { name: 'theme-color', content: '#f7f7f2' },
         },
       ],
     }),

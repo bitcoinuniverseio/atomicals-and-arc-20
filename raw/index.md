@@ -1,6 +1,6 @@
 # Atomicals and ARC-20
 
-Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.
+Version-pinned protocol documentation, deterministic labs, API conformance, safe UTXO planning and agent-ready workflows for Atomicals on Bitcoin.
 
 Page ID: home
 Applicability: editorial
@@ -11,22 +11,38 @@ Locale: en
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/
 
 ---
+## Where the protocol stands today
+
 ## Start where you are
 
-## What this documentation is
+## Learn, simulate, verify, reproduce
 
-ARC-20 is the Atomicals fungible token model on Bitcoin. One unit is one coloured satoshi.
-Atomicals also covers non-fungible objects, Containers, DMINT collections, Realms, Subrealms,
-and Paynames. All of it lives in ordinary Bitcoin transactions and is interpreted by an
-Atomicals validator.
+One journey covers everything this platform does. Understand a rule in the protocol pages.
+Replay it deterministically in a browser tool. Check an implementation against the executed
+conformance vectors. Then reproduce the whole workflow yourself with the CLI and the pinned
+sources.
 
-Three things follow from that, and this site never blurs them:
+## Everything on the platform
 
-A protocol capability is not automatically a product feature. A product feature is not
-automatically protocol behavior. Every page states which layer it describes, at which source
-revision, and when that was last checked.
+## Why every claim carries a revision
 
-## The parts that matter most
+This platform separates three things that other material blurs together:
+
+A protocol capability is not automatically a product feature. Each page states which layer it
+describes, at which source revision, and when that was last checked. The context strip under
+the site header repeats it on every page, and the drawer behind it opens the exact source
+paths.
+
+## Versions and verification
+
+See [Versions](releases/versions/) for the full manifest and how drift is handled.
+
+## AVM is beta
+
+The AVM interpreter material on this platform describes a pinned beta revision. Executing
+samples locally is supported. Nothing here is evidence of deployment by Bitcoin Universe, and
+no page will describe AVM as live or production-ready until a verified source set says so.
+Start at [AVM overview](protocol/avm/overview/).
 
 ## Built for machines too
 

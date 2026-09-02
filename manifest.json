@@ -35,7 +35,7 @@
       "routeId": "",
       "locale": "en",
       "title": "Atomicals and ARC-20",
-      "description": "Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.",
+      "description": "Version-pinned protocol documentation, deterministic labs, API conformance, safe UTXO planning and agent-ready workflows for Atomicals on Bitcoin.",
       "area": "start",
       "audience": [
         "everyone"
@@ -51,7 +51,7 @@
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "823671db3b9877d7c8ebf5013c3832527da4c5bcc340ee9ea8ad538e55aa86e1",
+      "contentHash": "f96993995d92c48f04a1429db2493108726c25be19f32903e57890d65a9d3179",
       "href": "/atomicals-and-arc-20/",
       "raw": "/atomicals-and-arc-20/raw/index.md"
     },

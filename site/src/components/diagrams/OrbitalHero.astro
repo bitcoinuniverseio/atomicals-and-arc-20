@@ -1,0 +1,99 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-orbital-hero"
+  title="One satoshi, orbited by what it can carry"
+  summary="The nucleus is one satoshi. Around it orbit the things a single output can carry: plain bitcoin, ARC-20 units, or a non-fungible Atomical. An Atomical is created along a precise two-step trajectory: a commit transaction pays to a Taproot output, and a reveal transaction spends that output and exposes the operation. The validator assigns the object to output zero of the reveal. The same satoshi can hold only one of these roles at a time, which is why planning UTXOs before signing matters."
+>
+  <svg viewBox="0 0 560 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="oh-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-accent)" />
+      </marker>
+      <radialGradient id="oh-nucleus" cx="50%" cy="42%" r="65%">
+        <stop offset="0%" stop-color="var(--d-accent-fill)" />
+        <stop offset="100%" stop-color="var(--d-accent-quiet)" />
+      </radialGradient>
+    </defs>
+
+    <!-- Restrained technical grid: blocks as measurement, not decoration. -->
+    <g stroke="var(--d-line)" stroke-width="0.5" opacity="0.55">
+      <line x1="40" y1="24" x2="520" y2="24" />
+      <line x1="40" y1="416" x2="520" y2="416" />
+      <line x1="40" y1="24" x2="40" y2="416" />
+      <line x1="520" y1="24" x2="520" y2="416" />
+      <line x1="40" y1="220" x2="520" y2="220" stroke-dasharray="1 7" />
+      <line x1="280" y1="24" x2="280" y2="416" stroke-dasharray="1 7" />
+    </g>
+
+    <!-- Orbits -->
+    <g fill="none" stroke="var(--d-line-strong)" stroke-width="1">
+      <ellipse cx="280" cy="220" rx="196" ry="168" stroke-dasharray="3 6" />
+      <ellipse cx="280" cy="220" rx="132" ry="112" />
+    </g>
+
+    <!-- Trajectory: commit then reveal, ending at output zero. -->
+    <path
+      d="M 84 372 C 140 330, 150 262, 196 236"
+      fill="none"
+      stroke="var(--d-accent)"
+      stroke-width="1.6"
+      stroke-dasharray="5 5"
+    />
+    <path
+      d="M 196 236 C 258 204, 330 208, 388 232"
+      fill="none"
+      stroke="var(--d-accent)"
+      stroke-width="1.8"
+      marker-end="url(#oh-arrow)"
+    />
+
+    <!-- Wallet origin -->
+    <g font-family="var(--bu-font-sans)" font-size="11.5">
+      <rect x="34" y="360" width="104" height="40" rx="9" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.2" />
+      <text x="86" y="378" text-anchor="middle" fill="var(--d-ink)" font-weight="640">Wallet</text>
+      <text x="86" y="392" text-anchor="middle" fill="var(--d-soft)">chooses a UTXO</text>
+
+      <!-- Commit node on the trajectory -->
+      <circle cx="196" cy="236" r="7" fill="var(--d-accent-quiet)" stroke="var(--d-accent)" stroke-width="1.6" />
+      <text x="176" y="216" fill="var(--d-accent)" font-size="11" letter-spacing="1">COMMIT</text>
+
+      <!-- Reveal node -->
+      <circle cx="388" cy="232" r="7" fill="var(--d-accent-quiet)" stroke="var(--d-accent)" stroke-width="1.6" />
+      <text x="368" y="212" fill="var(--d-accent)" font-size="11" letter-spacing="1">REVEAL</text>
+
+      <!-- Nucleus: the satoshi -->
+      <circle cx="280" cy="220" r="46" fill="url(#oh-nucleus)" stroke="var(--d-bitcoin)" stroke-width="2" />
+      <text x="280" y="216" text-anchor="middle" fill="var(--d-ink)" font-size="15" font-weight="700">1 satoshi</text>
+      <text x="280" y="234" text-anchor="middle" fill="var(--d-soft)" font-size="10.5">the nucleus</text>
+
+      <!-- Inner orbit: what one output can carry -->
+      <g text-anchor="middle">
+        <circle cx="280" cy="108" r="5.5" fill="var(--d-ok)" />
+        <text x="280" y="92" fill="var(--d-soft)" font-size="11">plain bitcoin</text>
+
+        <circle cx="172" cy="258" r="5.5" fill="var(--d-ok)" />
+        <text x="128" y="280" fill="var(--d-soft)" font-size="11">ARC-20 units</text>
+
+        <circle cx="392" cy="292" r="5.5" fill="var(--d-ok)" />
+        <text x="436" y="314" fill="var(--d-soft)" font-size="11">an NFT</text>
+      </g>
+
+      <!-- Outer orbit: source observation points -->
+      <g text-anchor="middle" fill="var(--d-soft)" font-size="10.5">
+        <circle cx="84" cy="220" r="3.5" fill="var(--d-line-strong)" />
+        <text x="84" y="202">revision A</text>
+        <circle cx="280" cy="52" r="3.5" fill="var(--d-line-strong)" />
+        <text x="280" y="38">revision B</text>
+        <circle cx="476" cy="220" r="3.5" fill="var(--d-line-strong)" />
+        <text x="476" y="202">revision C</text>
+      </g>
+
+      <text x="280" y="404" text-anchor="middle" fill="var(--d-soft)" font-size="11.5">
+        Output zero of the reveal carries the object. Until the reveal, nothing exists.
+      </text>
+    </g>
+  </svg>
+</Figure>
