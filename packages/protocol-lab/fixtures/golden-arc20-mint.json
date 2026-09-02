@@ -1,0 +1,168 @@
+{
+  "traceVersion": "1.0.0",
+  "scenarioId": "arc20-mint",
+  "seed": "arc20-mint",
+  "network": "regtest",
+  "trace": [
+    {
+      "step": {
+        "type": "fund",
+        "label": "fund",
+        "outputs": [
+          {
+            "value": 20000,
+            "address": "bc1qminter"
+          }
+        ]
+      },
+      "txid": "simf46edc45f51b7e6a",
+      "inputs": [],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 20000,
+          "address": "bc1qminter",
+          "utxoId": "simf46edc45f51b7e6a:0"
+        }
+      ],
+      "before": null,
+      "after": null,
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "coinbase-like funding output carries no fee",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "reveal",
+        "label": "mint",
+        "inputs": [
+          "fundo0"
+        ],
+        "outputs": [
+          {
+            "value": 546,
+            "address": "bc1qminter"
+          },
+          {
+            "value": 19400,
+            "address": "bc1qminter"
+          }
+        ],
+        "atomical": {
+          "type": "ft",
+          "ticker": "GOLD",
+          "units": 546
+        }
+      },
+      "txid": "simf51b7e6ad180cf77",
+      "atomicalId": "simf51b7e6ad180cf77i2",
+      "fee": 54,
+      "inputs": [
+        {
+          "utxoId": "simf46edc45f51b7e6a:0",
+          "value": 20000
+        }
+      ],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 546,
+          "address": "bc1qminter"
+        },
+        {
+          "index": 1,
+          "value": 19400,
+          "address": "bc1qminter"
+        }
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "atomical/commit-reveal",
+            "page": "/protocol/core/commit-and-reveal/",
+            "path": "mintParser"
+          },
+          "outcome": "envelope exposed in the reveal witness",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "confirm",
+        "blocks": 1
+      },
+      "blockHeight": 1,
+      "confirmed": [
+        "simf46edc45f51b7e6a",
+        "simf51b7e6ad180cf77"
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/confirmation",
+            "page": "/protocol/core/confirmation-and-reorgs/",
+            "path": "networkActivations"
+          },
+          "outcome": "1 block(s) mined; mempool confirmed",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "finalState": {
+    "blockHeight": 1,
+    "mempoolSize": 0,
+    "utxos": {
+      "simf51b7e6ad180cf77:0": {
+        "value": 546,
+        "address": "bc1qminter",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {
+          "simf51b7e6ad180cf77i2": 546
+        }
+      },
+      "simf51b7e6ad180cf77:1": {
+        "value": 19400,
+        "address": "bc1qminter",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {}
+      }
+    },
+    "atomicals": {
+      "simf51b7e6ad180cf77i2": {
+        "type": "ft",
+        "ticker": "GOLD",
+        "units": 546,
+        "ownerOutput": "simf51b7e6ad180cf77:0",
+        "confirmed": false
+      }
+    }
+  },
+  "balances": {
+    "bc1qminter": {
+      "sats": 19946,
+      "atomicals": {
+        "simf51b7e6ad180cf77i2": 546
+      }
+    }
+  }
+}

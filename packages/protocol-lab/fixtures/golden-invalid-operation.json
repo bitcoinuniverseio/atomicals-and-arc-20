@@ -1,0 +1,101 @@
+{
+  "traceVersion": "1.0.0",
+  "scenarioId": "invalid-operation",
+  "seed": "invalid-tx",
+  "network": "regtest",
+  "trace": [
+    {
+      "step": {
+        "type": "fund",
+        "label": "fund",
+        "outputs": [
+          {
+            "value": 10000,
+            "address": "bc1qholder"
+          }
+        ]
+      },
+      "txid": "sim8379367070377f97",
+      "inputs": [],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 10000,
+          "address": "bc1qholder",
+          "utxoId": "sim8379367070377f97:0"
+        }
+      ],
+      "before": null,
+      "after": null,
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "coinbase-like funding output carries no fee",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "transfer",
+        "label": "overspend",
+        "inputs": [
+          "fundo0"
+        ],
+        "outputs": [
+          {
+            "value": 9000,
+            "address": "bc1qreceiver"
+          },
+          {
+            "value": 5000,
+            "address": "bc1qholder"
+          }
+        ]
+      },
+      "fatal": true,
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "outputs exceed inputs",
+          "ok": false
+        }
+      ],
+      "warnings": [],
+      "errors": [
+        "outputs exceed inputs by 4000 sats"
+      ]
+    }
+  ],
+  "finalState": {
+    "blockHeight": 0,
+    "mempoolSize": 1,
+    "utxos": {
+      "sim8379367070377f97:0": {
+        "value": 10000,
+        "address": "bc1qholder",
+        "confirmed": false,
+        "unspendable": false,
+        "atomicals": {}
+      }
+    },
+    "atomicals": {}
+  },
+  "balances": {
+    "bc1qholder": {
+      "sats": 10000,
+      "atomicals": {}
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "arc20-transfer",
+  "title": "ARC-20 transfer with plain change",
+  "description": "546 coloured units move to a receiver while the plain change stays separate. The allocation engine assigns units to the outputs that fit.",
+  "seed": "arc20-send",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 20000, "address": "bc1qholder" }
+    ] },
+    { "type": "reveal", "label": "mint", "inputs": ["fundo0"], "outputs": [
+      { "value": 546, "address": "bc1qholder" },
+      { "value": 19400, "address": "bc1qholder" }
+    ], "atomical": { "type": "ft", "ticker": "GOLD", "units": 546 } },
+    { "type": "confirm", "blocks": 1 },
+    { "type": "transfer", "label": "send", "inputs": ["minto0", "minto1"], "outputs": [
+      { "value": 546, "address": "bc1qreceiver" },
+      { "value": 19400, "address": "bc1qholder" }
+    ] },
+    { "type": "confirm", "blocks": 1 }
+  ]
+}

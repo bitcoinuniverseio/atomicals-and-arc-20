@@ -1,0 +1,20 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "confirmations-reorg",
+  "title": "Confirmation, then a one-block reorganization",
+  "description": "A transfer confirms, a rival block reorganizes it out, and the transaction returns to the mempool. Nothing is settled until the chain re-confirms it.",
+  "seed": "reorg-demo",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 100000, "address": "bc1qholder" }
+    ] },
+    { "type": "transfer", "label": "send", "inputs": ["fundo0"], "outputs": [
+      { "value": 50000, "address": "bc1qreceiver" },
+      { "value": 49000, "address": "bc1qholder" }
+    ] },
+    { "type": "confirm", "blocks": 1 },
+    { "type": "reorg", "depth": 1 },
+    { "type": "confirm", "blocks": 2 }
+  ]
+}

@@ -263,6 +263,7 @@ Vectors: /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
 - [Bitwork estimator](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/bitwork-estimator/) [protocol-behavior]: Model a Bitwork prefix and see the expected search space, with the uncertainty stated rather than hidden.
 - [CLI command builder](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/cli-builder/) [protocol-behavior]: Build a validated, copyable command from the pinned command inventory, with the safety implications shown.
 - [Protocol comparison has moved](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-comparison/) [editorial]: The protocol comparison is now the Protocol Atlas, with evidence-backed cells, four synchronized views, and exports.
+- [Protocol Lab](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-lab/) [protocol-behavior]: Construct and replay Atomicals workflows deterministically in the browser, with no keys, no signing, and no network.
 - [Transaction safety inspector](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/transaction-inspector/) [protocol-behavior]: Parse a transaction or PSBT in your browser and read its inputs, outputs, and signature scope before you sign.
 
 ### ecosystem

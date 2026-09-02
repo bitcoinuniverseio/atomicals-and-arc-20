@@ -1,0 +1,23 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "arc20-split",
+  "title": "Split one coloured output into two",
+  "description": "A single 1092-unit output splits into 546 units for a receiver and 546 kept as change. Units divide exactly because satoshis divide exactly.",
+  "seed": "arc20-split",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 30000, "address": "bc1qholder" }
+    ] },
+    { "type": "reveal", "label": "mint", "inputs": ["fundo0"], "outputs": [
+      { "value": 1092, "address": "bc1qholder" },
+      { "value": 28900, "address": "bc1qholder" }
+    ], "atomical": { "type": "ft", "ticker": "GOLD", "units": 1092 } },
+    { "type": "confirm", "blocks": 1 },
+    { "type": "transfer", "label": "split", "inputs": ["minto0"], "outputs": [
+      { "value": 546, "address": "bc1qreceiver" },
+      { "value": 546, "address": "bc1qholder" }
+    ] },
+    { "type": "confirm", "blocks": 1 }
+  ]
+}

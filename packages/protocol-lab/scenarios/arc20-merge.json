@@ -1,0 +1,23 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "arc20-merge",
+  "title": "Merge two coloured outputs into one",
+  "description": "Two 546-unit outputs consolidate into one 1092-unit output. Merging coloured inputs is safe only because both carry the same token.",
+  "seed": "arc20-merge",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 30000, "address": "bc1qholder" }
+    ] },
+    { "type": "reveal", "label": "mint", "inputs": ["fundo0"], "outputs": [
+      { "value": 546, "address": "bc1qholder" },
+      { "value": 546, "address": "bc1qholder" },
+      { "value": 28900, "address": "bc1qholder" }
+    ], "atomical": { "type": "ft", "ticker": "GOLD", "units": 1092 } },
+    { "type": "confirm", "blocks": 1 },
+    { "type": "transfer", "label": "merge", "inputs": ["minto0", "minto1"], "outputs": [
+      { "value": 1092, "address": "bc1qholder" }
+    ] },
+    { "type": "confirm", "blocks": 1 }
+  ]
+}

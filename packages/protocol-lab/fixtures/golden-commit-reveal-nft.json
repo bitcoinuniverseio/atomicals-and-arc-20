@@ -1,0 +1,161 @@
+{
+  "traceVersion": "1.0.0",
+  "scenarioId": "commit-reveal-nft",
+  "seed": "nft-mint",
+  "network": "regtest",
+  "trace": [
+    {
+      "step": {
+        "type": "fund",
+        "label": "fund",
+        "outputs": [
+          {
+            "value": 10000,
+            "address": "bc1qcreator"
+          }
+        ]
+      },
+      "txid": "simdf4a0c13a840f27c",
+      "inputs": [],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 10000,
+          "address": "bc1qcreator",
+          "utxoId": "simdf4a0c13a840f27c:0"
+        }
+      ],
+      "before": null,
+      "after": null,
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "coinbase-like funding output carries no fee",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "reveal",
+        "label": "reveal",
+        "inputs": [
+          "fundo0"
+        ],
+        "outputs": [
+          {
+            "value": 546,
+            "address": "bc1qcreator"
+          },
+          {
+            "value": 9400,
+            "address": "bc1qcreator"
+          }
+        ],
+        "atomical": {
+          "type": "nft"
+        }
+      },
+      "txid": "sima840f27c7591be61",
+      "atomicalId": "sima840f27c7591be61i2",
+      "fee": 54,
+      "inputs": [
+        {
+          "utxoId": "simdf4a0c13a840f27c:0",
+          "value": 10000
+        }
+      ],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 546,
+          "address": "bc1qcreator"
+        },
+        {
+          "index": 1,
+          "value": 9400,
+          "address": "bc1qcreator"
+        }
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "atomical/commit-reveal",
+            "page": "/protocol/core/commit-and-reveal/",
+            "path": "mintParser"
+          },
+          "outcome": "envelope exposed in the reveal witness",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "confirm",
+        "blocks": 1
+      },
+      "blockHeight": 1,
+      "confirmed": [
+        "simdf4a0c13a840f27c",
+        "sima840f27c7591be61"
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/confirmation",
+            "page": "/protocol/core/confirmation-and-reorgs/",
+            "path": "networkActivations"
+          },
+          "outcome": "1 block(s) mined; mempool confirmed",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "finalState": {
+    "blockHeight": 1,
+    "mempoolSize": 0,
+    "utxos": {
+      "sima840f27c7591be61:0": {
+        "value": 546,
+        "address": "bc1qcreator",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {}
+      },
+      "sima840f27c7591be61:1": {
+        "value": 9400,
+        "address": "bc1qcreator",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {}
+      }
+    },
+    "atomicals": {
+      "sima840f27c7591be61i2": {
+        "type": "nft",
+        "units": 0,
+        "ownerOutput": "sima840f27c7591be61:0",
+        "confirmed": false
+      }
+    }
+  },
+  "balances": {
+    "bc1qcreator": {
+      "sats": 9946,
+      "atomicals": {}
+    }
+  }
+}

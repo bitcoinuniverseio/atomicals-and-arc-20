@@ -1,0 +1,161 @@
+{
+  "traceVersion": "1.0.0",
+  "scenarioId": "realm-claim",
+  "seed": "realm-claim",
+  "network": "regtest",
+  "trace": [
+    {
+      "step": {
+        "type": "fund",
+        "label": "fund",
+        "outputs": [
+          {
+            "value": 15000,
+            "address": "bc1qnameclaimer"
+          }
+        ]
+      },
+      "txid": "simf6e2f3caf63651a5",
+      "inputs": [],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 15000,
+          "address": "bc1qnameclaimer",
+          "utxoId": "simf6e2f3caf63651a5:0"
+        }
+      ],
+      "before": null,
+      "after": null,
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "coinbase-like funding output carries no fee",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "reveal",
+        "label": "claim",
+        "inputs": [
+          "fundo0"
+        ],
+        "outputs": [
+          {
+            "value": 546,
+            "address": "bc1qnameclaimer"
+          },
+          {
+            "value": 14400,
+            "address": "bc1qnameclaimer"
+          }
+        ],
+        "atomical": {
+          "type": "realm"
+        }
+      },
+      "txid": "simf63651a573305630",
+      "atomicalId": "simf63651a573305630i2",
+      "fee": 54,
+      "inputs": [
+        {
+          "utxoId": "simf6e2f3caf63651a5:0",
+          "value": 15000
+        }
+      ],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 546,
+          "address": "bc1qnameclaimer"
+        },
+        {
+          "index": 1,
+          "value": 14400,
+          "address": "bc1qnameclaimer"
+        }
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "atomical/commit-reveal",
+            "page": "/protocol/core/commit-and-reveal/",
+            "path": "mintParser"
+          },
+          "outcome": "envelope exposed in the reveal witness",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "confirm",
+        "blocks": 1
+      },
+      "blockHeight": 1,
+      "confirmed": [
+        "simf6e2f3caf63651a5",
+        "simf63651a573305630"
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/confirmation",
+            "page": "/protocol/core/confirmation-and-reorgs/",
+            "path": "networkActivations"
+          },
+          "outcome": "1 block(s) mined; mempool confirmed",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "finalState": {
+    "blockHeight": 1,
+    "mempoolSize": 0,
+    "utxos": {
+      "simf63651a573305630:0": {
+        "value": 546,
+        "address": "bc1qnameclaimer",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {}
+      },
+      "simf63651a573305630:1": {
+        "value": 14400,
+        "address": "bc1qnameclaimer",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {}
+      }
+    },
+    "atomicals": {
+      "simf63651a573305630i2": {
+        "type": "realm",
+        "units": 0,
+        "ownerOutput": "simf63651a573305630:0",
+        "confirmed": false
+      }
+    }
+  },
+  "balances": {
+    "bc1qnameclaimer": {
+      "sats": 14946,
+      "atomicals": {}
+    }
+  }
+}

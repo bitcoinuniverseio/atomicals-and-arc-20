@@ -1,0 +1,21 @@
+{
+  "name": "@bitcoin-universe/protocol-core",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure protocol-rule modules shared by every tool: ARC-20 allocation, Bitwork search math, and the transaction model",
+  "exports": {
+    ".": "./src/index.mjs",
+    "./allocation": "./src/allocation.mjs",
+    "./bitwork": "./src/bitwork.mjs",
+    "./tx": "./src/tx.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20"
+  }
+}
