@@ -28,8 +28,17 @@
       "category": "validator-indexer",
       "official": true,
       "operator": "Atomicals project",
-      "supports": ["nft", "arc20", "container", "dmint", "realm", "subrealm"],
-      "networks": ["mainnet"],
+      "supports": [
+        "nft",
+        "arc20",
+        "container",
+        "dmint",
+        "realm",
+        "subrealm"
+      ],
+      "networks": [
+        "mainnet"
+      ],
       "custody": "not-applicable",
       "repository": "https://github.com/atomicals/atomicals-electrumx",
       "url": "https://github.com/atomicals/atomicals-electrumx",
@@ -37,7 +46,16 @@
       "evidence": "Source repository read at commit 8df23747835c20230fc8b8097d469e7a1d97c3e0, released as v1.5.2.0 on 2025-03-27, and used as the pinned reference baseline throughout this documentation.",
       "lastVerified": "2026-08-31",
       "securityNotes": "This is the protocol authority. Pin a revision and record the network. Two revisions can interpret the same transaction differently.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/atomicals/atomicals-electrumx",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "atomicals-js",
@@ -45,8 +63,19 @@
       "category": "cli",
       "official": true,
       "operator": "Atomicals project",
-      "supports": ["nft", "arc20", "container", "dmint", "realm", "subrealm"],
-      "networks": ["mainnet", "testnet", "regtest"],
+      "supports": [
+        "nft",
+        "arc20",
+        "container",
+        "dmint",
+        "realm",
+        "subrealm"
+      ],
+      "networks": [
+        "mainnet",
+        "testnet",
+        "regtest"
+      ],
       "custody": "self-custody",
       "repository": "https://github.com/atomicals/atomicals-js",
       "url": "https://github.com/atomicals/atomicals-js",
@@ -54,7 +83,16 @@
       "evidence": "Source read at commit 1333565efbfe5ca4bdb8443a94d72e9f8534c2c4. The complete command inventory on this site is generated from lib/cli.ts at that revision.",
       "lastVerified": "2026-08-31",
       "securityNotes": "Manages local wallet files. Build commands spend outputs. Model any transfer before running it.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/atomicals/atomicals-js",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "atomicals-guide",
@@ -62,8 +100,16 @@
       "category": "community-resource",
       "official": true,
       "operator": "Atomicals community",
-      "supports": ["nft", "arc20", "container", "realm", "subrealm"],
-      "networks": ["mainnet"],
+      "supports": [
+        "nft",
+        "arc20",
+        "container",
+        "realm",
+        "subrealm"
+      ],
+      "networks": [
+        "mainnet"
+      ],
       "custody": "not-applicable",
       "repository": "https://github.com/atomicals-community/atomicals-guide",
       "url": "https://atomicals-community.github.io/atomicals-guide/",
@@ -71,7 +117,16 @@
       "evidence": "Repository reachable and used as a documented source. The guide itself states that the specification is defined in code.",
       "lastVerified": "2026-08-31",
       "securityNotes": "Explanatory material. Version sensitive behavior is decided by the validator, not by the guide.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/atomicals-community/atomicals-guide",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "atomicals-aips",
@@ -80,7 +135,9 @@
       "official": true,
       "operator": "Atomicals community",
       "supports": [],
-      "networks": ["mainnet"],
+      "networks": [
+        "mainnet"
+      ],
       "custody": "not-applicable",
       "repository": "https://github.com/atomicals-community/aips",
       "url": "https://github.com/atomicals-community/aips",
@@ -88,7 +145,16 @@
       "evidence": "Repository cloned at commit be08d7856db7c55c2bfb7c2c08f88a25f1c781f8. It contains AIP-1 and AIP-3, both with status Draft.",
       "lastVerified": "2026-08-31",
       "securityNotes": "A proposal existing is not evidence that anything implements it. See the AIP registry.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/atomicals-community/aips",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "avm-interpreter",
@@ -105,7 +171,16 @@
       "evidence": "Source read at commit c185e6216a3ea2cb2e011e508033ca535ece3472. The opcode inventory on this site is generated from src/script/script.h at that revision.",
       "lastVerified": "2026-08-31",
       "securityNotes": "Beta. Not deployed by Universe on any network. Re-enabled opcodes and arbitrary precision arithmetic make host resource limits mandatory.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/atomicals/avm-interpreter",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "avm-whitepaper",
@@ -122,7 +197,16 @@
       "evidence": "Referenced by the interpreter README. No independent reachability check was performed for this record.",
       "lastVerified": "2026-08-31",
       "securityNotes": "Architectural concepts only. Nothing described in it is implemented by virtue of being described.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/atomicals/avm-whitepaper",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "universe-index-atomicals",
@@ -130,8 +214,12 @@
       "category": "api",
       "official": false,
       "operator": "Bitcoin Universe",
-      "supports": ["arc20"],
-      "networks": ["mainnet"],
+      "supports": [
+        "arc20"
+      ],
+      "networks": [
+        "mainnet"
+      ],
       "custody": "non-custodial-service",
       "repository": "https://github.com/bitcoinuniverseio/index-atomicals",
       "url": null,
@@ -139,7 +227,16 @@
       "evidence": "Source read at commit 670030e500710aaef77410540768a87a138d8134. Declared coverage is partial, with the reason recorded on the ARC-20 API page.",
       "lastVerified": "2026-08-31",
       "securityNotes": "Every marketplace action gate defaults to off. No public origin is published in this documentation.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/bitcoinuniverseio/index-atomicals",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "universe-index-atomicals-nfts-and-realms",
@@ -147,8 +244,14 @@
       "category": "api",
       "official": false,
       "operator": "Bitcoin Universe",
-      "supports": ["nft", "realm", "subrealm"],
-      "networks": ["mainnet"],
+      "supports": [
+        "nft",
+        "realm",
+        "subrealm"
+      ],
+      "networks": [
+        "mainnet"
+      ],
       "custody": "non-custodial-service",
       "repository": "https://github.com/bitcoinuniverseio/index-atomicals-nfts-and-realms",
       "url": null,
@@ -156,7 +259,16 @@
       "evidence": "Source read at commit 1d9109c68d95d5985632a60d6596b3612d3f6ef1. Its own provenance manifest declares the included and excluded asset kinds.",
       "lastVerified": "2026-08-31",
       "securityNotes": "Read only, no write capabilities. Fungible tokens, Containers, and DMINT items are excluded from the projection by declaration.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/bitcoinuniverseio/index-atomicals-nfts-and-realms",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "universe-ordex",
@@ -165,7 +277,9 @@
       "official": false,
       "operator": "Bitcoin Universe",
       "supports": [],
-      "networks": ["mainnet"],
+      "networks": [
+        "mainnet"
+      ],
       "custody": "not-applicable",
       "repository": "https://github.com/bitcoinuniverseio/ordex",
       "url": "https://github.com/bitcoinuniverseio/ordex",
@@ -173,7 +287,16 @@
       "evidence": "Repository read at commit 2f7d8d3ec59fac534f545bf03ed0d41878f91a0e, carrying an OpenAPI document, conformance vectors, an SDK, and a purchase verifier.",
       "lastVerified": "2026-08-31",
       "securityNotes": "Use the published contract and verifier rather than reimplementing purchase validation.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/bitcoinuniverseio/ordex",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null
     },
     {
       "id": "universe-inscribe",
@@ -181,8 +304,12 @@
       "category": "explorer",
       "official": false,
       "operator": "Bitcoin Universe",
-      "supports": ["arc20"],
-      "networks": ["mainnet"],
+      "supports": [
+        "arc20"
+      ],
+      "networks": [
+        "mainnet"
+      ],
       "custody": "self-custody",
       "repository": null,
       "url": null,
@@ -190,7 +317,17 @@
       "evidence": "Consumes this documentation as the frontend/docs/arc-20-docs submodule, verified through its own submodule pin contract.",
       "lastVerified": "2026-08-31",
       "securityNotes": "A product surface. What it exposes is Universe implementation, not protocol behavior.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null,
+      "evidenceNote": "No public evidence URL exists for this first-party record; the documentation repository itself carries the verification note."
     },
     {
       "id": "atomicals-market-directory-entries",
@@ -199,7 +336,9 @@
       "official": false,
       "operator": "Various third parties",
       "supports": [],
-      "networks": ["mainnet"],
+      "networks": [
+        "mainnet"
+      ],
       "custody": "unknown",
       "repository": null,
       "url": null,
@@ -207,7 +346,17 @@
       "evidence": "No reachable source was checked for any third-party marketplace or explorer during this review. Listing one from an older directory without checking it would assert a state we did not establish.",
       "lastVerified": "2026-08-31",
       "securityNotes": "A listing on any marketplace is not evidence of ownership. Ownership is verified at settlement, against the chain.",
-      "deprecation": null
+      "deprecation": null,
+      "workflows": [],
+      "readOnly": true,
+      "publicApi": false,
+      "sdkAvailable": false,
+      "verificationMethod": "repository-read",
+      "evidenceUrl": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20",
+      "evidenceRevision": null,
+      "knownLimitations": [],
+      "deprecationEvidence": null,
+      "evidenceNote": "No public evidence URL exists for this first-party record; the documentation repository itself carries the verification note."
     }
   ]
 }
