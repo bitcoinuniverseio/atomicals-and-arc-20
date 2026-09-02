@@ -1,0 +1,373 @@
+---
+/**
+ * UTXO Safety Planner: offline-first planning before a transaction exists.
+ * Classification, risk detection, and candidate plans come from the shared
+ * planner package; nothing here signs, broadcasts, or looks anything up.
+ */
+const risks = [
+  { id: 'risk/accidental-burn', page: '/guides/avoid-burns/' },
+  { id: 'risk/mixed-assets', page: '/protocol/arc20/wallet-safety/' },
+  { id: 'risk/unknown-state', page: '/protocol/core/indexer-dependency/' },
+  { id: 'risk/insufficient-change', page: '/protocol/arc20/split-and-combine/' },
+  { id: 'bitcoin/dust', page: '/protocol/arc20/psbt-requirements/' },
+  { id: 'bitcoin/fee', page: '/protocol/arc20/psbt-requirements/' },
+  { id: 'risk/unconfirmed-chain', page: '/protocol/core/confirmation-and-reorgs/' },
+  { id: 'risk/unsafe-ordering', page: '/protocol/arc20/psbt-requirements/' },
+  { id: 'risk/reused-change', page: '/guides/inspect-an-address/' },
+]
+const encodedRisks = JSON.stringify(risks)
+const sample = JSON.stringify(
+  {
+    utxos: [
+      { utxoId: 'sample:0', value: 50000, address: 'bc1qplain', confirmed: true, atomicals: {} },
+      { utxoId: 'sample:1', value: 1092, address: 'bc1qholder', confirmed: true, atomicals: { 'a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4a1b2c3d4i5': 1092 } },
+      { utxoId: 'sample:2', value: 700, address: 'bc1qmystery', confirmed: false },
+    ],
+  },
+  null,
+  2,
+)
+---
+
+<section class="bu-tool bu-planner" data-planner data-risks={encodedRisks} data-sample={sample}>
+  <noscript>
+    <p class="bu-tool-note">
+      The planner classifies UTXOs and generates candidate plans when JavaScript runs. Without it,
+      read the safety rules this tool cites: every warning links to the rule page that explains the
+      risk and the safe alternative.
+    </p>
+  </noscript>
+  <p class="bu-tool-note">
+    Treat everything you paste here as sensitive local data. It stays in this page's memory, is
+    never stored, never sent anywhere, and disappears when you close the tab.
+  </p>
+
+  <div class="bu-planner-layout">
+    <div class="bu-planner-side">
+      <h2>1. Import UTXOs</h2>
+      <label for="bu-planner-json" class="bu-tool-note">Paste UTXO JSON, Bitcoin Core listunspent output, or the sample.</label>
+      <textarea id="bu-planner-json" data-json rows="12" spellcheck="false"></textarea>
+      <div class="bu-planner-actions">
+        <button type="button" class="bu-btn" data-load-sample>Load sample</button>
+        <button type="button" class="bu-btn" data-import-file-btn>Import file</button>
+        <input type="file" data-import-file accept=".json,.csv,application/json,text/csv" aria-label="Import UTXO file" hidden />
+      </div>
+      <p class="bu-lab-error" data-error role="alert" hidden></p>
+
+      <h2>2. Choose an objective</h2>
+      <label class="bu-planner-select">
+        <span>Objective</span>
+        <select data-objective>
+          <option value="preserve-all">Preserve all Atomicals</option>
+          <option value="transfer-amount">Transfer a specified ARC-20 amount</option>
+          <option value="split">Split an asset-bearing UTXO</option>
+          <option value="consolidate-plain">Consolidate plain BTC</option>
+          <option value="isolate-unknown">Isolate an unknown UTXO</option>
+        </select>
+      </label>
+      <label class="bu-planner-select">
+        <span>ARC-20 amount or BTC amount in sats</span>
+        <input type="number" data-amount min="0" value="546" />
+      </label>
+      <label class="bu-planner-select">
+        <span>Fee rate (sat/vB)</span>
+        <input type="number" data-fee-rate min="1" value="1" />
+      </label>
+      <button type="button" class="bu-btn" data-variant="primary" data-plan>Generate candidate plans</button>
+    </div>
+
+    <div class="bu-planner-main" data-results hidden>
+      <h2>Classification</h2>
+      <div class="bu-matrix bu-scroll">
+        <table>
+          <caption>Every imported output with its classification and evidence</caption>
+          <thead>
+            <tr>
+              <th scope="col">Output</th>
+              <th scope="col">Satoshis</th>
+              <th scope="col">Class</th>
+              <th scope="col">Confidence</th>
+              <th scope="col">Evidence</th>
+            </tr>
+          </thead>
+          <tbody data-classification></tbody>
+        </table>
+      </div>
+
+      <h2>Candidate plans</h2>
+      <p class="bu-tool-note">
+        Plans are compared on several axes at once. There is no single score: read the warnings and
+        pick with your own eyes.
+      </p>
+      <div data-plans></div>
+
+      <h2>Export</h2>
+      <div class="bu-planner-actions">
+        <button type="button" class="bu-btn" data-export="plan">Plan JSON</button>
+        <button type="button" class="bu-btn" data-export="scenario">Protocol Lab scenario</button>
+        <button type="button" class="bu-btn" data-export="cli">CLI command sequence</button>
+      </div>
+      <p class="bu-tool-note">
+        The planner never signs and never broadcasts. When fields for a structurally valid unsigned
+        PSBT are missing, it exports an explicit transaction intent instead and says what is
+        missing.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { classifyUtxo, generatePlans, detectRisks } from '@bitcoin-universe/utxo-planner/planner'
+
+  type Risk = { id: string; page: string }
+  type Warning = { risk: Risk; detail: string; fatal: boolean }
+  type Plan = {
+    inputs: string[]
+    outputs: { value: number; role?: string; address?: string }[]
+    action?: string
+    fee: number
+    virtualSize: number
+    safety: string
+    privacy?: string
+    warnings: Warning[]
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-planner]')
+  if (root) initPlanner(root)
+
+  function initPlanner(root: HTMLElement) {
+    const riskPages = new Map<string, string>(JSON.parse(root.dataset.risks ?? '[]'))
+    const errorBox = root.querySelector<HTMLElement>('[data-error]')!
+    const results = root.querySelector<HTMLElement>('[data-results]')!
+    const classificationBody = root.querySelector<HTMLTableSectionElement>('[data-classification]')!
+    const plansView = root.querySelector<HTMLElement>('[data-plans]')!
+    const jsonField = root.querySelector<HTMLTextAreaElement>('[data-json]')!
+
+    let utxos: {
+      utxoId: string
+      value: number
+      address: string
+      confirmed: boolean
+      atomicals?: Record<string, number>
+    }[] = []
+    let plans: Plan[] = []
+
+    function parseJson(text: string): boolean {
+      try {
+        const parsed = JSON.parse(text)
+        const list = Array.isArray(parsed) ? parsed : parsed.utxos
+        if (!Array.isArray(list) || list.length === 0) throw new Error('no UTXO list found')
+        utxos = list
+          .map((utxo, index) => ({
+            utxoId: utxo.txid ? `${utxo.txid}:${utxo.vout ?? 0}` : (utxo.utxoId ?? `imported:${index}`),
+            value: Number(utxo.amount !== undefined ? Math.round(utxo.amount * 1e8) : utxo.value),
+            address: utxo.address ?? 'unknown-address',
+            confirmed: utxo.spendable === undefined ? Boolean(utxo.confirmed ?? true) : Boolean(utxo.spendable),
+            atomicals: utxo.atomicals === undefined ? undefined : (utxo.atomicals ?? {}),
+          }))
+          .filter((utxo) => Number.isInteger(utxo.value) && utxo.value >= 0)
+        if (utxos.length === 0) throw new Error('no usable UTXOs after parsing')
+        hideError()
+        return true
+      } catch (error) {
+        showError(`Could not read UTXO data: ${error instanceof Error ? error.message : error}`)
+        return false
+      }
+    }
+
+    function renderClassification() {
+      classificationBody.innerHTML = utxos
+        .map((utxo) => {
+          const classified = classifyUtxo(utxo)
+          return `<tr>
+            <th scope="row" class="bu-mono">${escapeHtml(classified.utxoId)}</th>
+            <td class="bu-num">${utxo.value}</td>
+            <td><span class="bu-chip" data-tone="${classified.classification === 'plain' ? 'ok' : classified.classification === 'unknown' ? 'warn' : 'universe'}">${classified.classification}</span></td>
+            <td>${classified.confidence}</td>
+            <td>${classified.evidence.map((entry) => escapeHtml(entry.summary)).join(' ')}</td>
+          </tr>`
+        })
+        .join('')
+    }
+
+    function renderPlans() {
+      const objective = (root.querySelector<HTMLSelectElement>('[data-objective]') as HTMLSelectElement).value as Parameters<typeof generatePlans>[0]
+      const amount = Number((root.querySelector<HTMLInputElement>('[data-amount]') as HTMLInputElement).value) || 0
+      const feeRate = Number((root.querySelector<HTMLInputElement>('[data-fee-rate]') as HTMLInputElement).value) || 1
+      plans = generatePlans(objective, utxos, { amount, feeRate, receiver: 'bc1qreceiver' }) as Plan[]
+      plansView.innerHTML =
+        plans
+          .map(
+            (plan, index) => `<details class="bu-plan"${index === 0 ? ' open' : ''}>
+          <summary>Plan ${index + 1}: ${plan.inputs.length} input(s), ${plan.outputs.length} output(s), fee ${plan.fee} sats, ${plan.safety}</summary>
+          <p>${escapeHtml(plan.action ?? '')}</p>
+          <dl class="bu-facts">
+            <div class="bu-fact"><dt>Inputs</dt><dd>${plan.inputs.map(escapeHtml).join(', ') || 'none'}</dd></div>
+            <div class="bu-fact"><dt>Virtual size</dt><dd>${plan.virtualSize} vB</dd></div>
+            <div class="bu-fact"><dt>Privacy</dt><dd>${escapeHtml(plan.privacy ?? 'not assessed')}</dd></div>
+            <div class="bu-fact"><dt>Safety</dt><dd>${escapeHtml(plan.safety)}</dd></div>
+          </dl>
+          ${
+            plan.warnings.length
+              ? `<ul>${plan.warnings
+                  .map((warning) => {
+                    const page = riskPages.get(warning.risk.id)
+                    return `<li><span class="bu-chip" data-tone="${warning.fatal ? 'risk' : 'warn'}">${warning.fatal ? 'must fix' : 'review'}</span> ${page ? `<a href="${page}">${warning.risk.id}</a>` : warning.risk.id}: ${escapeHtml(warning.detail)}</li>`
+                  })
+                  .join('')}</ul>`
+              : '<p>No warnings for this plan.</p>'
+          }
+        </details>`,
+          )
+          .join('') || '<p>No candidate plans for this objective with the imported outputs.</p>'
+    }
+
+    root.querySelector<HTMLButtonElement>('[data-load-sample]')?.addEventListener('click', () => {
+      jsonField.value = root.dataset.sample ?? ''
+      parseJson(jsonField.value)
+    })
+    root.querySelector<HTMLButtonElement>('[data-import-file-btn]')?.addEventListener('click', () => {
+      root.querySelector<HTMLInputElement>('[data-import-file]')?.click()
+    })
+    root.querySelector<HTMLInputElement>('[data-import-file]')?.addEventListener('change', (event) => {
+      const input = event.target as HTMLInputElement
+      const file = input.files?.[0]
+      if (!file) return
+      if (file.size > 1024 * 1024) {
+        showError('That file is larger than 1 MB. Import only what you plan to use.')
+        return
+      }
+      void file.text().then((text) => {
+        jsonField.value = text
+        parseJson(text)
+      })
+    })
+    root.querySelector<HTMLButtonElement>('[data-plan]')?.addEventListener('click', () => {
+      if (!parseJson(jsonField.value)) return
+      renderClassification()
+      renderPlans()
+      results.hidden = false
+    })
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-export]')) {
+      button.addEventListener('click', () => {
+        if (!plans.length) return
+        let payload: string
+        if (button.dataset.export === 'plan') {
+          payload = JSON.stringify({ plans, note: 'Unsigned intent only. This planner never signs or broadcasts.' }, null, 2)
+        } else if (button.dataset.export === 'scenario') {
+          const first = plans.find((plan) => plan.inputs.length > 0) ?? plans[0]
+          payload = JSON.stringify(
+            {
+              scenarioVersion: '1.0.0',
+              id: 'utxo-planner-export',
+              title: 'Plan exported from the UTXO Safety Planner',
+              seed: 'planner-export',
+              network: 'regtest',
+              steps: [
+                { type: 'fund', label: 'fund', outputs: first.outputs.map((output) => ({ value: output.value, address: output.address ?? 'bc1qchange' })) },
+                { type: 'confirm', blocks: 1 },
+              ],
+            },
+            null,
+            2,
+          )
+        } else {
+          const first = plans.find((plan) => plan.inputs.length > 0) ?? plans[0]
+          payload = [
+            '# Replace the placeholders with values from your own protocol-aware wallet.',
+            ...first.inputs.map((input) => `# confirm ${input} is classified before spending it`),
+            `atomicals transfer FROM_UTXO TO_ADDRESS AMOUNT --fee-rate ${(root.querySelector<HTMLInputElement>('[data-fee-rate]') as HTMLInputElement).value}`,
+          ].join('\n')
+        }
+        const blob = new Blob([payload], { type: 'application/json;charset=utf-8' })
+        const url = URL.createObjectURL(blob)
+        const anchor = document.createElement('a')
+        anchor.href = url
+        anchor.download = `utxo-plan-${button.dataset.export}.json`
+        anchor.click()
+        URL.revokeObjectURL(url)
+      })
+    }
+
+    function showError(message: string) {
+      errorBox.textContent = message
+      errorBox.hidden = false
+    }
+    function hideError() {
+      errorBox.hidden = true
+    }
+    function escapeHtml(value: string): string {
+      return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
+    }
+  }
+</script>
+
+<style>
+  .bu-planner-layout {
+    display: grid;
+    gap: var(--bu-space-5);
+    margin-block-start: var(--bu-space-4);
+  }
+
+  @media (min-width: 62rem) {
+    .bu-planner-layout {
+      grid-template-columns: 22rem 1fr;
+      align-items: start;
+    }
+  }
+
+  .bu-planner-side h2,
+  .bu-planner-main h2 {
+    font-size: var(--bu-step-1);
+    margin-block: var(--bu-space-3) var(--bu-space-2);
+  }
+
+  .bu-planner textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface-sunken);
+    color: var(--bu-ink);
+    font-family: var(--bu-font-mono);
+    font-size: 0.8rem;
+  }
+
+  .bu-planner-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-2);
+    margin-block: var(--bu-space-2);
+  }
+
+  .bu-planner-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-block-end: var(--bu-space-2);
+  }
+
+  .bu-planner-select input,
+  .bu-planner-select select {
+    min-height: var(--bu-touch);
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface);
+    color: var(--bu-ink);
+    font: inherit;
+  }
+
+  .bu-plan {
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface);
+    padding: var(--bu-space-3);
+    margin-block-end: var(--bu-space-2);
+  }
+
+  .bu-plan summary {
+    cursor: pointer;
+    font-weight: 620;
+  }
+</style>

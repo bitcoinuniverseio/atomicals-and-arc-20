@@ -824,6 +824,9 @@
         },
         {
           "slug": "tools/protocol-lab"
+        },
+        {
+          "slug": "tools/utxo-safety"
         }
       ]
     },

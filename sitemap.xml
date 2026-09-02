@@ -2353,6 +2353,18 @@
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/tools/transaction-inspector/"/>
   </url>
   <url>
+    <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/utxo-safety/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/utxo-safety/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/pt/tools/utxo-safety/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/tools/utxo-safety/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/fr/tools/utxo-safety/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ja/tools/utxo-safety/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/tools/utxo-safety/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/tools/utxo-safety/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/tools/utxo-safety/"/>
+  </url>
+  <url>
     <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/guides/</loc>
     <lastmod>2026-08-31</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/"/>

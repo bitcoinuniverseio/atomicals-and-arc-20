@@ -14,7 +14,8 @@
     "packages/client",
     "packages/mcp",
     "packages/protocol-core",
-    "packages/protocol-lab"
+    "packages/protocol-lab",
+    "packages/utxo-planner"
   ],
   "scripts": {
     "generate": "node scripts/generate-all.mjs",

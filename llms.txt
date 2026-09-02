@@ -265,6 +265,7 @@ Vectors: /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
 - [Protocol comparison has moved](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-comparison/) [editorial]: The protocol comparison is now the Protocol Atlas, with evidence-backed cells, four synchronized views, and exports.
 - [Protocol Lab](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-lab/) [protocol-behavior]: Construct and replay Atomicals workflows deterministically in the browser, with no keys, no signing, and no network.
 - [Transaction safety inspector](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/transaction-inspector/) [protocol-behavior]: Parse a transaction or PSBT in your browser and read its inputs, outputs, and signature scope before you sign.
+- [UTXO Safety Planner](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/utxo-safety/) [protocol-behavior]: Classify asset-bearing UTXOs, see the risks, and generate deterministic candidate plans before you construct a transaction.
 
 ### ecosystem
 
