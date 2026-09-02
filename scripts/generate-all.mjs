@@ -16,6 +16,7 @@ const STEPS = [
   ['AVM opcode inventory from the beta interpreter source', 'scripts/generate-avm-opcodes.mjs'],
   ['AIP registry from the proposals and the evidence file', 'scripts/generate-aip-registry.mjs'],
   ['TypeScript client from the OpenAPI documents', 'scripts/generate-client.mjs'],
+  ['Standalone response validators for the Conformance Workbench', 'scripts/generate-validators.mjs'],
 ]
 
 for (const [label, script] of STEPS) {

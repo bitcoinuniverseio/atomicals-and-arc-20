@@ -28,7 +28,7 @@
     "guides/transfer-arc20",
     "guides/avoid-burns"
   ],
-  "pageCount": 219,
+  "pageCount": 220,
   "pages": [
     {
       "pageId": "home",
@@ -5751,6 +5751,40 @@
       "contentHash": "1237a497d5642e08232fac4bedb6fde268ade51b5b3c2bdf5f85b65f36ca9d0a",
       "href": "/atomicals-and-arc-20/tools/allocation-visualizer/",
       "raw": "/atomicals-and-arc-20/raw/tools/allocation-visualizer.md"
+    },
+    {
+      "pageId": "tools/api-conformance",
+      "routeId": "tools/api-conformance",
+      "locale": "en",
+      "title": "API Conformance Workbench",
+      "description": "Validate a live read-only endpoint against the published contracts, with a scrubbed report and no stored credentials.",
+      "area": "tools",
+      "audience": [
+        "developer",
+        "integrator",
+        "operator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet",
+        "regtest"
+      ],
+      "sources": [
+        "universe-index-atomicals"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [
+        "The bench sends only read-only GET operations from the canonical contract, one explicit press at a time.",
+        "A network failure is reported as unreachable. It is never described as deprecation or closure.",
+        "The hosted site never operates as a proxy. For CORS-blocked endpoints, run the repository's local proxy."
+      ],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "feb3f3c1a88c6930dd19ef5bcd9b3cf9949931c698e091bd5e622df1da535acb",
+      "href": "/atomicals-and-arc-20/tools/api-conformance/",
+      "raw": "/atomicals-and-arc-20/raw/tools/api-conformance.md"
     },
     {
       "pageId": "tools/api-explorer",
