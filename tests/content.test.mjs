@@ -330,7 +330,14 @@ test('every English page is reachable from the sidebar or is the home page', () 
 
   const orphans = english
     .map((page) => page.baseRoute)
-    .filter((route) => route !== '' && !referenced.has(route))
+    .filter(
+      (route) =>
+        route !== '' &&
+        !referenced.has(route) &&
+        // A compatibility redirect stub is reachable through its own URL, not
+        // through navigation; discoverability is exactly what it must avoid.
+        !english.find((page) => page.baseRoute === route)?.provenance?.tags?.includes('redirect'),
+    )
 
   assert.deepEqual(orphans, [], 'pages not reachable from the sidebar')
 })
@@ -343,7 +350,7 @@ test('the source manifest is internally consistent', () => {
     ids.add(source.id)
     assert.ok(source.name, `${source.id} needs a name`)
     assert.match(source.repository, /^https:\/\//, `${source.id} needs an https repository`)
-    assert.ok(['protocol', 'universe'].includes(source.authority), `${source.id} authority`)
+    assert.ok(['protocol', 'universe', 'third-party'].includes(source.authority), `${source.id} authority`)
     assert.ok(['public', 'private'].includes(source.visibility), `${source.id} visibility`)
     assert.ok(source.role, `${source.id} needs a role`)
     if (source.revision !== null) {

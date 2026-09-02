@@ -1045,6 +1045,18 @@
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/start/what-is-arc-20/"/>
   </url>
   <url>
+    <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol-atlas/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol-atlas/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/pt/protocol-atlas/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/protocol-atlas/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/fr/protocol-atlas/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ja/protocol-atlas/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/protocol-atlas/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/protocol-atlas/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/protocol-atlas/"/>
+  </url>
+  <url>
     <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/aips/</loc>
     <lastmod>2026-08-31</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/aips/"/>
@@ -2306,7 +2318,7 @@
   </url>
   <url>
     <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-comparison/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-comparison/"/>
     <xhtml:link rel="alternate" hreflang="pt" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/pt/tools/protocol-comparison/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/tools/protocol-comparison/"/>

@@ -1,0 +1,54 @@
+{
+  "manifestVersion": "1.0.0",
+  "sets": [
+    {
+      "id": "verified-2026-08",
+      "label": "Verified August 2026 baseline",
+      "status": "current",
+      "verifiedAt": "2026-08-31",
+      "networks": ["mainnet"],
+      "sources": {
+        "protocol": {
+          "sourceId": "atomicals-electrumx-1.5.2.0",
+          "revision": "8df23747835c20230fc8b8097d469e7a1d97c3e0",
+          "note": "Atomicals ElectrumX v1.5.2.0, the pinned reference validator behavior for ARC-20 and Atomicals rules."
+        },
+        "cli": {
+          "sourceId": "atomicals-js-cli",
+          "revision": "1333565efbfe5ca4bdb8443a94d72e9f8534c2c4",
+          "note": "The JavaScript CLI the command inventory and CLI builder are generated from."
+        },
+        "aipRegistry": {
+          "sourceId": "atomicals-aips",
+          "revision": "be08d7856db7c55c2bfb7c2c08f88a25f1c781f8",
+          "note": "The AIP register snapshot. A proposal existing is not evidence that anything implements it."
+        },
+        "universeRuntime": [
+          {
+            "sourceId": "universe-index-atomicals",
+            "revision": "670030e500710aaef77410540768a87a138d8134",
+            "note": "Universe ARC-20 index and Marketplace v1 authority."
+          }
+        ],
+        "avmInterpreter": {
+          "sourceId": "atomicals-avm-interpreter",
+          "revision": "c185e6216a3ea2cb2e011e508033ca535ece3472",
+          "note": "Beta interpreter. Version isolation matters most here: nothing in this set describes AVM as deployed."
+        },
+        "docsBuild": {
+          "docsVersion": "2026.08",
+          "note": "The documentation build that renders this source set."
+        }
+      },
+      "apiContractVersions": [
+        { "document": "arc20", "version": "1.0.0" },
+        { "document": "atomicals-nfts-realms", "version": "1.0.0" },
+        { "document": "marketplace-v1", "version": "1.0.0" }
+      ],
+      "drift": {
+        "findings": 0,
+        "checkedAt": "2026-08-31"
+      }
+    }
+  ]
+}

@@ -1,0 +1,969 @@
+---
+/**
+ * Protocol Atlas: four synchronized views over contracts/protocol-atlas/atlas.json.
+ *
+ * Server rendering covers the full comparison matrix in compact mode, the
+ * relationship map, the activation timeline, and their table equivalents, so
+ * every view works without JavaScript. The client script adds column
+ * selection, search, status filtering, side-by-side comparison, detailed
+ * cells, shareable URL state, and CSV or JSON export.
+ */
+import atlasData from '../../../../contracts/protocol-atlas/atlas.json'
+
+const data = atlasData as {
+  atlasVersion: string
+  lastVerified: string
+  attributes: { id: string; label: string; group: string; description?: string }[]
+  protocols: {
+    id: string
+    name: string
+    family: string
+    summary: string
+    attributes: Record<
+      string,
+      {
+        value: string
+        status: string
+        sourceId: string
+        sourceRevision: string | null
+        verifiedAt: string
+        notes?: string
+      }
+    >
+  }[]
+}
+
+const statusTone: Record<string, string> = {
+  verified: 'ok',
+  'implementation-specific': 'universe',
+  proposal: 'idle',
+  experimental: 'warn',
+  unknown: 'idle',
+  conflicting: 'risk',
+}
+
+const defaultColumns = [
+  'unitModel',
+  'fungibleSupport',
+  'nonFungibleSupport',
+  'stateLocation',
+  'utxoCoupling',
+  'programmability',
+]
+
+// Relationship map edges. Lineage is drawn only where a pinned source
+// supports it; otherwise protocols share a "primitive" node.
+const mapNodes: { id: string; label: string; kind: string; x: number; y: number }[] = [
+  { id: 'bitcoin', label: 'Bitcoin UTXOs + witness', kind: 'primitive', x: 280, y: 40 },
+  { id: 'inscription-env', label: 'Inscription envelopes', kind: 'primitive', x: 120, y: 130 },
+  { id: 'opreturn-env', label: 'OP_RETURN messages', kind: 'primitive', x: 440, y: 130 },
+  { id: 'atomicals', label: 'Atomicals', kind: 'protocol', x: 180, y: 225 },
+  { id: 'arc-20', label: 'ARC-20', kind: 'protocol', x: 70, y: 320 },
+  { id: 'avm', label: 'AVM (beta)', kind: 'experimental', x: 290, y: 320 },
+  { id: 'ordinals', label: 'Ordinals', kind: 'protocol', x: 470, y: 225 },
+  { id: 'runes', label: 'Runes', kind: 'protocol', x: 545, y: 320 },
+  { id: 'brc-20', label: 'BRC-20', kind: 'protocol', x: 385, y: 320 },
+  { id: 'stamps-src-20', label: 'Stamps / SRC-20', kind: 'protocol', x: 470, y: 398 },
+  { id: 'counterparty', label: 'Counterparty', kind: 'protocol', x: 350, y: 398 },
+  { id: 'alkanes-protorunes', label: 'Alkanes / Protorunes', kind: 'protocol', x: 200, y: 398 },
+  { id: 'rgb', label: 'RGB', kind: 'protocol', x: 55, y: 398 },
+]
+
+const mapEdges: { from: string; to: string; label?: string; dashed?: boolean }[] = [
+  { from: 'bitcoin', to: 'inscription-env' },
+  { from: 'bitcoin', to: 'opreturn-env' },
+  { from: 'inscription-env', to: 'atomicals' },
+  { from: 'inscription-env', to: 'ordinals' },
+  { from: 'inscription-env', to: 'alkanes-protorunes' },
+  { from: 'opreturn-env', to: 'runes' },
+  { from: 'opreturn-env', to: 'stamps-src-20' },
+  { from: 'opreturn-env', to: 'counterparty' },
+  { from: 'atomicals', to: 'arc-20', label: 'fungible layer' },
+  { from: 'atomicals', to: 'avm', label: 'beta execution layer', dashed: true },
+  { from: 'ordinals', to: 'brc-20', label: 'inscriptions as transport' },
+  { from: 'counterparty', to: 'stamps-src-20', label: 'ledger heritage' },
+]
+
+const mapTable = mapEdges.map((edge) => ({
+  from: mapNodes.find((n) => n.id === edge.from)?.label ?? edge.from,
+  to: mapNodes.find((n) => n.id === edge.to)?.label ?? edge.to,
+  label: edge.label ?? 'builds on',
+}))
+
+// Timeline entries. Only points a pinned source or an activation rule in it
+// supports. AVM has no activation: it is listed as beta with no date.
+const timeline: { id: string; label: string; year: number; caption: string; kind: string }[] = [
+  { id: 'counterparty', label: 'Counterparty', year: 2014, caption: 'Ledger over OP_RETURN multisig era', kind: 'protocol' },
+  { id: 'ordinals', label: 'Ordinals', year: 2022, caption: 'Inscriptions on mainnet, December 2022', kind: 'protocol' },
+  { id: 'atomicals', label: 'Atomicals', year: 2023, caption: 'Envelope protocol active on mainnet', kind: 'protocol' },
+  { id: 'brc-20', label: 'BRC-20', year: 2023, caption: 'JSON inscription balances since March 2023', kind: 'protocol' },
+  { id: 'stamps-src-20', label: 'Stamps / SRC-20', year: 2023, caption: 'OP_RETURN stamps and SRC-20', kind: 'protocol' },
+  { id: 'runes', label: 'Runes', year: 2024, caption: 'Activated at block 840,000', kind: 'protocol' },
+  { id: 'alkanes-protorunes', label: 'Alkanes / Protorunes', year: 2024, caption: 'WASM metaprotocol era', kind: 'protocol' },
+  { id: 'avm', label: 'AVM', year: 2026, caption: 'Beta interpreter pinned; no deployment', kind: 'experimental' },
+]
+
+const timelineMin = Math.min(...timeline.map((t) => t.year))
+const timelineMax = Math.max(...timeline.map((t) => t.year))
+
+const decisionQuestions: { id: string; question: string; attribute: string; want: 'yes' | 'strong' }[] = [
+  { id: 'fungible', question: 'Do you need fungible units?', attribute: 'fungibleSupport', want: 'strong' },
+  { id: 'nft', question: 'Do you need non-fungible objects?', attribute: 'nonFungibleSupport', want: 'strong' },
+  { id: 'satbound', question: 'Must the asset stay tied to a specific satoshi?', attribute: 'utxoCoupling', want: 'strong' },
+  { id: 'mutable', question: 'Is mutable object state required?', attribute: 'mutability', want: 'strong' },
+  { id: 'clientval', question: 'Is client-side validation required?', attribute: 'validationAuthority', want: 'strong' },
+  { id: 'noindexer', question: 'Is avoiding a protocol indexer acceptable?', attribute: 'indexerRequirement', want: 'strong' },
+  { id: 'namespace', question: 'Is namespace ownership required?', attribute: 'naming', want: 'strong' },
+  { id: 'program', question: 'Is programmable execution required?', attribute: 'programmability', want: 'strong' },
+]
+---
+
+<section class="bu-atlas" data-atlas-root>
+  <noscript>
+    <p class="bu-tool-note">
+      The comparison matrix, map, and timeline below are fully readable without JavaScript.
+      Column selection, search, comparison, export, and the decision explorer need JavaScript.
+    </p>
+  </noscript>
+
+  <div class="bu-atlas-toolbar" role="group" aria-label="Atlas views">
+    <div class="bu-atlas-tabs" data-tabs>
+      <button type="button" class="bu-atlas-tab" data-view="matrix" aria-pressed="true">Matrix</button>
+      <button type="button" class="bu-atlas-tab" data-view="map" aria-pressed="false">Relationship map</button>
+      <button type="button" class="bu-atlas-tab" data-view="timeline" aria-pressed="false">Timeline</button>
+      <button type="button" class="bu-atlas-tab" data-view="decision" aria-pressed="false">Decision explorer</button>
+    </div>
+    <div class="bu-atlas-actions">
+      <button type="button" class="bu-btn" data-export="csv">Export CSV</button>
+      <button type="button" class="bu-btn" data-export="json">Export JSON</button>
+    </div>
+  </div>
+
+  <!-- ============ Matrix ============ -->
+  <div class="bu-atlas-panel" data-panel="matrix">
+    <div class="bu-atlas-controls">
+      <label class="bu-atlas-search">
+        <span class="bu-context-label">Search</span>
+        <input type="search" data-matrix-search placeholder="Filter rows by name or value" />
+      </label>
+      <label class="bu-atlas-select">
+        <span class="bu-context-label">Status filter</span>
+        <select data-status-filter>
+          <option value="">All statuses</option>
+          {data.statusVocabulary.map((status) => <option value={status}>{status}</option>)}
+        </select>
+      </label>
+      <label class="bu-atlas-select">
+        <span class="bu-context-label">Detail</span>
+        <select data-mode>
+          <option value="compact">Compact</option>
+          <option value="detailed">Detailed</option>
+        </select>
+      </label>
+    </div>
+
+    <details class="bu-atlas-columns">
+      <summary>Choose columns</summary>
+      <div class="bu-atlas-column-list" data-column-list>
+        {
+          data.attributes.map((attribute) => (
+            <label class="bu-atlas-column-option">
+              <input
+                type="checkbox"
+                data-column={attribute.id}
+                checked={defaultColumns.includes(attribute.id) ? true : undefined}
+              />
+              <span>{attribute.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </details>
+
+    <p class="bu-atlas-compare-note" data-compare-note hidden>
+      Comparing up to four protocols side by side.
+    </p>
+
+    <div class="bu-matrix bu-scroll">
+      <table data-matrix>
+        <caption class="sr-only">
+          Protocol comparison. Every cell carries a status and a source revision.
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Protocol</th>
+            {defaultColumns.map((id) => (
+              <th scope="col" data-col-header={id}>
+                {data.attributes.find((a) => a.id === id)?.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.protocols.map((protocol) => (
+            <tr data-row={protocol.id}>
+              <th scope="row">
+                <button
+                  type="button"
+                  class="bu-atlas-row-toggle"
+                  data-compare={protocol.id}
+                  aria-pressed="false"
+                  title="Add to side-by-side comparison"
+                >
+                  {protocol.name}
+                </button>
+              </th>
+              {defaultColumns.map((id) => {
+                const evidence = protocol.attributes[id]
+                return (
+                  <td data-cell={id} data-label={data.attributes.find((a) => a.id === id)?.label}>
+                    <span class="bu-atlas-value">{evidence.value}</span>
+                    <span class="bu-chip" data-tone={statusTone[evidence.status]}>{evidence.status}</span>
+                  </td>
+                )
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="bu-tool-note">
+      Select a protocol name to compare up to four side by side. Unknown and conflicting facts
+      are shown as recorded; they are never inferred. Verified {data.lastVerified}, dataset
+      version {data.atlasVersion}.
+    </p>
+  </div>
+
+  <!-- ============ Relationship map ============ -->
+  <div class="bu-atlas-panel" data-panel="map" hidden>
+    <figure class="bu-figure">
+      <div class="bu-figure-canvas" role="img" aria-labelledby="fig-atlas-map-title">
+        <span class="sr-only" id="fig-atlas-map-title">Relationship map. {mapTable.map((edge) => `${edge.from} builds on ${edge.to}${edge.label ? ` (${edge.label})` : ''}`).join('; ')}.</span>
+        <svg viewBox="0 0 620 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g fill="none" stroke="var(--d-line-strong)" stroke-width="1.2">
+            {mapEdges.map((edge) => {
+              const from = mapNodes.find((n) => n.id === edge.from)!
+              const to = mapNodes.find((n) => n.id === edge.to)!
+              return (
+                <line
+                  x1={from.x + 55}
+                  y1={from.y + 14}
+                  x2={to.x + 55}
+                  y2={to.y + 14}
+                  stroke-dasharray={edge.dashed ? '4 5' : undefined}
+                />
+              )
+            })}
+          </g>
+          <g font-family="var(--bu-font-sans)" font-size="11.5" text-anchor="middle">
+            {mapNodes.map((node) => (
+              <g>
+                <rect
+                  x={node.x}
+                  y={node.y}
+                  width="110"
+                  height="28"
+                  rx="9"
+                  fill={node.kind === 'primitive' ? 'var(--d-fill)' : node.kind === 'experimental' ? 'var(--d-risk-fill)' : 'var(--d-accent-fill)'}
+                  stroke={node.kind === 'primitive' ? 'var(--d-line)' : node.kind === 'experimental' ? 'var(--d-risk)' : 'var(--d-accent)'}
+                  stroke-width="1.4"
+                />
+                <text x={node.x + 55} y={node.y + 18} fill="var(--d-ink)">
+                  {node.label}
+                </text>
+              </g>
+            ))}
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        <details>
+          <summary>Relationship map</summary>
+          <p>
+            Shared Bitcoin primitives feed the protocol families. Edges show which primitive or
+            protocol builds on which. No edge implies lineage beyond what pinned sources support;
+            the dashed edge marks the beta AVM layer, which is experimental.
+          </p>
+        </details>
+      </figcaption>
+    </figure>
+
+    <div class="bu-matrix bu-scroll">
+      <table>
+        <caption>Map edges as a table, equivalent to the diagram</caption>
+        <thead>
+          <tr>
+            <th scope="col">Element</th>
+            <th scope="col">Builds on</th>
+            <th scope="col">Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          {mapTable.map((edge) => (
+            <tr>
+              <td>{edge.from}</td>
+              <td>{edge.to}</td>
+              <td>{edge.label}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ Timeline ============ -->
+  <div class="bu-atlas-panel" data-panel="timeline" hidden>
+    <figure class="bu-figure">
+      <div class="bu-figure-canvas" role="img" aria-labelledby="fig-atlas-timeline-title">
+        <span class="sr-only" id="fig-atlas-timeline-title">
+          Activation and version timeline. {timeline.map((entry) => `${entry.label}: ${entry.caption}`).join('; ')}.
+        </span>
+        <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g font-family="var(--bu-font-sans)" font-size="11.5">
+            <line x1="40" y1="150" x2="600" y2="150" stroke="var(--d-line-strong)" stroke-width="1.4" />
+            {timeline.map((entry) => {
+              const x = 40 + ((entry.year - timelineMin) / (timelineMax - timelineMin)) * 560
+              const y = entry.kind === 'experimental' ? 96 : 178
+              return (
+                <g>
+                  <line x1={x} y1="150" x2={x} y2={y} stroke="var(--d-line)" stroke-width="1" />
+                  <circle cx={x} cy={y} r="5" fill={entry.kind === 'experimental' ? 'var(--d-risk)' : 'var(--d-accent)'} />
+                  <text x={x} y={entry.kind === 'experimental' ? y - 30 : y + 24} text-anchor="middle" fill="var(--d-ink)" font-weight="640">
+                    {entry.label}
+                  </text>
+                  <text x={x} y={entry.kind === 'experimental' ? y - 16 : y + 38} text-anchor="middle" fill="var(--d-soft)" font-size="10.5">
+                    {entry.year}
+                  </text>
+                </g>
+              )
+            })}
+            <text x="40" y="222" fill="var(--d-soft)">2014</text>
+            <text x="600" y="222" text-anchor="end" fill="var(--d-soft)">2026</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        <details>
+          <summary>Activation and version timeline</summary>
+          <p>
+            Mainnet activation points the pinned sources support. The AVM marker is deliberately
+            different: it marks a pinned beta interpreter, not a deployment. Counterparty predates
+            the inscription era; the 2023 cluster shows how much arrived after inscriptions.
+          </p>
+        </details>
+      </figcaption>
+    </figure>
+
+    <div class="bu-matrix bu-scroll">
+      <table>
+        <caption>Timeline entries as a table, equivalent to the diagram</caption>
+        <thead>
+          <tr>
+            <th scope="col">Protocol</th>
+            <th scope="col">Year</th>
+            <th scope="col">Event</th>
+            <th scope="col">Kind</th>
+          </tr>
+        </thead>
+        <tbody>
+          {timeline.map((entry) => (
+            <tr>
+              <td>{entry.label}</td>
+              <td>{entry.year}</td>
+              <td>{entry.caption}</td>
+              <td>{entry.kind === 'experimental' ? 'Beta interpreter, no deployment' : 'Mainnet activation'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ Decision explorer ============ -->
+  <div class="bu-atlas-panel" data-panel="decision" hidden>
+    <p>
+      Answer the questions and the explorer shows how each protocol lines up against the
+      requirements, with the evidence for every match and every miss. It compares, it does not
+      recommend: there is no winner, ranking, or endorsement here.
+    </p>
+    <noscript><p class="bu-tool-note">The decision explorer needs JavaScript.</p></noscript>
+    <form data-decision>
+      <div>
+        {
+          decisionQuestions.map((question, index) => (
+            <div class="bu-decision-question">
+              <p class="bu-decision-lead">
+                <strong>{index + 1}.</strong> {question.question}
+              </p>
+              <label>
+                <input type="radio" name={question.id} value="yes" /> Yes
+              </label>
+              <label>
+                <input type="radio" name={question.id} value="no" /> No
+              </label>
+            </div>
+          ))
+        }
+        <button type="submit" class="bu-btn" data-variant="primary">Compare protocols against these answers</button>
+        <button type="reset" class="bu-btn">Reset</button>
+      </div>
+    </form>
+    <div class="bu-decision-results" data-decision-results aria-live="polite"></div>
+  </div>
+</section>
+
+<script>
+  import atlasData from '../../../../contracts/protocol-atlas/atlas.json'
+
+  type Evidence = {
+    value: string
+    status: string
+    sourceId: string
+    sourceRevision: string | null
+    verifiedAt: string
+    notes?: string
+  }
+  type Attribute = { id: string; label: string; group: string }
+  type Protocol = {
+    id: string
+    name: string
+    family: string
+    summary: string
+    attributes: Record<string, Evidence>
+  }
+  type Atlas = {
+    atlasVersion: string
+    lastVerified: string
+    statusVocabulary: string[]
+    attributes: Attribute[]
+    protocols: Protocol[]
+  }
+
+  const data = atlasData as Atlas
+
+  const root = document.querySelector<HTMLElement>('[data-atlas-root]')
+  if (root) initAtlas(root)
+
+  function initAtlas(root: HTMLElement) {
+    const state = {
+      view: 'matrix',
+      columns: ['unitModel', 'fungibleSupport', 'nonFungibleSupport', 'stateLocation', 'utxoCoupling', 'programmability'],
+      search: '',
+      status: '',
+      mode: 'compact',
+      selected: [] as string[],
+      answers: {} as Record<string, string>,
+    }
+
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-view]')]
+    const panels = new Map(
+      [...root.querySelectorAll<HTMLElement>('[data-panel]')].map((panel) => [panel.dataset.panel!, panel]),
+    )
+    const search = root.querySelector<HTMLInputElement>('[data-matrix-search]')
+    const statusFilter = root.querySelector<HTMLSelectElement>('[data-status-filter]')
+    const modeSelect = root.querySelector<HTMLSelectElement>('[data-mode]')
+    const columnList = root.querySelector<HTMLElement>('[data-column-list]')
+    const matrix = root.querySelector<HTMLTableElement>('[data-matrix]')
+    const decisionForm = root.querySelector<HTMLFormElement>('[data-decision]')
+    const decisionResults = root.querySelector<HTMLElement>('[data-decision-results]')
+
+    function readUrl() {
+      const params = new URLSearchParams(location.search)
+      const view = params.get('view')
+      if (view && ['matrix', 'map', 'timeline', 'decision'].includes(view)) state.view = view
+      const cols = params.get('cols')
+      if (cols) {
+        const ids = cols.split(',').filter((id) => data.attributes.some((a) => a.id === id))
+        if (ids.length) state.columns = ids.slice(0, 8)
+      }
+      const query = params.get('q')
+      if (query !== null) state.search = query
+      const status = params.get('status')
+      if (status && data.statusVocabulary.includes(status)) state.status = status
+      const mode = params.get('mode')
+      if (mode === 'compact' || mode === 'detailed') state.mode = mode
+      const selected = params.get('sel')
+      if (selected) state.selected = selected.split(',').filter((id) => data.protocols.some((p) => p.id === id)).slice(0, 4)
+    }
+
+    function writeUrl() {
+      const params = new URLSearchParams()
+      if (state.view !== 'matrix') params.set('view', state.view)
+      if (state.columns.join() !== ['unitModel', 'fungibleSupport', 'nonFungibleSupport', 'stateLocation', 'utxoCoupling', 'programmability'].join()) {
+        params.set('cols', state.columns.join(','))
+      }
+      if (state.search) params.set('q', state.search)
+      if (state.status) params.set('status', state.status)
+      if (state.mode !== 'compact') params.set('mode', state.mode)
+      if (state.selected.length) params.set('sel', state.selected.join(','))
+      const query = params.toString()
+      history.replaceState(null, '', query ? `?${query}` : location.pathname)
+    }
+
+    function statusTone(status: string): string {
+      return (
+        {
+          verified: 'ok',
+          'implementation-specific': 'universe',
+          proposal: 'idle',
+          experimental: 'warn',
+          unknown: 'idle',
+          conflicting: 'risk',
+        }[status] ?? 'idle'
+      )
+    }
+
+    function evidenceCell(evidence: Evidence, detailed: boolean): string {
+      const chips = `<span class="bu-chip" data-tone="${statusTone(evidence.status)}">${evidence.status}</span>`
+      const meta =
+        detailed
+          ? `<span class="bu-atlas-meta">verified ${evidence.verifiedAt} &middot; source <code>${evidence.sourceId}</code>${evidence.sourceRevision ? ` <code>${evidence.sourceRevision.slice(0, 12)}</code>` : ''}</span>`
+          : ''
+      const notes = detailed && evidence.notes ? `<span class="bu-atlas-meta">${evidence.notes}</span>` : ''
+      return `<span class="bu-atlas-value">${evidence.value}</span>${chips}${meta}${notes}`
+    }
+
+    function renderMatrix() {
+      if (!matrix || !columnList) return
+      for (const checkbox of columnList.querySelectorAll<HTMLInputElement>('input[data-column]')) {
+        checkbox.checked = state.columns.includes(checkbox.dataset.column!)
+      }
+      const head = matrix.tHead!
+      const body = matrix.tBodies[0]
+      head.rows[0].innerHTML =
+        '<th scope="col">Protocol</th>' +
+        state.columns
+          .map((id) => `<th scope="col">${escapeHtml(label(id))}</th>`)
+          .join('')
+      for (const row of [...body.rows]) {
+        const protocol = data.protocols.find((p) => p.id === row.dataset.row)
+        if (!protocol) continue
+        row.innerHTML =
+          `<th scope="row"><button type="button" class="bu-atlas-row-toggle" data-compare="${protocol.id}" aria-pressed="${state.selected.includes(protocol.id)}" title="Add to side-by-side comparison">${escapeHtml(protocol.name)}</button></th>` +
+          state.columns
+            .map((id) => {
+              const evidence = protocol.attributes[id]
+              return `<td data-cell="${id}" data-label="${escapeHtml(label(id))}">${evidenceCell(evidence, state.mode === 'detailed')}</td>`
+            })
+            .join('')
+      }
+      applyFilters()
+      wireCompareButtons()
+    }
+
+    function label(id: string): string {
+      return data.attributes.find((a) => a.id === id)?.label ?? id
+    }
+
+    function applyFilters() {
+      if (!matrix) return
+      const needle = state.search.trim().toLowerCase()
+      for (const row of [...matrix.tBodies[0].rows]) {
+        const protocol = data.protocols.find((p) => p.id === row.dataset.row)
+        if (!protocol) continue
+        const matchesSearch =
+          !needle ||
+          protocol.name.toLowerCase().includes(needle) ||
+          state.columns.some((id) => protocol.attributes[id]?.value.toLowerCase().includes(needle))
+        const matchesStatus =
+          !state.status ||
+          state.columns.some((id) => protocol.attributes[id]?.status === state.status)
+        row.hidden = !(matchesSearch && matchesStatus)
+      }
+      const note = root.querySelector<HTMLElement>('[data-compare-note]')
+      if (note) note.hidden = state.selected.length < 2
+      if (note && state.selected.length >= 2) {
+        note.textContent = `Comparing ${state.selected.length} protocols side by side (maximum 4).`
+      }
+    }
+
+    function wireCompareButtons() {
+      for (const button of root.querySelectorAll<HTMLButtonElement>('[data-compare]')) {
+        button.onclick = () => {
+          const id = button.dataset.compare!
+          if (state.selected.includes(id)) {
+            state.selected = state.selected.filter((entry) => entry !== id)
+          } else if (state.selected.length < 4) {
+            state.selected.push(id)
+          }
+          writeUrl()
+          renderMatrix()
+        }
+      }
+    }
+
+    function renderView() {
+      for (const tab of tabs) tab.setAttribute('aria-pressed', String(tab.dataset.view === state.view))
+      for (const [name, panel] of panels) panel.hidden = name !== state.view
+    }
+
+    function exportData(kind: 'csv' | 'json') {
+      const rows = data.protocols.filter((p) => !state.selected.length || state.selected.includes(p.id))
+      const columns = state.columns
+      let payload: string
+      let mime: string
+      if (kind === 'json') {
+        payload = JSON.stringify(
+          {
+            atlasVersion: data.atlasVersion,
+            lastVerified: data.lastVerified,
+            exported: rows.map((protocol) => ({
+              id: protocol.id,
+              name: protocol.name,
+              cells: Object.fromEntries(columns.map((id) => [id, protocol.attributes[id]])),
+            })),
+          },
+          null,
+          2,
+        )
+        mime = 'application/json'
+      } else {
+        const escape = (value: string) => `"${value.replaceAll('"', '""')}"`
+        const lines = [['Protocol', ...columns.map(label)].map(escape).join(',')]
+        for (const protocol of rows) {
+          lines.push(
+            [protocol.name, ...columns.map((id) => {
+              const evidence = protocol.attributes[id]
+              return `${evidence.value} [${evidence.status}]`
+            })].map(escape).join(','),
+          )
+        }
+        payload = lines.join('\n')
+        mime = 'text/csv'
+      }
+      const blob = new Blob([payload], { type: `${mime};charset=utf-8` })
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = `protocol-atlas.${kind}`
+      anchor.click()
+      URL.revokeObjectURL(url)
+    }
+
+    function escapeHtml(value: string): string {
+      return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
+    }
+
+    // Decision explorer: transparent matching against the dataset.
+    function valueAnswersSupport(answer: string, evidence: Evidence): boolean {
+      const positive = /yes|total|strong|required|an atomicals indexer is required|counterparty node|required to|alone|moves with|contract|wasm/i
+      const negative = /^(no|none|weak|unknown|not established)/i
+      if (answer === 'yes') {
+        return positive.test(evidence.value) && !negative.test(evidence.value)
+      }
+      return negative.test(evidence.value) || !positive.test(evidence.value)
+    }
+
+    function runDecision(answers: Record<string, string>) {
+      if (!decisionResults) return
+      const asked = Object.entries(answers)
+      if (!asked.length) {
+        decisionResults.innerHTML = '<p>Answer at least one question to see the comparison.</p>'
+        return
+      }
+      const cards = data.protocols.map((protocol) => {
+        const met: string[] = []
+        const missed: string[] = []
+        for (const [questionId, answer] of asked) {
+          const question = DECISION_QUESTIONS.find((entry) => entry.id === questionId)!
+          const evidence = protocol.attributes[question.attribute]
+          const line = `${question.question} <strong>${answer}</strong> &rarr; ${escapeHtml(evidence.value)} <em>(${evidence.status})</em>`
+          if (evidence.status === 'unknown' || evidence.status === 'conflicting') {
+            missed.push(`${line} &mdash; evidence unknown, not counted as a match`)
+          } else if (valueAnswersSupport(answer, evidence)) {
+            met.push(line)
+          } else {
+            missed.push(line)
+          }
+        }
+        return { protocol, met, missed }
+      })
+      cards.sort((a, b) => b.met.length - a.met.length || a.missed.length - b.missed.length)
+      decisionResults.innerHTML = cards
+        .map(
+          ({ protocol, met, missed }) => `
+          <details class="bu-decision-card">
+            <summary>${escapeHtml(protocol.name)} &mdash; ${met.length} of ${asked.length} requirements line up</summary>
+            <p>${escapeHtml(protocol.summary)}</p>
+            <h4>Matched</h4>
+            <ul>${met.length ? met.map((line) => `<li>${line}</li>`).join('') : '<li>None of the answered requirements matched.</li>'}</ul>
+            <h4>Not matched or unproven</h4>
+            <ul>${missed.length ? missed.map((line) => `<li>${line}</li>`).join('') : '<li>None.</li>'}</ul>
+            <p><em>This is a transparent comparison, not a recommendation.</em></p>
+          </details>`,
+        )
+        .join('')
+    }
+
+    const DECISION_QUESTIONS: { id: string; question: string; attribute: string }[] = [
+      { id: 'fungible', question: 'Do you need fungible units?', attribute: 'fungibleSupport' },
+      { id: 'nft', question: 'Do you need non-fungible objects?', attribute: 'nonFungibleSupport' },
+      { id: 'satbound', question: 'Must the asset stay tied to a specific satoshi?', attribute: 'utxoCoupling' },
+      { id: 'mutable', question: 'Is mutable object state required?', attribute: 'mutability' },
+      { id: 'clientval', question: 'Is client-side validation required?', attribute: 'validationAuthority' },
+      { id: 'noindexer', question: 'Is avoiding a protocol indexer acceptable?', attribute: 'indexerRequirement' },
+      { id: 'namespace', question: 'Is namespace ownership required?', attribute: 'naming' },
+      { id: 'program', question: 'Is programmable execution required?', attribute: 'programmability' },
+    ]
+
+    readUrl()
+    if (search) {
+      search.value = state.search
+      search.addEventListener('input', () => {
+        state.search = search.value
+        applyFilters()
+        writeUrl()
+      })
+    }
+    if (statusFilter) {
+      statusFilter.value = state.status
+      statusFilter.addEventListener('change', () => {
+        state.status = statusFilter.value
+        applyFilters()
+        writeUrl()
+      })
+    }
+    if (modeSelect) {
+      modeSelect.value = state.mode
+      modeSelect.addEventListener('change', () => {
+        state.mode = modeSelect.value
+        writeUrl()
+        renderMatrix()
+      })
+    }
+    if (columnList) {
+      columnList.addEventListener('change', () => {
+        const checked = [...columnList.querySelectorAll<HTMLInputElement>('input[data-column]:checked')]
+        state.columns = checked.map((input) => input.dataset.column!).slice(0, 8)
+        writeUrl()
+        renderMatrix()
+      })
+    }
+    for (const tab of tabs) {
+      tab.addEventListener('click', () => {
+        state.view = tab.dataset.view!
+        writeUrl()
+        renderView()
+      })
+    }
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-export]')) {
+      button.addEventListener('click', () => exportData(button.dataset.export as 'csv' | 'json'))
+    }
+    decisionForm?.addEventListener('submit', (event) => {
+      event.preventDefault()
+      const answers: Record<string, string> = {}
+      for (const question of DECISION_QUESTIONS) {
+        const checked = decisionForm.querySelector<HTMLInputElement>(`input[name="${question.id}"]:checked`)
+        if (checked) answers[question.id] = checked.value
+      }
+      state.answers = answers
+      runDecision(answers)
+    })
+    decisionForm?.addEventListener('reset', () => {
+      if (decisionResults) decisionResults.innerHTML = ''
+    })
+
+    renderView()
+    renderMatrix()
+  }
+</script>
+
+<style>
+  .bu-atlas-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-3);
+    align-items: center;
+    justify-content: space-between;
+    margin-block: var(--bu-space-4);
+  }
+
+  .bu-atlas-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-2);
+  }
+
+  .bu-atlas-tab {
+    min-height: var(--bu-touch);
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: 999px;
+    background: var(--bu-surface);
+    color: var(--bu-ink-soft);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .bu-atlas-tab[aria-pressed='true'] {
+    border-color: var(--bu-accent);
+    background: var(--bu-accent-quiet);
+    color: var(--bu-accent-strong);
+  }
+
+  .bu-atlas-actions {
+    display: flex;
+    gap: var(--bu-space-2);
+  }
+
+  .bu-atlas-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-3);
+    margin-block: var(--bu-space-3);
+  }
+
+  .bu-atlas-search,
+  .bu-atlas-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .bu-atlas-search input,
+  .bu-atlas-select select {
+    min-height: var(--bu-touch);
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface);
+    color: var(--bu-ink);
+    font: inherit;
+  }
+
+  .bu-atlas-columns {
+    margin-block: var(--bu-space-3);
+  }
+
+  .bu-atlas-column-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-2);
+    padding-block: var(--bu-space-2);
+  }
+
+  .bu-atlas-column-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.4rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--bu-line);
+    border-radius: 999px;
+    background: var(--bu-surface-sunken);
+    font-size: var(--bu-step--1);
+  }
+
+  .bu-atlas-compare-note {
+    font-weight: 620;
+    color: var(--bu-accent-strong);
+  }
+
+  [data-cell] .bu-chip {
+    display: inline-flex;
+    margin-inline-start: 0.4rem;
+  }
+
+  .bu-atlas-meta {
+    display: block;
+    color: var(--bu-ink-muted);
+    font-size: 0.78rem;
+    margin-block-start: 0.25rem;
+  }
+
+  .bu-atlas-row-toggle {
+    border: 0;
+    background: none;
+    color: var(--bu-ink);
+    font: inherit;
+    font-weight: 640;
+    text-align: start;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-decoration-color: var(--bu-line-strong);
+    text-underline-offset: 0.2em;
+  }
+
+  .bu-atlas-row-toggle[aria-pressed='true'] {
+    color: var(--bu-accent-strong);
+    text-decoration-color: var(--bu-accent);
+  }
+
+  .bu-decision-question {
+    margin-block: var(--bu-space-3);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--bu-space-2);
+  }
+
+  .bu-decision-lead {
+    flex-basis: 100%;
+    padding: 0;
+    margin: 0 0 0.3rem;
+    color: var(--bu-ink);
+  }
+
+  .bu-decision-question label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.4rem;
+  }
+
+  .bu-decision-results {
+    margin-block: var(--bu-space-4);
+  }
+
+  .bu-decision-card {
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface);
+    padding: var(--bu-space-3) var(--bu-space-4);
+    margin-block: var(--bu-space-2);
+  }
+
+  .bu-decision-card summary {
+    font-weight: 640;
+    cursor: pointer;
+  }
+
+  .bu-decision-card h4 {
+    margin: var(--bu-space-2) 0 var(--bu-space-1);
+    color: var(--bu-ink);
+  }
+
+  /* Mobile card presentation for the matrix. */
+  @media (max-width: 48rem) {
+    [data-matrix] thead {
+      display: none;
+    }
+
+    [data-matrix] tbody tr {
+      display: block;
+      border: 1px solid var(--bu-line);
+      border-radius: var(--bu-radius-m);
+      background: var(--bu-surface);
+      margin-block: var(--bu-space-2);
+      padding: var(--bu-space-2);
+    }
+
+    [data-matrix] tbody th,
+    [data-matrix] tbody td {
+      display: block;
+      border: 0;
+      padding: 0.3rem 0.2rem;
+    }
+
+    [data-matrix] tbody td::before {
+      content: attr(data-label);
+      display: block;
+      color: var(--bu-ink-muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+  }
+</style>
