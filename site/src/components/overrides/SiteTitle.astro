@@ -8,6 +8,34 @@ import CommandPalette from '../CommandPalette.astro'
 
 <style>
   /*
+   * The custom header has two rows (--bu-header-main-h = 3.5rem and --bu-header-strip-h = 2.5rem),
+   * setting --sl-nav-height to 6rem. Starlight calculates the logo image height as:
+   *   calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y)) = 4.5rem (72px)
+   * which is larger than the 3.5rem main bar and overflows into the context strip.
+   * Constrain the mark to 2rem (32px, matching its viewBox).
+   */
+  :global(.site-title :is(img, svg)) {
+    height: 2rem;
+    width: 2rem;
+    max-height: 2rem;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  /*
+   * Keep the palette component in the DOM so its keyboard shortcut (Ctrl+K) and dialog
+   * remain functional, but hide the trigger button completely. It duplicates the
+   * header search control on the right and causes layout collisions with the site title.
+   */
+  :global(bu-command-palette) {
+    display: contents;
+  }
+
+  :global(.bu-palette-trigger) {
+    display: none !important;
+  }
+
+  /*
    * Starlight clips the site title with `overflow: hidden; text-overflow: clip`.
    * At 375px the name needs about 180px and gets about 165px, so it rendered as
    * "Atomicals and ARC-2". A silently truncated name is not a cosmetic problem:
@@ -21,16 +49,6 @@ import CommandPalette from '../CommandPalette.astro'
   @media (max-width: 30rem) {
     :global(.site-title) {
       font-size: clamp(0.82rem, 3.6vw, var(--sl-text-h4));
-    }
-
-    /*
-     * The palette trigger sits inside the title wrapper and takes 30px of it. At
-     * 320px that is the difference between the whole name fitting and not. It
-     * duplicates the search control already in the header, and its keyboard
-     * shortcut still works, so hiding it here costs a reader nothing.
-     */
-    :global(bu-command-palette) {
-      display: none;
     }
   }
 </style>
