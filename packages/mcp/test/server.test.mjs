@@ -31,7 +31,7 @@ test('every declared tool is read only and has an input schema', () => {
       )
     }
   }
-  assert.equal(TOOLS.length, 10)
+  assert.equal(TOOLS.length, 16)
 })
 
 test('initialize advertises the tool capability and the server identity', () => {

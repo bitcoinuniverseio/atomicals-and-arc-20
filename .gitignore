@@ -8,3 +8,6 @@ lab/.env
 
 # Language build artefacts
 clients/rust/target
+
+# Generated skill archives
+dist-skills
