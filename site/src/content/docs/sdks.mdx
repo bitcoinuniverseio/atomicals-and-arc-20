@@ -1,0 +1,73 @@
+---
+title: SDKs
+description: Generated read-only clients for TypeScript, Python, Go, and Rust, all derived from the same OpenAPI contracts.
+sidebar:
+  order: 4
+provenance:
+  pageId: sdks
+  area: reference
+  audience: [developer, integrator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet, regtest]
+  sources:
+    - id: universe-index-atomicals
+    - id: universe-index-atomicals-nfts-and-realms
+  verified: '2026-09-02'
+  tags: [sdks, clients, python, go, rust]
+  limitations:
+    - Every client is read-only: explicit base URL, typed errors, timeouts, and cancellation in the language's idiom. No client signs, broadcasts, or stores keys.
+    - The Go and Python toolchains are exercised in CI; the Rust client is compiled and checked locally with cargo.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+
+<Aside type="note" title="One contract, four languages">
+The TypeScript client under packages/client and the Python, Go, and Rust clients under clients/
+all derive from the same OpenAPI documents the site validates. A contract change regenerates
+every client, and the coverage test fails CI if any operation goes missing.
+</Aside>
+
+| Language | Location | Transport | Notes |
+| --- | --- | --- | --- |
+| TypeScript | `packages/client` | fetch | Generated types for every operation and response |
+| Python | `clients/python` | urllib, no runtime dependencies | Type hints, Ruff and mypy clean in CI |
+| Go | `clients/go` | net/http with contexts | `gofmt` and `go vet` clean in CI |
+| Rust | `clients/rust` | reqwest with rustls | `cargo check` and Clippy clean in CI |
+
+Each client requires an explicit base URL: none of them hides a default production origin.
+Retries are absent by default; a caller who wants retries for safe idempotent reads adds them
+explicitly.
+
+## Coverage
+
+The generated [coverage manifest](../../site/src/generated/sdk-coverage.json) lists every
+read-only operation each client exposes. Regenerating is one command and must leave the working
+tree clean:
+
+```
+npm run sdk:generate
+```
+
+## Quick start (Python)
+
+```python
+from atomicals_client.client import Client
+
+client = Client("http://127.0.0.1:3043")
+status = client.arc20_get_status()
+print(status["coverage"], status["chainTip"])
+```
+
+## Quick start (Rust)
+
+```rust
+let client = atomicals_client::Client::new("http://127.0.0.1:3043")?;
+let status = client.arc20_get_status().await?;
+println!("{} at {}", status["coverage"], status["chainTip"]);
+```
+
+## Release artifacts
+
+Versioned archives and checksums for every SDK ship with each release so the packages stay
+installable without any external registry credential. See [releases](/releases/).

@@ -1,0 +1,94 @@
+---
+/**
+ * Workflow catalog: human pages generated from the Arazzo 1.1.0 document.
+ * Every step shows its contract operation, curl, TypeScript, and JavaScript
+ * forms, all derived from one source.
+ */
+import generated from '../../../site/src/generated/workflows.json'
+
+const data = generated as {
+  workflows: {
+    workflowId: string
+    summary: string
+    description: string
+    steps: {
+      stepId: string
+      operationId: string
+      method: string
+      path: string
+      origin: string
+      curl: string
+      typescript: string
+      javascript: string
+    }[]
+  }[]
+}
+---
+
+<div class="bu-workflows">
+  {data.workflows.map((workflow, index) => (
+    <section class="bu-workflow" id={workflow.workflowId}>
+      <h2>
+        {index + 1}. {workflow.summary}
+      </h2>
+      {workflow.description && <p>{workflow.description}</p>}
+      {workflow.steps.map((step) => (
+        <details class="bu-workflow-step" open={index === 0 ? true : undefined}>
+          <summary>
+            <code>{step.stepId}</code> - <span class="bu-chip" data-tone={step.method === 'GET' ? 'ok' : 'warn'}>{step.method}</span>
+            <span class="bu-mono">{step.path}</span>
+          </summary>
+          <p class="bu-tool-note">
+            Operation <code>{step.operationId}</code>. Parameters come from the workflow inputs; see
+            the Arazzo document in contracts/workflows for the exact mappings.
+          </p>
+          <p><strong>curl</strong></p>
+          <pre class="bu-workflow-code">{step.curl}</pre>
+          <p><strong>TypeScript</strong></p>
+          <pre class="bu-workflow-code">{step.typescript}</pre>
+          <p><strong>JavaScript</strong></p>
+          <pre class="bu-workflow-code">{step.javascript}</pre>
+        </details>
+      ))}
+    </section>
+  ))}
+</div>
+
+<style>
+  .bu-workflow {
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface);
+    padding: var(--bu-space-3) var(--bu-space-4);
+    margin-block: var(--bu-space-3);
+  }
+
+  .bu-workflow h2 {
+    margin-block: 0 var(--bu-space-2);
+    font-size: var(--bu-step-2);
+  }
+
+  .bu-workflow-step {
+    border-top: 1px solid var(--bu-line);
+    padding-block: var(--bu-space-2);
+  }
+
+  .bu-workflow-step summary {
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.4rem;
+  }
+
+  .bu-workflow-code {
+    overflow-x: auto;
+    padding: var(--bu-space-2) var(--bu-space-3);
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface-sunken);
+    font-family: var(--bu-font-mono);
+    font-size: 0.78rem;
+  }
+</style>

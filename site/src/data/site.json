@@ -834,6 +834,26 @@
       ]
     },
     {
+      "label": "Workflows and SDKs",
+      "translations": {
+        "pt": "Workflows e SDKs",
+        "es": "Flujos y SDKs",
+        "fr": "Workflows et SDKs",
+        "ja": "ワークフローと SDK",
+        "ru": "Workflows и SDK",
+        "zh-CN": "工作流与 SDK",
+        "zh-TW": "工作流程與 SDK"
+      },
+      "items": [
+        {
+          "slug": "workflows"
+        },
+        {
+          "slug": "sdks"
+        }
+      ]
+    },
+    {
       "label": "Ecosystem",
       "translations": {
         "pt": "Ecossistema",
