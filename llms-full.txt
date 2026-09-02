@@ -1472,6 +1472,15 @@ Render the state, never a misleading zero:
 - "This view does not cover that asset type" for out of scope.
 - "No assets found" only when ready and genuinely empty.
 
+## Production resilience
+
+The production read service runs on the dedicated Universe indexer host and binds only to its
+local interface. A supervised private compatibility tunnel keeps existing application routes
+available during infrastructure changes, while automatic restart and health checks restore both
+the indexer and its private route without manual intervention. Endpoint consumers still apply
+the readiness and freshness rules above: resilience of the service does not exempt a caller
+from declaring coverage and lag.
+
 ## Source
 
 [Unavailable index against empty balance](/guides/unavailable-indexer-vs-empty-balance/).
