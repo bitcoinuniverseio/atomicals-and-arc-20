@@ -6,13 +6,19 @@
  * the page id, title, and href so every answer cites its source page. No
  * model, no network: retrieval is deterministic token overlap in the browser.
  */
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(here, '..')
 const rawDir = resolve(ROOT, 'site/dist/raw')
+if (!existsSync(resolve(ROOT, 'site/dist/manifest.json'))) {
+  // The index derives from the built output. On a fresh checkout before the
+  // first build, keep the committed index and say so instead of failing.
+  process.stdout.write('answer index: built output not present yet; keeping the committed index\n')
+  process.exit(0)
+}
 const manifest = JSON.parse(readFileSync(resolve(ROOT, 'site/dist/manifest.json'), 'utf8'))
 
 const ALIASES = {
