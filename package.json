@@ -15,7 +15,8 @@
     "packages/mcp",
     "packages/protocol-core",
     "packages/protocol-lab",
-    "packages/utxo-planner"
+    "packages/utxo-planner",
+    "packages/conformance"
   ],
   "scripts": {
     "generate": "node scripts/generate-all.mjs",
@@ -29,7 +30,8 @@
     "lab:test": "node scripts/lab.mjs test",
     "lab:reset": "node scripts/lab.mjs reset",
     "lab:down": "node scripts/lab.mjs down",
-    "lab:logs": "node scripts/lab.mjs logs"
+    "lab:logs": "node scripts/lab.mjs logs",
+    "lab:proxy": "node lab/proxy/conformance-proxy.mjs"
   },
   "license": "MIT",
   "devDependencies": {

@@ -827,6 +827,9 @@
         },
         {
           "slug": "tools/utxo-safety"
+        },
+        {
+          "slug": "tools/api-conformance"
         }
       ]
     },
