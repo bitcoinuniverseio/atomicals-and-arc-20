@@ -115,7 +115,7 @@ if (failures.length > 0) {
 
 mkdirSync(resolve(ROOT, 'site/src/generated'), { recursive: true })
 writeFileSync(
-  resolve(ROOT, 'site/src/generated/workflows.json'),
+  resolve(ROOT, 'contracts/generated/workflows.json'),
   `${JSON.stringify({ generatedBy: 'scripts/generate-workflows.mjs', workflows: generated }, null, 2)}\n`,
 )
 

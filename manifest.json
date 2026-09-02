@@ -28,7 +28,7 @@
     "guides/transfer-arc20",
     "guides/avoid-burns"
   ],
-  "pageCount": 220,
+  "pageCount": 222,
   "pages": [
     {
       "pageId": "home",
@@ -5450,6 +5450,39 @@
       "raw": "/atomicals-and-arc-20/raw/ru/start/what-is-arc-20.md"
     },
     {
+      "pageId": "sdks",
+      "routeId": "sdks",
+      "locale": "en",
+      "title": "SDKs",
+      "description": "Generated read-only clients for TypeScript, Python, Go, and Rust, all derived from the same OpenAPI contracts.",
+      "area": "reference",
+      "audience": [
+        "developer",
+        "integrator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet",
+        "regtest"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "universe-index-atomicals-nfts-and-realms"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [
+        "Every client is read-only with an explicit base URL, typed errors, timeouts, and cancellation in the language idiom. No client signs, broadcasts, or stores keys.",
+        "The Go and Python toolchains are exercised in CI; the Rust client is compiled and checked locally with cargo."
+      ],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "730c97943f2eedf2d1f18a9cede8a38eca1d1502c2ba50dc8b4f4344bdcb612d",
+      "href": "/atomicals-and-arc-20/sdks/",
+      "raw": "/atomicals-and-arc-20/raw/sdks.md"
+    },
+    {
       "pageId": "start/choose-your-path",
       "routeId": "start/choose-your-path",
       "locale": "en",
@@ -6015,6 +6048,39 @@
       "contentHash": "d75560a8ce5ca3dc8e0809f528a2fce690284df0130eff3895389878ff2488f2",
       "href": "/atomicals-and-arc-20/tools/utxo-safety/",
       "raw": "/atomicals-and-arc-20/raw/tools/utxo-safety.md"
+    },
+    {
+      "pageId": "workflows",
+      "routeId": "workflows",
+      "locale": "en",
+      "title": "Workflows",
+      "description": "Machine-readable Arazzo workflows with generated curl, TypeScript, and JavaScript examples for every step.",
+      "area": "reference",
+      "audience": [
+        "developer",
+        "integrator"
+      ],
+      "applicability": "universe-implementation",
+      "authority": "universe-implementation",
+      "networks": [
+        "mainnet",
+        "regtest"
+      ],
+      "sources": [
+        "universe-index-atomicals",
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [
+        "Every workflow here is read-only or explicitly local. No hosted mainnet signing or broadcast workflow exists.",
+        "Steps that execute against the Regtest Lab require the lab to be running locally."
+      ],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "d7f62b590b5670fa15999588030e37d87bd07577175ba0ca8b808bfbf2069000",
+      "href": "/atomicals-and-arc-20/workflows/",
+      "raw": "/atomicals-and-arc-20/raw/workflows.md"
     },
     {
       "pageId": "guides/index",

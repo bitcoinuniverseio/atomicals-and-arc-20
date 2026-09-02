@@ -1,0 +1,202 @@
+---
+/**
+ * Ask Atomicals: local, extractive, evidence-first question answering.
+ *
+ * Retrieves sentence-level passages from the build-time answer index with
+ * deterministic token scoring, shows a concise extractive answer, cites every
+ * passage with page and source-set context, and says plainly when no
+ * supported answer exists. No model, no external request, no stored history.
+ */
+---
+
+<section class="bu-tool bu-ask" data-ask>
+  <noscript>
+    <p class="bu-tool-note">
+      Ask Atomicals needs JavaScript for retrieval. Everything it uses is this page's offline
+      index; nothing is sent anywhere.
+    </p>
+  </noscript>
+  <p class="bu-tool-note">
+    This is deterministic retrieval, not generative reasoning. Answers are assembled from
+    sentences in this documentation, each citing its page and pinned source set. When the evidence
+    is insufficient the interface says so instead of inventing a response.
+  </p>
+
+  <form class="bu-ask-form" data-form>
+    <label>
+      <span class="bu-context-label">Ask a protocol question</span>
+      <input type="search" data-question placeholder="What happens if I spend a coloured satoshi as a fee?" />
+    </label>
+    <button type="submit" class="bu-btn" data-variant="primary">Find evidence</button>
+  </form>
+
+  <div class="bu-ask-results" data-results aria-live="polite" hidden>
+    <h2>Extractive answer</h2>
+    <blockquote class="bu-ask-answer" data-answer></blockquote>
+
+    <h2>Supporting passages</h2>
+    <ol class="bu-ask-passages" data-passages></ol>
+
+    <div class="bu-ask-actions">
+      <button type="button" class="bu-btn" data-continue>Continue in your AI client</button>
+      <span class="bu-tool-note" data-copied hidden>Question and cited context are on your clipboard.</span>
+    </div>
+  </div>
+
+  <p class="bu-ask-empty" data-empty role="status" hidden>
+    No supported answer was found in the pinned documentation for this question. This interface
+    refuses to invent one. Try narrower wording, or browse the
+    <a href="/start/glossary/">glossary</a> and the <a href="/protocol/overview/">protocol pages</a>.
+  </p>
+</section>
+
+<script>
+  import answerIndex from '../../generated/answer-index.json'
+
+  type Entry = { p: string; t: string; h: string; s: string }
+  type Index = { aliases: Record<string, string>; entries: Entry[] }
+
+  const root = document.querySelector<HTMLElement>('[data-ask]')
+  if (root) initAsk(root)
+
+  function initAsk(root: HTMLElement) {
+    const data = answerIndex as Index
+    const entries = data.entries
+    const form = root.querySelector<HTMLFormElement>('[data-form]')!
+    const input = root.querySelector<HTMLInputElement>('[data-question]')!
+    const results = root.querySelector<HTMLElement>('[data-results]')!
+    const answerView = root.querySelector<HTMLElement>('[data-answer]')!
+    const passagesView = root.querySelector<HTMLElement>('[data-passages]')!
+    const emptyView = root.querySelector<HTMLElement>('[data-empty]')!
+    const copied = root.querySelector<HTMLElement>('[data-copied]')!
+
+    let lastContext: unknown
+
+    function tokenize(text: string): string[] {
+      const expanded = Object.entries(data.aliases ?? {}).reduce(
+        (value, [alias, replacement]) => value.replace(new RegExp(alias, 'gi'), replacement),
+        text.toLowerCase(),
+      )
+      return expanded.split(/[^a-z0-9-]+/).filter((token) => token.length > 2)
+    }
+
+    const STOP = new Set(['the', 'and', 'for', 'with', 'what', 'when', 'how', 'does', 'this', 'that', 'are', 'you', 'can', 'will', 'from', 'into', 'your'])
+    function score(entry: Entry, tokens: string[]): number {
+      const sentence = entry.s.toLowerCase()
+      let score = 0
+      const seen = new Set<string>()
+      for (const token of tokens) {
+        if (STOP.has(token) || seen.has(token)) continue
+        seen.add(token)
+        if (sentence.includes(token)) score += 1
+      }
+      // Prefer sentences carrying rule language.
+      if (/\b(must|never|burn|only|require|assign|output|satoshi)\b/.test(sentence)) score += 0.5
+      return score / Math.sqrt(entry.s.length)
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+      const tokens = tokenize(input.value)
+      if (!tokens.length) {
+        results.hidden = true
+        emptyView.hidden = false
+        return
+      }
+      const ranked = entries
+        .map((entry) => ({ entry, score: score(entry, tokens) }))
+        .filter((candidate) => candidate.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+
+      if (ranked.length < 2 || ranked[0].score < 0.06) {
+        results.hidden = true
+        emptyView.hidden = false
+        lastContext = null
+        return
+      }
+      emptyView.hidden = true
+      results.hidden = false
+      answerView.textContent = ranked[0].entry.s
+      passagesView.innerHTML = ranked
+        .map(
+          ({ entry }) => `<li>
+            <p>${entry.s}</p>
+            <p class="bu-tool-note"><a href="${entry.h}">${entry.t}</a> - page <code>${entry.p}</code>, source set verified-2026-08</p>
+          </li>`,
+        )
+        .join('')
+      lastContext = {
+        question: input.value,
+        note: 'Extractive retrieval from the pinned documentation. Passages are quoted verbatim.',
+        passages: ranked.map(({ entry, score: value }) => ({ page: entry.p, title: entry.t, href: entry.h, sentence: entry.s, score: Number(value.toFixed(3)) })),
+      }
+    })
+
+    root.querySelector<HTMLButtonElement>('[data-continue]')?.addEventListener('click', () => {
+      if (!lastContext) return
+      navigator.clipboard?.writeText(JSON.stringify(lastContext, null, 2))
+      copied.hidden = false
+    })
+  }
+</script>
+
+<style>
+  .bu-ask-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--bu-space-2);
+    margin-block: var(--bu-space-3);
+  }
+
+  .bu-ask-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 16rem;
+  }
+
+  .bu-ask-form input {
+    min-height: var(--bu-touch);
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface);
+    color: var(--bu-ink);
+    font: inherit;
+  }
+
+  .bu-ask-answer {
+    margin: 0 0 var(--bu-space-3);
+    padding: var(--bu-space-3) var(--bu-space-4);
+    border-inline-start: 3px solid var(--bu-accent);
+    background: var(--bu-accent-quiet);
+    color: var(--bu-ink);
+    font-size: var(--bu-step-1);
+  }
+
+  .bu-ask-passages {
+    padding-inline-start: 1.2rem;
+  }
+
+  .bu-ask-passages li {
+    margin-block: var(--bu-space-2);
+  }
+
+  .bu-ask-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--bu-space-2);
+    margin-block-start: var(--bu-space-3);
+  }
+
+  .bu-ask-empty {
+    border: 1px solid var(--bu-warn);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-warn-quiet);
+    color: var(--bu-warn);
+    padding: var(--bu-space-3) var(--bu-space-4);
+  }
+</style>

@@ -253,6 +253,8 @@ Vectors: /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
 - [OpenAPI and downloads](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/openapi/) [universe-implementation]: Validated OpenAPI 3.1 documents, JSON Schemas, and every machine readable artefact this site publishes.
 - [JSON Schemas](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/schemas/) [universe-implementation]: The shared component library, what each definition is for, and the rules it encodes.
 - [Wallet integration](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/wallet-integration/) [universe-implementation]: Provider detection, capability discovery, PSBT encodings, signing scopes, and normalised errors.
+- [SDKs](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/sdks/) [universe-implementation]: Generated read-only clients for TypeScript, Python, Go, and Rust, all derived from the same OpenAPI contracts.
+- [Workflows](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/workflows/) [universe-implementation]: Machine-readable Arazzo workflows with generated curl, TypeScript, and JavaScript examples for every step.
 
 ### tools
 

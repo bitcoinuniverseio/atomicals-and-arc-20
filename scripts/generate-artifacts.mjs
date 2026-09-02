@@ -735,6 +735,8 @@ const CONTRACT_FILES = [
   'contracts/versions/manifest.json',
   'contracts/versions/version-manifest.schema.json',
   'contracts/versions/semantic-changes.json',
+  'contracts/generated/workflows.json',
+  'contracts/generated/sdk-coverage.json',
   'contracts/cli-inventory.json',
   'contracts/aip-registry.json',
   'contracts/aip-implementation-evidence.json',

@@ -4,23 +4,40 @@
   "description": "Read-only Model Context Protocol server over the built Atomicals and ARC-20 documentation artefacts",
   "type": "module",
   "license": "MIT",
-  "engines": { "node": ">=22" },
-  "bin": { "atomicals-docs-mcp": "./dist/server.js" },
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "atomicals-docs-mcp": "./dist/server.js",
+    "atomicals-docs-mcp-http": "./dist/http.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/server.d.ts",
       "default": "./dist/server.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "test": "npm run build && node --test test/"
   },
-  "keywords": ["mcp", "atomicals", "arc-20", "documentation"],
+  "keywords": [
+    "mcp",
+    "atomicals",
+    "arc-20",
+    "documentation"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitcoinuniverseio/atomicals-and-arc-20.git",
     "directory": "packages/mcp"
+  },
+  "dependencies": {
+    "@bitcoin-universe/protocol-core": "1.0.0",
+    "@bitcoin-universe/utxo-planner": "1.0.0"
   }
 }

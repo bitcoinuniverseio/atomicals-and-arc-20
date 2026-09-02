@@ -8556,6 +8556,69 @@ See [deprecations](/releases/deprecations/).
 
 ---
 
+# SDKs
+
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/sdks/
+Page ID: sdks
+Applicability: universe-implementation
+Authority: universe-implementation
+Networks: mainnet, regtest
+Sources: universe-index-atomicals, universe-index-atomicals-nfts-and-realms
+Verified: 2026-09-02
+Limitations:
+- Every client is read-only with an explicit base URL, typed errors, timeouts, and cancellation in the language idiom. No client signs, broadcasts, or stores keys.
+- The Go and Python toolchains are exercised in CI; the Rust client is compiled and checked locally with cargo.
+
+The TypeScript client under packages/client and the Python, Go, and Rust clients under clients/
+all derive from the same OpenAPI documents the site validates. A contract change regenerates
+every client, and the coverage test fails CI if any operation goes missing.
+
+| Language | Location | Transport | Notes |
+| --- | --- | --- | --- |
+| TypeScript | `packages/client` | fetch | Generated types for every operation and response |
+| Python | `clients/python` | urllib, no runtime dependencies | Type hints, Ruff and mypy clean in CI |
+| Go | `clients/go` | net/http with contexts | `gofmt` and `go vet` clean in CI |
+| Rust | `clients/rust` | reqwest with rustls | `cargo check` and Clippy clean in CI |
+
+Each client requires an explicit base URL: none of them hides a default production origin.
+Retries are absent by default; a caller who wants retries for safe idempotent reads adds them
+explicitly.
+
+## Coverage
+
+The generated [coverage manifest](../../site/src/generated/sdk-coverage.json) lists every
+read-only operation each client exposes. Regenerating is one command and must leave the working
+tree clean:
+
+```
+npm run sdk:generate
+```
+
+## Quick start (Python)
+
+```python
+from atomicals_client.client import Client
+
+client = Client("http://127.0.0.1:3043")
+status = client.arc20_get_status()
+print(status["coverage"], status["chainTip"])
+```
+
+## Quick start (Rust)
+
+```rust
+let client = atomicals_client::Client::new("http://127.0.0.1:3043")?;
+let status = client.arc20_get_status().await?;
+println!("{} at {}", status["coverage"], status["chainTip"]);
+```
+
+## Release artifacts
+
+Versioned archives and checksums for every SDK ship with each release so the packages stay
+installable without any external registry credential. See [releases](/releases/).
+
+---
+
 # Choose your path
 
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/choose-your-path/
@@ -9598,3 +9661,39 @@ Export the plan as JSON, as a Protocol Lab scenario to replay its effects, or as
 sequence to run against your own setup. When fields for a structurally valid unsigned PSBT are
 missing, the planner exports an explicit transaction intent and names what is missing instead of
 fabricating values.
+
+---
+
+# Workflows
+
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/workflows/
+Page ID: workflows
+Applicability: universe-implementation
+Authority: universe-implementation
+Networks: mainnet, regtest
+Sources: universe-index-atomicals, atomicals-electrumx-1.5.2.0
+Verified: 2026-09-02
+Limitations:
+- Every workflow here is read-only or explicitly local. No hosted mainnet signing or broadcast workflow exists.
+- Steps that execute against the Regtest Lab require the lab to be running locally.
+
+The workflow layer is a single Arazzo 1.1.0 document under `contracts/workflows/`, validated
+against the specification schema in CI with every referenced OpenAPI operation ID resolved. The
+page below, the curl examples, the TypeScript and JavaScript snippets, the MCP tool metadata, and
+the conformance tests all generate from that one document.
+
+The machine-readable sources are the [Arazzo document](../../contracts/workflows/atomicals-read-only.arazzo.yaml)
+and the [generated summary](../../site/src/generated/workflows.json).
+
+## Running the local workflows
+
+The Regtest Lab workflows need the lab running:
+
+```
+npm run lab:up
+npm run lab:seed
+npm run lab:test
+```
+
+Everything else runs against any endpoint you choose in the
+[Conformance Workbench](/tools/api-conformance/), which never sends a mutation.

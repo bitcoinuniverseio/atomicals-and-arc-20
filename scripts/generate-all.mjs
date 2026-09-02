@@ -19,6 +19,7 @@ const STEPS = [
   ['Standalone response validators for the Conformance Workbench', 'scripts/generate-validators.mjs'],
   ['Arazzo workflow validation and workflow artefacts', 'scripts/generate-workflows.mjs'],
   ['Multi-language SDK clients from the OpenAPI contracts', 'scripts/generate-sdks.mjs'],
+  ['Extractive answer index for Ask Atomicals', 'scripts/generate-answer-index.mjs'],
 ]
 
 for (const [label, script] of STEPS) {
