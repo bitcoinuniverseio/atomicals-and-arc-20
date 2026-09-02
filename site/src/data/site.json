@@ -821,6 +821,9 @@
         },
         {
           "slug": "protocol-atlas"
+        },
+        {
+          "slug": "tools/protocol-lab"
         }
       ]
     },

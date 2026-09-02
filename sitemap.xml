@@ -2329,6 +2329,18 @@
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/tools/protocol-comparison/"/>
   </url>
   <url>
+    <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-lab/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-lab/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/pt/tools/protocol-lab/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/tools/protocol-lab/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/fr/tools/protocol-lab/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ja/tools/protocol-lab/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/tools/protocol-lab/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/tools/protocol-lab/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/tools/protocol-lab/"/>
+  </url>
+  <url>
     <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/transaction-inspector/</loc>
     <lastmod>2026-08-31</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/transaction-inspector/"/>

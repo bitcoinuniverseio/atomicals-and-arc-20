@@ -12,7 +12,9 @@
   "workspaces": [
     "site",
     "packages/client",
-    "packages/mcp"
+    "packages/mcp",
+    "packages/protocol-core",
+    "packages/protocol-lab"
   ],
   "scripts": {
     "generate": "node scripts/generate-all.mjs",

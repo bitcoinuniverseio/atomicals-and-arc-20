@@ -28,7 +28,7 @@
     "guides/transfer-arc20",
     "guides/avoid-burns"
   ],
-  "pageCount": 217,
+  "pageCount": 218,
   "pages": [
     {
       "pageId": "home",
@@ -51,7 +51,7 @@
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "8057f0f477618cfc90e241d711a0a9e7ec64fd7c533bb2cef6e0d392203ea5b2",
+      "contentHash": "524f386eea1b942ac9eac78a0552a1a41416c8800e2f32f84cb53844f0c65c8b",
       "href": "/atomicals-and-arc-20/",
       "raw": "/atomicals-and-arc-20/raw/index.md"
     },
@@ -5876,6 +5876,43 @@
       "contentHash": "1f30431063c49b9bade0ebf8a306502c2ed213f01f08f7d366f5963b6b0354a7",
       "href": "/atomicals-and-arc-20/tools/protocol-comparison/",
       "raw": "/atomicals-and-arc-20/raw/tools/protocol-comparison.md"
+    },
+    {
+      "pageId": "tools/protocol-lab",
+      "routeId": "tools/protocol-lab",
+      "locale": "en",
+      "title": "Protocol Lab",
+      "description": "Construct and replay Atomicals workflows deterministically in the browser, with no keys, no signing, and no network.",
+      "area": "tools",
+      "audience": [
+        "everyone",
+        "developer",
+        "holder",
+        "creator"
+      ],
+      "applicability": "protocol-behavior",
+      "authority": "executed-source",
+      "networks": [
+        "regtest",
+        "testnet",
+        "signet",
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [
+        "Scenarios are deterministic models. Identifiers are synthetic and derived from the scenario seed; they are not real Bitcoin hashes.",
+        "The lab models normal ARC-20 allocation, commit and reveal, confirmations, and reorganizations. It does not simulate semantics the pinned reference does not support.",
+        "Nothing here substitutes for validating a concrete transaction against the validator revision you target."
+      ],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "e25d46ded302fd9334297cf222d31858cfedb24a583a72aaebae44415e8abffb",
+      "href": "/atomicals-and-arc-20/tools/protocol-lab/",
+      "raw": "/atomicals-and-arc-20/raw/tools/protocol-lab.md"
     },
     {
       "pageId": "tools/transaction-inspector",

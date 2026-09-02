@@ -1,0 +1,202 @@
+{
+  "traceVersion": "1.0.0",
+  "scenarioId": "confirmations-reorg",
+  "seed": "reorg-demo",
+  "network": "regtest",
+  "trace": [
+    {
+      "step": {
+        "type": "fund",
+        "label": "fund",
+        "outputs": [
+          {
+            "value": 100000,
+            "address": "bc1qholder"
+          }
+        ]
+      },
+      "txid": "sim60582f8f734bc788",
+      "inputs": [],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 100000,
+          "address": "bc1qholder",
+          "utxoId": "sim60582f8f734bc788:0"
+        }
+      ],
+      "before": null,
+      "after": null,
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "coinbase-like funding output carries no fee",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "transfer",
+        "label": "send",
+        "inputs": [
+          "fundo0"
+        ],
+        "outputs": [
+          {
+            "value": 50000,
+            "address": "bc1qreceiver"
+          },
+          {
+            "value": 49000,
+            "address": "bc1qholder"
+          }
+        ]
+      },
+      "txid": "sim734bc78883463c5d",
+      "fee": 1000,
+      "inputs": [
+        {
+          "utxoId": "sim60582f8f734bc788:0",
+          "value": 100000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 50000,
+          "address": "bc1qreceiver"
+        },
+        {
+          "value": 49000,
+          "address": "bc1qholder"
+        }
+      ],
+      "virtualSize": 210,
+      "allocation": {},
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "fee 1000 sats",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "confirm",
+        "blocks": 1
+      },
+      "blockHeight": 1,
+      "confirmed": [
+        "sim60582f8f734bc788",
+        "sim734bc78883463c5d"
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/confirmation",
+            "page": "/protocol/core/confirmation-and-reorgs/",
+            "path": "networkActivations"
+          },
+          "outcome": "1 block(s) mined; mempool confirmed",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "step": {
+        "type": "reorg",
+        "depth": 1
+      },
+      "blockHeight": 0,
+      "unsettled": [
+        "sim734bc78883463c5d"
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/reorg",
+            "page": "/protocol/core/confirmation-and-reorgs/",
+            "path": "networkActivations"
+          },
+          "outcome": "1 block(s) reorganized away; their transactions return to the mempool",
+          "ok": true
+        }
+      ],
+      "warnings": [
+        "A reorganization unset 1 transaction(s). Anything that depended on their confirmation is no longer settled."
+      ],
+      "errors": []
+    },
+    {
+      "step": {
+        "type": "confirm",
+        "blocks": 2
+      },
+      "blockHeight": 2,
+      "confirmed": [
+        "sim734bc78883463c5d"
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/confirmation",
+            "page": "/protocol/core/confirmation-and-reorgs/",
+            "path": "networkActivations"
+          },
+          "outcome": "2 block(s) mined; mempool confirmed",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "finalState": {
+    "blockHeight": 2,
+    "mempoolSize": 0,
+    "utxos": {
+      "sim734bc78883463c5d:0": {
+        "value": 50000,
+        "address": "bc1qreceiver",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {}
+      },
+      "sim734bc78883463c5d:1": {
+        "value": 49000,
+        "address": "bc1qholder",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {}
+      }
+    },
+    "atomicals": {}
+  },
+  "balances": {
+    "bc1qreceiver": {
+      "sats": 50000,
+      "atomicals": {}
+    },
+    "bc1qholder": {
+      "sats": 49000,
+      "atomicals": {}
+    }
+  }
+}
