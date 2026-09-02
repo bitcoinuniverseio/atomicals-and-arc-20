@@ -258,3 +258,42 @@ jobs:
       - name: Tear everything down, including volumes
         if: always()
         run: npm run lab:down
+
+  # ---------------------------------------------------------------------------
+  # Gate 6. AVM pinned builds and parity.
+  #
+  # Builds the pinned beta interpreter natively and to WebAssembly inside
+  # digest-pinned containers, executes the golden fixtures on both, and
+  # requires byte-identical outcomes. Runs when the runtime package or its
+  # build inputs change.
+  # ---------------------------------------------------------------------------
+  avm:
+    name: AVM native and WASM parity
+    if: >-
+      !cancelled() &&
+      (github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: [self-hosted, universe-ci, linux-ultra, docker]
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify the vendored pinned source checksum
+        run: node --test packages/avm-runtime/test/host.test.mjs
+
+      - name: Build the native interpreter in the pinned container
+        run: docker compose -f packages/avm-runtime/docker/compose.yaml run --rm native-build
+
+      - name: Build the WASM module in the pinned container
+        run: docker compose -f packages/avm-runtime/docker/compose.yaml run --rm wasm-build
+
+      - name: Execute golden fixtures on both backends and require parity
+        run: node --test packages/avm-runtime/test/host.test.mjs
+
+      - name: Publish the WASM artifact for the workbench
+        uses: actions/upload-artifact@v4
+        with:
+          name: avm-interpreter-wasm
+          path: packages/avm-runtime/out/avm-interpreter.mjs

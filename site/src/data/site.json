@@ -830,6 +830,9 @@
         },
         {
           "slug": "tools/api-conformance"
+        },
+        {
+          "slug": "tools/avm-workbench"
         }
       ]
     },
