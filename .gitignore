@@ -5,3 +5,6 @@ site/.astro/
 
 # Ephemeral regtest lab credentials
 lab/.env
+
+# Language build artefacts
+clients/rust/target

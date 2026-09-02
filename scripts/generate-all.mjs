@@ -17,6 +17,8 @@ const STEPS = [
   ['AIP registry from the proposals and the evidence file', 'scripts/generate-aip-registry.mjs'],
   ['TypeScript client from the OpenAPI documents', 'scripts/generate-client.mjs'],
   ['Standalone response validators for the Conformance Workbench', 'scripts/generate-validators.mjs'],
+  ['Arazzo workflow validation and workflow artefacts', 'scripts/generate-workflows.mjs'],
+  ['Multi-language SDK clients from the OpenAPI contracts', 'scripts/generate-sdks.mjs'],
 ]
 
 for (const [label, script] of STEPS) {

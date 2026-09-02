@@ -1,0 +1,46 @@
+---
+title: Workflows
+description: Machine-readable Arazzo workflows with generated curl, TypeScript, and JavaScript examples for every step.
+sidebar:
+  order: 3
+provenance:
+  pageId: workflows
+  area: reference
+  audience: [developer, integrator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet, regtest]
+  sources:
+    - id: universe-index-atomicals
+    - id: atomicals-electrumx-1.5.2.0
+  verified: '2026-09-02'
+  tags: [workflows, arazzo, automation]
+  limitations:
+    - Every workflow here is read-only or explicitly local. No hosted mainnet signing or broadcast workflow exists.
+    - Steps that execute against the Regtest Lab require the lab to be running locally.
+---
+
+import WorkflowCatalog from '../../components/WorkflowCatalog.astro'
+
+The workflow layer is a single Arazzo 1.1.0 document under `contracts/workflows/`, validated
+against the specification schema in CI with every referenced OpenAPI operation ID resolved. The
+page below, the curl examples, the TypeScript and JavaScript snippets, the MCP tool metadata, and
+the conformance tests all generate from that one document.
+
+The machine-readable sources are the [Arazzo document](../../contracts/workflows/atomicals-read-only.arazzo.yaml)
+and the [generated summary](../../site/src/generated/workflows.json).
+
+<WorkflowCatalog />
+
+## Running the local workflows
+
+The Regtest Lab workflows need the lab running:
+
+```
+npm run lab:up
+npm run lab:seed
+npm run lab:test
+```
+
+Everything else runs against any endpoint you choose in the
+[Conformance Workbench](/tools/api-conformance/), which never sends a mutation.
