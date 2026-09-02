@@ -28,7 +28,7 @@
     "guides/transfer-arc20",
     "guides/avoid-burns"
   ],
-  "pageCount": 222,
+  "pageCount": 225,
   "pages": [
     {
       "pageId": "home",
@@ -54,6 +54,37 @@
       "contentHash": "e539ace55d608fd476c86d10f4efe80b0f0d4e80d504fcf0533ea713cc550dba",
       "href": "/atomicals-and-arc-20/",
       "raw": "/atomicals-and-arc-20/raw/index.md"
+    },
+    {
+      "pageId": "ai",
+      "routeId": "ai",
+      "locale": "en",
+      "title": "AI and agent access",
+      "description": "Source-pinned AI integration: Ask Atomicals, MCP configuration, and the Agent Skill, all over the machine-readable documentation.",
+      "area": "reference",
+      "audience": [
+        "developer",
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [
+        "Ask Atomicals is deterministic retrieval over this documentation. It is not a model and it does not generate text.",
+        "Answers cite the verified source set only. Nothing here blends revisions."
+      ],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "74fbb7bcc2d1b775c8eb199b4ab1dedfcc4a948a68eeb62fc39a21f03d4e1aaa",
+      "href": "/atomicals-and-arc-20/ai/",
+      "raw": "/atomicals-and-arc-20/raw/ai.md"
     },
     {
       "pageId": "contribute/index",
@@ -645,7 +676,7 @@
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "69ce45c49111ee441840f45b7817eec3db94580f6b3a21c988f925a633f68c2a",
+      "contentHash": "1559a5bc8c917e5c3d07e033784400c333cd9504a6f8d7bf41beb2371f2ee68e",
       "href": "/atomicals-and-arc-20/ecosystem/",
       "raw": "/atomicals-and-arc-20/raw/ecosystem.md"
     },
@@ -2601,6 +2632,32 @@
       "contentHash": "f71aa72163e5c21adeb403f22ed163d35a5b1166d416ef56bc07173a2b04d411",
       "href": "/atomicals-and-arc-20/ja/start/what-is-arc-20/",
       "raw": "/atomicals-and-arc-20/raw/ja/start/what-is-arc-20.md"
+    },
+    {
+      "pageId": "offline",
+      "routeId": "offline",
+      "locale": "en",
+      "title": "Offline",
+      "description": "Install the documentation as an app, read it without a network, and download versioned protocol packs.",
+      "area": "reference",
+      "audience": [
+        "everyone",
+        "developer"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "none"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "dda708b6215db84b6b85f82a8a3fe228c3579c396ff5c8e7794fbb0e822105b0",
+      "href": "/atomicals-and-arc-20/offline/",
+      "raw": "/atomicals-and-arc-20/raw/offline.md"
     },
     {
       "pageId": "protocol-atlas",
@@ -5850,6 +5907,38 @@
       "contentHash": "9bed5c3a9052ecf031212efe20e10cd5d84621d79c34f6a9237f00f2970562c6",
       "href": "/atomicals-and-arc-20/tools/api-explorer/",
       "raw": "/atomicals-and-arc-20/raw/tools/api-explorer.md"
+    },
+    {
+      "pageId": "tools/avm-workbench",
+      "routeId": "tools/avm-workbench",
+      "locale": "en",
+      "title": "AVM Workbench",
+      "description": "Execute the pinned beta AVM interpreter with hard resource limits, full beta labeling, and honest refusals.",
+      "area": "tools",
+      "audience": [
+        "developer",
+        "operator"
+      ],
+      "applicability": "experimental",
+      "authority": "executed-source",
+      "networks": [
+        "none"
+      ],
+      "sources": [
+        "atomicals-avm-interpreter"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [
+        "AVM is beta and experimental. Nothing here is evidence of deployment by anyone.",
+        "Results describe the pinned interpreter revision only; resource behavior can differ across hosts.",
+        "The workbench executes only the release-pipeline WASM build. It never reimplements interpreter semantics in JavaScript."
+      ],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "08868f7219cebcca9209c289bd272ae9e605c6865ed8412bb17e562c90925262",
+      "href": "/atomicals-and-arc-20/tools/avm-workbench/",
+      "raw": "/atomicals-and-arc-20/raw/tools/avm-workbench.md"
     },
     {
       "pageId": "tools/bitwork-estimator",

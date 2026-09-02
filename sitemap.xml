@@ -13,6 +13,18 @@
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/"/>
   </url>
   <url>
+    <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ai/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ai/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/pt/ai/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/ai/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/fr/ai/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ja/ai/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/ai/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/ai/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/ai/"/>
+  </url>
+  <url>
     <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/</loc>
     <lastmod>2026-08-31</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/"/>
@@ -1043,6 +1055,18 @@
     <xhtml:link rel="alternate" hreflang="ru" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/start/what-is-arc-20/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/start/what-is-arc-20/"/>
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/start/what-is-arc-20/"/>
+  </url>
+  <url>
+    <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/offline/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/offline/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/pt/offline/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/offline/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/fr/offline/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ja/offline/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/offline/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/offline/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/offline/"/>
   </url>
   <url>
     <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol-atlas/</loc>
@@ -2315,6 +2339,18 @@
     <xhtml:link rel="alternate" hreflang="ru" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/tools/api-explorer/"/>
     <xhtml:link rel="alternate" hreflang="zh-CN" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/tools/api-explorer/"/>
     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/tools/api-explorer/"/>
+  </url>
+  <url>
+    <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/avm-workbench/</loc>
+    <lastmod>2026-09-02</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/avm-workbench/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/pt/tools/avm-workbench/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/tools/avm-workbench/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/fr/tools/avm-workbench/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ja/tools/avm-workbench/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/tools/avm-workbench/"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/tools/avm-workbench/"/>
+    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-tw/tools/avm-workbench/"/>
   </url>
   <url>
     <loc>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/bitwork-estimator/</loc>

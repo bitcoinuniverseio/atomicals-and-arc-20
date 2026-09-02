@@ -178,6 +178,73 @@ ownership. Where evidence is missing, the page says so instead of guessing.
 
 ---
 
+# AI and agent access
+
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ai/
+Page ID: ai
+Applicability: editorial
+Authority: none
+Networks: mainnet
+Sources: atomicals-electrumx-1.5.2.0
+Verified: 2026-09-02
+Limitations:
+- Ask Atomicals is deterministic retrieval over this documentation. It is not a model and it does not generate text.
+- Answers cite the verified source set only. Nothing here blends revisions.
+
+Ask Atomicals retrieves sentence-level passages from this documentation and quotes them with
+citations. It never invents a response to fill an empty result, and it runs entirely in your
+browser with no external request by default.
+
+## Install the Agent Skill
+
+The Agent Skill packages the same routing, source rules, and safety constraints for coding
+agents:
+
+```
+# Download the release archive from the releases page, or build it from source:
+npm run skills:validate
+# -> dist-skills/atomicals-and-arc20-skill.tar with a sha256 checksum
+```
+
+The skill instructs agents to answer only from pinned sources, to distinguish protocol,
+implementation, proposal, and experimental claims, and to refuse key collection and mainnet
+mutation. See skills/atomicals-and-arc20/SKILL.md in the repository.
+
+## Connect an MCP client
+
+The documentation publishes two MCP transports built on one shared core:
+
+**Local stdio** (works offline against the built artifacts):
+
+```json
+{
+  "command": "npx",
+  "args": ["@bitcoin-universe/atomicals-docs-mcp", "--artifacts", "/path/to/dist"]
+}
+```
+
+**Hosted Streamable HTTP** (stateless, read-only):
+
+```json
+{
+  "url": "https://mcp.bitcoinuniverse.io/atomicals-and-arc-20/mcp",
+  "transport": "streamable-http"
+}
+```
+
+Configuration snippets are generated and tested in CI for Codex, Claude Code, Cursor, and
+generic clients: see [reference/mcp](/reference/mcp/). The service performs no mutations, no
+outbound requests, and holds no credentials; its capability manifest lives at
+`/.well-known/mcp-manifest.json`.
+
+## Page-level AI actions
+
+Every page's action menu carries copy actions for source-pinned context, canonical citations,
+workflow context, SDK examples, MCP configuration, and raw Markdown. Agents get exactly the
+context a human reader sees.
+
+---
+
 # Contribute
 
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contribute/
@@ -3783,6 +3850,52 @@ or use a different wallet.
 
 [PSBT requirements](/protocol/arc20/psbt-requirements/) and
 [wallet safety](/protocol/arc20/wallet-safety/).
+
+---
+
+# Offline
+
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/offline/
+Page ID: offline
+Applicability: editorial
+Authority: none
+Networks: none
+Sources: none
+Verified: 2026-09-02
+
+Credentials, user-supplied endpoints, live API responses, imported UTXO data, question history,
+and local lab information are never written to the offline cache. The service worker handles
+same-origin static assets only.
+
+## Install the app
+
+Use your browser's install action, or the install prompt this site raises after the first visit.
+The installed app carries the current documentation build, offline search over everything you
+have read, and every tool that runs without a network: the allocation visualizer, transaction
+inspector, Bitwork estimator, Protocol Lab, and UTXO Safety Planner.
+
+The offline bar at the bottom of every page shows offline status, announces documentation
+version updates, and can remove all offline data on request.
+
+## Protocol packs
+
+Versioned archives bundle the documentation and machine-readable artifacts for fully offline
+use, with SHA-256 checksums, a software bill of materials, and build provenance:
+
+| Pack | Contents |
+| --- | --- |
+| Full | Documentation, raw Markdown, search index, contracts, clients, skills, agent material |
+| Docs | Documentation and offline search only |
+| Developer | Contracts, conformance vectors, overlays, generated clients |
+| AI agent | Agent Skill, workflow catalog, answer index, manifests |
+
+Regenerate from source with `npm run packs:generate`. Archives and their `.sha256` files appear
+in `dist-packs/`, and release versions ship with each repository release.
+
+## Offline test gate
+
+The offline experience is verified by a browser test with network access disabled: cached
+navigation, offline search, and the static tools must all work without a connection.
 
 ---
 
@@ -9422,6 +9535,44 @@ signature covers the exact body bytes. Re-serialising the body invalidates it.
 ## Downloads
 
 The full documents are on [OpenAPI and downloads](/reference/openapi/).
+
+---
+
+# AVM Workbench
+
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/avm-workbench/
+Page ID: tools/avm-workbench
+Applicability: experimental
+Authority: executed-source
+Networks: none
+Sources: atomicals-avm-interpreter
+Verified: 2026-09-02
+Limitations:
+- AVM is beta and experimental. Nothing here is evidence of deployment by anyone.
+- Results describe the pinned interpreter revision only; resource behavior can differ across hosts.
+- The workbench executes only the release-pipeline WASM build. It never reimplements interpreter semantics in JavaScript.
+
+The banner in the workbench is permanent for a reason: the AVM interpreter at the pinned
+revision is beta. Running a sample locally proves what that revision does, nothing more.
+
+## Resource limits
+
+Every run is bounded: 64 MiB memory, a five second wall-clock budget with worker termination, a
+256 KB program cap, a 1 MB output cap, and a ten million instruction budget metered by the
+interpreter build itself. Exceeding any limit terminates the run and says so; the host never
+truncates silently.
+
+## Native and WASM parity
+
+The same pinned source builds twice through deterministic container toolchains: a native binary
+for the Regtest Lab and CI, and the WASM module for this workbench. The CI gate executes the
+golden fixtures on both and requires byte-identical outcomes before either ships.
+
+## Runtime package
+
+The host interface lives in `packages/avm-runtime`: pinned source acquisition with checksum
+verification, the narrow host interface, resource limits, and refusal semantics. There is no
+JavaScript reimplementation of AVM semantics anywhere in this repository.
 
 ---
 
