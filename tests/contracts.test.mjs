@@ -5,6 +5,8 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import Ajv from 'ajv/dist/2020.js'
 import addFormats from 'ajv-formats'
+import * as fs from 'node:fs'
+import YAML from 'yaml'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const read = (relative) => JSON.parse(readFileSync(resolve(root, relative), 'utf8'))
@@ -285,4 +287,150 @@ test('the Linux binaries are declared optional so they never break a Windows ins
   for (const name of Object.keys(optional)) {
     assert.ok(!hard[name], `${name} must not also be a hard dependency; it is platform specific`)
   }
+})
+
+// ---------------------------------------------------------------------------
+// Protocol Atlas and Version contracts.
+//
+// The Atlas is the evidence layer for every comparative claim the site makes,
+// and the version manifest is what stops the navigator from blending source
+// revisions. Both are validated here so a bad cell or a fabricated snapshot
+// fails CI before it reaches a page.
+// ---------------------------------------------------------------------------
+
+const atlas = read('contracts/protocol-atlas/atlas.json')
+const atlasSchema = read('contracts/protocol-atlas/atlas.schema.json')
+const versionManifest = read('contracts/versions/manifest.json')
+const versionSchema = read('contracts/versions/version-manifest.schema.json')
+
+const ajv = new Ajv({ allErrors: true, strict: false })
+addFormats(ajv)
+
+test('the Protocol Atlas dataset validates against its schema', () => {
+  const validate = ajv.compile(atlasSchema)
+  const ok = validate(atlas)
+  assert.deepEqual(
+    ok,
+    true,
+    validate.errors?.map((error) => `${error.instancePath}: ${error.message}`).join('; '),
+  )
+})
+
+test('every Atlas evidence object resolves to a pinned source', () => {
+  const ids = new Set(manifest.sources.map((source) => source.id))
+  const problems = []
+  for (const protocol of atlas.protocols) {
+    for (const [key, evidence] of Object.entries(protocol.attributes)) {
+      if (evidence.sourceId === 'none') continue
+      if (!ids.has(evidence.sourceId)) {
+        problems.push(`${protocol.id}/${key}: unknown sourceId ${evidence.sourceId}`)
+        continue
+      }
+      const source = manifest.sources.find((entry) => entry.id === evidence.sourceId)
+      if (
+        evidence.sourceRevision &&
+        source.revision &&
+        evidence.sourceRevision !== source.revision
+      ) {
+        problems.push(`${protocol.id}/${key}: revision differs from the manifest pin`)
+      }
+    }
+  }
+  assert.deepEqual(problems, [], 'atlas evidence must cite the exact manifest revisions')
+})
+
+test('the Atlas carries the fixed protocol list with no extras', () => {
+  assert.deepEqual(
+    atlas.protocols.map((protocol) => protocol.id),
+    [
+      'atomicals',
+      'arc-20',
+      'avm',
+      'ordinals',
+      'runes',
+      'brc-20',
+      'stamps-src-20',
+      'tap',
+      'alkanes-protorunes',
+      'counterparty',
+      'rgb',
+    ],
+  )
+})
+
+test('unknown and conflicting facts are recorded, not inferred away', () => {
+  const unknownCells = atlas.protocols.flatMap((protocol) =>
+    Object.values(protocol.attributes).filter(
+      (evidence) => evidence.status === 'unknown' || evidence.status === 'conflicting',
+    ),
+  )
+  assert.ok(unknownCells.length >= 10, 'the atlas must honestly record unknowns')
+})
+
+test('the version manifest validates against its schema', () => {
+  const validate = ajv.compile(versionSchema)
+  const ok = validate(versionManifest)
+  assert.deepEqual(
+    ok,
+    true,
+    validate.errors?.map((error) => `${error.instancePath}: ${error.message}`).join('; '),
+  )
+})
+
+test('every version set pins revisions that exist in the source manifest', () => {
+  const ids = new Map(manifest.sources.map((source) => [source.id, source.revision]))
+  const problems = []
+  for (const set of versionManifest.sets) {
+    const pins = [
+      set.sources.protocol,
+      set.sources.cli,
+      set.sources.aipRegistry,
+      set.sources.avmInterpreter,
+      ...set.sources.universeRuntime,
+    ]
+    for (const pin of pins) {
+      if (!ids.has(pin.sourceId)) problems.push(`${set.id}: unknown source ${pin.sourceId}`)
+      const manifestRevision = ids.get(pin.sourceId)
+      if (pin.revision && manifestRevision && pin.revision !== manifestRevision) {
+        problems.push(`${set.id}: ${pin.sourceId} revision differs from the manifest`)
+      }
+    }
+  }
+  assert.deepEqual(problems, [], 'a version set must match the pinned manifest revisions')
+})
+
+test('the read-only overlay only marks safe methods and exists for every set', () => {
+  const { readFileSync } = fs
+  const { parse } = YAML
+  const overlay = parse(
+    readFileSync(resolve(root, 'overlays/openapi/arc20-read-only.overlay.yaml'), 'utf8'),
+  )
+  assert.equal(overlay.overlay, '1.1.0')
+  assert.ok(overlay.extends.endsWith('contracts/openapi/arc20.json'))
+  for (const action of overlay.actions) {
+    assert.match(action.target, /\$\.(paths\.\*\.)(get|head)$/, `unsafe target: ${action.target}`)
+    assert.equal(action.update['x-read-only'], true)
+  }
+})
+
+test('the overlay marks exactly the read operations and nothing else', () => {
+  const document = read('contracts/openapi/arc20.json')
+  const overlay = YAML.parse(
+    readFileSync(resolve(root, 'overlays/openapi/arc20-read-only.overlay.yaml'), 'utf8'),
+  )
+  const targetedMethods = new Set(
+    overlay.actions.map((action) => action.target.split('.').pop()),
+  )
+  assert.deepEqual([...targetedMethods].sort(), ['get', 'head'])
+  const uncovered = []
+  for (const [path, item] of Object.entries(document.paths)) {
+    for (const method of Object.keys(item)) {
+      if (!targetedMethods.has(method)) uncovered.push(method.toUpperCase() + ' ' + path)
+    }
+  }
+  assert.deepEqual(
+    uncovered,
+    ['POST /indexer/atomicals/poll'],
+    'only documented mutation operations may sit outside the read-only overlay',
+  )
 })

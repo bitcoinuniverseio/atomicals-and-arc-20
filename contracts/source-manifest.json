@@ -193,6 +193,116 @@
         "whitepaper": "https://github.com/atomicals/avm-whitepaper"
       },
       "revisionDate": "2026-08-31"
+    },
+    {
+      "id": "ordinals-ord",
+      "kind": "reference-implementation",
+      "authority": "protocol",
+      "name": "Ordinals and Runes reference indexer (ord)",
+      "repository": "https://github.com/ordinals/ord",
+      "revision": "899e309424dd60e1c8065a7727a76d9b675a6ac4",
+      "revisionDate": "2026-08-20",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Comparative context only. The ord indexer defines Ordinals inscription tracking and the Runes ledger used in the Protocol Atlas.",
+      "paths": {
+        "home": "README.md",
+        "runes": "src/rune.rs",
+        "inscriptions": "src/inscriptions.rs"
+      }
+    },
+    {
+      "id": "brc-20-spec",
+      "kind": "official-documentation",
+      "authority": "third-party",
+      "name": "BRC-20 experiment specification (domo)",
+      "repository": "https://domo-2.gitbook.io/brc-20-experiment",
+      "revision": null,
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Comparative context only. The original BRC-20 rule text. Indexer implementations diverge, so behavior is implementation-specific.",
+      "paths": {
+        "home": "https://domo-2.gitbook.io/brc-20-experiment/"
+      }
+    },
+    {
+      "id": "bitcoin-stamps",
+      "kind": "reference-implementation",
+      "authority": "third-party",
+      "name": "Bitcoin Stamps and SRC-20 reference indexer",
+      "repository": "https://github.com/stampchain-io/btc_stamps",
+      "revision": "8a7365bf951a66f3a5e25dc15e8702f65b5d23d8",
+      "revisionDate": "2026-09-01",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Comparative context only. Reference indexer for Stamps and SRC-20 used in the Protocol Atlas.",
+      "paths": {
+        "home": "README.md",
+        "indexers": "indexer/"
+      }
+    },
+    {
+      "id": "alkanes-alkanes-rs",
+      "kind": "reference-implementation",
+      "authority": "third-party",
+      "name": "Alkanes and Protorunes reference implementation",
+      "repository": "https://github.com/kungfuflex/alkanes-rs",
+      "revision": "62511e9371a3f9e448841140c51cfe428cfcb955",
+      "revisionDate": "2026-08-06",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Comparative context only. Reference Rust implementation of the Alkanes metaprotocol and Protorunes tokens.",
+      "paths": {
+        "home": "README.md"
+      }
+    },
+    {
+      "id": "counterparty-lib",
+      "kind": "reference-implementation",
+      "authority": "third-party",
+      "name": "Counterparty reference library",
+      "repository": "https://github.com/CounterpartyXCP/counterparty-lib",
+      "revision": "4f39fe25a266e44ccddd0eb50d97d2b8759d2b57",
+      "revisionDate": "2024-03-06",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Comparative context only. Reference implementation of the Counterparty ledger used in the Protocol Atlas.",
+      "paths": {
+        "home": "README.rst"
+      }
+    },
+    {
+      "id": "rgb-core",
+      "kind": "reference-implementation",
+      "authority": "third-party",
+      "name": "RGB core consensus library",
+      "repository": "https://github.com/RGB-WG/rgb-core",
+      "revision": "388d9c386117cf74f67f185b65adf946e775091c",
+      "revisionDate": "2025-07-10",
+      "release": null,
+      "network": [
+        "mainnet"
+      ],
+      "visibility": "public",
+      "role": "Comparative context only. Client-side validation consensus library for RGB used in the Protocol Atlas.",
+      "paths": {
+        "home": "README.md"
+      }
     }
   ]
 }

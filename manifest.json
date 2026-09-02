@@ -28,7 +28,7 @@
     "guides/transfer-arc20",
     "guides/avoid-burns"
   ],
-  "pageCount": 216,
+  "pageCount": 217,
   "pages": [
     {
       "pageId": "home",
@@ -51,7 +51,7 @@
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "f96993995d92c48f04a1429db2493108726c25be19f32903e57890d65a9d3179",
+      "contentHash": "8057f0f477618cfc90e241d711a0a9e7ec64fd7c533bb2cef6e0d392203ea5b2",
       "href": "/atomicals-and-arc-20/",
       "raw": "/atomicals-and-arc-20/raw/index.md"
     },
@@ -2603,6 +2603,46 @@
       "raw": "/atomicals-and-arc-20/raw/ja/start/what-is-arc-20.md"
     },
     {
+      "pageId": "protocol-atlas",
+      "routeId": "protocol-atlas",
+      "locale": "en",
+      "title": "Protocol Atlas",
+      "description": "An evidence-backed, interactive comparison of Bitcoin token and digital-object protocols, with every fact pinned to a source revision.",
+      "area": "tools",
+      "audience": [
+        "everyone",
+        "developer",
+        "operator",
+        "integrator"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [
+        "atomicals-electrumx-1.5.2.0",
+        "ordinals-ord",
+        "brc-20-spec",
+        "bitcoin-stamps",
+        "alkanes-alkanes-rs",
+        "counterparty-lib",
+        "rgb-core"
+      ],
+      "docsVersion": "2026.08",
+      "verified": "2026-09-02",
+      "limitations": [
+        "The TAP row records unknown because no verifiable official source was reachable during verification. It upgrades the moment one is.",
+        "Comparative rows for third-party protocols describe their reference implementations at pinned revisions; they are context, not endorsements.",
+        "No row implies that any protocol is better than another. The decision explorer compares requirements; it never ranks."
+      ],
+      "deprecated": null,
+      "translationSourceHash": null,
+      "contentHash": "6545a026a5f7f6690b0a6ca351df08bd796bf9fd26750230ec3e40e6edcf20c1",
+      "href": "/atomicals-and-arc-20/protocol-atlas/",
+      "raw": "/atomicals-and-arc-20/raw/protocol-atlas.md"
+    },
+    {
       "pageId": "protocol/aips",
       "routeId": "protocol/aips",
       "locale": "en",
@@ -5072,7 +5112,7 @@
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "4ed4ab84859b51b660e4fc79394045c3603e0c847fccb73dad5c484548f4378e",
+      "contentHash": "fcd3479f23dbdeac8c67eff2505ce9e148bdbd6debbad1e253f5fddbe1f5e4d8",
       "href": "/atomicals-and-arc-20/releases/versions/",
       "raw": "/atomicals-and-arc-20/raw/releases/versions.md"
     },
@@ -5815,8 +5855,8 @@
       "pageId": "tools/protocol-comparison",
       "routeId": "tools/protocol-comparison",
       "locale": "en",
-      "title": "Protocol comparison",
-      "description": "A neutral, source-pinned comparison of Bitcoin metaprotocols, with no rankings, prices, or superiority claims.",
+      "title": "Protocol comparison has moved",
+      "description": "The protocol comparison is now the Protocol Atlas, with evidence-backed cells, four synchronized views, and exports.",
       "area": "tools",
       "audience": [
         "everyone",
@@ -5827,19 +5867,13 @@
       "networks": [
         "mainnet"
       ],
-      "sources": [
-        "atomicals-electrumx-1.5.2.0"
-      ],
+      "sources": [],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
-      "limitations": [
-        "Only the Atomicals and ARC-20 rows are pinned to a source revision read during this review. Other rows describe widely documented design characteristics and are marked as unpinned.",
-        "Where a characteristic could not be established from a source read during this review, the cell says unverified rather than guessing.",
-        "No row implies that any protocol is better than another. They solve different problems."
-      ],
+      "verified": "2026-09-02",
+      "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "7658804d0363f3bd1223d408b7d2de7914635a3e94df71720bf8819982713118",
+      "contentHash": "1f30431063c49b9bade0ebf8a306502c2ed213f01f08f7d366f5963b6b0354a7",
       "href": "/atomicals-and-arc-20/tools/protocol-comparison/",
       "raw": "/atomicals-and-arc-20/raw/tools/protocol-comparison.md"
     },
@@ -6651,6 +6685,78 @@
       "authority": "protocol",
       "visibility": "public",
       "networks": []
+    },
+    {
+      "id": "ordinals-ord",
+      "name": "Ordinals and Runes reference indexer (ord)",
+      "repository": "https://github.com/ordinals/ord",
+      "revision": "899e309424dd60e1c8065a7727a76d9b675a6ac4",
+      "release": null,
+      "authority": "protocol",
+      "visibility": "public",
+      "networks": [
+        "mainnet"
+      ]
+    },
+    {
+      "id": "brc-20-spec",
+      "name": "BRC-20 experiment specification (domo)",
+      "repository": "https://domo-2.gitbook.io/brc-20-experiment",
+      "revision": null,
+      "release": null,
+      "authority": "third-party",
+      "visibility": "public",
+      "networks": [
+        "mainnet"
+      ]
+    },
+    {
+      "id": "bitcoin-stamps",
+      "name": "Bitcoin Stamps and SRC-20 reference indexer",
+      "repository": "https://github.com/stampchain-io/btc_stamps",
+      "revision": "8a7365bf951a66f3a5e25dc15e8702f65b5d23d8",
+      "release": null,
+      "authority": "third-party",
+      "visibility": "public",
+      "networks": [
+        "mainnet"
+      ]
+    },
+    {
+      "id": "alkanes-alkanes-rs",
+      "name": "Alkanes and Protorunes reference implementation",
+      "repository": "https://github.com/kungfuflex/alkanes-rs",
+      "revision": "62511e9371a3f9e448841140c51cfe428cfcb955",
+      "release": null,
+      "authority": "third-party",
+      "visibility": "public",
+      "networks": [
+        "mainnet"
+      ]
+    },
+    {
+      "id": "counterparty-lib",
+      "name": "Counterparty reference library",
+      "repository": "https://github.com/CounterpartyXCP/counterparty-lib",
+      "revision": "4f39fe25a266e44ccddd0eb50d97d2b8759d2b57",
+      "release": null,
+      "authority": "third-party",
+      "visibility": "public",
+      "networks": [
+        "mainnet"
+      ]
+    },
+    {
+      "id": "rgb-core",
+      "name": "RGB core consensus library",
+      "repository": "https://github.com/RGB-WG/rgb-core",
+      "revision": "388d9c386117cf74f67f185b65adf946e775091c",
+      "release": null,
+      "authority": "third-party",
+      "visibility": "public",
+      "networks": [
+        "mainnet"
+      ]
     }
   ]
 }

@@ -931,3 +931,86 @@ dialog.bu-palette::backdrop {
     gap: var(--bu-space-3);
   }
 }
+
+/* ---------- Version and Provenance Navigator ---------- */
+
+.bu-version-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-width: 34rem;
+  margin-block: var(--bu-space-3);
+}
+
+.bu-version-selector select {
+  min-height: var(--bu-touch);
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--bu-line-control);
+  border-radius: var(--bu-radius-s);
+  background: var(--bu-surface);
+  color: var(--bu-ink);
+  font: inherit;
+}
+
+.bu-version-card {
+  border: 1px solid var(--bu-line);
+  border-radius: var(--bu-radius-m);
+  background: var(--bu-surface);
+  padding: var(--bu-space-4) var(--bu-space-5);
+  margin-block: var(--bu-space-4);
+}
+
+.bu-version-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bu-space-2);
+  margin-bottom: var(--bu-space-3);
+}
+
+.bu-version-card-head h3 {
+  margin: 0;
+}
+
+.bu-version-card-head > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bu-space-2);
+}
+
+.bu-version-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--bu-space-4);
+  margin: 0;
+}
+
+.bu-version-group dt {
+  color: var(--bu-ink-muted);
+  font-size: 0.72rem;
+  font-weight: 640;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--bu-space-1);
+}
+
+.bu-version-group dd {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bu-space-2);
+}
+
+.bu-version-entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: var(--bu-step--1);
+}
+
+.bu-version-note {
+  color: var(--bu-ink-muted);
+  font-size: 0.8rem;
+}

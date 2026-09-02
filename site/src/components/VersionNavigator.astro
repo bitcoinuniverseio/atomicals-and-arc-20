@@ -1,0 +1,178 @@
+---
+/**
+ * Version and Provenance Navigator.
+ *
+ * Renders the verified source sets from contracts/versions/manifest.json.
+ * A set exists only when real verified source material exists for it; the
+ * navigator never fabricates a snapshot to make a selector look fuller.
+ * With exactly one verified set it says so and stays fully functional, so a
+ * future set drops in with no code changes.
+ */
+import versionManifest from '../../../contracts/versions/manifest.json'
+import semanticChanges from '../../../contracts/versions/semantic-changes.json'
+import driftStatus from '../../../contracts/drift-status.json'
+
+const data = versionManifest as {
+  manifestVersion: string
+  sets: {
+    id: string
+    label: string
+    status: string
+    verifiedAt: string
+    networks: string[]
+    sources: {
+      protocol: { sourceId: string; revision: string | null; note?: string }
+      cli: { sourceId: string; revision: string | null; note?: string }
+      aipRegistry: { sourceId: string; revision: string | null; note?: string }
+      universeRuntime: { sourceId: string; revision: string | null; note?: string }[]
+      avmInterpreter: { sourceId: string; revision: string | null; note?: string }
+      docsBuild: { docsVersion: string; note?: string }
+    }
+    apiContractVersions: { document: string; version: string }[]
+    drift?: { findings: number; checkedAt: string }
+  }[]
+}
+
+const sets = data.sets
+const current = sets.find((set) => set.status === 'current') ?? sets[0]
+const single = sets.length === 1
+const driftFindings = (driftStatus as { findings: unknown[] }).findings.length
+
+function short(revision: string | null): string {
+  if (!revision) return 'no pinned revision'
+  return revision.length > 12 ? revision.slice(0, 12) : revision
+}
+
+const groups: { label: string; entries: { sourceId: string; revision: string | null; note?: string }[] }[] = [
+  {
+    label: 'Protocol baseline',
+    entries: [current.sources.protocol],
+  },
+  {
+    label: 'CLI',
+    entries: [current.sources.cli],
+  },
+  {
+    label: 'AIP registry',
+    entries: [current.sources.aipRegistry],
+  },
+  {
+    label: 'Universe runtime',
+    entries: current.sources.universeRuntime,
+  },
+  {
+    label: 'AVM interpreter (beta)',
+    entries: [current.sources.avmInterpreter],
+  },
+  {
+    label: 'Documentation build',
+    entries: [{ sourceId: '', revision: current.sources.docsBuild.docsVersion, note: current.sources.docsBuild.note }],
+  },
+]
+---
+
+<section class="bu-version-nav" data-version-nav data-sets={JSON.stringify(sets.map((set) => set.id))}>
+  <div class="bu-version-selector">
+    <label>
+      <span class="bu-context-label">Source set</span>
+      <select data-set-select aria-describedby="bu-version-note">
+        {sets.map((set) => (
+          <option value={set.id} selected={set.id === current.id}>
+            {set.label} ({set.verifiedAt}){set.status === 'current' ? ' - current' : ''}
+          </option>
+        ))}
+      </select>
+    </label>
+    <p id="bu-version-note" class="bu-tool-note">
+      {single
+        ? 'One verified source set exists. The navigator is ready for the next set the moment verified source material for it exists; it never fabricates a historical snapshot to make this selector look fuller.'
+        : 'Pick a set to update status badges, source references, and API variants. The navigator never blends two sets in one normative result.'}
+    </p>
+  </div>
+
+  <article class="bu-version-card" data-set-card={current.id}>
+    <header class="bu-version-card-head">
+      <h3>{current.label}</h3>
+      <div>
+        <span class="bu-chip" data-tone={current.status === 'current' ? 'ok' : 'idle'}>{current.status}</span>
+        <span class="bu-chip" data-tone="idle">verified {current.verifiedAt}</span>
+        <span class="bu-chip" data-tone="universe">{current.networks.join(', ')}</span>
+        {driftFindings > 0 && <span class="bu-chip" data-tone="warn">upstream moved; this set stays pinned</span>}
+      </div>
+    </header>
+
+    <dl class="bu-version-groups">
+      {
+        groups.map((group) => (
+          <div class="bu-version-group">
+            <dt>{group.label}</dt>
+            <dd>
+              {group.entries.map((entry) => (
+                <div class="bu-version-entry">
+                  {entry.sourceId ? <code>{entry.sourceId}</code> : <strong>{entry.revision}</strong>}
+                  {entry.sourceId && <span class="bu-mono">{short(entry.revision)}</span>}
+                  {entry.note && <span class="bu-version-note">{entry.note}</span>}
+                </div>
+              ))}
+            </dd>
+          </div>
+        ))
+      }
+      <div class="bu-version-group">
+        <dt>API contracts</dt>
+        <dd>
+          {current.apiContractVersions.map((contract) => (
+            <div class="bu-version-entry">
+              <code>{contract.document}</code>
+              <span class="bu-mono">{contract.version}</span>
+            </div>
+          ))}
+        </dd>
+      </div>
+    </dl>
+  </article>
+
+  <h3>Semantic changes between sets</h3>
+  <p>
+    Diffs are computed between verified sets only. Protocol rules, OpenAPI operations, JSON
+    Schemas, CLI commands, AIP states, source revisions, and compatibility declarations are
+    compared as added, removed, changed, status changed, source moved, or implementation
+    divergence.
+  </p>
+  {(semanticChanges as { changes: unknown[]; comparedSets: unknown[] }).comparedSets.length === 0 ? (
+    <p class="bu-tool-note">
+      No two verified sets exist to compare yet, so the change list is empty. When a second set is
+      verified the comparison appears here and at the machine-readable output below. A detected
+      upstream change shows as "upstream moved; current documentation remains pinned" and never
+      silently rewrites normative content.
+    </p>
+  ) : (
+    <ul>
+      {(semanticChanges as { changes: { kind: string; subject: string; detail?: string }[] }).changes.map(
+        (change) => (
+          <li>
+            <span class="bu-chip" data-tone="idle">{change.kind}</span> <code>{change.subject}</code>
+            {change.detail && <span> - {change.detail}</span>}
+          </li>
+        ),
+      )}
+    </ul>
+  )}
+
+  <h3>Machine-readable outputs</h3>
+  <ul>
+    <li>
+      <a href="../../contracts/versions/manifest.json">Version manifest</a> (validated against{' '}
+      <a href="../../contracts/versions/version-manifest.schema.json">its schema</a>)
+    </li>
+    <li>
+      <a href="../../contracts/versions/semantic-changes.json">Semantic change list</a>
+    </li>
+    <li>
+      <a href="../../contracts/drift-status.json">Committed drift status</a>
+    </li>
+    <li>
+      <a href="../../contracts/source-manifest.json">Source manifest</a>
+    </li>
+  </ul>
+</section>

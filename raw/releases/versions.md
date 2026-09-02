@@ -11,6 +11,8 @@ Locale: en
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/releases/versions/
 
 ---
+## The verified source set
+
 ## Every pinned source
 
 ## The two baselines

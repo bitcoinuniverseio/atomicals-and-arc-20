@@ -729,6 +729,12 @@ ${feedEntries}
 
 const CONTRACT_FILES = [
   'contracts/source-manifest.json',
+  'contracts/drift-status.json',
+  'contracts/protocol-atlas/atlas.json',
+  'contracts/protocol-atlas/atlas.schema.json',
+  'contracts/versions/manifest.json',
+  'contracts/versions/version-manifest.schema.json',
+  'contracts/versions/semantic-changes.json',
   'contracts/cli-inventory.json',
   'contracts/aip-registry.json',
   'contracts/aip-implementation-evidence.json',

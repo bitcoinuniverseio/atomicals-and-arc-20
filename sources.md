@@ -164,6 +164,81 @@ Explanatory prose, including this documentation, is never independent consensus.
   - interpreter: src/script/interpreter.cpp
   - whitepaper: https://github.com/atomicals/avm-whitepaper
 
+### Ordinals and Runes reference indexer (ord)
+
+- Identifier: `ordinals-ord`
+- Authority: protocol
+- Repository: https://github.com/ordinals/ord
+- Revision: `899e309424dd60e1c8065a7727a76d9b675a6ac4`
+- Networks: mainnet
+- Visibility: public
+- Role: Comparative context only. The ord indexer defines Ordinals inscription tracking and the Runes ledger used in the Protocol Atlas.
+- Paths:
+  - home: README.md
+  - runes: src/rune.rs
+  - inscriptions: src/inscriptions.rs
+
+### BRC-20 experiment specification (domo)
+
+- Identifier: `brc-20-spec`
+- Authority: third-party
+- Repository: https://domo-2.gitbook.io/brc-20-experiment
+- Revision: unversioned
+- Networks: mainnet
+- Visibility: public
+- Role: Comparative context only. The original BRC-20 rule text. Indexer implementations diverge, so behavior is implementation-specific.
+- Paths:
+  - home: https://domo-2.gitbook.io/brc-20-experiment/
+
+### Bitcoin Stamps and SRC-20 reference indexer
+
+- Identifier: `bitcoin-stamps`
+- Authority: third-party
+- Repository: https://github.com/stampchain-io/btc_stamps
+- Revision: `8a7365bf951a66f3a5e25dc15e8702f65b5d23d8`
+- Networks: mainnet
+- Visibility: public
+- Role: Comparative context only. Reference indexer for Stamps and SRC-20 used in the Protocol Atlas.
+- Paths:
+  - home: README.md
+  - indexers: indexer/
+
+### Alkanes and Protorunes reference implementation
+
+- Identifier: `alkanes-alkanes-rs`
+- Authority: third-party
+- Repository: https://github.com/kungfuflex/alkanes-rs
+- Revision: `62511e9371a3f9e448841140c51cfe428cfcb955`
+- Networks: mainnet
+- Visibility: public
+- Role: Comparative context only. Reference Rust implementation of the Alkanes metaprotocol and Protorunes tokens.
+- Paths:
+  - home: README.md
+
+### Counterparty reference library
+
+- Identifier: `counterparty-lib`
+- Authority: third-party
+- Repository: https://github.com/CounterpartyXCP/counterparty-lib
+- Revision: `4f39fe25a266e44ccddd0eb50d97d2b8759d2b57`
+- Networks: mainnet
+- Visibility: public
+- Role: Comparative context only. Reference implementation of the Counterparty ledger used in the Protocol Atlas.
+- Paths:
+  - home: README.rst
+
+### RGB core consensus library
+
+- Identifier: `rgb-core`
+- Authority: third-party
+- Repository: https://github.com/RGB-WG/rgb-core
+- Revision: `388d9c386117cf74f67f185b65adf946e775091c`
+- Networks: mainnet
+- Visibility: public
+- Role: Comparative context only. Client-side validation consensus library for RGB used in the Protocol Atlas.
+- Paths:
+  - home: README.md
+
 ## Generated inventories
 
 | Inventory | Generated from | Path |

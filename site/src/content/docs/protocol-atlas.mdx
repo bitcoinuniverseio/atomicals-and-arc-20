@@ -1,0 +1,72 @@
+---
+title: Protocol Atlas
+description: An evidence-backed, interactive comparison of Bitcoin token and digital-object protocols, with every fact pinned to a source revision.
+sidebar:
+  order: 7
+provenance:
+  pageId: protocol-atlas
+  area: tools
+  audience: [everyone, developer, operator, integrator]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      note: Atomicals and ARC-20 rows
+    - id: ordinals-ord
+      note: Ordinals and Runes rows
+    - id: brc-20-spec
+      note: BRC-20 rows
+    - id: bitcoin-stamps
+      note: Stamps and SRC-20 rows
+    - id: alkanes-alkanes-rs
+      note: Alkanes and Protorunes rows
+    - id: counterparty-lib
+      note: Counterparty rows
+    - id: rgb-core
+      note: RGB rows
+  verified: '2026-09-02'
+  tags: [comparison, atlas, ecosystem]
+  limitations:
+    - The TAP row records unknown because no verifiable official source was reachable during verification. It upgrades the moment one is.
+    - Comparative rows for third-party protocols describe their reference implementations at pinned revisions; they are context, not endorsements.
+    - No row implies that any protocol is better than another. The decision explorer compares requirements; it never ranks.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+import ProtocolAtlas from '../../components/tools/ProtocolAtlas.astro'
+
+<Aside type="note" title="What the Atlas will not do">
+No prices. No market data. No rankings. No claim that any protocol is superior. Every cell is an
+evidence object with a status and a pinned revision: where evidence is missing, the cell says
+unknown instead of guessing.
+</Aside>
+
+The Protocol Atlas compares Atomicals, ARC-20, AVM, Ordinals, Runes, BRC-20, Bitcoin Stamps and
+SRC-20, TAP, Alkanes and Protorunes, Counterparty, and RGB. The dataset behind every view is
+[machine-readable](../../contracts/protocol-atlas/atlas.json) and validated against a published
+JSON Schema, so the page, the exports, and the MCP resources all describe the same evidence.
+
+Four views cover one dataset:
+
+1. **Matrix.** Column selection, search, status filters, compact or detailed cells, comparison of
+   up to four protocols side by side, and CSV or JSON export. The state is shareable through the
+   URL.
+2. **Relationship map.** Which shared Bitcoin primitive each protocol builds on, with a table
+   equivalent. Edges never imply lineage that a pinned source does not support.
+3. **Timeline.** Activation points the sources support. The AVM marker is a pinned beta
+   interpreter, deliberately not drawn as a deployment.
+4. **Decision explorer.** Concrete neutral questions about your requirements, answered with a
+   transparent match and miss list per protocol. It compares; it does not recommend.
+
+<ProtocolAtlas />
+
+## How evidence works here
+
+Every fact in the dataset carries `value`, `status`, `sourceId`, `sourceRevision`, `verifiedAt`,
+and optional notes. Statuses are `verified`, `implementation-specific`, `proposal`,
+`experimental`, `unknown`, and `conflicting`. Cell rendering shows unknown and conflicting
+exactly as recorded. The [source manifest](sources/) holds the pinned repositories and revisions.
+
+Where this page and a protocol's own documentation disagree, the disagreement is recorded as a
+status rather than resolved by an editor.

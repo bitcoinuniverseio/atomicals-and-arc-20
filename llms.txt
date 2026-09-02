@@ -42,6 +42,12 @@ Explanatory prose, including this documentation, is never independent consensus.
 - Ordex marketplace contract (universe): https://github.com/bitcoinuniverseio/ordex at 2f7d8d3ec59fac534f545bf03ed0d41878f91a0e
 - Bitcoin Inscribe (universe): https://github.com/bitcoinuniverseio/inscribe at unversioned
 - Atomicals Virtual Machine interpreter (protocol): https://github.com/atomicals/avm-interpreter at c185e6216a3ea2cb2e011e508033ca535ece3472
+- Ordinals and Runes reference indexer (ord) (protocol): https://github.com/ordinals/ord at 899e309424dd60e1c8065a7727a76d9b675a6ac4
+- BRC-20 experiment specification (domo) (third-party): https://domo-2.gitbook.io/brc-20-experiment at unversioned
+- Bitcoin Stamps and SRC-20 reference indexer (third-party): https://github.com/stampchain-io/btc_stamps at 8a7365bf951a66f3a5e25dc15e8702f65b5d23d8
+- Alkanes and Protorunes reference implementation (third-party): https://github.com/kungfuflex/alkanes-rs at 62511e9371a3f9e448841140c51cfe428cfcb955
+- Counterparty reference library (third-party): https://github.com/CounterpartyXCP/counterparty-lib at 4f39fe25a266e44ccddd0eb50d97d2b8759d2b57
+- RGB core consensus library (third-party): https://github.com/RGB-WG/rgb-core at 388d9c386117cf74f67f185b65adf946e775091c
 
 ## The ARC-20 model in seven statements
 
@@ -250,12 +256,13 @@ Vectors: /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
 
 ### tools
 
+- [Protocol Atlas](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol-atlas/) [editorial]: An evidence-backed, interactive comparison of Bitcoin token and digital-object protocols, with every fact pinned to a source revision.
 - [Tools](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/) [editorial]: Local, read-only tools that model Atomicals behavior without ever signing, broadcasting, or sending your data anywhere.
 - [ARC-20 allocation visualizer](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/allocation-visualizer/) [protocol-behavior]: Model a transaction and see exactly which output receives which units, and what burns, before you build anything.
 - [API explorer](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/api-explorer/) [universe-implementation]: Browse every documented operation, parameter, and example, and copy a request to run in your own environment.
 - [Bitwork estimator](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/bitwork-estimator/) [protocol-behavior]: Model a Bitwork prefix and see the expected search space, with the uncertainty stated rather than hidden.
 - [CLI command builder](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/cli-builder/) [protocol-behavior]: Build a validated, copyable command from the pinned command inventory, with the safety implications shown.
-- [Protocol comparison](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-comparison/) [editorial]: A neutral, source-pinned comparison of Bitcoin metaprotocols, with no rankings, prices, or superiority claims.
+- [Protocol comparison has moved](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-comparison/) [editorial]: The protocol comparison is now the Protocol Atlas, with evidence-backed cells, four synchronized views, and exports.
 - [Transaction safety inspector](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/transaction-inspector/) [protocol-behavior]: Parse a transaction or PSBT in your browser and read its inputs, outputs, and signature scope before you sign.
 
 ### ecosystem
