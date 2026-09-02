@@ -11,3 +11,4 @@ clients/rust/target
 
 # Generated skill archives
 dist-skills
+dist-packs

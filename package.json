@@ -34,7 +34,8 @@
     "lab:logs": "node scripts/lab.mjs logs",
     "lab:proxy": "node lab/proxy/conformance-proxy.mjs",
     "workflows:validate": "node scripts/generate-workflows.mjs",
-    "sdk:generate": "node scripts/generate-sdks.mjs"
+    "sdk:generate": "node scripts/generate-sdks.mjs",
+    "packs:generate": "node scripts/generate-protocol-packs.mjs"
   },
   "license": "MIT",
   "devDependencies": {

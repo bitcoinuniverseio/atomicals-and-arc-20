@@ -1,6 +1,7 @@
 ---
 import Default from '@astrojs/starlight/components/Footer.astro'
 import siteMeta from '../../data/site.json'
+import OfflineBar from '../design-system/OfflineBar.astro'
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 const links = [
@@ -16,6 +17,8 @@ const links = [
 ---
 
 <Default><slot /></Default>
+
+<OfflineBar />
 
 <div class="bu-footer-extra">
   <nav aria-label="Machine readable documentation">

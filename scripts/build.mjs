@@ -80,6 +80,7 @@ if (!skipAstro) {
 }
 
 run('node', [resolve(root, 'scripts/generate-artifacts.mjs'), '--out', distDir], root)
+run('node', [resolve(root, 'scripts/generate-sw-version.mjs')], root)
 
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
