@@ -42,6 +42,7 @@ const jsonLd = {
 <Default><slot /></Default>
 
 <link rel="alternate" type="text/markdown" href={rawHref} title="Markdown source" />
+<link rel="manifest" href={`${base}/manifest.webmanifest`} />
 <meta name="bu:docs-version" content={siteMeta.docsVersion} />
 {data.provenance && <meta name="bu:page-id" content={data.provenance.pageId} />}
 {data.provenance && <meta name="bu:applicability" content={data.provenance.applicability} />}
