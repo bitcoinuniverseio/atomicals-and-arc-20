@@ -9,6 +9,8 @@
 import opcodes from '../../../../contracts/avm-opcodes.json'
 import { docHref } from '../../lib/href'
 
+const locale = Astro.locals.starlightRoute?.locale
+
 const opcodeList = (opcodes as { opcodes: { name: string; description?: string }[] }).opcodes ?? []
 const encodedOpcodes = JSON.stringify(opcodeList.slice(0, 60).map((entry) => ({ name: entry.name, description: entry.description ?? '' })))
 const revision = 'c185e6216a3ea2cb2e011e508033ca535ece3472'
@@ -41,7 +43,7 @@ const revision = 'c185e6216a3ea2cb2e011e508033ca535ece3472'
         <button type="button" class="bu-btn" data-reset>Reset</button>
         <button type="button" class="bu-btn" data-export-trace>Export trace</button>
       </div>
-      <p class="bu-tool-note" data-status role="status">The interpreter loads on demand; nothing runs until you press Run.</p>
+      <p class="bu-tool-note" data-status aria-live="polite">The interpreter loads on demand; nothing runs until you press Run.</p>
 
       <h2>Opcode reference</h2>
       <details class="bu-avm-opcodes">
@@ -102,7 +104,11 @@ const revision = 'c185e6216a3ea2cb2e011e508033ca535ece3472'
       // When it is absent the backend refuses and the interface says exactly
       // why instead of faking a result.
       backend = await createWasmBackend(async (limits) => {
-        const factory = (await import('/_avm/avm-interpreter.mjs')).default
+        // Runtime URL, resolved against the base path. The module exists only
+        // where the release pipeline published it; Vite must not try to
+        // bundle it, hence the @vite-ignore marker.
+        const wasmUrl = new URL('_avm/avm-interpreter.mjs', document.baseURI).href
+        const factory = (await import(/* @vite-ignore */ wasmUrl)).default
         return factory({ limits })
       })
       return backend

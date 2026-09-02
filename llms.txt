@@ -240,6 +240,8 @@ Vectors: /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
 
 ### reference
 
+- [AI and agent access](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ai/) [editorial]: Source-pinned AI integration: Ask Atomicals, MCP configuration, and the Agent Skill, all over the machine-readable documentation.
+- [Offline](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/offline/) [editorial]: Install the documentation as an app, read it without a network, and download versioned protocol packs.
 - [AI and agent access](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/ai-access/) [editorial]: Every machine readable output this documentation publishes, and what each one is for.
 - [Universe ARC-20 API](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/api/arc20/) [universe-implementation]: The complete ARC-20 read contract, with its guarantees, its declared coverage limit, and the OpenAPI document behind it.
 - [Universe NFT and Realm API](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/reference/api/atomicals-nfts-realms/) [universe-implementation]: The complete read contract for plain NFTs, Realms, and Subrealms, including what the projection deliberately excludes.
@@ -263,6 +265,7 @@ Vectors: /atomicals-and-arc-20/conformance/vectors/arc20-allocation.json
 - [ARC-20 allocation visualizer](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/allocation-visualizer/) [protocol-behavior]: Model a transaction and see exactly which output receives which units, and what burns, before you build anything.
 - [API Conformance Workbench](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/api-conformance/) [universe-implementation]: Validate a live read-only endpoint against the published contracts, with a scrubbed report and no stored credentials.
 - [API explorer](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/api-explorer/) [universe-implementation]: Browse every documented operation, parameter, and example, and copy a request to run in your own environment.
+- [AVM Workbench](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/avm-workbench/) [experimental]: Execute the pinned beta AVM interpreter with hard resource limits, full beta labeling, and honest refusals.
 - [Bitwork estimator](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/bitwork-estimator/) [protocol-behavior]: Model a Bitwork prefix and see the expected search space, with the uncertainty stated rather than hidden.
 - [CLI command builder](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/cli-builder/) [protocol-behavior]: Build a validated, copyable command from the pinned command inventory, with the safety implications shown.
 - [Protocol comparison has moved](https://bitcoinuniverseio.github.io/atomicals-and-arc-20/tools/protocol-comparison/) [editorial]: The protocol comparison is now the Protocol Atlas, with evidence-backed cells, four synchronized views, and exports.

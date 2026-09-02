@@ -45,13 +45,12 @@
 
   <p class="bu-ask-empty" data-empty role="status" hidden>
     No supported answer was found in the pinned documentation for this question. This interface
-    refuses to invent one. Try narrower wording, or browse the
-    <a href="/start/glossary/">glossary</a> and the <a href="/protocol/overview/">protocol pages</a>.
+    refuses to invent one. Try narrower wording, or browse the glossary and protocol pages.
   </p>
 </section>
 
 <script>
-  import answerIndex from '../../generated/answer-index.json'
+  import answerIndex from '../generated/answer-index.json'
 
   type Entry = { p: string; t: string; h: string; s: string }
   type Index = { aliases: Record<string, string>; entries: Entry[] }
