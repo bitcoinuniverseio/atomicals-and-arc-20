@@ -1,0 +1,55 @@
+---
+title: Tools
+description: Local, read-only tools that model Atomicals behavior without ever signing, broadcasting, or sending your data anywhere.
+sidebar:
+  order: 1
+  label: All tools
+provenance:
+  pageId: tools/index
+  area: tools
+  audience: [everyone, developer]
+  applicability: editorial
+  authority: none
+  networks: [mainnet]
+  verified: '2026-08-31'
+  tags: [tools, navigation]
+---
+
+import EntryCards from '../../components/EntryCards.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+<Aside type="note" title="What every tool here guarantees">
+It runs in your browser. It never signs, never broadcasts, never asks for key material, and never
+sends what you paste to any service. Where a tool cannot determine something, it says unknown
+rather than guessing.
+</Aside>
+
+<EntryCards
+  cards={[
+    { kicker: "Before you move anything", title: "Allocation visualizer", body: "Model inputs and outputs and see exactly which units land where, and which burn.", href: "/tools/allocation-visualizer/" },
+    { kicker: "Before you sign", title: "Transaction inspector", body: "Parse a transaction or PSBT locally and read its inputs, outputs, and signature scope.", href: "/tools/transaction-inspector/" },
+    { kicker: "Before you grind", title: "Bitwork estimator", body: "Model a prefix and see the search space, with honest uncertainty.", href: "/tools/bitwork-estimator/" },
+    { kicker: "Before you run", title: "CLI command builder", body: "Build a validated command from the pinned command inventory.", href: "/tools/cli-builder/" },
+    { kicker: "While integrating", title: "API explorer", body: "Browse every documented operation, parameter, and example.", href: "/tools/api-explorer/" },
+    { kicker: "Choosing a model", title: "Protocol comparison", body: "A neutral, source-pinned comparison of Bitcoin metaprotocols.", href: "/tools/protocol-comparison/" },
+  ]}
+/>
+
+## Why they are local
+
+Anything you paste into a transaction tool is sensitive. An outpoint list reveals what you hold.
+A PSBT reveals what you are about to do. Sending either to a service to be analysed creates a
+record you did not need to create.
+
+So these tools parse in the page. There is no upload, no analytics on the content, and no request
+made on your behalf.
+
+## What they are not
+
+They are explanatory. They are not the active validator, and they do not replace validating a
+concrete transaction against the validator revision your counterparties run.
+
+The allocation visualizer is the closest to authoritative, because it runs the same engine as the
+[conformance vectors](/reference/conformance/) and the test suite. Even so, it models normal
+allocation from one pinned revision, not the live network you are about to broadcast to.
+

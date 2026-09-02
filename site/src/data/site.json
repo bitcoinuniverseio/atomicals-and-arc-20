@@ -1,0 +1,944 @@
+{
+  "site": "https://bitcoinuniverseio.github.io",
+  "base": "/atomicals-and-arc-20",
+  "productionUrl": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/",
+  "repository": "https://github.com/bitcoinuniverseio/atomicals-and-arc-20",
+  "title": "Atomicals and ARC-20",
+  "tagline": "The working reference for Atomicals digital objects, ARC-20 tokens, and the Universe services that expose them.",
+  "description": "Protocol reference, task guides, API contracts, and safety tools for Atomicals digital objects and ARC-20 tokens on Bitcoin.",
+  "defaultLocale": "en",
+  "docsVersion": "2026.08",
+  "baselineSourceId": "atomicals-electrumx-1.5.2.0",
+  "contextStrip": {
+    "en": {
+      "region": "Page context",
+      "set": "Source set",
+      "baseline": "Protocol baseline",
+      "network": "Network",
+      "verified": "Verified",
+      "stale": "Re-verify",
+      "drift": "Upstream moved; this documentation stays pinned",
+      "sources": "View sources",
+      "drawerTitle": "Sources behind this page",
+      "drawerNote": "Every claim on this page resolves to these pinned revisions. Follow a path to read the exact source the statement was verified against.",
+      "revision": "Revision",
+      "openPath": "Open pinned path",
+      "close": "Close sources"
+    },
+    "pt": {
+      "region": "Contexto da pagina",
+      "set": "Conjunto de fontes",
+      "baseline": "Baseline do protocolo",
+      "network": "Rede",
+      "verified": "Verificado",
+      "stale": "Reverificar",
+      "drift": "A fonte avancou; esta documentacao permanece fixada",
+      "sources": "Ver fontes",
+      "drawerTitle": "Fontes desta pagina",
+      "drawerNote": "Cada afirmacao desta pagina aponta para revisoes fixadas. Abra o caminho para ler a fonte exata da verificacao.",
+      "revision": "Revisao",
+      "openPath": "Abrir caminho fixado",
+      "close": "Fechar fontes"
+    },
+    "es": {
+      "region": "Contexto de la pagina",
+      "set": "Conjunto de fuentes",
+      "baseline": "Base del protocolo",
+      "network": "Red",
+      "verified": "Verificado",
+      "stale": "Reverificar",
+      "drift": "La fuente avanzo; esta documentacion permanece fijada",
+      "sources": "Ver fuentes",
+      "drawerTitle": "Fuentes de esta pagina",
+      "drawerNote": "Cada afirmacion de esta pagina apunta a revisiones fijadas. Abra la ruta para leer la fuente exacta de la verificacion.",
+      "revision": "Revision",
+      "openPath": "Abrir ruta fijada",
+      "close": "Cerrar fuentes"
+    },
+    "fr": {
+      "region": "Contexte de la page",
+      "set": "Jeu de sources",
+      "baseline": "Base du protocole",
+      "network": "Reseau",
+      "verified": "Verifie",
+      "stale": "Reverifier",
+      "drift": "La source a avance; cette documentation reste fixee",
+      "sources": "Voir les sources",
+      "drawerTitle": "Sources de cette page",
+      "drawerNote": "Chaque assertion de cette page renvoie a des revisions fixees. Ouvrez le chemin pour lire la source exacte verifiee.",
+      "revision": "Revision",
+      "openPath": "Ouvrir le chemin fixe",
+      "close": "Fermer les sources"
+    },
+    "ja": {
+      "region": "ページ情報",
+      "set": "ソースセット",
+      "baseline": "プロトコル基準",
+      "network": "ネットワーク",
+      "verified": "検証日",
+      "stale": "要再検証",
+      "drift": "上流が更新されました。この文書は固定された版を示し続けます",
+      "sources": "ソースを見る",
+      "drawerTitle": "このページのソース",
+      "drawerNote": "このページの主張はすべて固定されたリビジョンに紐づいています。検証元のソースを正確に確認できます。",
+      "revision": "リビジョン",
+      "openPath": "固定パスを開く",
+      "close": "ソースを閉じる"
+    },
+    "ru": {
+      "region": "Контекст страницы",
+      "set": "Набор источников",
+      "baseline": "База протокола",
+      "network": "Сеть",
+      "verified": "Проверено",
+      "stale": "Перепроверить",
+      "drift": "Источник обновился; документация остаётся на закреплённой версии",
+      "sources": "Показать источники",
+      "drawerTitle": "Источники страницы",
+      "drawerNote": "Каждое утверждение страницы привязано к закреплённой ревизии. Откройте путь, чтобы увидеть точный источник.",
+      "revision": "Ревизия",
+      "openPath": "Открыть закреплённый путь",
+      "close": "Закрыть источники"
+    },
+    "zh-cn": {
+      "region": "页面上下文",
+      "set": "源集合",
+      "baseline": "协议基线",
+      "network": "网络",
+      "verified": "验证日期",
+      "stale": "需重新验证",
+      "drift": "上游已更新；本文档保持固定版本",
+      "sources": "查看来源",
+      "drawerTitle": "本页面的来源",
+      "drawerNote": "本页面的每条论断都对应固定的修订版本。打开路径即可查看验证所依据的确切来源。",
+      "revision": "修订",
+      "openPath": "打开固定路径",
+      "close": "关闭来源"
+    },
+    "zh-tw": {
+      "region": "頁面資訊",
+      "set": "來源集",
+      "baseline": "協定基準",
+      "network": "網路",
+      "verified": "驗證日期",
+      "stale": "需重新驗證",
+      "drift": "上游已更新；本文件保持固定版本",
+      "sources": "檢視來源",
+      "drawerTitle": "本頁面的來源",
+      "drawerNote": "本頁面的每項論述都對應固定的修訂版本。開啟路徑即可檢視驗證所依據的確切來源。",
+      "revision": "修訂",
+      "openPath": "開啟固定路徑",
+      "close": "關閉來源"
+    }
+  },
+  "locales": [
+    {
+      "code": "en",
+      "lang": "en",
+      "label": "English",
+      "dir": "ltr",
+      "englishName": "English"
+    },
+    {
+      "code": "pt",
+      "lang": "pt",
+      "label": "Portugues",
+      "dir": "ltr",
+      "englishName": "Portuguese"
+    },
+    {
+      "code": "es",
+      "lang": "es",
+      "label": "Espanol",
+      "dir": "ltr",
+      "englishName": "Spanish"
+    },
+    {
+      "code": "fr",
+      "lang": "fr",
+      "label": "Francais",
+      "dir": "ltr",
+      "englishName": "French"
+    },
+    {
+      "code": "ja",
+      "lang": "ja",
+      "label": "日本語",
+      "dir": "ltr",
+      "englishName": "Japanese"
+    },
+    {
+      "code": "ru",
+      "lang": "ru",
+      "label": "Русский",
+      "dir": "ltr",
+      "englishName": "Russian"
+    },
+    {
+      "code": "zh-cn",
+      "lang": "zh-CN",
+      "label": "简体中文",
+      "dir": "ltr",
+      "englishName": "Simplified Chinese"
+    },
+    {
+      "code": "zh-tw",
+      "lang": "zh-TW",
+      "label": "繁體中文",
+      "dir": "ltr",
+      "englishName": "Traditional Chinese"
+    }
+  ],
+  "requiredLocalizedPages": [
+    "start/what-are-atomicals",
+    "start/what-is-arc-20",
+    "start/safety-fundamentals",
+    "start/status-and-limitations",
+    "start/glossary",
+    "protocol/arc20/overview",
+    "protocol/arc20/unit-model",
+    "protocol/arc20/burns",
+    "guides",
+    "guides/transfer-arc20",
+    "guides/avoid-burns"
+  ],
+  "globalNav": [
+    {
+      "label": "Learn",
+      "translations": {
+        "pt": "Aprender",
+        "es": "Aprender",
+        "fr": "Apprendre",
+        "ja": "学ぶ",
+        "ru": "Изучение",
+        "zh-CN": "学习",
+        "zh-TW": "學習"
+      },
+      "href": "/start/choose-your-path/"
+    },
+    {
+      "label": "Protocol",
+      "translations": {
+        "pt": "Protocolo",
+        "es": "Protocolo",
+        "fr": "Protocole",
+        "ja": "プロトコル",
+        "ru": "Протокол",
+        "zh-CN": "协议",
+        "zh-TW": "協定"
+      },
+      "href": "/protocol/overview/"
+    },
+    {
+      "label": "Build",
+      "translations": {
+        "pt": "Construir",
+        "es": "Construir",
+        "fr": "Construire",
+        "ja": "構築",
+        "ru": "Разработка",
+        "zh-CN": "构建",
+        "zh-TW": "建構"
+      },
+      "href": "/develop/"
+    },
+    {
+      "label": "Verify",
+      "translations": {
+        "pt": "Verificar",
+        "es": "Verificar",
+        "fr": "Vérifier",
+        "ja": "検証",
+        "ru": "Проверка",
+        "zh-CN": "验证",
+        "zh-TW": "驗證"
+      },
+      "href": "/reference/conformance/"
+    },
+    {
+      "label": "Tools",
+      "translations": {
+        "pt": "Ferramentas",
+        "es": "Herramientas",
+        "fr": "Outils",
+        "ja": "ツール",
+        "ru": "Инструменты",
+        "zh-CN": "工具",
+        "zh-TW": "工具"
+      },
+      "href": "/tools/"
+    },
+    {
+      "label": "Reference",
+      "translations": {
+        "pt": "Referencia",
+        "es": "Referencia",
+        "fr": "Reference",
+        "ja": "リファレンス",
+        "ru": "Справочник",
+        "zh-CN": "参考",
+        "zh-TW": "參考"
+      },
+      "href": "/reference/cli/"
+    },
+    {
+      "label": "Ecosystem",
+      "translations": {
+        "pt": "Ecossistema",
+        "es": "Ecosistema",
+        "fr": "Ecosysteme",
+        "ja": "エコシステム",
+        "ru": "Экосистема",
+        "zh-CN": "生态",
+        "zh-TW": "生態"
+      },
+      "href": "/ecosystem/"
+    }
+  ],
+  "sidebar": [
+    {
+      "label": "Start",
+      "translations": {
+        "pt": "Comece aqui",
+        "es": "Comenzar",
+        "fr": "Demarrer",
+        "ja": "はじめに",
+        "ru": "Начало",
+        "zh-CN": "开始",
+        "zh-TW": "開始"
+      },
+      "items": [
+        {
+          "slug": "start/what-are-atomicals"
+        },
+        {
+          "slug": "start/what-is-arc-20"
+        },
+        {
+          "slug": "start/choose-your-path"
+        },
+        {
+          "slug": "start/safety-fundamentals"
+        },
+        {
+          "slug": "start/networks-and-versions"
+        },
+        {
+          "slug": "start/protocol-family-map"
+        },
+        {
+          "slug": "start/status-and-limitations"
+        },
+        {
+          "slug": "start/glossary"
+        }
+      ]
+    },
+    {
+      "label": "Atomicals protocol",
+      "translations": {
+        "pt": "Protocolo Atomicals",
+        "es": "Protocolo Atomicals",
+        "fr": "Protocole Atomicals",
+        "ja": "Atomicals プロトコル",
+        "ru": "Протокол Atomicals",
+        "zh-CN": "Atomicals 协议",
+        "zh-TW": "Atomicals 協定"
+      },
+      "items": [
+        {
+          "slug": "protocol/overview"
+        },
+        {
+          "label": "Core concepts",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "protocol/core/digital-objects"
+            },
+            {
+              "slug": "protocol/core/utxo-ownership"
+            },
+            {
+              "slug": "protocol/core/identifiers"
+            },
+            {
+              "slug": "protocol/core/commit-and-reveal"
+            },
+            {
+              "slug": "protocol/core/envelope-and-operations"
+            },
+            {
+              "slug": "protocol/core/state-and-history"
+            },
+            {
+              "slug": "protocol/core/references-and-recursion"
+            },
+            {
+              "slug": "protocol/core/permanent-storage"
+            },
+            {
+              "slug": "protocol/core/candidates-and-winners"
+            },
+            {
+              "slug": "protocol/core/bitwork"
+            },
+            {
+              "slug": "protocol/core/activation-boundaries"
+            },
+            {
+              "slug": "protocol/core/confirmation-and-reorgs"
+            },
+            {
+              "slug": "protocol/core/indexer-dependency"
+            },
+            {
+              "slug": "protocol/core/metadata-trust"
+            }
+          ]
+        },
+        {
+          "label": "ARC-20",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "protocol/arc20/overview"
+            },
+            {
+              "slug": "protocol/arc20/unit-model"
+            },
+            {
+              "slug": "protocol/arc20/tickers-and-candidates"
+            },
+            {
+              "slug": "protocol/arc20/direct-issuance"
+            },
+            {
+              "slug": "protocol/arc20/fixed-dft"
+            },
+            {
+              "slug": "protocol/arc20/decentralized-mint"
+            },
+            {
+              "slug": "protocol/arc20/perpetual-dft"
+            },
+            {
+              "slug": "protocol/arc20/bitwork-requirements"
+            },
+            {
+              "slug": "protocol/arc20/metadata-and-decimals"
+            },
+            {
+              "slug": "protocol/arc20/allocation"
+            },
+            {
+              "slug": "protocol/arc20/split-and-combine"
+            },
+            {
+              "slug": "protocol/arc20/burns"
+            },
+            {
+              "slug": "protocol/arc20/transfers-and-swaps"
+            },
+            {
+              "slug": "protocol/arc20/psbt-requirements"
+            },
+            {
+              "slug": "protocol/arc20/wallet-safety"
+            },
+            {
+              "slug": "protocol/arc20/substantiation-factor"
+            }
+          ]
+        },
+        {
+          "label": "Atomicals NFTs",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "protocol/nft/overview"
+            },
+            {
+              "slug": "protocol/nft/minting"
+            },
+            {
+              "slug": "protocol/nft/metadata-and-media"
+            },
+            {
+              "slug": "protocol/nft/transfers"
+            },
+            {
+              "slug": "protocol/nft/splat-and-mixed-outputs"
+            },
+            {
+              "slug": "protocol/nft/collections-and-containers"
+            },
+            {
+              "slug": "protocol/nft/marketplace"
+            }
+          ]
+        },
+        {
+          "label": "Containers and DMINT",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "protocol/containers/overview"
+            },
+            {
+              "slug": "protocol/containers/dmint"
+            },
+            {
+              "slug": "protocol/containers/sealing-and-rules"
+            },
+            {
+              "slug": "protocol/containers/item-verification"
+            }
+          ]
+        },
+        {
+          "label": "Realms and names",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "protocol/realms/overview"
+            },
+            {
+              "slug": "protocol/realms/subrealms"
+            },
+            {
+              "slug": "protocol/realms/paynames"
+            },
+            {
+              "slug": "protocol/realms/claims-and-rules"
+            },
+            {
+              "slug": "protocol/realms/unicode-and-idna"
+            },
+            {
+              "slug": "protocol/realms/marketplace"
+            }
+          ]
+        },
+        {
+          "label": "AVM",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "protocol/avm/overview"
+            },
+            {
+              "slug": "protocol/avm/opcodes"
+            },
+            {
+              "slug": "protocol/avm/state-and-execution"
+            },
+            {
+              "slug": "protocol/avm/status-and-limitations"
+            }
+          ]
+        },
+        {
+          "slug": "protocol/aips"
+        }
+      ]
+    },
+    {
+      "label": "Guides",
+      "translations": {
+        "pt": "Guias",
+        "es": "Guias",
+        "fr": "Guides",
+        "ja": "ガイド",
+        "ru": "Руководства",
+        "zh-CN": "指南",
+        "zh-TW": "指南"
+      },
+      "items": [
+        {
+          "slug": "guides"
+        },
+        {
+          "label": "Set up",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "guides/choose-a-wallet"
+            },
+            {
+              "slug": "guides/prepare-utxos"
+            },
+            {
+              "slug": "guides/protect-colored-outputs"
+            },
+            {
+              "slug": "guides/fees-and-costs"
+            }
+          ]
+        },
+        {
+          "label": "Inspect",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "guides/inspect-an-address"
+            },
+            {
+              "slug": "guides/inspect-an-atomical"
+            },
+            {
+              "slug": "guides/inspect-a-ticker"
+            },
+            {
+              "slug": "guides/verify-a-transaction"
+            },
+            {
+              "slug": "guides/confirmations-and-reorgs"
+            },
+            {
+              "slug": "guides/unavailable-indexer-vs-empty-balance"
+            }
+          ]
+        },
+        {
+          "label": "Issue and mint",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "guides/direct-ft-issuance"
+            },
+            {
+              "slug": "guides/deploy-fixed-dft"
+            },
+            {
+              "slug": "guides/deploy-perpetual-dft"
+            },
+            {
+              "slug": "guides/mint-arc20"
+            },
+            {
+              "slug": "guides/mint-an-nft"
+            },
+            {
+              "slug": "guides/create-a-container"
+            },
+            {
+              "slug": "guides/create-dmint-items"
+            },
+            {
+              "slug": "guides/claim-a-realm"
+            },
+            {
+              "slug": "guides/claim-a-subrealm"
+            },
+            {
+              "slug": "guides/resolve-unicode-names"
+            }
+          ]
+        },
+        {
+          "label": "Move and recover",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "guides/transfer-arc20"
+            },
+            {
+              "slug": "guides/split-and-combine-arc20"
+            },
+            {
+              "slug": "guides/avoid-burns"
+            },
+            {
+              "slug": "guides/recover-from-a-rejection"
+            },
+            {
+              "slug": "guides/wallet-signing-failures"
+            }
+          ]
+        },
+        {
+          "label": "Trade",
+          "collapsed": true,
+          "items": [
+            {
+              "slug": "guides/list-an-arc20-lot"
+            },
+            {
+              "slug": "guides/list-an-nft-or-realm"
+            },
+            {
+              "slug": "guides/update-or-remove-a-listing"
+            },
+            {
+              "slug": "guides/offers"
+            },
+            {
+              "slug": "guides/buy-on-marketplace"
+            },
+            {
+              "slug": "guides/verify-settlement"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Build",
+      "translations": {
+        "pt": "Construir",
+        "es": "Construir",
+        "fr": "Construire",
+        "ja": "開発",
+        "ru": "Разработка",
+        "zh-CN": "开发",
+        "zh-TW": "開發"
+      },
+      "items": [
+        {
+          "slug": "develop"
+        },
+        {
+          "slug": "develop/data-flow"
+        },
+        {
+          "slug": "develop/source-of-truth"
+        },
+        {
+          "slug": "develop/consistency-and-reorgs"
+        },
+        {
+          "slug": "develop/identifiers-and-networks"
+        },
+        {
+          "slug": "develop/authentication"
+        },
+        {
+          "slug": "develop/errors"
+        },
+        {
+          "slug": "develop/pagination-and-cursors"
+        },
+        {
+          "slug": "develop/idempotency-and-request-ids"
+        },
+        {
+          "slug": "develop/readiness-and-freshness"
+        },
+        {
+          "slug": "develop/rate-limits"
+        },
+        {
+          "slug": "develop/versioning-and-deprecation"
+        },
+        {
+          "slug": "develop/migration"
+        }
+      ]
+    },
+    {
+      "label": "Reference",
+      "translations": {
+        "pt": "Referencia",
+        "es": "Referencia",
+        "fr": "Reference",
+        "ja": "リファレンス",
+        "ru": "Справочник",
+        "zh-CN": "参考",
+        "zh-TW": "參考"
+      },
+      "items": [
+        {
+          "slug": "reference/cli"
+        },
+        {
+          "slug": "reference/electrumx"
+        },
+        {
+          "slug": "reference/api/arc20"
+        },
+        {
+          "slug": "reference/api/atomicals-nfts-realms"
+        },
+        {
+          "slug": "reference/api/marketplace-v1"
+        },
+        {
+          "slug": "reference/api/ordex"
+        },
+        {
+          "slug": "reference/openapi"
+        },
+        {
+          "slug": "reference/schemas"
+        },
+        {
+          "slug": "reference/conformance"
+        },
+        {
+          "slug": "reference/wallet-integration"
+        },
+        {
+          "slug": "reference/client-sdk"
+        },
+        {
+          "slug": "reference/mcp"
+        },
+        {
+          "slug": "reference/ai-access"
+        }
+      ]
+    },
+    {
+      "label": "Tools",
+      "translations": {
+        "pt": "Ferramentas",
+        "es": "Herramientas",
+        "fr": "Outils",
+        "ja": "ツール",
+        "ru": "Инструменты",
+        "zh-CN": "工具",
+        "zh-TW": "工具"
+      },
+      "items": [
+        {
+          "slug": "tools"
+        },
+        {
+          "slug": "tools/allocation-visualizer"
+        },
+        {
+          "slug": "tools/transaction-inspector"
+        },
+        {
+          "slug": "tools/bitwork-estimator"
+        },
+        {
+          "slug": "tools/cli-builder"
+        },
+        {
+          "slug": "tools/api-explorer"
+        },
+        {
+          "slug": "protocol-atlas"
+        },
+        {
+          "slug": "tools/protocol-lab"
+        },
+        {
+          "slug": "tools/utxo-safety"
+        },
+        {
+          "slug": "tools/api-conformance"
+        },
+        {
+          "slug": "tools/avm-workbench"
+        }
+      ]
+    },
+    {
+      "label": "Workflows and SDKs",
+      "translations": {
+        "pt": "Workflows e SDKs",
+        "es": "Flujos y SDKs",
+        "fr": "Workflows et SDKs",
+        "ja": "ワークフローと SDK",
+        "ru": "Workflows и SDK",
+        "zh-CN": "工作流与 SDK",
+        "zh-TW": "工作流程與 SDK"
+      },
+      "items": [
+        {
+          "slug": "workflows"
+        },
+        {
+          "slug": "sdks"
+        },
+        {
+          "slug": "ai"
+        },
+        {
+          "slug": "offline"
+        }
+      ]
+    },
+    {
+      "label": "Ecosystem",
+      "translations": {
+        "pt": "Ecossistema",
+        "es": "Ecosistema",
+        "fr": "Ecosysteme",
+        "ja": "エコシステム",
+        "ru": "Экосистема",
+        "zh-CN": "生态",
+        "zh-TW": "生態"
+      },
+      "items": [
+        {
+          "slug": "ecosystem"
+        }
+      ]
+    },
+    {
+      "label": "Releases",
+      "translations": {
+        "pt": "Versoes",
+        "es": "Versiones",
+        "fr": "Versions",
+        "ja": "リリース",
+        "ru": "Релизы",
+        "zh-CN": "发布",
+        "zh-TW": "發布"
+      },
+      "items": [
+        {
+          "slug": "releases"
+        },
+        {
+          "slug": "releases/versions"
+        },
+        {
+          "slug": "releases/deprecations"
+        },
+        {
+          "slug": "releases/migrations"
+        }
+      ]
+    },
+    {
+      "label": "Contribute",
+      "translations": {
+        "pt": "Contribuir",
+        "es": "Contribuir",
+        "fr": "Contribuer",
+        "ja": "コントリビュート",
+        "ru": "Участие",
+        "zh-CN": "参与贡献",
+        "zh-TW": "參與貢獻"
+      },
+      "items": [
+        {
+          "slug": "contribute"
+        },
+        {
+          "slug": "contribute/content-model"
+        },
+        {
+          "slug": "contribute/adding-an-api"
+        },
+        {
+          "slug": "contribute/conformance-vectors"
+        },
+        {
+          "slug": "contribute/translations"
+        },
+        {
+          "slug": "contribute/ecosystem-records"
+        },
+        {
+          "slug": "contribute/releasing"
+        }
+      ]
+    }
+  ]
+}

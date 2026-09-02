@@ -1,0 +1,22 @@
+---
+/**
+ * Canonical route move. Renders a meta refresh plus a real link and a client
+ * replacement so the old URL keeps resolving for humans and scrapers alike.
+ */
+interface Props {
+  /** Root-relative documentation path, forwarded through docHref at the callsite. */
+  href: string
+  title: string
+}
+const { href, title } = Astro.props
+---
+
+<meta http-equiv="refresh" content={`0; url=${href}`} />
+<h1>{title}</h1>
+<p>
+  This page moved to <a href={href}>{title}</a>. The old address keeps working through this
+  redirect.
+</p>
+<script is:inline define:vars={{ href }}>
+  location.replace(href)
+</script>

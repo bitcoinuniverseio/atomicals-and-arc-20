@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contracts/schemas/common.schema.json",
+  "title": "Shared Atomicals documentation schema library",
+  "description": "One component library shared by every Universe Atomicals OpenAPI document and by the generated client. Amounts that represent satoshi or protocol quantities are decimal strings, never JSON numbers.",
+  "version": "1.0.0",
+  "$defs": {
+    "AtomicalId": {
+      "title": "Atomical ID",
+      "description": "Durable identity of an Atomical, assigned at mint and never reassigned.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}i[0-9]{1,10}$",
+      "examples": ["4d0b1f1c9c53a5b1e0b1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061i0"]
+    },
+    "Location": {
+      "title": "Outpoint",
+      "description": "Current custody position. Changes on every move, so it is never a database key.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}:[0-9]{1,10}$",
+      "examples": ["4d0b1f1c9c53a5b1e0b1b2c3d4e5f60718293a4b5c6d7e8f9a0b1c2d3e4f5061:0"]
+    },
+    "TransactionId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "BlockHeight": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "AtomicAmount": {
+      "title": "Atomic amount",
+      "description": "A satoshi or protocol quantity as a decimal string. JSON numbers are rejected, so no precision is lost in transit.",
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,38})$",
+      "examples": ["546", "100000000"]
+    },
+    "Ticker": {
+      "title": "ARC-20 ticker",
+      "description": "A globally allocated ARC-20 name. Always displayed alongside the resolved Atomical ID, because a ticker is not identity.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 21
+    },
+    "Network": {
+      "type": "string",
+      "enum": ["mainnet", "testnet", "signet", "regtest"]
+    },
+    "ProtocolId": {
+      "description": "Marketplace protocol lane. Every route, cursor, and idempotency scope is bound to exactly one.",
+      "type": "string",
+      "enum": ["arc20", "atomicals_nft", "realms", "subrealms"]
+    },
+    "AssetType": {
+      "type": "string",
+      "enum": ["nft", "realm", "subrealm"]
+    },
+    "GenerationId": {
+      "title": "Generation identifier",
+      "description": "Identifies the immutable snapshot an answer was served from. Store it with any cached result.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "Cursor": {
+      "title": "Opaque signed cursor",
+      "description": "Refers to a position inside one generation and carries the page sizes it was created with. Never parse, construct, or modify one.",
+      "type": "string",
+      "minLength": 1
+    },
+    "RequestId": {
+      "description": "Per-request identifier returned with every response. Log it on success as well as failure.",
+      "type": "string",
+      "minLength": 1
+    },
+    "IsoDateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ReadinessState": {
+      "type": "string",
+      "enum": ["ready", "degraded", "stale", "mixed-tip", "unavailable", "initialising"]
+    },
+    "Coverage": {
+      "type": "string",
+      "enum": ["complete", "partial"]
+    },
+    "Error": {
+      "title": "Error envelope",
+      "type": "object",
+      "required": ["error"],
+      "additionalProperties": true,
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": ["code", "message"],
+          "additionalProperties": true,
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Machine readable code. Branch on this, never on the message.",
+              "examples": [
+                "NFT_NOT_FOUND",
+                "REALM_NOT_FOUND",
+                "ASSET_NOT_FOUND",
+                "NFT_MEDIA_NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "METRICS_DISABLED",
+                "NOT_FOUND",
+                "VALIDATION_FAILED"
+              ]
+            },
+            "message": { "type": "string" },
+            "details": { "type": "object", "additionalProperties": true }
+          }
+        },
+        "requestId": { "$ref": "#/$defs/RequestId" }
+      }
+    },
+    "Freshness": {
+      "title": "Freshness metadata",
+      "description": "Returned with read answers so a caller can decide whether to act on them.",
+      "type": "object",
+      "required": ["generationId", "indexedHeight"],
+      "additionalProperties": true,
+      "properties": {
+        "generationId": { "$ref": "#/$defs/GenerationId" },
+        "indexedHeight": { "$ref": "#/$defs/BlockHeight" },
+        "stale": { "type": "boolean" },
+        "mixedTip": {
+          "type": "boolean",
+          "description": "True when the generation spans more than one provider tip. Do not act on the answer."
+        },
+        "sourceRevision": { "type": "string" },
+        "network": { "$ref": "#/$defs/Network" }
+      }
+    },
+    "MediaDescriptor": {
+      "title": "Media descriptor",
+      "description": "Describes a stored file. Treat the declared content type as untrusted and sniff the bytes.",
+      "type": "object",
+      "required": ["field"],
+      "additionalProperties": true,
+      "properties": {
+        "field": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]{1,128}$"
+        },
+        "contentType": { "type": "string" },
+        "byteLength": { "type": "integer", "minimum": 0 },
+        "digest": {
+          "type": "string",
+          "description": "Integrity digest recorded by the validator. Proves the bytes, nothing about rights or safety."
+        }
+      }
+    },
+    "AssetProjection": {
+      "title": "Projected asset",
+      "description": "The materialised read model for one projected Atomical.",
+      "type": "object",
+      "required": ["atomicalId", "type"],
+      "additionalProperties": true,
+      "properties": {
+        "atomicalId": { "$ref": "#/$defs/AtomicalId" },
+        "atomicalNumber": { "type": "integer", "minimum": 0 },
+        "type": { "$ref": "#/$defs/AssetType" },
+        "name": {
+          "type": ["string", "null"],
+          "description": "Exact minted bytes, not a normalised form. Escape before display."
+        },
+        "normalizedName": {
+          "type": ["string", "null"],
+          "description": "Comparison form only. Never display it as the name."
+        },
+        "parentRealm": { "type": ["string", "null"] },
+        "location": { "$ref": "#/$defs/Location" },
+        "ownerAddress": { "type": ["string", "null"] },
+        "ownerScriptHex": { "type": ["string", "null"] },
+        "valueAtomic": { "$ref": "#/$defs/AtomicAmount" },
+        "mintHeight": { "$ref": "#/$defs/BlockHeight" },
+        "mintTransactionId": { "$ref": "#/$defs/TransactionId" },
+        "sealed": { "type": ["boolean", "null"] },
+        "metadata": { "type": "object", "additionalProperties": true },
+        "media": {
+          "anyOf": [{ "$ref": "#/$defs/MediaDescriptor" }, { "type": "null" }]
+        },
+        "generationId": { "$ref": "#/$defs/GenerationId" }
+      }
+    },
+    "HistoryEntry": {
+      "type": "object",
+      "required": ["height", "transactionId"],
+      "additionalProperties": true,
+      "properties": {
+        "height": { "$ref": "#/$defs/BlockHeight" },
+        "transactionId": { "$ref": "#/$defs/TransactionId" },
+        "operation": { "type": ["string", "null"] },
+        "location": { "$ref": "#/$defs/Location" },
+        "ownerAddress": { "type": ["string", "null"] }
+      }
+    },
+    "HolderRow": {
+      "type": "object",
+      "required": ["rank", "address", "balance"],
+      "additionalProperties": true,
+      "properties": {
+        "rank": { "type": "integer", "minimum": 1 },
+        "address": { "type": "string" },
+        "holding": { "$ref": "#/$defs/AtomicAmount" },
+        "balance": { "$ref": "#/$defs/AtomicAmount" }
+      }
+    },
+    "CursorPage": {
+      "title": "Cursor page",
+      "type": "object",
+      "required": ["items"],
+      "additionalProperties": true,
+      "properties": {
+        "items": { "type": "array", "items": {} },
+        "nextCursor": {
+          "anyOf": [{ "$ref": "#/$defs/Cursor" }, { "type": "null" }]
+        },
+        "truncated": {
+          "type": "boolean",
+          "description": "True when there was more and the response stopped. Honour it."
+        },
+        "generationId": { "$ref": "#/$defs/GenerationId" }
+      }
+    },
+    "SourceManifestEntry": {
+      "title": "Source provenance record",
+      "type": "object",
+      "required": ["id", "repository", "authority", "visibility"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "repository": { "type": "string", "format": "uri" },
+        "revision": { "type": ["string", "null"] },
+        "release": { "type": ["string", "null"] },
+        "authority": { "type": "string", "enum": ["protocol", "universe"] },
+        "visibility": { "type": "string", "enum": ["public", "private"] },
+        "network": { "type": "array", "items": { "$ref": "#/$defs/Network" } }
+      }
+    }
+  }
+}

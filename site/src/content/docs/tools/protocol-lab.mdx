@@ -1,0 +1,58 @@
+---
+title: Protocol Lab
+description: Construct and replay Atomicals workflows deterministically in the browser, with no keys, no signing, and no network.
+sidebar:
+  order: 8
+provenance:
+  pageId: tools/protocol-lab
+  area: tools
+  audience: [everyone, developer, holder, creator]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [regtest, testnet, signet, mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+      note: the allocation rules every transfer scenario executes
+  verified: '2026-09-02'
+  tags: [lab, simulation]
+  limitations:
+    - Scenarios are deterministic models. Identifiers are synthetic and derived from the scenario seed; they are not real Bitcoin hashes.
+    - The lab models normal ARC-20 allocation, commit and reveal, confirmations, and reorganizations. It does not simulate semantics the pinned reference does not support.
+    - Nothing here substitutes for validating a concrete transaction against the validator revision you target.
+---
+
+import { Aside } from '@astrojs/starlight/components'
+import ProtocolLab from '../../../components/tools/ProtocolLab.astro'
+
+<Aside type="caution" title="What the lab is and is not">
+The lab replays protocol rules deterministically so you can see why units land where they land.
+It never asks for keys, never signs, and never broadcasts. Every identifier it generates is
+synthetic, derived from the scenario seed, and starts with "sim".
+</Aside>
+
+Pick a guided scenario, watch each step apply the shared rules, and click a rule to open the
+exact page that explains it. The same allocation module executes the conformance vectors, powers
+the [allocation visualizer](/tools/allocation-visualizer/), so the lab cannot disagree with them.
+
+<ProtocolLab />
+
+## What the scenarios cover
+
+- Commit and reveal for NFTs, Realms, and ARC-20 deployments and mints.
+- ARC-20 transfer, split, and merge through the reference allocation engine.
+- Intentional burns to unspendable outputs, and the accidental burn pattern that destroys units.
+- Confirmation progression and a one-block reorganization that unsettles confirmed state.
+- An invalid operation the engine refuses instead of inventing money.
+
+## Share and export
+
+Every scenario is data. Copy a shareable link for a small scenario, or export the scenario JSON
+and the execution trace as files. Large scenarios stay local by design: nothing is ever uploaded
+anywhere.
+
+## Where the rules come from
+
+The engine lives in `packages/protocol-lab` and calls the allocation engine in
+`packages/protocol-core`, which is the exact module the conformance vectors execute at the pinned
+reference revision. Each trace entry names the rule it evaluated and the outcome.

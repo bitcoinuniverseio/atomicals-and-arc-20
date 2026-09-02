@@ -1,0 +1,47 @@
+---
+/**
+ * Copy the page as Markdown, or open the raw Markdown file.
+ * Both point at the generated /raw/ tree so agents and humans get the same bytes.
+ */
+interface Props {
+  routeId: string
+}
+const { routeId } = Astro.props
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const rawHref = `${base}/raw/${routeId.replace(/\/$/, '') || 'index'}.md`
+---
+
+<div class="bu-page-actions">
+  <bu-copy-markdown data-src={rawHref}>
+    <button type="button" data-copy>Copy page as Markdown</button>
+  </bu-copy-markdown>
+  <a href={rawHref}>View raw Markdown</a>
+</div>
+
+<script>
+  class BuCopyMarkdown extends HTMLElement {
+    connectedCallback() {
+      const button = this.querySelector('button')
+      const src = this.dataset.src
+      if (!button || !src) return
+      const original = button.textContent ?? 'Copy page as Markdown'
+      button.addEventListener('click', async () => {
+        button.disabled = true
+        try {
+          const response = await fetch(src)
+          if (!response.ok) throw new Error(String(response.status))
+          await navigator.clipboard.writeText(await response.text())
+          button.textContent = 'Copied'
+        } catch {
+          button.textContent = 'Copy failed. Open the raw file instead.'
+        } finally {
+          window.setTimeout(() => {
+            button.textContent = original
+            button.disabled = false
+          }, 2400)
+        }
+      })
+    }
+  }
+  customElements.define('bu-copy-markdown', BuCopyMarkdown)
+</script>

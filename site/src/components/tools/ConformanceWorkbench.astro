@@ -1,0 +1,403 @@
+---
+/**
+ * Live read-only API Conformance Workbench.
+ *
+ * The offline API Explorer stays the default. This bench is a clearly
+ * separated live surface that only ever sends read-only GET operations from
+ * the canonical contract, with explicit user action for every request.
+ * Endpoints and headers live in memory only.
+ */
+import arc20 from '../../../../contracts/openapi/arc20.json'
+
+type Operation = {
+  summary?: string
+  responses: Record<string, unknown>
+  'x-read-only'?: boolean
+}
+
+const document = arc20 as { paths: Record<string, Record<string, Operation>> }
+const operations = Object.entries(document.paths)
+  .flatMap(([path, item]) =>
+    Object.entries(item)
+      .filter(([method]) => method === 'get')
+      .map(([method, operation]) => ({ path, method: method.toUpperCase(), operation })),
+  )
+  .map((entry, index) => ({ id: `arc20:${entry.method} ${entry.path}`, path: entry.path, index }))
+
+const operationList = JSON.stringify(operations)
+const contractResponses = JSON.stringify(
+  Object.fromEntries(
+    Object.entries(document.paths).flatMap(([path, item]) =>
+      Object.entries(item)
+        .filter(([method]) => method === 'get')
+        .map(([method, operation]) => [
+          `arc20:${method.toUpperCase()} ${path}`,
+          { responses: operation.responses, parameters: operation.parameters ?? [] },
+        ]),
+    ),
+  ),
+)
+---
+
+<section class="bu-tool bu-workbench" data-workbench data-operations={operationList} data-contract={contractResponses}>
+  <noscript>
+    <p class="bu-tool-note">
+      The live workbench sends requests only when JavaScript runs and you press Send. The offline
+      explorer remains fully usable without it.
+    </p>
+  </noscript>
+
+  <p class="bu-tool-note">
+    Only the read-only GET operations from the ARC-20 contract can be sent here, one explicit
+    press at a time, at most two at once, never faster than five per second. Your endpoint URL and
+    any headers stay in this page's memory only: never in a URL, never in storage, never in a
+    cache, and removed from every exported report.
+  </p>
+
+  <div class="bu-workbench-controls">
+    <label>
+      <span>Endpoint origin</span>
+      <input type="text" data-endpoint placeholder="http://127.0.0.1:3043" spellcheck="false" autocomplete="off" />
+    </label>
+    <label>
+      <span>Operation</span>
+      <select data-operation>
+        {operations.map((operation) => (
+          <option value={String(operation.index)}>
+            GET {operation.path} - {operation.id}
+          </option>
+        ))}
+      </select>
+    </label>
+    <button type="button" class="bu-btn" data-variant="primary" data-send>Send</button>
+    <button type="button" class="bu-btn" data-abort disabled>Abort</button>
+    <button type="button" class="bu-btn" data-forget>Forget endpoint</button>
+  </div>
+  <p class="bu-tool-note" data-status role="status">Nothing sent. No request is made until you press Send.</p>
+
+  <section class="bu-workbench-results" data-results hidden>
+      <h2>Verdict</h2>
+      <p data-verdict aria-live="polite" class="bu-workbench-verdict"></p>
+
+    <h2>Contract checks</h2>
+    <ul class="bu-workbench-checks" data-checks></ul>
+
+    <h2>Endpoint identity</h2>
+    <dl class="bu-facts" data-identity></dl>
+
+    <h2>Response</h2>
+    <pre class="bu-workbench-body" data-body></pre>
+
+    <h2>Scrubbed report</h2>
+    <button type="button" class="bu-btn" data-report>Download scrubbed report</button>
+  </section>
+
+  <h2>Compare endpoints</h2>
+  <p class="bu-tool-note">Capture a verdict into one of three slots and compare them side by side.</p>
+  <div class="bu-workbench-slots">
+    <button type="button" class="bu-btn" data-capture="0">Capture into slot A</button>
+    <button type="button" class="bu-btn" data-capture="1">Capture into slot B</button>
+    <button type="button" class="bu-btn" data-capture="2">Capture into slot C</button>
+  </div>
+  <div class="bu-matrix bu-scroll" data-compare hidden>
+    <table>
+      <caption>Captured endpoint verdicts side by side</caption>
+      <thead>
+        <tr>
+          <th scope="col">Slot</th>
+          <th scope="col">Verdict</th>
+          <th scope="col">Detail</th>
+          <th scope="col">Chain tip</th>
+          <th scope="col">Indexed height</th>
+        </tr>
+      </thead>
+      <tbody data-compare-body></tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  import { isSendableOperation, evaluateResponse, deriveVerdict, scrubReport, extractIdentity, MAX_RESPONSE_BYTES, DEFAULT_TIMEOUT_MS, MAX_CONCURRENT_REQUESTS } from '@bitcoin-universe/conformance/rules'
+  import * as validators from '../../generated/response-validators.mjs'
+
+  type OperationRef = { id: string; path: string; index: number }
+  type Slot = { verdict: string; detail: string; chainTip?: number; indexedHeight?: number } | null
+
+  const root = document.querySelector<HTMLElement>('[data-workbench]')
+  if (root) initWorkbench(root)
+
+  function initWorkbench(root: HTMLElement) {
+    const operations = JSON.parse(root.dataset.operations ?? '[]') as OperationRef[]
+    const endpointField = root.querySelector<HTMLInputElement>('[data-endpoint]')!
+    const operationSelect = root.querySelector<HTMLSelectElement>('[data-operation]')!
+    const statusLine = root.querySelector<HTMLElement>('[data-status]')!
+    const results = root.querySelector<HTMLElement>('[data-results]')!
+    const verdictLine = root.querySelector<HTMLElement>('[data-verdict]')!
+    const checksList = root.querySelector<HTMLElement>('[data-checks]')!
+    const identityView = root.querySelector<HTMLElement>('[data-identity]')!
+    const bodyView = root.querySelector<HTMLElement>('[data-body]')!
+    const abortButton = root.querySelector<HTMLButtonElement>('[data-abort]')!
+    const compareTable = root.querySelector<HTMLElement>('[data-compare]')!
+    const compareBody = root.querySelector<HTMLElement>('[data-compare-body]')!
+
+    const slots: Slot[] = [null, null, null]
+    let controller: AbortController | undefined
+    let inFlight = 0
+    let lastReport: unknown
+
+    const sendTimes: number[] = []
+    function rateAllowsSend(): boolean {
+      const now = Date.now()
+      while (sendTimes.length && now - sendTimes[0] > 1000) sendTimes.shift()
+      if (sendTimes.length >= MAX_CONCURRENT_REQUESTS + 3) return false
+      return true
+    }
+
+    async function probeIdentity(origin: string, signal: AbortSignal) {
+      const statusResponse = await guardedFetch(`${origin}/token-explorer/status`, signal)
+      const readyResponse = await guardedFetch(`${origin}/ready`, signal)
+      const statusBody = statusResponse?.body ?? null
+      const readyBody = readyResponse?.body ?? null
+      return extractIdentity(statusBody, readyBody)
+    }
+
+    async function guardedFetch(url: string, signal: AbortSignal): Promise<{ status: number; contentType?: string; headers: Record<string, string>; body: unknown } | null> {
+      const response = await fetch(url, { signal, headers: { accept: 'application/json' } })
+      const headers = Object.fromEntries([...response.headers.entries()])
+      const raw = await response.text()
+      if (raw.length > MAX_RESPONSE_BYTES) throw new Error(`response larger than the ${MAX_RESPONSE_BYTES} byte cap`)
+      const isJson = headers['content-type']?.includes('application/json')
+      return { status: response.status, contentType: headers['content-type'], headers, body: isJson ? JSON.parse(raw) : raw }
+    }
+
+    const contractData = JSON.parse(root.dataset.contract ?? '{}') as Record<
+      string,
+      { responses: Record<string, unknown>; parameters: unknown[] }
+    >
+
+    async function send() {
+      const origin = endpointField.value.trim().replace(/\/$/, '')
+      if (!/^https?:\/\//.test(origin)) {
+        statusLine.textContent = 'Enter an http(s) origin. Nothing was sent.'
+        return
+      }
+      if (!rateAllowsSend() || inFlight >= MAX_CONCURRENT_REQUESTS) {
+        statusLine.textContent = 'Rate or concurrency cap reached. Wait a moment.'
+        return
+      }
+      const operation = operations[Number(operationSelect.value)]
+      const gate = isSendableOperation({ 'x-read-only': true }, 'GET')
+      if (!gate.sendable) {
+        statusLine.textContent = gate.reason
+        return
+      }
+      controller = new AbortController()
+      abortButton.disabled = false
+      inFlight += 1
+      sendTimes.push(Date.now())
+      const started = performance.now()
+      statusLine.textContent = `Sending GET ${operation.path}...`
+      let response: Awaited<ReturnType<typeof guardedFetch>>
+      let timedOut = false
+      let networkError: string | undefined
+      const timeout = setTimeout(() => controller?.abort(), DEFAULT_TIMEOUT_MS)
+      try {
+        response = await guardedFetch(`${origin}${operation.path}`, controller.signal)
+      } catch (error) {
+        if ((error as Error).name === 'AbortError') timedOut = true
+        else networkError = String((error as Error).message ?? error)
+      } finally {
+        clearTimeout(timeout)
+        abortButton.disabled = true
+        inFlight -= 1
+      }
+
+      if (!response) {
+        const verdict = deriveVerdict({ sent: true, timedOut, networkError })
+        statusLine.textContent = `${verdict.verdict}: ${verdict.detail}. A network failure is never called deprecated or closed.`
+        lastReport = scrubReport({ endpointLabel: origin, operationId: operation.id, verdict, evaluation: null })
+        return
+      }
+
+      const contract = contractData[operation.id] ?? { responses: {} }
+      const evaluation = evaluateResponse({
+        operation: { 'x-read-only': true, ...contract },
+        method: 'GET',
+        status: response.status,
+        contentType: response.contentType,
+        headers: response.headers,
+        body: typeof response.body === 'string' ? response.body : JSON.stringify(response.body),
+      })
+      // Run the build-time validator when one exists for this exact operation and status.
+      const validatorEntry = validators.validatorRegistry.find(
+        (entry: { key: string }) => entry.key === `arc20:GET ${operation.path}:${response.status}`,
+      )
+      if (validatorEntry) {
+        const validate = validators['validator' + validators.validatorRegistry.indexOf(validatorEntry)]
+        const valid = validate(response.body)
+        evaluation.checks.push({
+          name: 'schema validates',
+          passed: Boolean(valid),
+          detail: valid ? 'standalone build-time validator accepted the body' : JSON.stringify(validate.errors ?? []),
+        })
+        evaluation.allPassed = evaluation.allPassed && Boolean(valid)
+      }
+
+      let identity = null
+      try {
+        identity = await probeIdentity(origin, controller.signal)
+      } catch {
+        identity = null
+      }
+      const verdict = deriveVerdict({
+        sent: true,
+        evaluation,
+        identity,
+        expectedNetwork: 'mainnet',
+      })
+
+      const totalMs = Math.round(performance.now() - started)
+      statusLine.textContent = `Completed in ${totalMs} ms.`
+      results.hidden = false
+      verdictLine.textContent = `${verdict.verdict} - ${verdict.detail}`
+      checksList.innerHTML = evaluation.checks
+        .map(
+          (check: { name: string; passed: boolean; detail: string }) =>
+            `<li><span class="bu-chip" data-tone="${check.passed ? 'ok' : 'risk'}">${check.passed ? 'pass' : 'fail'}</span> ${check.name}: ${escapeHtml(check.detail)}</li>`,
+        )
+        .join('')
+      identityView.innerHTML = identity
+        ? Object.entries(identity)
+            .filter(([, value]) => value !== undefined && value !== null && typeof value !== 'object')
+            .map(([key, value]) => `<div class="bu-fact"><dt>${key}</dt><dd>${escapeHtml(String(value))}</dd></div>`)
+            .join('')
+        : '<p class="bu-tool-note">The endpoint did not expose an identity surface. Nothing is inferred from unrelated responses.</p>'
+      bodyView.textContent = JSON.stringify(response.body, null, 2).slice(0, 4000)
+      lastReport = scrubReport({
+        endpointLabel: origin,
+        operationId: operation.id,
+        verdict,
+        evaluation,
+        identity: identity ?? undefined,
+        timing: { totalMs },
+      })
+    }
+
+    function renderCompare() {
+      compareTable.hidden = slots.every((slot) => slot === null)
+      compareBody.innerHTML = slots
+        .map((slot, index) =>
+          slot
+            ? `<tr><th scope="row">${'ABC'[index]}</th><td>${slot.verdict}</td><td>${escapeHtml(slot.detail)}</td><td>${slot.chainTip ?? '-'}</td><td>${slot.indexedHeight ?? '-'}</td></tr>`
+            : '',
+        )
+        .join('')
+    }
+
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-capture]')) {
+      button.addEventListener('click', () => {
+        if (!lastReport) return
+        const index = Number(button.dataset.capture)
+        const report = lastReport as { verdict: { verdict: string; detail: string }; identity?: { chainTip?: number; indexedHeight?: number } | null }
+        slots[index] = {
+          verdict: report.verdict.verdict,
+          detail: report.verdict.detail,
+          chainTip: report.identity?.chainTip,
+          indexedHeight: report.identity?.indexedHeight,
+        }
+        renderCompare()
+      })
+    }
+    root.querySelector<HTMLButtonElement>('[data-send]')?.addEventListener('click', send)
+    root.querySelector<HTMLButtonElement>('[data-abort]')?.addEventListener('click', () => controller?.abort())
+    root.querySelector<HTMLButtonElement>('[data-forget]')?.addEventListener('click', () => {
+      endpointField.value = ''
+      results.hidden = true
+      statusLine.textContent = 'Endpoint cleared from memory. Nothing was ever stored.'
+    })
+    root.querySelector<HTMLButtonElement>('[data-report]')?.addEventListener('click', () => {
+      if (!lastReport) return
+      const blob = new Blob([JSON.stringify(lastReport, null, 2)], { type: 'application/json;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = 'conformance-report-scrubbed.json'
+      anchor.click()
+      URL.revokeObjectURL(url)
+    })
+
+    function escapeHtml(value: string): string {
+      return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
+    }
+  }
+</script>
+
+<style>
+  .bu-workbench-controls {
+    display: grid;
+    gap: var(--bu-space-3);
+    margin-block: var(--bu-space-3);
+  }
+
+  @media (min-width: 48rem) {
+    .bu-workbench-controls {
+      grid-template-columns: 2fr 2fr auto auto auto;
+      align-items: end;
+    }
+  }
+
+  .bu-workbench-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .bu-workbench-controls input,
+  .bu-workbench-controls select {
+    min-height: var(--bu-touch);
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface);
+    color: var(--bu-ink);
+    font: inherit;
+  }
+
+  .bu-workbench-verdict {
+    font-weight: 640;
+    color: var(--bu-ink);
+  }
+
+  .bu-workbench-checks {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bu-space-1);
+  }
+
+  .bu-workbench-checks li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--bu-step--1);
+  }
+
+  .bu-workbench-body {
+    max-height: 24rem;
+    overflow: auto;
+    padding: var(--bu-space-3);
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface-sunken);
+    font-family: var(--bu-font-mono);
+    font-size: 0.78rem;
+  }
+
+  .bu-workbench-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-2);
+    margin-block: var(--bu-space-2);
+  }
+</style>

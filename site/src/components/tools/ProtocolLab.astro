@@ -1,0 +1,491 @@
+---
+/**
+ * Browser Protocol Lab: deterministic Atomicals workflows with no keys, no
+ * signing, and no network. The engine runs in a dedicated worker; this
+ * component is hydrated only on the lab route.
+ */
+const rules = [
+  { id: 'arc20/allocation', label: 'ARC-20 allocation', page: '/protocol/arc20/allocation/' },
+  { id: 'arc20/output-ordering', label: 'Output ordering', page: '/protocol/arc20/allocation/' },
+  { id: 'arc20/burn', label: 'Burn rules', page: '/protocol/arc20/burns/' },
+  { id: 'bitcoin/dust', label: 'Dust threshold', page: '/protocol/arc20/psbt-requirements/' },
+  { id: 'bitcoin/fee', label: 'Fee and conservation', page: '/protocol/arc20/psbt-requirements/' },
+  { id: 'atomical/commit-reveal', label: 'Commit and reveal', page: '/protocol/core/commit-and-reveal/' },
+  { id: 'bitcoin/confirmation', label: 'Confirmations', page: '/protocol/core/confirmation-and-reorgs/' },
+  { id: 'bitcoin/reorg', label: 'Reorganizations', page: '/protocol/core/confirmation-and-reorgs/' },
+]
+const encodedRules = JSON.stringify(rules)
+---
+
+<section class="bu-tool bu-lab" data-lab data-rules={encodedRules}>
+  <noscript>
+    <p class="bu-tool-note">
+      The scenario library, JSON editor, and trace render below when JavaScript runs. Without it,
+      read the scenario sources in packages/protocol-lab/scenarios and the rule pages they cite.
+    </p>
+  </noscript>
+
+  <p class="bu-tool-note">
+    Everything here runs offline in your browser against the shared allocation engine. Scenarios
+    are synthetic: identifiers start with "sim" and are derived from the scenario seed. Nothing is
+    ever signed, broadcast, or uploaded.
+  </p>
+
+  <div class="bu-lab-layout">
+    <div class="bu-lab-side">
+      <h2>Scenario library</h2>
+      <ul class="bu-lab-templates" data-templates aria-label="Scenario templates"></ul>
+
+      <h2>Scenario JSON</h2>
+      <details class="bu-lab-editor-details" data-editor-open>
+        <summary>Edit raw scenario</summary>
+        <label class="bu-lab-editor-label" for="bu-lab-editor">Scenario JSON, validated before it runs</label>
+        <textarea id="bu-lab-editor" data-editor rows="16" spellcheck="false"></textarea>
+        <div class="bu-lab-editor-actions">
+          <button type="button" class="bu-btn" data-variant="primary" data-run-editor>Run edited scenario</button>
+          <button type="button" class="bu-btn" data-import>Import file</button>
+          <input type="file" data-import-file accept="application/json,.json" aria-label="Import scenario JSON file" hidden />
+        </div>
+        <p class="bu-lab-error" data-editor-error role="alert" hidden></p>
+      </details>
+
+      <h2>Share and export</h2>
+      <div class="bu-lab-share">
+        <button type="button" class="bu-btn" data-share>Copy shareable link</button>
+        <button type="button" class="bu-btn" data-export="scenario">Scenario JSON</button>
+        <button type="button" class="bu-btn" data-export="trace">Execution trace</button>
+      </div>
+      <p class="bu-tool-note" data-share-note hidden></p>
+    </div>
+
+    <div class="bu-lab-main">
+      <div class="bu-lab-toolbar">
+        <button type="button" class="bu-btn" data-variant="primary" data-run>Run scenario</button>
+        <button type="button" class="bu-btn" data-reset>Reset</button>
+        <span class="bu-lab-status" data-status role="status">Load a scenario to begin.</span>
+      </div>
+
+      <section class="bu-lab-result" data-result hidden>
+        <h2>Execution timeline</h2>
+        <ol class="bu-lab-trace" data-trace></ol>
+
+        <h2>UTXO set after the last step</h2>
+        <div class="bu-matrix bu-scroll">
+          <table>
+            <caption>Every unspent output with its satoshi value and assignments</caption>
+            <thead>
+              <tr>
+                <th scope="col">Output</th>
+                <th scope="col">Address</th>
+                <th scope="col">Satoshis</th>
+                <th scope="col">Confirmed</th>
+                <th scope="col">Assignments</th>
+              </tr>
+            </thead>
+            <tbody data-utxos></tbody>
+          </table>
+        </div>
+
+        <h2>Final balances</h2>
+        <dl class="bu-facts" data-balances></dl>
+      </section>
+    </div>
+  </div>
+</section>
+
+<script>
+  type LabScenario = { id: string; title: string; description?: string; [key: string]: unknown }
+  type TraceRule = { rule: { id: string }; outcome: string; ok: boolean }
+  type TraceEntry = {
+    step: { type: string; label?: string }
+    fatal?: boolean
+    errors?: string[]
+    warnings?: string[]
+    rules?: TraceRule[]
+    txid?: string
+    fee?: number
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-lab]')
+  if (root) initLab(root)
+
+  function initLab(root: HTMLElement) {
+    const rulePages = new Map<string, string>(JSON.parse(root.dataset.rules ?? '[]'))
+    const templates = root.querySelector<HTMLUListElement>('[data-templates]')!
+    const traceList = root.querySelector<HTMLOListElement>('[data-trace]')!
+    const utxoBody = root.querySelector<HTMLTableSectionElement>('[data-utxos]')!
+    const balancesView = root.querySelector<HTMLDListElement>('[data-balances]')!
+    const resultPanel = root.querySelector<HTMLElement>('[data-result]')!
+    const status = root.querySelector<HTMLElement>('[data-status]')!
+    const editor = root.querySelector<HTMLTextAreaElement>('[data-editor]')!
+    const editorError = root.querySelector<HTMLElement>('[data-editor-error]')!
+    const shareNote = root.querySelector<HTMLElement>('[data-share-note]')!
+
+    let current: LabScenario | undefined
+    let worker: Worker | undefined
+
+    function startWorker(): Worker {
+      const instance = new Worker(new URL('../../workers/protocol-lab.worker.mjs', import.meta.url), {
+        type: 'module',
+      })
+      instance.addEventListener('message', (event) => {
+        const data = event.data
+        if (data.id === 'list') {
+          for (const entry of data.scenarios) templateCache.set(entry.id, entry.scenario)
+          renderTemplates(data.scenarios)
+        }
+        if (data.id === 'run') {
+          if (data.error) {
+            showError(data.error)
+            return
+          }
+          renderResult(data.result)
+        }
+      })
+      return instance
+    }
+
+    function renderTemplates(list: { id: string; title: string; description?: string }[]) {
+      templates.innerHTML = ''
+      for (const scenario of list) {
+        const item = document.createElement('li')
+        const button = document.createElement('button')
+        button.type = 'button'
+        button.textContent = scenario.title
+        button.setAttribute(
+          'aria-pressed',
+          String(current?.id === scenario.id),
+        )
+        button.addEventListener('click', () => loadTemplate(scenario.id))
+        item.appendChild(button)
+        templates.appendChild(item)
+      }
+    }
+
+    function loadTemplate(id: string) {
+      if (!worker) worker = startWorker()
+      const scenario = templateCache.get(id)
+      if (!scenario) return
+      current = scenario
+      editor.value = JSON.stringify(scenario, null, 2)
+      shareNote.hidden = true
+      run()
+    }
+
+    const templateCache = new Map<string, LabScenario>()
+
+    function run() {
+      if (!current) return
+      if (!worker) worker = startWorker()
+      hideError()
+      status.textContent = `Running ${current.id} in a worker...`
+      worker.postMessage({ id: 'run', scenario: current })
+    }
+
+    function renderResult(result: {
+      trace: TraceEntry[]
+      finalState: { utxos: Record<string, { value: number; address: string; confirmed: boolean; unspendable: boolean; atomicals: Record<string, number> }>; blockHeight: number }
+      balances: Record<string, { sats: number; atomicals: Record<string, number> }>
+    }) {
+      status.textContent = `Completed at block ${result.finalState.blockHeight}.`
+      resultPanel.hidden = false
+
+      traceList.innerHTML = result.trace
+        .map((entry) => {
+          const label = entry.step.label ?? entry.step.type
+          const state = entry.fatal ? 'refused' : 'applied'
+          const ruleLines = (entry.rules ?? [])
+            .map((rule) => {
+              const page = rulePages.get(rule.rule.id)
+              const name = page
+                ? `<a href="${page}">${rule.rule.id}</a>`
+                : rule.rule.id
+              return `<li><span class="bu-chip" data-tone="${rule.ok ? 'ok' : 'risk'}">${rule.ok ? 'pass' : 'fail'}</span> ${name}: ${escapeHtml(rule.outcome)}</li>`
+            })
+            .join('')
+          const warningLines = (entry.warnings ?? [])
+            .map((warning) => `<li class="bu-lab-warning">${escapeHtml(warning)}</li>`)
+            .join('')
+          const errorLines = (entry.errors ?? [])
+            .map((error) => `<li class="bu-lab-error-line">${escapeHtml(error)}</li>`)
+            .join('')
+          return `<li class="bu-lab-step" data-fatal="${entry.fatal ? 'true' : 'false'}">
+            <h3>${escapeHtml(label)} <span class="bu-chip" data-tone="${entry.fatal ? 'risk' : 'ok'}">${state}</span></h3>
+            ${entry.txid ? `<p class="bu-mono">${entry.txid}</p>` : ''}
+            ${entry.fee !== undefined ? `<p>fee ${entry.fee} sats</p>` : ''}
+            ${ruleLines ? `<ul class="bu-lab-rules">${ruleLines}</ul>` : ''}
+            ${warningLines ? `<ul>${warningLines}</ul>` : ''}
+            ${errorLines ? `<ul>${errorLines}</ul>` : ''}
+          </li>`
+        })
+        .join('')
+
+      utxoBody.innerHTML = Object.entries(result.finalState.utxos)
+        .map(
+          ([id, utxo]) => `<tr>
+            <th scope="row" class="bu-mono">${id}</th>
+            <td>${utxo.address}</td>
+            <td class="bu-num">${utxo.value}</td>
+            <td>${utxo.confirmed ? 'yes' : 'no'}${utxo.unspendable ? ' (unspendable)' : ''}</td>
+            <td>${
+              Object.entries(utxo.atomicals)
+                .map(([atomicalId, units]) => `${atomicalId}: ${units}`)
+                .join(', ') || 'plain bitcoin'
+            }</td>
+          </tr>`,
+        )
+        .join('')
+
+      balancesView.innerHTML = Object.entries(result.balances)
+        .map(
+          ([address, balance]) => `<div class="bu-fact">
+            <dt>${address}</dt>
+            <dd>${balance.sats} sats${
+              Object.keys(balance.atomicals).length
+                ? ' - ' + Object.entries(balance.atomicals).map(([id, units]) => `${units} of ${id}`).join(', ')
+                : ''
+            }</dd>
+          </div>`,
+        )
+        .join('')
+    }
+
+    function showError(message: string) {
+      status.textContent = 'The scenario was refused.'
+      editorError.textContent = message
+      editorError.hidden = false
+    }
+
+    function hideError() {
+      editorError.hidden = true
+    }
+
+    root.querySelector<HTMLButtonElement>('[data-run]')?.addEventListener('click', run)
+    root.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () => {
+      resultPanel.hidden = true
+      status.textContent = 'Reset. Nothing was stored; the worker keeps no state.'
+      hideError()
+    })
+    root.querySelector<HTMLButtonElement>('[data-run-editor]')?.addEventListener('click', () => {
+      try {
+        current = JSON.parse(editor.value)
+        hideError()
+        run()
+      } catch (error) {
+        showError(`The scenario is not valid JSON: ${String(error instanceof Error ? error.message : error)}`)
+      }
+    })
+    root.querySelector<HTMLButtonElement>('[data-import]')?.addEventListener('click', () => {
+      root.querySelector<HTMLInputElement>('[data-import-file]')?.click()
+    })
+    root.querySelector<HTMLInputElement>('[data-import-file]')?.addEventListener('change', (event) => {
+      const input = event.target as HTMLInputElement
+      const file = input.files?.[0]
+      if (!file) return
+      if (file.size > 512 * 1024) {
+        showError('That file is larger than 512 KB, which is far beyond any reasonable scenario.')
+        return
+      }
+      file.text().then((text) => {
+        try {
+          current = JSON.parse(text)
+          editor.value = JSON.stringify(current, null, 2)
+          hideError()
+          run()
+        } catch (error) {
+          showError(`That file is not valid JSON: ${String(error instanceof Error ? error.message : error)}`)
+        }
+      })
+    })
+    root.querySelector<HTMLButtonElement>('[data-share]')?.addEventListener('click', () => {
+      if (!current) return
+      const compressed = encodeURIComponent(JSON.stringify(current))
+      const url = `${location.origin}${location.pathname}#scenario=${compressed}`
+      if (url.length > 8000) {
+        shareNote.textContent =
+          'This scenario is too large for a shareable link. Export the scenario JSON instead; nothing is ever uploaded.'
+        shareNote.hidden = false
+        return
+      }
+      navigator.clipboard?.writeText(url)
+      shareNote.textContent = 'A link carrying the scenario is on your clipboard. It never leaves this page.'
+      shareNote.hidden = false
+    })
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-export]')) {
+      button.addEventListener('click', () => {
+        if (!current) return
+        const payload =
+          button.dataset.export === 'trace'
+            ? JSON.stringify({ scenarioId: current.id, note: 'Re-run this scenario in the Protocol Lab to reproduce the trace.' }, null, 2)
+            : JSON.stringify(current, null, 2)
+        const blob = new Blob([payload], { type: 'application/json;charset=utf-8' })
+        const url = URL.createObjectURL(blob)
+        const anchor = document.createElement('a')
+        anchor.href = url
+        anchor.download = `protocol-lab-${current.id}${button.dataset.export === 'trace' ? '-trace' : ''}.json`
+        anchor.click()
+        URL.revokeObjectURL(url)
+      })
+    }
+
+    // A scenario hash in the URL loads and runs it immediately.
+    const match = location.hash.match(/scenario=([^&]+)/)
+    if (match) {
+      try {
+        current = JSON.parse(decodeURIComponent(match[1]))
+        editor.value = JSON.stringify(current, null, 2)
+        if (!worker) worker = startWorker()
+        run()
+      } catch {
+        showError('The scenario carried in the link is not valid JSON.')
+      }
+    } else {
+      if (!worker) worker = startWorker()
+    }
+
+    function escapeHtml(value: string): string {
+      return value
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+    }
+  }
+</script>
+
+<style>
+  .bu-lab-layout {
+    display: grid;
+    gap: var(--bu-space-5);
+    margin-block-start: var(--bu-space-4);
+  }
+
+  @media (min-width: 62rem) {
+    .bu-lab-layout {
+      grid-template-columns: 22rem 1fr;
+      align-items: start;
+    }
+  }
+
+  .bu-lab-templates {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bu-space-1);
+    margin: 0 0 var(--bu-space-4);
+    padding: 0;
+    list-style: none;
+  }
+
+  .bu-lab-templates button {
+    width: 100%;
+    min-height: var(--bu-touch);
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface);
+    color: var(--bu-ink);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .bu-lab-templates button:hover {
+    border-color: var(--bu-accent);
+  }
+
+  .bu-lab-templates button[aria-pressed='true'] {
+    border-color: var(--bu-accent);
+    background: var(--bu-accent-quiet);
+    color: var(--bu-accent-strong);
+    font-weight: 620;
+  }
+
+  .bu-lab-editor textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-s);
+    background: var(--bu-surface-sunken);
+    color: var(--bu-ink);
+    font-family: var(--bu-font-mono);
+    font-size: 0.8rem;
+  }
+
+  .bu-lab-editor-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-2);
+    margin-block: var(--bu-space-2);
+  }
+
+  .bu-lab-error {
+    color: var(--bu-risk);
+    font-weight: 600;
+  }
+
+  .bu-lab-share {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bu-space-2);
+  }
+
+  .bu-lab-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--bu-space-2);
+    margin-block-end: var(--bu-space-4);
+  }
+
+  .bu-lab-status {
+    color: var(--bu-ink-muted);
+    font-size: var(--bu-step--1);
+  }
+
+  .bu-lab-trace {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bu-space-2);
+    margin: 0 0 var(--bu-space-4);
+    padding-inline-start: 1.2rem;
+  }
+
+  .bu-lab-step {
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface);
+    padding: var(--bu-space-3);
+  }
+
+  .bu-lab-step[data-fatal='true'] {
+    border-color: var(--bu-risk);
+  }
+
+  .bu-lab-step h4 {
+    margin: 0;
+  }
+
+  .bu-lab-rules {
+    list-style: none;
+    padding: 0;
+    margin: var(--bu-space-2) 0 0;
+    font-size: var(--bu-step--1);
+  }
+
+  .bu-lab-rules li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-block: 0.2rem;
+  }
+
+  .bu-lab-warning {
+    color: var(--bu-warn);
+    font-size: var(--bu-step--1);
+  }
+
+  .bu-lab-error-line {
+    color: var(--bu-risk);
+    font-size: var(--bu-step--1);
+  }
+</style>

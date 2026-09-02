@@ -1,0 +1,289 @@
+{
+  "traceVersion": "1.0.0",
+  "scenarioId": "arc20-transfer",
+  "seed": "arc20-send",
+  "network": "regtest",
+  "trace": [
+    {
+      "step": {
+        "type": "fund",
+        "label": "fund",
+        "outputs": [
+          {
+            "value": 20000,
+            "address": "bc1qholder"
+          }
+        ]
+      },
+      "txid": "sim4404f19f56f6f698",
+      "inputs": [],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 20000,
+          "address": "bc1qholder",
+          "utxoId": "sim4404f19f56f6f698:0"
+        }
+      ],
+      "before": null,
+      "after": null,
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "coinbase-like funding output carries no fee",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "reveal",
+        "label": "mint",
+        "inputs": [
+          "fundo0"
+        ],
+        "outputs": [
+          {
+            "value": 546,
+            "address": "bc1qholder"
+          },
+          {
+            "value": 19400,
+            "address": "bc1qholder"
+          }
+        ],
+        "atomical": {
+          "type": "ft",
+          "ticker": "GOLD",
+          "units": 546
+        }
+      },
+      "txid": "sim56f6f698da4ca3ed",
+      "atomicalId": "sim56f6f698da4ca3edi2",
+      "fee": 54,
+      "inputs": [
+        {
+          "utxoId": "sim4404f19f56f6f698:0",
+          "value": 20000
+        }
+      ],
+      "outputs": [
+        {
+          "index": 0,
+          "value": 546,
+          "address": "bc1qholder"
+        },
+        {
+          "index": 1,
+          "value": 19400,
+          "address": "bc1qholder"
+        }
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "atomical/commit-reveal",
+            "page": "/protocol/core/commit-and-reveal/",
+            "path": "mintParser"
+          },
+          "outcome": "envelope exposed in the reveal witness",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "confirm",
+        "blocks": 1
+      },
+      "blockHeight": 1,
+      "confirmed": [
+        "sim4404f19f56f6f698",
+        "sim56f6f698da4ca3ed"
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/confirmation",
+            "page": "/protocol/core/confirmation-and-reorgs/",
+            "path": "networkActivations"
+          },
+          "outcome": "1 block(s) mined; mempool confirmed",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "step": {
+        "type": "transfer",
+        "label": "send",
+        "inputs": [
+          "minto0",
+          "minto1"
+        ],
+        "outputs": [
+          {
+            "value": 546,
+            "address": "bc1qreceiver"
+          },
+          {
+            "value": 19400,
+            "address": "bc1qholder"
+          }
+        ]
+      },
+      "txid": "simda4ca3eded52309e",
+      "fee": 0,
+      "inputs": [
+        {
+          "utxoId": "sim56f6f698da4ca3ed:0",
+          "value": 546
+        },
+        {
+          "utxoId": "sim56f6f698da4ca3ed:1",
+          "value": 19400
+        }
+      ],
+      "outputs": [
+        {
+          "value": 546,
+          "address": "bc1qreceiver"
+        },
+        {
+          "value": 19400,
+          "address": "bc1qholder"
+        }
+      ],
+      "virtualSize": 358,
+      "allocation": {
+        "sim56f6f698da4ca3edi2": {
+          "outputs": [
+            {
+              "index": 0,
+              "value": 546,
+              "unspendable": false,
+              "assignments": [
+                {
+                  "atomicalId": "sim56f6f698da4ca3edi2",
+                  "coloredValue": 546
+                }
+              ],
+              "coloredTotal": 546
+            },
+            {
+              "index": 1,
+              "value": 19400,
+              "unspendable": false,
+              "assignments": [],
+              "coloredTotal": 0
+            }
+          ],
+          "burned": [],
+          "cleanlyAssigned": true,
+          "inflationRejected": false
+        }
+      },
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/fee",
+            "page": "/protocol/arc20/psbt-requirements/",
+            "path": "constants"
+          },
+          "outcome": "fee 0 sats",
+          "ok": true
+        },
+        {
+          "rule": {
+            "id": "arc20/allocation",
+            "page": "/protocol/arc20/allocation/",
+            "path": "normalFtAllocation"
+          },
+          "outcome": "sim56f6f698da4ca3edi2: out0=546, out1=0",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": [],
+      "stateDiff": []
+    },
+    {
+      "step": {
+        "type": "confirm",
+        "blocks": 1
+      },
+      "blockHeight": 2,
+      "confirmed": [
+        "simda4ca3eded52309e"
+      ],
+      "rules": [
+        {
+          "rule": {
+            "id": "bitcoin/confirmation",
+            "page": "/protocol/core/confirmation-and-reorgs/",
+            "path": "networkActivations"
+          },
+          "outcome": "1 block(s) mined; mempool confirmed",
+          "ok": true
+        }
+      ],
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "finalState": {
+    "blockHeight": 2,
+    "mempoolSize": 0,
+    "utxos": {
+      "simda4ca3eded52309e:0": {
+        "value": 546,
+        "address": "bc1qreceiver",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {
+          "sim56f6f698da4ca3edi2": 546
+        }
+      },
+      "simda4ca3eded52309e:1": {
+        "value": 19400,
+        "address": "bc1qholder",
+        "confirmed": true,
+        "unspendable": false,
+        "atomicals": {}
+      }
+    },
+    "atomicals": {
+      "sim56f6f698da4ca3edi2": {
+        "type": "ft",
+        "ticker": "GOLD",
+        "units": 546,
+        "ownerOutput": "sim56f6f698da4ca3ed:0",
+        "confirmed": false
+      }
+    }
+  },
+  "balances": {
+    "bc1qreceiver": {
+      "sats": 546,
+      "atomicals": {
+        "sim56f6f698da4ca3edi2": 546
+      }
+    },
+    "bc1qholder": {
+      "sats": 19400,
+      "atomicals": {}
+    }
+  }
+}

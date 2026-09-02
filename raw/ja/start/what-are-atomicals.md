@@ -1,0 +1,59 @@
+# Atomicals とは
+
+通常の Bitcoin の出力の中に存在するデジタルオブジェクト。作成したトランザクションによって識別され、Atomicals バリデータによって解釈されます。
+
+Page ID: start/what-are-atomicals
+Applicability: protocol-behavior
+Authority: reference-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: ja
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ja/start/what-are-atomicals/
+
+---
+**Atomical** とは、Bitcoin のトランザクションによって作成され、Bitcoin の出力が保持するデジタル
+オブジェクトです。サイドチェーンも、独立したトークン台帳も、スマートコントラクトのアカウントも
+ありません。バリデータがあなたのトランザクションを読み、Atomicals のルールを適用するからこそ、
+そのオブジェクトは存在します。
+
+## Atomical を構成する三つの要素
+
+**識別子** は Atomical ID で、`<txid>i<出力インデックス>` の形式で表します。一度だけ割り当てられ、
+決して変わりません。発行順に番号も割り当てられますが、保存すべき恒久的な識別子は ID のほうです。
+
+**所在** は、そのオブジェクトを現在保持している UTXO です。その UTXO を使うと、出力の構成に応じて
+オブジェクトが移動するか、破棄されます。
+
+**履歴** は、そのオブジェクトに適用された操作の順序付きの集合です。発行、各状態更新、そしてすべての
+移動が含まれます。
+
+## 操作はどのように書き込まれるか
+
+エンベロープは Bitcoin によって実行されません。Taproot のスクリプトパス内のデータにすぎません。
+Bitcoin は `atom` の意味を知りません。Atomicals バリデータは知っています。
+
+確認済みの Bitcoin トランザクションが示すのは、バイト列がブロックに含まれたという事実だけです。
+操作が有効だったか、どの出力がオブジェクトを受け取ったか、何かが焼失したかは、バリデータが答える
+事柄です。必ず両方を確認してください。
+
+## プロトコルファミリー
+
+| 種類 | 内容 | 参照 |
+| --- | --- | --- |
+| Atomicals NFT | メタデータとメディアを持つ単一の非代替オブジェクト | [NFT の概要](/protocol/nft/overview/) |
+| ARC-20 | 1 単位が 1 個の色付きサトシである代替性トークン | [ARC-20 の概要](/protocol/arc20/overview/) |
+| Container | アイテムが所属を証明できる名前付きコレクション | [Containers](/protocol/containers/overview/) |
+| DMINT | 封印されたマニフェストに対する Container アイテムの分散発行 | [DMINT](/protocol/containers/dmint/) |
+| Realm | Atomical として保有される最上位の名前 | [Realms](/protocol/realms/overview/) |
+| Subrealm | Realm のルールのもとで請求される子の名前 | [Subrealms](/protocol/realms/subrealms/) |
+| Payname | 支払い先として使われる Realm | [Paynames](/protocol/realms/paynames/) |
+| AVM | 隔離されたスクリプトインタプリタ。ベータであり範囲も別 | [AVM](/protocol/avm/overview/) |
+
+## Atomical ではないもの
+
+- 誰が作ったかの証明ではありません。ティッカーや Realm 名は割り当てであって、身元の検証では
+  ありません。
+- コントラクトのアカウントではありません。差し引く残高の行は存在しません。
+- メタデータから推測して良いものではありません。メタデータは発行者が入力した任意のデータです。
+- Bitcoin が確認したから確定、ではありません。
+  [確認と再編成](/protocol/core/confirmation-and-reorgs/) を参照してください。

@@ -1,0 +1,95 @@
+---
+title: 什么是 ARC-20
+description: Atomicals 的同质代币模型，一个单位等于一个着色聪，转移是一个分配问题，而不是账户更新。
+sidebar:
+  order: 2
+provenance:
+  pageId: start/what-is-arc-20
+  area: start
+  audience: [everyone]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-guide
+      path: arc20
+  verified: '2026-08-31'
+  tags: [arc-20, concepts]
+  translationSourceHash: 4851d0f32352d447dd7d92841fe0c06bb60db92b2b53643d1052c48e6f1a4d49
+  limitations:
+    - 分配行为取决于版本。本页的数字仅遵循固定的参考版本。
+---
+
+import Arc20Units from '../../../../components/diagrams/Arc20Units.astro'
+import ModelComparison from '../../../../components/diagrams/ModelComparison.astro'
+import { Aside } from '@astrojs/starlight/components'
+import EntryCards from '../../../../components/EntryCards.astro'
+
+ARC-20 是 Atomicals 内部的同质代币模型。它的规则很短：
+
+> **一个 ARC-20 单位，就是验证器认定为着色的比特币输出中的一个聪。**
+
+这一句话决定了其余的一切。供应量以聪计量。转移是一个关于哪些输出获得多少价值的问题。无法放置的
+价值会被销毁。
+
+<Arc20Units />
+
+## 为什么这不是账户余额
+
+<ModelComparison />
+
+在账户模型中，转移从一行减去、在另一行加上，交易要么成功要么失败。在 ARC-20 中，比特币交易无论
+如何都会成功。改变的是着色价值最终落在哪里。
+
+| 问题 | 账户模型 | ARC-20 |
+| --- | --- | --- |
+| 余额在哪里 | 账本中的一行 | 分散在你的未花费输出中 |
+| 转移是什么 | 借记与贷记 | 按顺序把输入价值分配给输出 |
+| 价值会消失吗 | 不会 | 会。放不下的价值会被销毁 |
+| 谁决定结果 | 合约 | 你的索引器运行的验证器版本 |
+| 确认是否意味着成功 | 是 | 否。确认与分配是两个不同的答案 |
+
+<Aside type="danger" title="首先要理解的失败模式">
+如果下一个可用输出大于尚未放置的着色价值，该价值不会被结转。它会被销毁。这在比特币上不是错误
+状态：交易会正常确认。在移动任何东西之前，请阅读[销毁](/protocol/arc20/burns/)。
+</Aside>
+
+## 单位产生的三种方式
+
+| 方式 | 操作 | 形态 |
+| --- | --- | --- |
+| 直接发行 | `ft` | 全部供应量落在一笔交易的第零个输出 |
+| 固定去中心化 | 先 `dft` 后 `dmt` | 部署设定规则，随后每位申领者铸造固定数量 |
+| 永续去中心化 | 带永续参数的 `dft` | 受激活条件约束，Bitwork 递进，可选全局上限 |
+
+参见[直接发行](/protocol/arc20/direct-issuance/)、
+[固定 DFT](/protocol/arc20/fixed-dft/) 和
+[永续 DFT](/protocol/arc20/perpetual-dft/)。
+
+## 代号意味着什么，不意味着什么
+
+代号是一个全局分配的名称。赢得它意味着 Atomicals 规则把一个候选解析为已验证的胜出者。它并不意味着：
+
+- 项目就是它自称的那一方；
+- 元数据是准确的；
+- 图片归铸造者所有；
+- 有人为供应量负责。
+
+在展示任何代号时，都要同时保存并显示已解析的 **Atomical ID**。
+参见[代号与候选](/protocol/arc20/tickers-and-candidates/)。
+
+## 小数位不会产生分数
+
+`decimals` 是展示用元数据。它只改变钱包在屏幕上如何格式化数字，绝不会创造小于一个聪的单位。
+ARC-20 的原生数量始终是整数。
+参见[元数据与小数位](/protocol/arc20/metadata-and-decimals/)。
+
+<EntryCards
+  cards={[
+    { title: "分配的每一步", body: "验证器如何把着色价值放入输出，逐步说明。", href: "/protocol/arc20/allocation/" },
+    { title: "动手试试", body: "先建模一笔交易，在构建之前看到销毁。", href: "/tools/allocation-visualizer/" },
+  ]}
+/>
+

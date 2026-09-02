@@ -1,0 +1,14 @@
+# One-command pinned builds. Executed in CI and by the Regtest Lab profile.
+services:
+  native-build:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.native
+    volumes:
+      - ../../out:/out
+  wasm-build:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.wasm
+    volumes:
+      - ../../out:/out

@@ -1,0 +1,6 @@
+{
+  "changesVersion": "1.0.0",
+  "note": "Semantic changes between verified source sets. Computed when a new set is verified; never hand-written to describe unverified revisions.",
+  "comparedSets": [],
+  "changes": []
+}

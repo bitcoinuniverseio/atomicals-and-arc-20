@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARC-20 compatibility specification | Atomicals and ARC-20</title>
+<meta name="description" content="The ARC-20 compatibility specification, generated from the current documentation and pinned to a reference revision.">
+<meta name="generator" content="scripts/generate-artifacts.mjs">
+<link rel="canonical" href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/overview/">
+<link rel="icon" href="/atomicals-and-arc-20/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="ARC-20 compatibility specification">
+<meta property="og:description" content="The ARC-20 compatibility specification, generated from the current documentation and pinned to a reference revision.">
+<meta property="og:url" content="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/overview/">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="/atomicals-and-arc-20/theme.css">
+</head>
+<body class="compat">
+<a class="skip" href="#main">Skip to content</a>
+<header class="compat-header">
+  <a class="compat-brand" href="/atomicals-and-arc-20/">Atomicals and ARC-20</a>
+  <nav aria-label="Primary">
+    <a href="/atomicals-and-arc-20/start/what-are-atomicals/">Start</a>
+    <a href="/atomicals-and-arc-20/protocol/overview/">Protocol</a>
+    <a href="/atomicals-and-arc-20/guides/">Guides</a>
+    <a href="/atomicals-and-arc-20/reference/openapi/">Reference</a>
+  </nav>
+</header>
+<main id="main" class="compat-main">
+<div class="compat-notice">
+  <strong>Compatibility page.</strong> This route is preserved so older links keep working. It is
+  generated from the current documentation, so it cannot drift.
+  <a href="https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/overview/">Open the current page</a>.
+</div>
+<h1 id="arc-20-compatibility-specification">ARC-20 compatibility specification</h1>
+<p>Status: compatibility guide, generated from the documentation content Documentation version: 2026.08 Generated: 2026-08-31 Reference behavior pin: Atomicals ElectrumX commit 8df23747835c20230fc8b8097d469e7a1d97c3e0 (v1.5.2.0)</p>
+<p>This file is generated from the pages listed below. It is never edited by hand, so it cannot drift from the documentation it summarises.</p>
+<p>Source pages:</p>
+<ul><li>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/overview/</li><li>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/unit-model/</li><li>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/allocation/</li><li>https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/arc20/burns/</li></ul>
+<h2 id="1-scope-and-authority">1. Scope and authority</h2>
+<p>This document describes the Atomicals ARC-20 fungible token model on Bitcoin. It is a compatibility guide for wallets, indexers, transaction builders, and product teams. It is not an independent consensus specification, a smart contract specification, or a financial statement.</p>
+<p>The Atomicals specification is defined in code. Therefore:</p>
+<ul><li>Concept documentation explains the model and command line usage.</li><li>The selected validator or indexer implementation determines version-sensitive transaction behavior.</li><li>A production integration MUST pin a code revision or released version and its activation configuration.</li><li>A production integration MUST NOT infer token validity or ownership from a ticker, image, metadata object, portfolio label, or generic Bitcoin confirmation alone.</li></ul>
+<p>This document covers ARC-20 fungible tokens only. Realms and Containers are Atomicals NFT and name or collection primitives. This document does not establish an ARC-721 standard, and no official source located during review establishes one.</p>
+<h2 id="the-rule">The rule</h2>
+<p>One ARC-20 unit is one satoshi in an output a validator recognises as coloured for that token. Native quantities are integers. There is no smaller division.</p>
+<h2 id="what-follows-immediately">What follows immediately</h2>
+<p><strong>Supply is satoshis.</strong> A token with 100 000 000 units required 100 000 000 satoshis, which is one bitcoin, to exist. Large supplies are expensive by construction.</p>
+<p><strong>Dust limits apply.</strong> An output that Bitcoin will not relay cannot carry units. In practice a coloured output must be at or above the relay dust threshold for its script type.</p>
+<p><strong>Balances are sums, not stored values.</strong> A wallet total is the sum of the coloured outputs it can spend. Nothing on chain stores that total.</p>
+<p><strong>Spending is all or nothing per output.</strong> There is no partial spend. Moving part of a lot means building a transaction whose outputs receive the split you want.</p>
+<h2 id="worked-numbers">Worked numbers</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">Deployment</th><th scope="col">Mint amount</th><th scope="col">Max mints</th><th scope="col">Nominal maximum issuance</th><th scope="col">Bitcoin required</th></tr></thead><tbody><tr><td>Small</td><td>1 000 sats</td><td>10 000</td><td>10 000 000 units</td><td>0.1 BTC</td></tr><tr><td>Medium</td><td>10 000 sats</td><td>21 000</td><td>210 000 000 units</td><td>2.1 BTC</td></tr><tr><td>Large</td><td>100 000 sats</td><td>21 000</td><td>2 100 000 000 units</td><td>21 BTC</td></tr></tbody></table></div>
+<p>Nominal maximum issuance is <code>mint_amount * max_mints</code>. It is a ceiling on what claims can produce, not a promise that the ceiling is reached.</p>
+<h2 id="decimals">Decimals</h2>
+<p><code>decimals</code> is optional metadata that tells a wallet how to format a number for a reader. A token with 100 000 units and <code>decimals</code> of 2 may be displayed as 1 000.00. The chain still holds 100 000 integer units in 100 000 coloured satoshis.</p>
+<p>Never divide a native quantity by a power of ten before doing arithmetic on it, and never let a formatted figure enter a transaction builder. See <a href="/atomicals-and-arc-20/protocol/arc20/metadata-and-decimals/">metadata and decimals</a>.</p>
+<h2 id="dust-and-safety">Dust and safety</h2>
+<p>A coloured output near the dust threshold is fragile. Any transfer that needs to leave a remainder smaller than the threshold cannot place that remainder in a new output, so it burns.</p>
+<p>Practical guidance:</p>
+<ul><li>Keep lots at sizes that divide cleanly for the transfers you expect.</li><li>Prefer a small number of larger lots over many dust-sized lots.</li><li>Model any split before building it. See <a href="/atomicals-and-arc-20/tools/allocation-visualizer/">allocation visualizer</a>.</li></ul>
+<p>ARC-20 is the Atomicals fungible token model on Bitcoin. One unit is one coloured satoshi. Everything else follows from that.</p>
+<h2 id="the-complete-model-in-seven-statements">The complete model in seven statements</h2>
+<ol><li>A unit is a satoshi in an output a validator recognises as coloured for a token.</li><li>Supply is therefore measured in satoshis, and is bounded by real bitcoin.</li><li>Issuance happens once, directly, or repeatedly through a deployment others mint against.</li><li>A ticker is a globally allocated name resolved to exactly one Atomical.</li><li>A transfer is an allocation over the transaction&#39;s inputs and outputs, in order.</li><li>Value that cannot be placed in an eligible output is destroyed.</li><li>Coloured output totals can never exceed coloured input totals.</li></ol>
+<p>Read <a href="/atomicals-and-arc-20/protocol/arc20/burns/">burns</a> before you build or sign anything.</p>
+<h2 id="where-each-rule-is-documented">Where each rule is documented</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">Area</th><th scope="col">Page</th></tr></thead><tbody><tr><td>The unit model and why decimals do not create fractions</td><td><a href="/atomicals-and-arc-20/protocol/arc20/unit-model/">Unit model</a></td></tr><tr><td>Ticker allocation, candidates, and verified winners</td><td><a href="/atomicals-and-arc-20/protocol/arc20/tickers-and-candidates/">Tickers and candidates</a></td></tr><tr><td>One step issuance of a complete supply</td><td><a href="/atomicals-and-arc-20/protocol/arc20/direct-issuance/">Direct issuance</a></td></tr><tr><td>Deployments with a fixed number of mints</td><td><a href="/atomicals-and-arc-20/protocol/arc20/fixed-dft/">Fixed DFT</a></td></tr><tr><td>Claiming a mint against a deployment</td><td><a href="/atomicals-and-arc-20/protocol/arc20/decentralized-mint/">Decentralised mint</a></td></tr><tr><td>Activation gated progressive deployments</td><td><a href="/atomicals-and-arc-20/protocol/arc20/perpetual-dft/">Perpetual DFT</a></td></tr><tr><td>Work requirements on commit and reveal</td><td><a href="/atomicals-and-arc-20/protocol/arc20/bitwork-requirements/">Bitwork requirements</a></td></tr><tr><td>Optional metadata and presentation decimals</td><td><a href="/atomicals-and-arc-20/protocol/arc20/metadata-and-decimals/">Metadata and decimals</a></td></tr><tr><td>How value is placed into outputs</td><td><a href="/atomicals-and-arc-20/protocol/arc20/allocation/">Allocation</a></td></tr><tr><td>Separating and recombining coloured lots</td><td><a href="/atomicals-and-arc-20/protocol/arc20/split-and-combine/">Split and combine</a></td></tr><tr><td>How value is destroyed</td><td><a href="/atomicals-and-arc-20/protocol/arc20/burns/">Burns</a></td></tr><tr><td>Moving tokens and swapping them atomically</td><td><a href="/atomicals-and-arc-20/protocol/arc20/transfers-and-swaps/">Transfers and swaps</a></td></tr><tr><td>What a PSBT must contain</td><td><a href="/atomicals-and-arc-20/protocol/arc20/psbt-requirements/">PSBT requirements</a></td></tr><tr><td>What a wallet must do to be safe</td><td><a href="/atomicals-and-arc-20/protocol/arc20/wallet-safety/">Wallet safety</a></td></tr><tr><td>The status of Substantiation Factor material</td><td><a href="/atomicals-and-arc-20/protocol/arc20/substantiation-factor/">Substantiation Factor</a></td></tr></tbody></table></div>
+<h2 id="what-arc-20-is-not">What ARC-20 is not</h2>
+<ul><li>Not an ERC-20 contract. There is no contract and no account.</li><li>Not an inscription balance. Value is the satoshi value of outputs, not a number written in text.</li><li>Not a claim on anything. Nothing backs a unit unless a separate legal arrangement exists, and none is created by minting.</li><li>Not an ARC-721 standard. No official source located during review establishes one.</li></ul>
+<h2 id="universe-product-boundary">Universe product boundary</h2>
+<p>The protocol supports direct <code>mint-ft</code> issuance. No Universe product surface exposes it today. Universe exposes verified ticker resolution, token details, holders, confirmed activity, portfolio balances, coloured UTXOs, and Marketplace v1 flows. See <a href="/atomicals-and-arc-20/start/status-and-limitations/">status and known limitations</a>.</p>
+<p>Allocation is the single most important rule in ARC-20. It decides which output receives which units, and what is destroyed.</p>
+<h2 id="the-rule">The rule</h2>
+<ol><li>Collect the coloured value carried by the transaction&#39;s inputs, summed per token.</li><li>Order the tokens. FIFO ordering uses the first input index that carries each token, then the Atomical ID. Legacy ordering uses the Atomical ID alone.</li><li>For each token in that order, walk the outputs starting at the first slot not already used.</li><li>Skip provably unspendable outputs entirely. They consume nothing.</li><li>Assign an output <strong>only if its whole satoshi value fits</strong> in the value still to place.</li><li>If it fits, that output is coloured for its full satoshi value, and the remaining value drops by that amount.</li><li>If the next output does not fit, stop. Whatever is left is burned.</li><li>If any token could not be placed cleanly, the builder discards the sequential plan and restarts every token from output zero.</li><li>Coloured output totals can never exceed coloured input totals.</li></ol>
+<h2 id="what-fits-means-precisely">What &quot;fits&quot; means, precisely</h2>
+<p>An output fits when <code>output.value &lt;= remaining</code>. Nothing is ever partially filled under normal allocation. An output either takes its full satoshi value in units, or it takes nothing.</p>
+<p>Step seven is not an error path. The Bitcoin transaction is valid and confirms. See <a href="/atomicals-and-arc-20/protocol/arc20/burns/">burns</a>.</p>
+<h2 id="executed-vectors">Executed vectors</h2>
+<p>Every row below is computed at build time by the same engine the conformance tests run. The numbers on this page cannot drift from the vector set.</p>
+<p>The vector set lives at <code>conformance/vectors/arc20-allocation.json</code> and its engine at <code>conformance/allocation.mjs</code>. See <a href="/atomicals-and-arc-20/reference/conformance/">conformance</a>.</p>
+<h2 id="the-output-zero-fallback">The output zero fallback</h2>
+<p>Step eight surprises people. When the sequential plan cannot place a token cleanly, the reference builder throws away the whole plan and restarts every token from output zero. With more than one token in the transaction, that can move value you thought was settled and can burn a token that would otherwise have been fine.</p>
+<p>The <code>two-tokens-non-clean-fallback</code> vector above shows it. Build transactions that never trigger it.</p>
+<h2 id="no-inflation">No inflation</h2>
+<p>Coloured output totals can never exceed coloured input totals. A blueprint that tries is rejected. This is the one rule that cannot be worked around by output arrangement.</p>
+<h2 id="what-changes-the-result">What changes the result</h2>
+<div class="table-scroll"><table><thead><tr><th scope="col">Input</th><th scope="col">Effect</th></tr></thead><tbody><tr><td>Coloured input value</td><td>The total to place</td></tr><tr><td>Input order</td><td>Token ordering under FIFO</td></tr><tr><td>Output order</td><td>Which slot is considered next</td></tr><tr><td>Output satoshi values</td><td>Whether each output fits</td></tr><tr><td>Unspendable outputs</td><td>Skipped, consuming nothing</td></tr><tr><td>Active rule set</td><td>Whether custom coloring applies</td></tr><tr><td>Number of distinct tokens</td><td>Whether the fallback can trigger</td></tr></tbody></table></div>
+<p>A burn is coloured value that a validator could not place in any eligible output. It is recorded as destroyed. The Bitcoin transaction that caused it is valid, mined, and confirmed.</p>
+<p>Burned units do not go anywhere. There is no address that holds them and no procedure that returns them. Prevention is the only control.</p>
+<h2 id="the-four-shapes-that-cause-a-burn">The four shapes that cause a burn</h2>
+<h3 id="1-the-next-output-is-too-large">1. The next output is too large</h3>
+<p>The most common. You have 500 units left to place and the next output is 546 satoshis. It does not fit, so the 500 units are destroyed.</p>
+<p><strong>Prevention.</strong> Size the change output to exactly the remainder you intend to keep.</p>
+<h3 id="2-there-are-not-enough-outputs">2. There are not enough outputs</h3>
+<p>Every output was covered and value is still left. Nothing remains to place it in.</p>
+<p><strong>Prevention.</strong> Always include a coloured change output when the inputs exceed what you are sending.</p>
+<h3 id="3-the-first-output-is-larger-than-the-whole-lot">3. The first output is larger than the whole lot</h3>
+<p>Nothing can be placed at all, so the entire lot burns.</p>
+<p><strong>Prevention.</strong> Never send a small coloured lot into a transaction whose first output is a large cardinal payment.</p>
+<h3 id="4-the-fallback-rearranged-a-multi-token-transaction">4. The fallback rearranged a multi token transaction</h3>
+<p>One token could not be placed cleanly, so the builder restarted every token from output zero and a different token lost its slot.</p>
+<p><strong>Prevention.</strong> Move one token per transaction unless you have modelled the multi token case.</p>
+<h2 id="executed-cases">Executed cases</h2>
+<h2 id="the-checks-that-prevent-all-four">The checks that prevent all four</h2>
+<ol><li>Compute the expected assignment before signing, not after.</li><li>Confirm the burn figure is zero.</li><li>Size every coloured output deliberately, in satoshis.</li><li>Keep fee inputs cardinal and separate.</li><li>Move one token per transaction unless you have a reason not to.</li><li>Re-check after any change to the output set, including a wallet adding change.</li></ol>
+<p>Use the <a href="/atomicals-and-arc-20/tools/allocation-visualizer/">allocation visualizer</a> to do steps one and two.</p>
+<h2 id="detecting-a-burn-after-the-fact">Detecting a burn after the fact</h2>
+<p>A validator records burns per transaction. Read the transaction through a source that reports them, and compare the coloured input total against the sum of coloured output totals. Any difference is a burn.</p>
+<p>The Universe ARC-20 activity feed publishes burn records among its confirmed activity. See <a href="/atomicals-and-arc-20/reference/api/arc20/">ARC-20 API</a>.</p>
+<h2 id="behavioral-test-vectors">Behavioral test vectors</h2>
+<p>These vectors are executed by tests/conformance-allocation.test.mjs against conformance/allocation.mjs, which is implemented from the pinned revision. They omit fee inputs and output scripts for clarity, because neither changes the allocation result.</p>
+<div class="table-scroll"><table><thead><tr><th scope="col">Case</th><th scope="col">Coloured input</th><th scope="col">Outputs</th><th scope="col">Expected result</th></tr></thead><tbody><tr><td>clean-split</td><td>1200 units</td><td>output 0: 700 sats; output 1: 500 sats</td><td>Both outputs are exactly covered, so nothing is left to place and nothing burns.</td></tr><tr><td>oversized-next-output</td><td>1200 units</td><td>output 0: 700 sats; output 1: 546 sats</td><td>Output zero takes 700. The next output is 546 satoshis, larger than the 500 units left, so the remainder is destroyed.</td></tr><tr><td>exact-single-output</td><td>10000 units</td><td>output 0: 10000 sats</td><td>One output exactly equal to the coloured value takes everything.</td></tr><tr><td>first-output-too-large</td><td>500 units</td><td>output 0: 20000 sats</td><td>Nothing can be placed at all, so the entire coloured value is destroyed.</td></tr><tr><td>too-few-outputs</td><td>1200 units</td><td>output 0: 700 sats</td><td>Every output is covered but value is still left over, so the leftover burns.</td></tr><tr><td>unspendable-output-skipped</td><td>1200 units</td><td>output 0: 0 sats (unspendable); output 1: 700 sats; output 2: 500 sats</td><td>A provably unspendable output is passed over and consumes no coloured value.</td></tr><tr><td>combine-two-lots</td><td>700 units plus 500 units</td><td>output 0: 1200 sats</td><td>Two coloured inputs of the same token are summed before allocation and land in one output.</td></tr><tr><td>two-tokens-sequential-slots</td><td>700 units plus 900 units</td><td>output 0: 700 sats; output 1: 900 sats</td><td>The first token fills the outputs it needs, then the next token starts after the last slot the first one used.</td></tr><tr><td>two-tokens-non-clean-fallback</td><td>700 units plus 400 units</td><td>output 0: 700 sats; output 1: 546 sats</td><td>When the sequential assignment cannot be made cleanly, the reference builder restarts every token from output zero. Both tokens then contend for the same outputs and value burns.</td></tr><tr><td>dust-remainder-burns</td><td>1200 units</td><td>output 0: 1000 sats; output 1: 200 sats</td><td>Sending 1000 units from a 1200 unit lot with a 200 satoshi change output fails, because 200 is placed only if it fits after the 1000 is taken. Here it does fit, so nothing burns. Compare with the next case.</td></tr><tr><td>change-output-too-large</td><td>1200 units</td><td>output 0: 1000 sats; output 1: 546 sats</td><td>The same intent with a 546 satoshi change output destroys the 200 unit remainder, because 546 does not fit in 200.</td></tr><tr><td>custom-coloring-partial-fill</td><td>1200 units</td><td>output 0: 700 sats; output 1: 546 sats</td><td>With custom coloring active the builder attaches an output even when the value does not cover it fully, and the last output receives only what is left.</td></tr><tr><td>suite-exact-single-output</td><td>11000 units</td><td>output 0: 11000 sats</td><td>The token exactly fills the only output, so nothing is left over and the assignment is clean.</td></tr><tr><td>suite-partially-colored-carry-forward</td><td>500 units</td><td>output 0: 11000 sats</td><td>Since height 848484 an output can carry fewer token units than satoshis. The 500 units land on an 11000 satoshi output and nothing burns. Reported as not cleanly assigned because the output is only partly coloured.</td></tr><tr><td>suite-consolidation-burn</td><td>1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units plus 1000 units</td><td>output 0: 1000 sats</td><td>The classic consolidation accident: everything beyond the first output is destroyed.</td></tr><tr><td>suite-output-over-balance</td><td>10999 units</td><td>output 0: 11000 sats</td><td>Under exact-cover rules an output has to be fully covered. Being one satoshi short colours nothing at all. The same shape under current rules colours the output partially and burns nothing, which is why the rule changed.</td></tr><tr><td>suite-one-unit-over</td><td>11001 units</td><td>output 0: 11000 sats</td><td>The single leftover unit is the miner fee, and it is burned token supply.</td></tr><tr><td>suite-merged-inputs-single-output</td><td>900 units plus 555 units</td><td>output 0: 1454 sats</td><td>The pool is 1455, the output takes 1454, and the remaining unit is burned.</td></tr><tr><td>suite-no-atomicals</td><td></td><td>output 0: 1000 sats</td><td>Spending no token-bearing input produces an empty blueprint. An implementation must not fabricate assignments for an uncoloured transaction.</td></tr><tr><td>fee-taken-from-colored-value</td><td>10000 units</td><td>output 0: 3000 sats; output 1: 6800 sats</td><td>The outputs total 200 satoshis less than the coloured input, and those 200 units are destroyed rather than returned. Pay the fee from a plain bitcoin input instead.</td></tr><tr><td>only-unspendable-outputs</td><td>5000 units</td><td>output 0: 0 sats (unspendable)</td><td>Unspendable outputs are skipped by regular assignment, so a transaction whose only output is an OP_RETURN leaves the balance nowhere to land.</td></tr><tr><td>split-skip-amount</td><td>3000 units</td><td>output 0: 1000 sats; output 1: 2000 sats</td><td>The y payload names satoshis to pass over before a token starts colouring, which is how two tokens sharing one input get separated. Here output 0 satisfies the skip, the token colours output 1, and the value beyond it burns.</td></tr><tr><td>custom-color-over-request-clamped</td><td>1000 units plus 1000 units</td><td>output 0: 1200 sats; output 1: 600 sats; output 2: 600 sats</td><td>The payload asks for more than either token holds. Each request is clamped to the output value and then to the remaining balance, so no inflation is possible.</td></tr><tr><td>custom-color-unassigned-value-burns</td><td>1000 units</td><td>output 0: 1000 sats; output 1: 500 sats</td><td>The payload directs 400 units at output 0 and says nothing about the rest, so the remaining 600 units are destroyed. Custom colouring places value explicitly; it does not carry a remainder forward.</td></tr></tbody></table></div>
+<h2 id="universe-compatibility-boundary">Universe compatibility boundary</h2>
+<ul><li>Universe direct FT issuance: not exposed. The protocol supports it; no Universe product surface offers it.</li><li>Universe ARC-20 discovery, token details, holders, confirmed activity, portfolio balances, and coloured UTXOs: available as read views, not as proof of settlement.</li><li>Universe declared ARC-20 coverage: partial, for pending activity only.</li><li>Universe Container and DMINT read projection: not exposed.</li><li>Universe AVM execution: not exposed.</li></ul>
+<p>See https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/status-and-limitations/.</p>
+<h2 id="source-set">Source set</h2>
+<p>Read /atomicals-and-arc-20/sources.md before implementing any behavior described here.</p>
+</main>
+<footer class="compat-footer">
+  <p>
+    Independent documentation published by Bitcoin Universe. Atomicals and ARC-20 names and artwork
+    stay with their creators. Nothing here is investment, legal, or tax advice.
+  </p>
+  <p>
+    <a href="/atomicals-and-arc-20/llms.txt">llms.txt</a>
+    <a href="/atomicals-and-arc-20/llms-full.txt">llms-full.txt</a>
+    <a href="/atomicals-and-arc-20/specification.md">specification.md</a>
+    <a href="/atomicals-and-arc-20/sources.md">sources.md</a>
+    <a href="/atomicals-and-arc-20/manifest.json">manifest.json</a>
+  </p>
+</footer>
+</body>
+</html>

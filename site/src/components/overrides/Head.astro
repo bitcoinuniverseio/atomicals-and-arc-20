@@ -1,0 +1,49 @@
+---
+import Default from '@astrojs/starlight/components/Head.astro'
+import siteMeta from '../../data/site.json'
+
+const route = Astro.locals.starlightRoute
+const data = route.entry.data as typeof route.entry.data & {
+  provenance?: { pageId: string; verified: string; docsVersion: string; applicability: string }
+}
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const pageUrl = new URL(Astro.url.pathname, siteMeta.site).href
+// The rendered entry, not the route. A locale route that falls back to English
+// serves the English content, so its raw Markdown is the English file.
+const rawHref = new URL(
+  `${base}/raw/${route.entry.id.replace(/\/$/, '') || 'index'}.md`,
+  siteMeta.site,
+).href
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: data.title,
+  description: data.description ?? siteMeta.description,
+  inLanguage: route.lang,
+  url: pageUrl,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: siteMeta.title,
+    url: new URL(`${base}/`, siteMeta.site).href,
+  },
+  publisher: { '@type': 'Organization', name: 'Bitcoin Universe' },
+  ...(data.provenance
+    ? {
+        identifier: data.provenance.pageId,
+        version: data.provenance.docsVersion,
+        dateModified: data.provenance.verified,
+      }
+    : {}),
+  license: new URL(`${base}/LICENSE`, siteMeta.site).href,
+}
+---
+
+<Default><slot /></Default>
+
+<link rel="alternate" type="text/markdown" href={rawHref} title="Markdown source" />
+<link rel="manifest" href={`${base}/manifest.webmanifest`} />
+<meta name="bu:docs-version" content={siteMeta.docsVersion} />
+{data.provenance && <meta name="bu:page-id" content={data.provenance.pageId} />}
+{data.provenance && <meta name="bu:applicability" content={data.provenance.applicability} />}
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />

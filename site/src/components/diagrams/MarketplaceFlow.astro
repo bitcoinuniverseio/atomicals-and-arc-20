@@ -1,0 +1,77 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-marketplace-flow"
+  title="Marketplace authority flow"
+  summary="A seller proves control of their address with a BIP-322 proof, which moves nothing, and receives a short lived owner session. The prepare step verifies the collateral against Bitcoin Core and the Atomicals provider under one stable checkpoint, and returns exactly what the wallet must sign. The seller signs with a scope that binds their payout output. A buyer reserves the listing, the purchase is prepared deterministically, the buyer signs, and the signed material is validated with Atomicals dry validation and a Bitcoin Core mempool acceptance test before anything is broadcast. Failing at any point before broadcast costs nothing."
+>
+  <svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="mf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+    </defs>
+    <g font-family="var(--bu-font-sans)" font-size="12">
+      <text x="8" y="20" font-size="11" letter-spacing="1.1" fill="var(--d-soft)">SELLER SIDE</text>
+
+      <rect x="8" y="30" width="150" height="46" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.4" />
+      <text x="24" y="50" font-weight="640" fill="var(--d-ink)">challenge</text>
+      <text x="24" y="67" fill="var(--d-soft)">nothing moves</text>
+
+      <line x1="166" y1="53" x2="192" y2="53" stroke="var(--d-line)" stroke-width="1.4" marker-end="url(#mf-arrow)" />
+
+      <rect x="200" y="30" width="150" height="46" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.4" />
+      <text x="216" y="50" font-weight="640" fill="var(--d-ink)">BIP-322 verify</text>
+      <text x="216" y="67" fill="var(--d-soft)">owner session issued</text>
+
+      <line x1="358" y1="53" x2="384" y2="53" stroke="var(--d-line)" stroke-width="1.4" marker-end="url(#mf-arrow)" />
+
+      <rect x="392" y="24" width="320" height="58" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="408" y="44" font-weight="640" fill="var(--d-ink)">prepare listing</text>
+      <text x="408" y="61" fill="var(--d-soft)">Bitcoin Core, Atomicals provider, and script hash</text>
+      <text x="408" y="76" fill="var(--d-soft)">views must all agree under one checkpoint</text>
+
+      <line x1="552" y1="82" x2="552" y2="102" stroke="var(--d-line)" stroke-width="1.4" marker-end="url(#mf-arrow)" />
+
+      <rect x="392" y="108" width="320" height="46" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.4" />
+      <text x="408" y="128" font-weight="640" fill="var(--d-ink)">seller signs, sighash 0x83</text>
+      <text x="408" y="145" fill="var(--d-soft)">binds the payout output exactly</text>
+
+      <line x1="8" y1="168" x2="712" y2="168" stroke="var(--d-line)" stroke-width="1" />
+
+      <text x="8" y="192" font-size="11" letter-spacing="1.1" fill="var(--d-soft)">BUYER SIDE</text>
+
+      <rect x="8" y="202" width="150" height="46" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.4" />
+      <text x="24" y="222" font-weight="640" fill="var(--d-ink)">reserve</text>
+      <text x="24" y="239" fill="var(--d-soft)">uncoloured inputs only</text>
+
+      <line x1="166" y1="225" x2="192" y2="225" stroke="var(--d-line)" stroke-width="1.4" marker-end="url(#mf-arrow)" />
+
+      <rect x="200" y="202" width="164" height="46" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.4" />
+      <text x="216" y="222" font-weight="640" fill="var(--d-ink)">prepare purchase</text>
+      <text x="216" y="239" fill="var(--d-soft)">deterministic ordering</text>
+
+      <line x1="372" y1="225" x2="398" y2="225" stroke="var(--d-line)" stroke-width="1.4" marker-end="url(#mf-arrow)" />
+
+      <rect x="406" y="202" width="140" height="46" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.4" />
+      <text x="422" y="222" font-weight="640" fill="var(--d-ink)">buyer signs</text>
+      <text x="422" y="239" fill="var(--d-soft)">SIGHASH_ALL</text>
+
+      <line x1="554" y1="225" x2="580" y2="225" stroke="var(--d-line)" stroke-width="1.4" marker-end="url(#mf-arrow)" />
+
+      <rect x="588" y="196" width="124" height="58" rx="8" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="1.5" />
+      <text x="604" y="216" font-weight="640" fill="var(--d-ink)">validate</text>
+      <text x="604" y="232" fill="var(--d-soft)">dry validation</text>
+      <text x="604" y="247" fill="var(--d-soft)">mempool test</text>
+
+      <line x1="650" y1="254" x2="650" y2="272" stroke="var(--d-line)" stroke-width="1.4" marker-end="url(#mf-arrow)" />
+      <rect x="588" y="278" width="124" height="36" rx="8" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="650" y="301" text-anchor="middle" font-weight="640" fill="var(--d-ink)">broadcast</text>
+
+      <text x="8" y="290" fill="var(--d-soft)">Every failure before broadcast costs nothing. Mixed collateral, spent outputs, checkpoint drift,</text>
+      <text x="8" y="308" fill="var(--d-soft)">ambiguous balances, operations, and burns are all refused rather than worked around.</text>
+    </g>
+  </svg>
+</Figure>

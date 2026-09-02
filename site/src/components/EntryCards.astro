@@ -1,0 +1,42 @@
+---
+import { docHref } from '../lib/href'
+
+interface Card {
+  kicker?: string
+  title: string
+  body: string
+  href?: string
+}
+interface Props {
+  cards: Card[]
+  label?: string
+}
+const { cards, label } = Astro.props
+const locale = Astro.locals.starlightRoute?.locale
+---
+
+<ul class="bu-cards" aria-label={label}>
+  {
+    cards.map((card) => {
+      const Tag = card.href ? 'a' : 'div'
+      return (
+        <li>
+          <Tag class="bu-card" href={card.href ? docHref(card.href, locale) : undefined}>
+            {card.kicker && <span class="bu-card-kicker">{card.kicker}</span>}
+            <span class="bu-card-title">{card.title}</span>
+            <p>{card.body}</p>
+          </Tag>
+        </li>
+      )
+    })
+  }
+</ul>
+
+<style>
+  ul.bu-cards > li {
+    display: flex;
+  }
+  ul.bu-cards > li > :global(.bu-card) {
+    width: 100%;
+  }
+</style>

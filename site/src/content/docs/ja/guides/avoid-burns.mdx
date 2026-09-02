@@ -1,0 +1,79 @@
+---
+title: 焼失を避ける
+description: すべての焼失の形を防ぐ実務手順と、それぞれがどう見えるかを示す実行済みのケース。
+sidebar:
+  order: 22
+provenance:
+  pageId: guides/avoid-burns
+  area: guides
+  audience: [everyone, holder, developer]
+  applicability: protocol-behavior
+  authority: executed-source
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+  verified: '2026-08-31'
+  tags: [burns, safety]
+  translationSourceHash: 3047e31c8daa7667e0579e9e366e57a9eec70316e2cf796f5819eec857479c44
+  limitations:
+    - 確認済みの焼失は恒久的です。この手順は焼失を防ぎます。取り消す手段はありません。
+---
+
+import VectorTable from '../../../../components/VectorTable.astro'
+import { Steps, Aside } from '@astrojs/starlight/components'
+
+## 始める前に
+
+- 対応ネットワーク: mainnet。
+- 状態: プロトコルの挙動。
+- 防止が唯一の対策です。回復はありません。
+
+## 手順
+
+<Steps>
+
+1. アウトポイントとサトシで作業します。トークンの金額欄では決して行いません。
+2. 複数トークンの場合をモデル化していない限り、1 トランザクションにつき 1 トークンにします。
+3. ロットが送付額を超えるときは、必ず色付きのおつり出力を含めます。
+4. おつり出力を残りに **正確に** 合わせます。
+5. 組み立てる前に、入力と出力の正確な集合を順序どおりモデル化します。
+6. 計算された焼失量がゼロであることを確認します。
+7. 手数料の入力とカーディナルのおつりを追加し、再度モデル化します。
+8. 焼失量が依然としてゼロであることを確認します。
+9. 署名前に、ウォレットの確認画面をモデルと一行ずつ比較します。
+
+</Steps>
+
+手順 7 と 8 は飛ばされがちで、ウォレットが追加したおつりが黙って結果を変える場所です。
+
+## 四つの形、実行済み
+
+<VectorTable only={["oversized-next-output", "too-few-outputs", "first-output-too-large", "two-tokens-non-clean-fallback"]} />
+
+| 形 | 防止策 |
+| --- | --- |
+| 次の出力が大きすぎる | おつりを残りに正確に合わせる |
+| 出力が足りない | 必ず色付きのおつりを含める |
+| 最初の出力がロットより大きい | 小さなロットを大きな最初の支払いに送らない |
+| 複数トークンのフォールバック | 1 トランザクションにつき 1 トークン |
+
+<Aside type="danger" title="Atomicals を理解しないサービスへの送付">
+取引所の入金アドレス、通常の Bitcoin ウォレット、Atomicals 非対応のサービスは、その出力を通常の
+ビットコインとして使います。単位は失われ、焼失レコードも慰めにはなりません。送る前に、送付先が
+Atomicals に対応しているか確認してください。
+</Aside>
+
+## 焼失が意図的である唯一のケース
+
+意図して単位を破棄するのは有効な操作です。明示的に行ってください。意図したとおりに焼失させる
+トランザクションを組み立て、数値を確認し、理由を記録します。偶発的な焼失に頼ってはいけません。
+
+## ブロードキャスト後
+
+焼失を報告する情報源からトランザクションを読み、数値が想定どおりか確認します。色付きの入力合計と
+色付きの出力合計を比較してください。
+
+## 出典
+
+[焼失](/protocol/arc20/burns/) と [割り当て](/protocol/arc20/allocation/)。

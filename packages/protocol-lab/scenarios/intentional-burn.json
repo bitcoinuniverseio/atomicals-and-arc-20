@@ -1,0 +1,23 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "intentional-burn",
+  "title": "Intentional burn to an unspendable output",
+  "description": "The holder provably destroys units by sending them to an unspendable output. No one can ever spend them again.",
+  "seed": "arc20-burn-ok",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 30000, "address": "bc1qholder" }
+    ] },
+    { "type": "reveal", "label": "mint", "inputs": ["fundo0"], "outputs": [
+      { "value": 546, "address": "bc1qholder" },
+      { "value": 29400, "address": "bc1qholder" }
+    ], "atomical": { "type": "ft", "ticker": "GOLD", "units": 546 } },
+    { "type": "confirm", "blocks": 1 },
+    { "type": "transfer", "label": "burn", "inputs": ["minto0", "minto1"], "outputs": [
+      { "value": 274, "address": "bc1qnull", "unspendable": true },
+      { "value": 29672, "address": "bc1qholder" }
+    ] },
+    { "type": "confirm", "blocks": 1 }
+  ]
+}

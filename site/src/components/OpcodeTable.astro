@@ -1,0 +1,61 @@
+---
+import opcodes from '../../../contracts/avm-opcodes.json'
+
+interface Props {
+  group?: string
+}
+const { group } = Astro.props
+const rows = group
+  ? opcodes.opcodes.filter((entry) => entry.group === group)
+  : opcodes.opcodes
+
+const TONE = {
+  tested: 'ok',
+  'not-working': 'risk',
+  undeclared: 'idle',
+} as const
+
+const LABEL = {
+  tested: 'tested upstream',
+  'not-working': 'not working',
+  undeclared: 'no upstream status',
+} as const
+---
+
+<div class="bu-matrix">
+  <table>
+    <caption class="sr-only">
+      AVM opcodes generated from {opcodes.source.path} at {opcodes.source.revision}
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Opcode</th>
+        <th scope="col">Value</th>
+        <th scope="col">Group</th>
+        <th scope="col">Upstream status</th>
+        <th scope="col">Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((entry) => (
+          <tr>
+            <th scope="row">
+              <code>{entry.name}</code>
+            </th>
+            <td>
+              <code>{entry.hex}</code>
+            </td>
+            <td>{entry.group}</td>
+            <td>
+              <span class="bu-chip" data-tone={TONE[entry.status as keyof typeof TONE]}>
+                {LABEL[entry.status as keyof typeof LABEL]}
+              </span>
+            </td>
+            <td>{entry.description ?? 'No upstream description in the source comment.'}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

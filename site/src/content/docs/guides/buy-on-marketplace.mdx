@@ -1,0 +1,91 @@
+---
+title: Buy on the marketplace
+description: Reserve, prepare, sign, and broadcast, with the checks that stop you paying for something that already moved.
+sidebar:
+  order: 29
+provenance:
+  pageId: guides/buy-on-marketplace
+  area: guides
+  audience: [everyone, holder, integrator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet]
+  sources:
+    - id: universe-index-atomicals
+      path: marketplaceDocs
+    - id: universe-ordex
+      path: purchase
+  verified: '2026-08-31'
+  tags: [marketplace, purchase]
+  limitations:
+    - Action gates default to off. Buy execution additionally requires an exact fee script to be configured on the deployment.
+---
+
+import { Steps } from '@astrojs/starlight/components'
+
+## Before you start
+
+- Supported networks: mainnet.
+- Status: Universe implementation.
+- Your funding inputs must be confirmed and uncoloured. Spending a coloured output to fund a
+  purchase loses those units.
+
+## The lifecycle
+
+<Steps>
+
+1. **Read the listing.** Record the Atomical ID, the price, and the exact payment script.
+2. **Reserve.** A reservation holds the listing while you prepare. Read the reservation back.
+3. **Prepare the purchase.** The service builds the settlement transaction and returns what you
+   must sign.
+4. **Sign.** With the exact scope the prepare step specifies.
+5. **Validate signed.** The service checks your signed material against the blueprint before
+   anything is broadcast.
+6. **Broadcast.** Only after validation passes.
+7. **Verify settlement.** See [verify settlement](/guides/verify-settlement/).
+
+</Steps>
+
+## What is validated before broadcast
+
+- The seller still controls the asset, at a stable checkpoint.
+- Your funding inputs are confirmed, uncoloured in both the script hash view and location history,
+  and of a supported type.
+- The Atomicals blueprint assigns the selected asset cleanly to the buyer output, with no
+  operation, no mixed Atomical ID, and no burn.
+- Heights and hashes on both sides are unchanged across the bracket.
+
+Anything else fails closed.
+
+## Check before signing
+
+| Check | Why |
+| --- | --- |
+| The Atomical ID matches the listing | A ticker or name is not identity |
+| The price is exactly what you agreed | Including any disclosed marketplace fee |
+| Your funding inputs are cardinal | Or you spend an asset to buy one |
+| Every output is visible with script and value | You cannot verify what you cannot see |
+| The signature scope | It must not let outputs change after you sign |
+
+## If it fails
+
+| Failure | Meaning |
+| --- | --- |
+| Reservation expired | Reserve again. The listing may be gone |
+| Stale ownership | The seller moved the asset. Nothing was spent |
+| Mixed collateral | The seller's output carries more than the asset |
+| Checkpoint drift | The chain moved mid-check. Retry |
+| Validation failed | Do not broadcast. Start again |
+
+A failure before broadcast costs nothing.
+
+## Fees
+
+The price, the settlement transaction fee, and any disclosed marketplace fee. The flow must show
+the breakdown before your final confirmation.
+
+## Source
+
+[Marketplace v1](/reference/api/marketplace-v1/) and
+[transfers and swaps](/protocol/arc20/transfers-and-swaps/).
+

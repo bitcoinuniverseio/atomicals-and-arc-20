@@ -1,0 +1,18 @@
+{
+  "scenarioVersion": "1.0.0",
+  "id": "commit-reveal-nft",
+  "title": "NFT mint through commit and reveal",
+  "description": "A funded wallet commits and reveals an NFT. The object exists only after the reveal transaction, and output zero carries it.",
+  "seed": "nft-mint",
+  "network": "regtest",
+  "steps": [
+    { "type": "fund", "label": "fund", "outputs": [
+      { "value": 10000, "address": "bc1qcreator" }
+    ] },
+    { "type": "reveal", "label": "reveal", "inputs": ["fundo0"], "outputs": [
+      { "value": 546, "address": "bc1qcreator" },
+      { "value": 9400, "address": "bc1qcreator" }
+    ], "atomical": { "type": "nft" } },
+    { "type": "confirm", "blocks": 1 }
+  ]
+}

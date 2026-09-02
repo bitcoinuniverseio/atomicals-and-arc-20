@@ -1,0 +1,37 @@
+{
+  "evidenceVersion": "1.0.0",
+  "description": "Implementation evidence for Atomicals Improvement Proposals. An AIP is never labelled implemented without a row here, and every row names the source that establishes it.",
+  "lastVerified": "2026-08-31",
+  "conformanceLevels": {
+    "proven": "An executed test or a runtime contract check establishes the behavior at a pinned revision.",
+    "claimed": "An implementation reports it, but nothing here executes a check against that claim.",
+    "none": "No implementation evidence was located."
+  },
+  "evidence": [
+    {
+      "aip": 1,
+      "conformance": "none",
+      "note": "AIP-1 is a Meta proposal describing the AIP process itself. There is nothing for an implementation to implement, so no implementation evidence is expected or recorded.",
+      "implementations": []
+    },
+    {
+      "aip": 3,
+      "conformance": "proven",
+      "note": "The Universe NFT and Realm index requires its Atomicals provider to report the exact AIP set [1, 3] on server.info before it will accept the provider, and fails closed otherwise. That runtime check is the evidence, and it proves the provider reports the set, not that the serialisation change itself was independently re-verified here.",
+      "implementations": [
+        {
+          "sourceId": "universe-index-atomicals-nfts-and-realms",
+          "path": "src/provider.mjs",
+          "evidence": "PINNED_PROVIDER.requiredAips is [1, 3]; the provider handshake rejects any other reported set.",
+          "level": "proven"
+        },
+        {
+          "sourceId": "atomicals-electrumx-1.5.2.0",
+          "path": "electrumx/lib/util_atomicals.py",
+          "evidence": "The pinned provider release is the one the Universe index accepts under that handshake.",
+          "level": "claimed"
+        }
+      ]
+    }
+  ]
+}

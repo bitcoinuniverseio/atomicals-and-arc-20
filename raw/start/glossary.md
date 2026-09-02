@@ -1,0 +1,164 @@
+# Glossary
+
+Every Atomicals and ARC-20 term used on this site, defined once and used consistently everywhere.
+
+Page ID: start/glossary
+Applicability: protocol-behavior
+Authority: reference-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: en
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/glossary/
+
+---
+Terms in this glossary are the ones used across the site and in every translation. Code
+identifiers, schema property names, operation names, and hashes are never translated.
+
+## Core
+
+**Atomical**
+: A digital object created by a Bitcoin transaction and carried by a Bitcoin output.
+
+**Atomical ID**
+: The durable identity of an Atomical, written `<txid>i<output-index>`. Assigned once, never changes.
+
+**Atomical number**
+: A sequential number assigned in mint order. Useful for display. Not the identity to store.
+
+**Location**
+: The unspent output that currently carries an Atomical. Changes on every move.
+
+**Envelope**
+: The witness script structure carrying `atom`, an operation, and a CBOR payload in the reveal transaction.
+
+**Operation**
+: The short code inside the envelope that tells a validator what to do. Examples: `ft`, `dft`, `dmt`, `nft`, `mod`, `sl`.
+
+**Commit and reveal**
+: The two-transaction pattern. The commit pays to a Taproot output; the reveal spends it and exposes the envelope.
+
+**Bitwork**
+: A proof-of-work style prefix requirement on a transaction id, used to gate mints and claims.
+
+**Candidate**
+: A pending claim for a globally allocated name or ticker, before rules resolve a winner.
+
+**Verified winner**
+: The Atomical that the rules resolved as holding a name or ticker.
+
+**Generation**
+: An immutable snapshot of an index at one consistent chain position.
+
+**Reorg**
+: A Bitcoin chain reorganisation that can invalidate previously indexed results.
+
+## ARC-20
+
+**ARC-20**
+: The Atomicals fungible token model. One unit is one coloured satoshi.
+
+**Ticker**
+: A globally allocated ARC-20 name. Not proof of creator identity.
+
+**Coloured UTXO**
+: A Bitcoin output that a validator recognises as carrying ARC-20 value.
+
+**Cardinal UTXO**
+: An ordinary Bitcoin output with no Atomicals value. Used for fees and change.
+
+**Direct FT**
+: A one-step `ft` mint that places the whole supply in output zero.
+
+**DFT**
+: A decentralised fungible token deployment created with `dft`.
+
+**DMT claim**
+: A single mint against a DFT deployment, using the `dmt` operation.
+
+**Perpetual DFT**
+: An activation-gated decentralised mode with progressing Bitwork and an optional global cap.
+
+**Mint amount**
+: The exact satoshi value each valid DMT claim places in output zero.
+
+**Max mints**
+: The number of valid fixed-mode claims a deployment allows.
+
+**Allocation**
+: The validator's decision about which output receives how much coloured value.
+
+**Normal allocation**
+: The default coloring behavior when no operation payload changes it.
+
+**Burn**
+: Coloured value that could not be placed in any eligible output and is therefore destroyed.
+
+**Split**
+: The `y` operation, which separates fungible value at one output.
+
+**Custom coloring**
+: The `z` operation, activation gated, which assigns coloured value explicitly.
+
+**Splat**
+: The `x` operation on the non-fungible branch, separating multiple Atomicals held at one output.
+
+**No-inflation validation**
+: The rule that coloured output totals cannot exceed coloured input totals.
+
+## Names and collections
+
+**Container**
+: A named collection identity that items can prove membership in.
+
+**DMINT**
+: Decentralised minting of Container items against a sealed manifest.
+
+**Sealing**
+: Making an Atomical or a Container manifest permanently unchangeable.
+
+**Realm**
+: A top-level Atomicals name owned as an NFT.
+
+**Subrealm**
+: A child name claimed under a parent Realm's rules.
+
+**Payname**
+: A Realm used as a payment destination.
+
+**IDNA**
+: The internationalised domain name rules used when comparing and normalising names.
+
+**Confusable**
+: Two distinct names that render similarly enough to deceive a reader.
+
+## Integration
+
+**Cursor**
+: An opaque, signed pagination token that refers to a stable position in a generation.
+
+**Readiness**
+: Whether a service can currently answer correctly, distinct from whether it is configured or running.
+
+**Freshness**
+: How far behind the chain tip an index currently is.
+
+**Idempotency key**
+: A client-supplied key that makes a repeated mutation safe to retry.
+
+**Request ID**
+: A per-request identifier returned in responses and logs, used to trace one call.
+
+**PSBT**
+: A partially signed Bitcoin transaction, the exchange format between a service and a wallet.
+
+**BIP-322**
+: A message signing scheme used here to prove control of an address without moving funds.
+
+**SIGHASH**
+: The flag that decides which parts of a transaction a signature commits to.
+
+## Terms we avoid
+
+These words appear in third-party material and are not used as claims on this site: guaranteed,
+risk-free, backed, collateralised, price floor, redemption. Where a source uses them, the page
+quotes the source and says what evidence exists.

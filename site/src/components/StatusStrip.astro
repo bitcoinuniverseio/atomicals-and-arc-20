@@ -1,0 +1,50 @@
+---
+/**
+ * Protocol status strip for the homepage: what the platform is pinned to right
+ * now, read from the committed contracts rather than restated by hand.
+ */
+import siteMeta from '../data/site.json'
+import driftStatus from '../../../contracts/drift-status.json'
+import sourceManifest from '../../../contracts/source-manifest.json'
+import { getSource, shortRevision } from '../lib/sources'
+
+const baseline = siteMeta.baselineSourceId ? getSource(siteMeta.baselineSourceId) : undefined
+const driftCount = (driftStatus as { findings: unknown[] }).findings.length
+
+const facts: { label: string; value: string }[] = []
+if (baseline) {
+  facts.push({
+    label: 'Protocol baseline',
+    value: `${baseline.name} ${shortRevision(baseline)} (${baseline.releaseDate ?? 'no release date'})`,
+  })
+}
+facts.push({ label: 'Documentation source set', value: siteMeta.docsVersion })
+facts.push({
+  label: 'Sources verified',
+  value: `${(sourceManifest as { sources: unknown[] }).sources.length} pinned sources, last verified ${sourceManifest.lastVerified}`,
+})
+facts.push({
+  label: 'Drift status',
+  value:
+    driftCount === 0
+      ? 'No upstream movement recorded at last check'
+      : `${driftCount} upstream source${driftCount === 1 ? '' : 's'} moved; this documentation stays pinned`,
+})
+---
+
+<dl class="bu-facts bu-status-strip">
+  {
+    facts.map((fact) => (
+      <div class="bu-fact">
+        <dt>{fact.label}</dt>
+        <dd>{fact.value}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .bu-status-strip {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+</style>

@@ -1,0 +1,172 @@
+---
+/**
+ * Source and applicability panel.
+ * Rendered from validated frontmatter only. Nothing here is hand-maintained beside the content.
+ */
+import {
+  APPLICABILITY_LABELS,
+  EDITORIAL_FALLBACK,
+  AUTHORITY_LABELS,
+  daysSince,
+  getSource,
+  shortRevision,
+  sourceUrl,
+  STALE_AFTER_DAYS,
+} from '../lib/sources'
+
+interface Props {
+  provenance: {
+    pageId: string
+    area: string
+    audience: string[]
+    applicability: string
+    authority: string
+    networks: string[]
+    sources: { id: string; path?: string; note?: string }[]
+    docsVersion: string
+    activation?: string
+    verified: string
+    owner: string
+    reviewers: string[]
+    tags: string[]
+    limitations: string[]
+    deprecated?: {
+      since: string
+      reason: string
+      replacement?: string
+      sunset?: string
+    }
+    translationSourceHash?: string
+    hideProvenance: boolean
+  }
+  /** Non-null when the page is a translation whose English source has since changed. */
+  staleTranslation?: boolean
+}
+
+const { provenance, staleTranslation = false } = Astro.props
+const applicability =
+  APPLICABILITY_LABELS[provenance.applicability] ?? EDITORIAL_FALLBACK
+const age = daysSince(provenance.verified)
+const stale = age > STALE_AFTER_DAYS
+const resolved = provenance.sources.map((ref) => {
+  const entry = getSource(ref.id)
+  return {
+    ref,
+    entry,
+    href: sourceUrl(entry, ref.path),
+    revision: shortRevision(entry),
+  }
+})
+---
+
+{
+  provenance.deprecated && (
+    <div class="bu-stale" role="note">
+      <strong>Deprecated since {provenance.deprecated.since}.</strong>{' '}
+      {provenance.deprecated.reason}
+      {provenance.deprecated.replacement && (
+        <>
+          {' '}
+          Use <a href={provenance.deprecated.replacement}>the replacement page</a> instead.
+        </>
+      )}
+      {provenance.deprecated.sunset && <> Planned removal: {provenance.deprecated.sunset}.</>}
+    </div>
+  )
+}
+
+{
+  staleTranslation && (
+    <div class="bu-stale" role="note">
+      <strong>This translation is behind the English source.</strong> The English page changed
+      after this translation was recorded. Read the English version for the current wording.
+    </div>
+  )
+}
+
+{
+  !provenance.hideProvenance && (
+    <details class="bu-provenance">
+      <summary>
+        <span class="bu-chip" data-tone={applicability.tone}>
+          {applicability.label}
+        </span>
+        <span class="bu-chip" data-tone={stale ? 'warn' : 'ok'}>
+          {stale ? `Re-check due (verified ${provenance.verified})` : `Verified ${provenance.verified}`}
+        </span>
+        <span class="sr-only">Source and applicability details</span>
+      </summary>
+      <div class="bu-provenance-body">
+        <p style="margin:0">{applicability.meaning}</p>
+        <dl>
+          <dt>Page ID</dt>
+          <dd>
+            <code>{provenance.pageId}</code>
+          </dd>
+
+          <dt>Normative authority</dt>
+          <dd>{AUTHORITY_LABELS[provenance.authority]}</dd>
+
+          <dt>Networks</dt>
+          <dd>{provenance.networks.join(', ')}</dd>
+
+          <dt>Documentation version</dt>
+          <dd>{provenance.docsVersion}</dd>
+
+          {provenance.activation && (
+            <>
+              <dt>Activation boundary</dt>
+              <dd>{provenance.activation}</dd>
+            </>
+          )}
+
+          <dt>Audience</dt>
+          <dd>{provenance.audience.join(', ')}</dd>
+
+          <dt>Owner</dt>
+          <dd>{provenance.owner}</dd>
+
+          {resolved.length > 0 && (
+            <>
+              <dt>Sources</dt>
+              <dd>
+                <ul>
+                  {resolved.map((item) => (
+                    <li>
+                      <a href={item.href} rel="noopener noreferrer">
+                        {item.entry.name}
+                      </a>{' '}
+                      at <code>{item.revision}</code>
+                      {item.entry.visibility === 'private' && (
+                        <>
+                          {' '}
+                          <span class="bu-chip" data-tone="idle">
+                            private repository
+                          </span>
+                        </>
+                      )}
+                      {item.ref.note && <> {item.ref.note}</>}
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </>
+          )}
+
+          {provenance.limitations.length > 0 && (
+            <>
+              <dt>Known limitations</dt>
+              <dd>
+                <ul>
+                  {provenance.limitations.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </dd>
+            </>
+          )}
+        </dl>
+      </div>
+    </details>
+  )
+}

@@ -1,0 +1,12 @@
+[project]
+name = "atomicals-client"
+version = "1.0.0"
+description = "Generated read-only client for the Atomicals and ARC-20 contracts"
+requires-python = ">=3.11"
+license = "MIT"
+
+[tool.ruff]
+line-length = 120
+
+[tool.mypy]
+strict = true

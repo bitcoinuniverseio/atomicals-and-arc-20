@@ -1,0 +1,31 @@
+name: Broken external integration
+description: A dead external link, or an ecosystem record whose status is wrong.
+labels: [broken-external-integration]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong
+      options:
+        - An external link is dead
+        - An ecosystem record has the wrong status
+        - An ecosystem record is missing
+        - An ecosystem record should be removed
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: The link or the record id
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: |
+        A reachable source that establishes the state. A network failure is not evidence
+        of closure, and another directory listing something is not evidence either.
+    validations:
+      required: true
+

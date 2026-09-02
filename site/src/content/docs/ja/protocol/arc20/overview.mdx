@@ -1,0 +1,92 @@
+---
+title: ARC-20
+description: ARC-20 の全体像を一ページで。発行から割り当て、安全性の境界まで、各部分の正確なルールへのリンク付き。
+sidebar:
+  order: 1
+provenance:
+  pageId: protocol/arc20/overview
+  area: protocol
+  audience: [everyone, developer, creator]
+  applicability: protocol-behavior
+  authority: reference-implementation
+  networks: [mainnet]
+  sources:
+    - id: atomicals-electrumx-1.5.2.0
+      path: mintParser
+    - id: atomicals-electrumx-1.5.2.0
+      path: normalFtAllocation
+    - id: atomicals-guide
+      path: arc20
+  verified: '2026-08-31'
+  tags: [arc-20]
+  translationSourceHash: 3ca37424403e7ac9d768235cfbd6cd52d53b9b37bf5c277e8e8be409f65c5472
+  limitations:
+    - これは互換性ガイドであり、独立した合意仕様ではありません。Atomicals の仕様はコードで定義されています。
+---
+
+import Arc20Units from '../../../../../components/diagrams/Arc20Units.astro'
+import EntryCards from '../../../../../components/EntryCards.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+ARC-20 は Bitcoin 上の Atomicals による代替性トークンモデルです。1 単位は 1 個の色付きサトシです。
+ほかのすべてはそこから導かれます。
+
+<Arc20Units />
+
+## 七つの文で表す全体モデル
+
+1. 1 単位は、バリデータがあるトークンについて色付きと認識する出力に含まれる 1 サトシです。
+2. したがって供給量はサトシで測られ、実在するビットコインによって上限が定まります。
+3. 発行は一度だけ直接行うか、他者が発行するデプロイを通じて繰り返し行われます。
+4. ティッカーはグローバルに割り当てられる名前で、ちょうど一つの Atomical に解決されます。
+5. 送付は、トランザクションの入力と出力に対する順序付きの割り当てです。
+6. 対象となる出力に置けない価値は破棄されます。
+7. 色付きの出力合計が、色付きの入力合計を超えることは決してありません。
+
+<Aside type="danger" title="六番目は高い授業料で学ぶことになる項目です">
+何かを組み立てたり署名したりする前に [焼失](/protocol/arc20/burns/) を読んでください。
+</Aside>
+
+## 各ルールの掲載場所
+
+| 領域 | ページ |
+| --- | --- |
+| 単位モデルと、小数点が分割を生まない理由 | [単位モデル](/protocol/arc20/unit-model/) |
+| ティッカーの割り当て、候補、検証済みの勝者 | [ティッカーと候補](/protocol/arc20/tickers-and-candidates/) |
+| 供給量全体を一段階で発行する方法 | [直接発行](/protocol/arc20/direct-issuance/) |
+| 発行回数が固定されたデプロイ | [固定 DFT](/protocol/arc20/fixed-dft/) |
+| デプロイに対する発行の請求 | [分散発行](/protocol/arc20/decentralized-mint/) |
+| 有効化に依存する進行型デプロイ | [恒久 DFT](/protocol/arc20/perpetual-dft/) |
+| commit と reveal に対する作業要件 | [Bitwork 要件](/protocol/arc20/bitwork-requirements/) |
+| 任意のメタデータと表示用の小数点 | [メタデータと小数点](/protocol/arc20/metadata-and-decimals/) |
+| 価値が出力にどう置かれるか | [割り当て](/protocol/arc20/allocation/) |
+| 色付きロットの分離と再結合 | [分割と結合](/protocol/arc20/split-and-combine/) |
+| 価値がどう破棄されるか | [焼失](/protocol/arc20/burns/) |
+| トークンの移動と原子的な交換 | [送付とスワップ](/protocol/arc20/transfers-and-swaps/) |
+| PSBT に含めるべき内容 | [PSBT 要件](/protocol/arc20/psbt-requirements/) |
+| ウォレットが安全であるための条件 | [ウォレットの安全性](/protocol/arc20/wallet-safety/) |
+| Substantiation Factor 資料の状態 | [Substantiation Factor](/protocol/arc20/substantiation-factor/) |
+
+## ARC-20 ではないもの
+
+- ERC-20 のコントラクトではありません。コントラクトもアカウントもありません。
+- インスクリプション残高ではありません。価値は出力のサトシ額であり、テキストで書かれた数値では
+  ありません。
+- 何かに対する請求権ではありません。別途の法的取り決めがない限り単位を裏付けるものはなく、発行が
+  それを生み出すこともありません。
+- ARC-721 標準ではありません。調査で見つかった公式情報源にそれを定めるものはありません。
+
+## Universe 製品の境界
+
+プロトコルは直接の `mint-ft` 発行に対応しています。現時点でそれを公開する Universe の製品提供面は
+ありません。Universe が公開しているのは、検証済みティッカーの解決、トークン詳細、保有者、確認済み
+アクティビティ、ポートフォリオ残高、色付き UTXO、および Marketplace v1 のフローです。
+[状態と既知の制限](/start/status-and-limitations/) を参照してください。
+
+<EntryCards
+  cards={[
+    { title: "割り当てビジュアライザ", body: "トランザクションをモデル化し、各単位の着地点を正確に確認します。", href: "/tools/allocation-visualizer/" },
+    { title: "適合性ベクタ", body: "これらのページの各数値の裏にある決定論的なケース。", href: "/reference/conformance/" },
+  ]}
+/>
+

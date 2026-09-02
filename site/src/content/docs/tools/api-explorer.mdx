@@ -1,0 +1,53 @@
+---
+title: API explorer
+description: Browse every documented operation, parameter, and example, and copy a request to run in your own environment.
+sidebar:
+  order: 6
+provenance:
+  pageId: tools/api-explorer
+  area: tools
+  audience: [developer, integrator]
+  applicability: universe-implementation
+  authority: universe-implementation
+  networks: [mainnet]
+  sources:
+    - id: universe-index-atomicals-nfts-and-realms
+      path: server
+    - id: universe-index-atomicals
+      path: tokenExplorerServer
+  verified: '2026-08-31'
+  tags: [tools, openapi]
+  limitations:
+    - The explorer never sends a request. It renders the contract and produces a command you run yourself.
+    - No credential is embedded, offered, or stored.
+---
+
+import ApiExplorer from '../../../components/tools/ApiExplorer.astro'
+import { Aside } from '@astrojs/starlight/components'
+
+<Aside type="caution" title="Why it does not send requests">
+An explorer that sends requests needs a credential in the page and an origin to point at. Both are
+mistakes: the credential ends up in browser history and logs, and the origin becomes a default
+someone points production traffic at.
+
+So this explorer renders the contract and hands you a command. You choose the origin and supply
+the credential in your own environment.
+</Aside>
+
+<ApiExplorer />
+
+## Reading a mutation
+
+Mutations are marked. Before building one, read:
+
+- [Authentication](/develop/authentication/) for the signature material and headers.
+- [Idempotency and request IDs](/develop/idempotency-and-request-ids/) for safe retries.
+- [Marketplace v1](/reference/api/marketplace-v1/) for the exact protocol data shapes.
+
+The copied command carries placeholders for the idempotency key and the body, because the
+signature covers the exact body bytes. Re-serialising the body invalidates it.
+
+## Downloads
+
+The full documents are on [OpenAPI and downloads](/reference/openapi/).
+

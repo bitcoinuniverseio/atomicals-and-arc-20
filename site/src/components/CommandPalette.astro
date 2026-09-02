@@ -1,0 +1,170 @@
+---
+/**
+ * Keyboard command palette over the generated page manifest.
+ * It is a navigation aid, not a second search engine: it filters titles and page IDs
+ * for the active locale and falls back to the site search for full-text queries.
+ */
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const locale = Astro.locals.starlightRoute.locale ?? ''
+---
+
+<bu-command-palette data-manifest={`${base}/manifest.json`} data-locale={locale} data-base={base}>
+  <button type="button" class="bu-palette-trigger" data-open aria-haspopup="dialog">
+    <span aria-hidden="true">&#9166;</span>
+    <span class="bu-palette-label">Jump to</span>
+    <kbd>Ctrl</kbd><kbd>K</kbd>
+  </button>
+
+  <dialog class="bu-palette" aria-label="Jump to a documentation page">
+    <form method="dialog" role="search">
+      <label class="sr-only" for="bu-palette-input">Filter documentation pages</label>
+      <input
+        id="bu-palette-input"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Filter pages by title or page ID"
+        data-input
+      />
+    </form>
+    <ul data-results role="listbox" aria-label="Matching pages"></ul>
+    <p class="bu-palette-empty" data-empty hidden>No page matches that filter.</p>
+  </dialog>
+</bu-command-palette>
+
+<style>
+  .bu-palette-trigger kbd {
+    font: inherit;
+    font-size: 0.7rem;
+    border: 1px solid var(--bu-line-strong);
+    border-radius: 4px;
+    padding: 0 0.3em;
+    background: var(--bu-surface-sunken);
+  }
+  @media (max-width: 50rem) {
+    .bu-palette-label,
+    .bu-palette-trigger kbd {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  interface ManifestPage {
+    pageId: string
+    locale: string
+    title: string
+    description: string
+    href: string
+    area: string
+  }
+
+  class BuCommandPalette extends HTMLElement {
+    #pages: ManifestPage[] = []
+    #loaded = false
+    #active = 0
+
+    connectedCallback() {
+      const dialog = this.querySelector('dialog') as HTMLDialogElement | null
+      const trigger = this.querySelector('[data-open]') as HTMLButtonElement | null
+      const input = this.querySelector('[data-input]') as HTMLInputElement | null
+      const results = this.querySelector('[data-results]') as HTMLUListElement | null
+      const empty = this.querySelector('[data-empty]') as HTMLElement | null
+      if (!dialog || !trigger || !input || !results || !empty) return
+
+      const open = async () => {
+        await this.#load()
+        dialog.showModal()
+        input.value = ''
+        this.#render('', results, empty)
+        input.focus()
+      }
+
+      trigger.addEventListener('click', open)
+
+      document.addEventListener('keydown', (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+          event.preventDefault()
+          if (dialog.open) dialog.close()
+          else void open()
+        }
+      })
+
+      input.addEventListener('input', () => {
+        this.#active = 0
+        this.#render(input.value, results, empty)
+      })
+
+      dialog.addEventListener('keydown', (event) => {
+        const items = Array.from(results.querySelectorAll('li'))
+        if (items.length === 0) return
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+          event.preventDefault()
+          this.#active =
+            (this.#active + (event.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length
+          items.forEach((item, index) => {
+            item.dataset.active = String(index === this.#active)
+          })
+          items[this.#active]?.scrollIntoView({ block: 'nearest' })
+        }
+        if (event.key === 'Enter') {
+          const link = items[this.#active]?.querySelector('a')
+          if (link) {
+            event.preventDefault()
+            window.location.href = link.href
+          }
+        }
+      })
+    }
+
+    async #load() {
+      if (this.#loaded) return
+      const source = this.dataset.manifest
+      const locale = this.dataset.locale ?? ''
+      if (!source) return
+      try {
+        const response = await fetch(source)
+        const manifest = (await response.json()) as { pages: ManifestPage[] }
+        this.#pages = manifest.pages.filter(
+          (page) => (page.locale === 'en' ? '' : page.locale) === locale,
+        )
+      } catch {
+        this.#pages = []
+      }
+      this.#loaded = true
+    }
+
+    #render(query: string, results: HTMLUListElement, empty: HTMLElement) {
+      const needle = query.trim().toLowerCase()
+      const matches = (
+        needle
+          ? this.#pages.filter(
+              (page) =>
+                page.title.toLowerCase().includes(needle) ||
+                page.pageId.toLowerCase().includes(needle) ||
+                page.description.toLowerCase().includes(needle),
+            )
+          : this.#pages
+      ).slice(0, 40)
+
+      results.replaceChildren(
+        ...matches.map((page, index) => {
+          const item = document.createElement('li')
+          item.dataset.active = String(index === this.#active)
+          item.setAttribute('role', 'option')
+          const link = document.createElement('a')
+          link.href = page.href
+          link.textContent = page.title
+          const meta = document.createElement('span')
+          meta.textContent = `${page.area} / ${page.pageId}`
+          link.append(meta)
+          item.append(link)
+          return item
+        }),
+      )
+      empty.hidden = matches.length > 0
+    }
+  }
+
+  customElements.define('bu-command-palette', BuCommandPalette)
+</script>

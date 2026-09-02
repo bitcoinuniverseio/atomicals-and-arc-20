@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/contracts/protocol-atlas/atlas.schema.json",
+  "title": "Protocol Atlas dataset",
+  "description": "Evidence-backed comparative dataset for Bitcoin token and digital-object protocols. Every factual field is an evidence object, never an unqualified string. Unknown and conflicting facts are recorded as such.",
+  "type": "object",
+  "required": ["atlasVersion", "statusVocabulary", "attributes", "protocols"],
+  "additionalProperties": false,
+  "properties": {
+    "atlasVersion": { "const": "1.0.0" },
+    "lastVerified": { "$ref": "#/$defs/date" },
+    "statusVocabulary": {
+      "description": "The complete set of statuses an evidence object may carry.",
+      "type": "array",
+      "minItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "verified",
+          "implementation-specific",
+          "proposal",
+          "experimental",
+          "unknown",
+          "conflicting"
+        ]
+      }
+    },
+    "attributes": {
+      "description": "The fixed attribute vocabulary. Every protocol must carry every attribute.",
+      "type": "array",
+      "minItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "enum": [
+              "chain",
+              "unitModel",
+              "fungibleSupport",
+              "nonFungibleSupport",
+              "mutability",
+              "stateLocation",
+              "dataPlacement",
+              "transferModel",
+              "utxoCoupling",
+              "validationAuthority",
+              "indexerRequirement",
+              "naming",
+              "collections",
+              "programmability",
+              "contentPermanence",
+              "confirmationBehavior",
+              "principalUtxoRisk",
+              "activationStatus",
+              "canonicalSource",
+              "sourceRevision"
+            ]
+          },
+          "label": { "type": "string", "minLength": 3 },
+          "group": {
+            "enum": ["model", "state", "operations", "safety", "lifecycle"]
+          },
+          "description": { "type": "string" }
+        },
+        "required": ["id", "label", "group"]
+      }
+    },
+    "protocols": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": { "$ref": "#/$defs/protocol" }
+    }
+  },
+  "$defs": {
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "evidence": {
+      "type": "object",
+      "required": ["value", "status", "sourceId", "sourceRevision", "verifiedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": "string", "minLength": 1 },
+        "status": {
+          "enum": [
+            "verified",
+            "implementation-specific",
+            "proposal",
+            "experimental",
+            "unknown",
+            "conflicting"
+          ]
+        },
+        "sourceId": {
+          "type": "string",
+          "description": "Must match an id in contracts/source-manifest.json, or the literal 'none' when no source could be verified."
+        },
+        "sourceRevision": {
+          "type": ["string", "null"],
+          "description": "The exact revision of that source this fact was verified against, or null when the source carries no pinned revision."
+        },
+        "verifiedAt": { "$ref": "#/$defs/date" },
+        "notes": { "type": "string" }
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "required": ["id", "name", "family", "attributes"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "enum": [
+            "atomicals",
+            "arc-20",
+            "avm",
+            "ordinals",
+            "runes",
+            "brc-20",
+            "stamps-src-20",
+            "tap",
+            "alkanes-protorunes",
+            "counterparty",
+            "rgb"
+          ]
+        },
+        "name": { "type": "string" },
+        "family": {
+          "enum": ["atomicals-family", "inscription-based", "utxo-ledger", "client-validated", "op-return-ledger", "experimental-layer"]
+        },
+        "summary": { "type": "string" },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "chain",
+            "unitModel",
+            "fungibleSupport",
+            "nonFungibleSupport",
+            "mutability",
+            "stateLocation",
+            "dataPlacement",
+            "transferModel",
+            "utxoCoupling",
+            "validationAuthority",
+            "indexerRequirement",
+            "naming",
+            "collections",
+            "programmability",
+            "contentPermanence",
+            "confirmationBehavior",
+            "principalUtxoRisk",
+            "activationStatus",
+            "canonicalSource",
+            "sourceRevision"
+          ],
+          "propertyNames": {
+            "enum": [
+              "chain",
+              "unitModel",
+              "fungibleSupport",
+              "nonFungibleSupport",
+              "mutability",
+              "stateLocation",
+              "dataPlacement",
+              "transferModel",
+              "utxoCoupling",
+              "validationAuthority",
+              "indexerRequirement",
+              "naming",
+              "collections",
+              "programmability",
+              "contentPermanence",
+              "confirmationBehavior",
+              "principalUtxoRisk",
+              "activationStatus",
+              "canonicalSource",
+              "sourceRevision"
+            ]
+          },
+          "additionalProperties": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    }
+  }
+}

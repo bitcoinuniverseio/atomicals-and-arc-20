@@ -1,0 +1,223 @@
+/*
+ * Maps the Bitcoin Universe tokens onto Starlight's own variables so the whole
+ * shell (sidebar, header, search, code blocks, asides) follows one palette.
+ */
+
+:root,
+:root[data-theme='light'],
+:root[data-theme='dark'] {
+  --sl-color-accent-low: var(--bu-accent-quiet);
+  --sl-color-accent: var(--bu-accent);
+  --sl-color-accent-high: var(--bu-accent-strong);
+
+  --sl-color-white: var(--bu-ink);
+  --sl-color-gray-1: var(--bu-ink);
+  --sl-color-gray-2: var(--bu-ink-soft);
+  --sl-color-gray-3: var(--bu-ink-muted);
+  --sl-color-gray-4: var(--bu-line-strong);
+  --sl-color-gray-5: var(--bu-line);
+  --sl-color-gray-6: var(--bu-surface-sunken);
+  --sl-color-gray-7: var(--bu-paper-deep);
+  --sl-color-black: var(--bu-paper);
+
+  --sl-color-text: var(--bu-ink-soft);
+  --sl-color-text-accent: var(--bu-accent);
+  --sl-color-text-invert: var(--bu-paper);
+  --sl-color-bg: var(--bu-paper);
+  --sl-color-bg-nav: var(--bu-paper);
+  --sl-color-bg-sidebar: var(--bu-paper);
+  --sl-color-bg-inline-code: var(--bu-surface-sunken);
+  --sl-color-bg-accent: var(--bu-accent);
+  --sl-color-hairline: var(--bu-line);
+  --sl-color-hairline-light: var(--bu-line);
+  --sl-color-hairline-shade: var(--bu-line);
+  --sl-color-backdrop-overlay: color-mix(in srgb, var(--bu-paper) 88%, transparent);
+
+  --sl-color-red: var(--bu-risk);
+  --sl-color-orange: var(--bu-warn);
+  --sl-color-green: var(--bu-ok);
+  --sl-color-blue: var(--bu-info);
+  --sl-color-purple: var(--bu-accent);
+
+  --sl-color-asides-text-accent: var(--bu-accent);
+  --sl-color-asides-border: var(--bu-accent-edge);
+
+  --sl-font: var(--bu-font-sans);
+  --sl-font-mono: var(--bu-font-mono);
+
+  --sl-text-body: var(--bu-step-0);
+  --sl-text-body-sm: var(--bu-step--1);
+  --sl-text-code: 0.9em;
+  --sl-text-h1: var(--bu-step-4);
+  --sl-text-h2: var(--bu-step-3);
+  --sl-text-h3: var(--bu-step-2);
+  --sl-text-h4: var(--bu-step-1);
+
+  --sl-content-width: 48rem;
+  --sl-sidebar-width: 19rem;
+  /* The shell header carries two rows: the main bar with title, navigation and
+     tools, and the page context strip beneath it. Everything in Starlight
+     (scroll margins, sidebars, the mobile table of contents) hangs off
+     --sl-nav-height, so the total is declared once here. */
+  --bu-header-main-h: 3.5rem;
+  --bu-header-strip-h: 2.5rem;
+  --sl-nav-height: calc(var(--bu-header-main-h) + var(--bu-header-strip-h));
+  --sl-line-height: 1.7;
+}
+
+@media (max-width: 50rem) {
+  :root {
+    --bu-header-main-h: 3.5rem;
+    --bu-header-strip-h: 2.4rem;
+  }
+}
+
+/* The mobile menu button lives in the main bar, not centred across both rows. */
+@media (max-width: 50rem) {
+  starlight-menu-button button {
+    top: calc((var(--bu-header-main-h) - var(--sl-menu-button-size)) / 2);
+  }
+}
+
+/* Prose gets full ink; Starlight defaults to a softer body colour. */
+.sl-markdown-content {
+  color: var(--bu-ink-soft);
+}
+
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--bu-ink);
+  letter-spacing: -0.012em;
+  scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem);
+}
+
+.sl-markdown-content strong {
+  color: var(--bu-ink);
+  font-weight: 620;
+}
+
+/* Visible focus everywhere, in every state, in both themes. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--bu-focus);
+  outline-offset: 2px;
+  border-radius: var(--bu-radius-s);
+}
+
+/* Header treatment: a quiet rule instead of a heavy bar. */
+.header {
+  background: color-mix(in srgb, var(--bu-paper) 92%, transparent);
+  backdrop-filter: saturate(150%) blur(8px);
+  border-bottom: 1px solid var(--bu-line);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .header {
+    background: var(--bu-paper);
+  }
+}
+
+/* Sidebar reads as a table of contents, not a control panel. */
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover {
+  background: var(--bu-accent-quiet);
+  color: var(--bu-accent-strong);
+  font-weight: 600;
+}
+
+/* Every interactive control in the shell reaches the minimum target size. */
+.sidebar-content a,
+.right-sidebar a,
+starlight-menu-button button,
+mobile-starlight-toc a {
+  min-height: var(--bu-touch);
+  display: flex;
+  align-items: center;
+}
+
+.sl-steps > li::before {
+  background: var(--bu-accent-quiet);
+  color: var(--bu-accent-strong);
+  border: 1px solid var(--bu-accent-edge);
+}
+
+/* Tables must scroll inside themselves, never the page. */
+.sl-markdown-content table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--bu-step--1);
+}
+
+.sl-markdown-content :is(table) :is(th, td) {
+  border: 1px solid var(--bu-line);
+  padding: 0.55rem 0.7rem;
+  vertical-align: top;
+}
+
+.sl-markdown-content table th {
+  background: var(--bu-surface-sunken);
+  color: var(--bu-ink);
+  text-align: start;
+  font-weight: 620;
+}
+
+.sl-markdown-content > table,
+.sl-markdown-content .bu-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Long identifiers such as txids and Atomical IDs must not push the page sideways. */
+.sl-markdown-content :not(pre) > code {
+  overflow-wrap: anywhere;
+  border: 1px solid var(--bu-line);
+  border-radius: var(--bu-radius-s);
+  padding: 0.1em 0.34em;
+  color: var(--bu-ink);
+}
+
+.sl-markdown-content a {
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: from-font;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .header,
+  .sidebar,
+  .right-sidebar,
+  .pagination-links,
+  starlight-menu-button,
+  site-search,
+  .bu-tool,
+  .bu-footer-nav {
+    display: none !important;
+  }
+
+  .main-frame,
+  .main-pane {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .sl-markdown-content a::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+    color: #444;
+  }
+
+  :root {
+    --bu-paper: #fff;
+    --bu-ink: #000;
+    --bu-ink-soft: #1a1a1a;
+  }
+}

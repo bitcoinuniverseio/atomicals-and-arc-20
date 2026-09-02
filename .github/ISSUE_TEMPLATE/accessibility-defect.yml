@@ -1,0 +1,33 @@
+name: Accessibility defect
+description: Anything that fails WCAG 2.2 AA, or that is hard to use with assistive technology.
+labels: [accessibility-defect]
+body:
+  - type: input
+    id: page-id
+    attributes:
+      label: Page ID or route
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of barrier
+      options:
+        - Keyboard operation
+        - Screen reader announcement
+        - Colour contrast
+        - Focus visibility
+        - Target size
+        - Zoom or reflow
+        - Motion
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: What happens, and what should happen
+      description: Include the browser, the assistive technology, the theme, and the viewport width if they are relevant.
+    validations:
+      required: true
+

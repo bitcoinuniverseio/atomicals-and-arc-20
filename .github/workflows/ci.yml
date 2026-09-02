@@ -1,0 +1,299 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # One lane per commit, never cancelling in progress. A release certification
+  # run must not be evicted by the next push.
+  group: atomicals-docs-ci-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: false
+
+env:
+  # Every job re-asserts these, so a runner with a different toolchain fails
+  # loudly rather than producing a build nobody can reproduce.
+  EXPECTED_NODE: v24.19.0
+  EXPECTED_NPM: 11.17.0
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Gate 1. Contracts, conformance, and content metadata.
+  #
+  # This gate needs no site build, so it is the fastest signal on a pull request
+  # and it is what catches a wrong protocol claim.
+  # ---------------------------------------------------------------------------
+  contracts:
+    name: Contracts and conformance
+    # This is a public repository on self-hosted runners, so a pull request from
+    # a fork must never reach them. Same-repository events only.
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, universe-ci, linux-ultra]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Verify the pinned toolchain
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ((node --version).Trim() -ne $env:EXPECTED_NODE) {
+            throw "Expected Node.js $env:EXPECTED_NODE, found $(node --version)"
+          }
+          if ((npm --version).Trim() -ne $env:EXPECTED_NPM) {
+            throw "Expected npm $env:EXPECTED_NPM, found $(npm --version)"
+          }
+
+      - name: Install from the lockfile
+        run: npm ci
+
+      - name: Validate the OpenAPI documents, schemas, and route inventories
+        run: node --test tests/contracts.test.mjs
+
+      - name: Execute the ARC-20 allocation conformance vectors
+        run: node --test tests/conformance-allocation.test.mjs
+
+      - name: Validate content metadata, provenance, and translations
+        run: node --test tests/content.test.mjs
+
+      - name: Regenerate every derived artefact
+        run: npm run generate
+
+      - name: Prove generation leaves the repository clean
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) {
+            throw 'A generated artefact is out of date. Run `npm run generate` and commit the result.'
+          }
+
+  # ---------------------------------------------------------------------------
+  # Gate 2. The published packages.
+  # ---------------------------------------------------------------------------
+  packages:
+    name: Client and MCP packages
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, universe-ci, linux-ultra]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install from the lockfile
+        run: npm ci
+
+      - name: Regenerate the client from the OpenAPI documents
+        run: node scripts/generate-client.mjs
+
+      - name: Prove the committed client matches the contract
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          git diff --exit-code -- packages/client/src/generated
+          if ($LASTEXITCODE -ne 0) {
+            throw 'The generated client no longer matches the OpenAPI documents.'
+          }
+
+      - name: Type check and build the client
+        run: npx tsc --project packages/client/tsconfig.json
+
+      - name: Test the client
+        run: node --test packages/client/test/client.test.mjs
+
+      - name: Type check and build the documentation MCP server
+        run: npx tsc --project packages/mcp/tsconfig.json
+
+  # ---------------------------------------------------------------------------
+  # Gate 3. The site build, and every check that needs the built output.
+  # ---------------------------------------------------------------------------
+  site:
+    name: Site build, links, and artefacts
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, universe-ci, linux-ultra]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install from the lockfile
+        run: npm ci
+
+      - name: Type check the site
+        working-directory: site
+        run: npx astro check --minimumSeverity error
+
+      - name: Build the site and publish it to the repository root
+        run: node scripts/build.mjs
+
+      - name: Prove the build leaves the repository clean
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) {
+            throw 'The committed site output is out of date. Run `npm run build` and commit the result.'
+          }
+
+      - name: Check links, anchors, compatibility routes, and generated artefacts
+        run: node --test tests/links.test.mjs
+
+      - name: Test the documentation MCP server against the built artefacts
+        run: |
+          npx tsc --project packages/mcp/tsconfig.json
+          node --test packages/mcp/test/server.test.mjs
+
+      - name: Check accessibility invariants in the built HTML
+        run: node --test tests/accessibility.test.mjs
+
+      - name: Check performance budgets against the built assets
+        run: node --test tests/performance.test.mjs
+
+      - name: Upload the built site for review
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: site-${{ github.sha }}
+          path: site/dist
+          retention-days: 7
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # Gate 4. Security. Separate so a dependency finding is never hidden behind a
+  # build failure, and never the other way round.
+  # ---------------------------------------------------------------------------
+  security:
+    name: Secrets and dependencies
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, universe-ci, linux-ultra]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install from the lockfile
+        run: npm ci
+
+      - name: Scan the working tree and the history for secrets
+        run: node scripts/check-secrets.mjs
+
+      - name: Refuse high and critical dependency vulnerabilities
+        run: npm audit --audit-level=high --omit=dev
+
+      - name: Report the complete dependency risk picture
+        continue-on-error: true
+        run: npm audit
+
+  # ---------------------------------------------------------------------------
+  # Gate 5. The local Regtest Lab.
+  #
+  # Boots the minimal profile on a Docker-capable self-hosted runner, seeds the
+  # deterministic state, executes the critical read-only expectations, and
+  # tears everything down again.
+  # ---------------------------------------------------------------------------
+  lab:
+    name: Regtest Lab end to end
+    if: >-
+      !cancelled() &&
+      (github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: [self-hosted, universe-ci, linux-ultra, docker-ci, docker-29-7-2]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Prove Docker exists before anything else runs
+        run: docker version
+
+      - name: Boot the minimal profile with ephemeral credentials
+        run: npm run lab:up
+
+      - name: Seed the deterministic fixture state
+        run: npm run lab:seed
+
+      - name: Execute the critical workflows against the running lab
+        run: npm run lab:test
+
+      - name: Reset proves determinism, not luck
+        run: |
+          npm run lab:reset
+          npm run lab:test
+
+      - name: Tear everything down, including volumes
+        if: always()
+        run: npm run lab:down
+
+  # ---------------------------------------------------------------------------
+  # Gate 6. AVM pinned builds and parity.
+  #
+  # Builds the pinned beta interpreter natively and to WebAssembly inside
+  # digest-pinned containers, executes the golden fixtures on both, and
+  # requires byte-identical outcomes. Runs when the runtime package or its
+  # build inputs change.
+  # ---------------------------------------------------------------------------
+  avm:
+    name: AVM native and WASM parity
+    if: >-
+      !cancelled() &&
+      (github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: [self-hosted, universe-ci, linux-ultra, docker-ci, docker-29-7-2]
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify the vendored pinned source checksum
+        run: node --test packages/avm-runtime/test/host.test.mjs
+
+      - name: Build the native interpreter in the pinned container
+        run: docker compose -f packages/avm-runtime/docker/compose.yaml run --rm native-build
+
+      - name: Build the WASM module in the pinned container
+        run: docker compose -f packages/avm-runtime/docker/compose.yaml run --rm wasm-build
+
+      - name: Execute golden fixtures on both backends and require parity
+        run: node --test packages/avm-runtime/test/host.test.mjs
+
+      - name: Publish the WASM artifact for the workbench
+        uses: actions/upload-artifact@v4
+        with:
+          name: avm-interpreter-wasm
+          path: packages/avm-runtime/out/avm-interpreter.mjs

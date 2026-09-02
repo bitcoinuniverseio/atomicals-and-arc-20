@@ -1,0 +1,60 @@
+# ARC-20
+
+一页看完完整的 ARC-20 模型，从发行到分配再到安全边界，并链接到每一部分的确切规则。
+
+Page ID: protocol/arc20/overview
+Applicability: protocol-behavior
+Authority: reference-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: zh-cn
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/protocol/arc20/overview/
+
+---
+ARC-20 是 Atomicals 在比特币上的同质代币模型。一个单位等于一个着色聪。其余一切都由此推导而来。
+
+## 七句话说完整个模型
+
+1. 一个单位就是验证器针对某个代币认定为着色的输出中的一个聪。
+2. 因此供应量以聪计量，并受真实比特币的约束。
+3. 发行要么一次性直接完成，要么通过一次部署由他人反复铸造。
+4. 代号是全局分配的名称，解析到且仅解析到一个 Atomical。
+5. 转移是对交易输入与输出按顺序进行的分配。
+6. 无法放入可用输出的价值会被销毁。
+7. 着色输出总额永远不能超过着色输入总额。
+
+在构建或签署任何东西之前，请阅读[销毁](/protocol/arc20/burns/)。
+
+## 每条规则在哪里说明
+
+| 领域 | 页面 |
+| --- | --- |
+| 单位模型，以及小数位为何不产生分数 | [单位模型](/protocol/arc20/unit-model/) |
+| 代号分配、候选与已验证胜出者 | [代号与候选](/protocol/arc20/tickers-and-candidates/) |
+| 一步发行完整供应量 | [直接发行](/protocol/arc20/direct-issuance/) |
+| 铸造次数固定的部署 | [固定 DFT](/protocol/arc20/fixed-dft/) |
+| 针对部署申领一次铸造 | [去中心化铸造](/protocol/arc20/decentralized-mint/) |
+| 受激活条件约束的递进式部署 | [永续 DFT](/protocol/arc20/perpetual-dft/) |
+| 对 commit 与 reveal 的工作量要求 | [Bitwork 要求](/protocol/arc20/bitwork-requirements/) |
+| 可选元数据与展示用小数位 | [元数据与小数位](/protocol/arc20/metadata-and-decimals/) |
+| 价值如何放入输出 | [分配](/protocol/arc20/allocation/) |
+| 拆分与合并着色批次 | [拆分与合并](/protocol/arc20/split-and-combine/) |
+| 价值如何被销毁 | [销毁](/protocol/arc20/burns/) |
+| 移动代币与原子化交换 | [转移与互换](/protocol/arc20/transfers-and-swaps/) |
+| PSBT 必须包含什么 | [PSBT 要求](/protocol/arc20/psbt-requirements/) |
+| 钱包要做到什么才算安全 | [钱包安全](/protocol/arc20/wallet-safety/) |
+| Substantiation Factor 材料的状态 | [Substantiation Factor](/protocol/arc20/substantiation-factor/) |
+
+## ARC-20 不是什么
+
+- 它不是 ERC-20 合约。既没有合约，也没有账户。
+- 它不是铭文余额。价值是输出的聪面值，而不是写在文本里的一个数字。
+- 它不是对任何东西的请求权。除非另有法律安排，否则没有任何东西为一个单位背书，而铸造本身也不会
+  创造这种安排。
+- 它不是 ARC-721 标准。审阅中未找到任何确立该标准的官方来源。
+
+## Universe 产品边界
+
+协议支持直接 `mint-ft` 发行。目前没有任何 Universe 产品界面提供它。Universe 提供的是已验证代号
+解析、代币详情、持有者、已确认活动、组合余额、着色 UTXO，以及 Marketplace v1 流程。
+参见[状态与已知限制](/start/status-and-limitations/)。

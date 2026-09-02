@@ -1,0 +1,280 @@
+{
+  "generatedBy": "scripts/generate-validators.mjs",
+  "validators": [
+    {
+      "key": "arc20:GET /live:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/arc20-GET-live-200",
+      "document": "arc20"
+    },
+    {
+      "key": "arc20:GET /ready:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/arc20-GET-ready-200",
+      "document": "arc20"
+    },
+    {
+      "key": "arc20:GET /ready:503",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/arc20-GET-ready-503",
+      "document": "arc20"
+    },
+    {
+      "key": "arc20:GET /token-explorer/status:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/arc20-GET-token-explorer-status-200",
+      "document": "arc20"
+    },
+    {
+      "key": "arc20:GET /token-explorer/arc20:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/arc20-GET-token-explorer-arc20-200",
+      "document": "arc20"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /live:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-live-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /version:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-version-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /health:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-health-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /health:503",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-health-503",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /ready:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-ready-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /token-explorer/status:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-token-explorer-status-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /token-explorer/{protocol}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-token-explorer-protocol-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/index/status:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-index-status-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-nfts/index/status:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-nfts-index-status-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-realms/index/status:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-realms-index-status-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/index/events:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-index-events-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/assets:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-assets-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-nfts/assets:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-nfts-assets-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-realms/assets:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-realms-assets-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/assets/{atomicalId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-assets-atomicalId-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-nfts/assets/{atomicalId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-nfts-assets-atomicalId-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-realms/assets/{atomicalId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-realms-assets-atomicalId-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/assets/{atomicalId}/history:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-assets-atomicalId-history-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-nfts/assets/{atomicalId}/history:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-nfts-assets-atomicalId-history-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-realms/assets/{atomicalId}/history:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-realms-assets-atomicalId-history-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/assets/{atomicalId}/holders:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-assets-atomicalId-holders-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-nfts/assets/{atomicalId}/holders:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-nfts-assets-atomicalId-holders-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-realms/assets/{atomicalId}/holders:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-realms-assets-atomicalId-holders-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/assets/{atomicalId}/metadata:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-assets-atomicalId-metadata-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-nfts/assets/{atomicalId}/metadata:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-nfts-assets-atomicalId-metadata-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-realms/resolve:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-realms-resolve-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-realms/hierarchy:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-realms-hierarchy-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals-realms/subrealms:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-realms-subrealms-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/transactions/{txid}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-transactions-txid-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/blocks/{height}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-blocks-height-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "atomicals-nfts-realms:GET /v1/atomicals/utxos/{txid}/{vout}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/atomicals-nfts-realms-GET-v1-atomicals-utxos-txid-vout-200",
+      "document": "atomicals-nfts-realms"
+    },
+    {
+      "key": "marketplace-v1:GET /api/marketplace/v1/protocols/{protocolId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-api-marketplace-v1-protocols-protocolId-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /api/marketplace/v1/protocols/{protocolId}/status:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-api-marketplace-v1-protocols-protocolId-status-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /api/marketplace/v1/protocols/{protocolId}/readiness:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-api-marketplace-v1-protocols-protocolId-readiness-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /api/marketplace/v1/protocols/{protocolId}/readiness:503",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-api-marketplace-v1-protocols-protocolId-readiness-503",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /api/marketplace/v1/protocols/{protocolId}/listings:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-api-marketplace-v1-protocols-protocolId-listings-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /api/marketplace/v1/protocols/{protocolId}/listings/{listingId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-api-marketplace-v1-protocols-protocolId-listings-listingId-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /api/marketplace/v1/protocols/{protocolId}/reservations/{reservationId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-api-marketplace-v1-protocols-protocolId-reservations-reservationId-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /api/marketplace/v1/protocols/{protocolId}/settlements/{orderId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-api-marketplace-v1-protocols-protocolId-settlements-orderId-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/assets:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-assets-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/assets:400",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-assets-400",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/listings:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-listings-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/listings/{listingId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-listings-listingId-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/offers:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-offers-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/collections:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-collections-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/activity:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-activity-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/position-source/ready:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-position-source-ready-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/position-source/outpoints/{outpoint}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-position-source-outpoints-outpoint-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/internal/readiness:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-internal-readiness-200",
+      "document": "marketplace-v1"
+    },
+    {
+      "key": "marketplace-v1:GET /v1/marketplace/protocols/{protocolId}/internal/reservations/{reservationId}:200",
+      "id": "https://bitcoinuniverseio.github.io/atomicals-and-arc-20/validators/marketplace-v1-GET-v1-marketplace-protocols-protocolId-internal-reservations-reservationId-200",
+      "document": "marketplace-v1"
+    }
+  ]
+}

@@ -1,0 +1,1033 @@
+{
+  "vectorSetVersion": "1.0.0",
+  "title": "ARC-20 normal allocation",
+  "engine": "conformance/allocation.mjs",
+  "source": {
+    "id": "atomicals-electrumx-1.5.2.0",
+    "revision": "8df23747835c20230fc8b8097d469e7a1d97c3e0",
+    "paths": [
+      "electrumx/lib/atomicals_blueprint_builder.py#assign_expected_outputs_basic",
+      "electrumx/lib/atomicals_blueprint_builder.py#calculate_outputs_to_color_for_ft_atomical_ids",
+      "electrumx/lib/atomicals_blueprint_builder.py#color_ft_atomicals_regular"
+    ]
+  },
+  "network": "mainnet",
+  "applicability": "protocol-behavior",
+  "notes": [
+    "Normal allocation only. Custom coloring is activation gated and covered by its own cases.",
+    "Fee inputs and output scripts are omitted for clarity. They do not change the allocation result.",
+    "Every case is executed by tests/conformance.test.mjs against conformance/allocation.mjs."
+  ],
+  "cases": [
+    {
+      "id": "clean-split",
+      "title": "Clean split into two outputs",
+      "description": "Both outputs are exactly covered, so nothing is left to place and nothing burns.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1200
+        }
+      ],
+      "outputs": [
+        {
+          "value": 700
+        },
+        {
+          "value": 500
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 700
+          },
+          {
+            "index": 1,
+            "coloredTotal": 500
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "oversized-next-output",
+      "title": "Oversized next output burns the remainder",
+      "description": "Output zero takes 700. The next output is 546 satoshis, larger than the 500 units left, so the remainder is destroyed.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1200
+        }
+      ],
+      "outputs": [
+        {
+          "value": 700
+        },
+        {
+          "value": 546
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 700
+          },
+          {
+            "index": 1,
+            "coloredTotal": 0
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 500
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "exact-single-output",
+      "title": "Whole lot into one output",
+      "description": "One output exactly equal to the coloured value takes everything.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 10000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 10000
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 10000
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "first-output-too-large",
+      "title": "First output larger than the whole lot",
+      "description": "Nothing can be placed at all, so the entire coloured value is destroyed.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 500
+        }
+      ],
+      "outputs": [
+        {
+          "value": 20000
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 0
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 500
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "too-few-outputs",
+      "title": "Outputs run out before the value does",
+      "description": "Every output is covered but value is still left over, so the leftover burns.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1200
+        }
+      ],
+      "outputs": [
+        {
+          "value": 700
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 700
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 500
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "unspendable-output-skipped",
+      "title": "Unspendable outputs are skipped, not funded",
+      "description": "A provably unspendable output is passed over and consumes no coloured value.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1200
+        }
+      ],
+      "outputs": [
+        {
+          "value": 0,
+          "unspendable": true
+        },
+        {
+          "value": 700
+        },
+        {
+          "value": 500
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 0
+          },
+          {
+            "index": 1,
+            "coloredTotal": 700
+          },
+          {
+            "index": 2,
+            "coloredTotal": 500
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "combine-two-lots",
+      "title": "Combining two lots of the same token",
+      "description": "Two coloured inputs of the same token are summed before allocation and land in one output.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 700
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 1,
+          "atomicalValue": 500
+        }
+      ],
+      "outputs": [
+        {
+          "value": 1200
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 1200
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "two-tokens-sequential-slots",
+      "title": "Two different tokens take sequential output slots",
+      "description": "The first token fills the outputs it needs, then the next token starts after the last slot the first one used.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 700
+        },
+        {
+          "atomicalId": "TOKENB",
+          "txinIndex": 1,
+          "atomicalValue": 900
+        }
+      ],
+      "outputs": [
+        {
+          "value": 700
+        },
+        {
+          "value": 900
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 700
+          },
+          {
+            "index": 1,
+            "coloredTotal": 900
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "two-tokens-non-clean-fallback",
+      "title": "A non-clean slot triggers the output zero fallback",
+      "description": "When the sequential assignment cannot be made cleanly, the reference builder restarts every token from output zero. Both tokens then contend for the same outputs and value burns.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 700
+        },
+        {
+          "atomicalId": "TOKENB",
+          "txinIndex": 1,
+          "atomicalValue": 400
+        }
+      ],
+      "outputs": [
+        {
+          "value": 700
+        },
+        {
+          "value": 546
+        }
+      ],
+      "expected": {
+        "burned": [
+          {
+            "atomicalId": "TOKENB",
+            "value": 400
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false,
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 700
+          }
+        ]
+      }
+    },
+    {
+      "id": "dust-remainder-burns",
+      "title": "A remainder smaller than the change output burns",
+      "description": "Sending 1000 units from a 1200 unit lot with a 200 satoshi change output fails, because 200 is placed only if it fits after the 1000 is taken. Here it does fit, so nothing burns. Compare with the next case.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1200
+        }
+      ],
+      "outputs": [
+        {
+          "value": 1000
+        },
+        {
+          "value": 200
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 1000
+          },
+          {
+            "index": 1,
+            "coloredTotal": 200
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "change-output-too-large",
+      "title": "A change output larger than the remainder burns it",
+      "description": "The same intent with a 546 satoshi change output destroys the 200 unit remainder, because 546 does not fit in 200.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1200
+        }
+      ],
+      "outputs": [
+        {
+          "value": 1000
+        },
+        {
+          "value": 546
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 1000
+          },
+          {
+            "index": 1,
+            "coloredTotal": 0
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 200
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "custom-coloring-partial-fill",
+      "title": "Custom coloring assigns a partial value to the last output",
+      "description": "With custom coloring active the builder attaches an output even when the value does not cover it fully, and the last output receives only what is left.",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": true
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1200
+        }
+      ],
+      "outputs": [
+        {
+          "value": 700
+        },
+        {
+          "value": 546
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 700
+          },
+          {
+            "index": 1,
+            "coloredTotal": 500
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "suite-exact-single-output",
+      "title": "Exact single output, exact-cover era",
+      "description": "The token exactly fills the only output, so nothing is left over and the assignment is clean.",
+      "upstreamTest": "test_spends_ft_valid",
+      "era": "exact-cover",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 11000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 11000
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 11000
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "suite-partially-colored-carry-forward",
+      "title": "Partially coloured output, current era",
+      "description": "Since height 848484 an output can carry fewer token units than satoshis. The 500 units land on an 11000 satoshi output and nothing burns. Reported as not cleanly assigned because the output is only partly coloured.",
+      "upstreamTest": "test_spends_single_ft_partially_colored_transfer",
+      "era": "current",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": true
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 500
+        }
+      ],
+      "outputs": [
+        {
+          "value": 11000
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 500
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "suite-consolidation-burn",
+      "title": "Eleven inputs consolidated into one small output",
+      "description": "The classic consolidation accident: everything beyond the first output is destroyed.",
+      "upstreamTest": "test_spends_ft_burned",
+      "era": "exact-cover",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 1,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 2,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 3,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 4,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 5,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 6,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 7,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 8,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 9,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 10,
+          "atomicalValue": 1000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 1000
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 1000
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 10000
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "suite-output-over-balance",
+      "title": "One satoshi short destroys the whole balance",
+      "description": "Under exact-cover rules an output has to be fully covered. Being one satoshi short colours nothing at all. The same shape under current rules colours the output partially and burns nothing, which is why the rule changed.",
+      "upstreamTest": "test_spends_ft_single_burned_under",
+      "era": "exact-cover",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 10999
+        }
+      ],
+      "outputs": [
+        {
+          "value": 11000
+        }
+      ],
+      "expected": {
+        "outputs": [],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 10999
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "suite-one-unit-over",
+      "title": "One unit over the output value burns that unit",
+      "description": "The single leftover unit is the miner fee, and it is burned token supply.",
+      "upstreamTest": "test_spends_ft_single_burned_over",
+      "era": "exact-cover",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 11001
+        }
+      ],
+      "outputs": [
+        {
+          "value": 11000
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 11000
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 1
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "suite-merged-inputs-single-output",
+      "title": "Two lots merged into one output, one unit as fee",
+      "description": "The pool is 1455, the output takes 1454, and the remaining unit is burned.",
+      "upstreamTest": "test_spends_ft_split_one_token",
+      "era": "exact-cover",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 900
+        },
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 1,
+          "atomicalValue": 555
+        }
+      ],
+      "outputs": [
+        {
+          "value": 1454
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 1454
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 1
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "suite-no-atomicals",
+      "title": "A transaction carrying no tokens",
+      "description": "Spending no token-bearing input produces an empty blueprint. An implementation must not fabricate assignments for an uncoloured transaction.",
+      "upstreamTest": "test_empty_spends",
+      "era": "current",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": true
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "value": 1000
+        }
+      ],
+      "expected": {
+        "outputs": [],
+        "burned": [],
+        "cleanlyAssigned": true,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "fee-taken-from-colored-value",
+      "title": "Paying the fee out of coloured value burns it",
+      "description": "The outputs total 200 satoshis less than the coloured input, and those 200 units are destroyed rather than returned. Pay the fee from a plain bitcoin input instead.",
+      "era": "current",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": true
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 10000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 3000
+        },
+        {
+          "value": 6800
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 3000
+          },
+          {
+            "index": 1,
+            "coloredTotal": 6800
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 200
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "only-unspendable-outputs",
+      "title": "No output able to take colour",
+      "description": "Unspendable outputs are skipped by regular assignment, so a transaction whose only output is an OP_RETURN leaves the balance nowhere to land.",
+      "era": "current",
+      "options": {
+        "sortByFifo": true,
+        "customColoring": true
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 5000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 0,
+          "unspendable": true
+        }
+      ],
+      "expected": {
+        "outputs": [],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 5000
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "split-skip-amount",
+      "title": "Split skips a satoshi amount before colouring",
+      "description": "The y payload names satoshis to pass over before a token starts colouring, which is how two tokens sharing one input get separated. Here output 0 satisfies the skip, the token colours output 1, and the value beyond it burns.",
+      "era": "exact-cover",
+      "options": {
+        "operation": "split",
+        "payload": {
+          "TOKENA": 1000
+        },
+        "customColoring": false
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 3000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 1000
+        },
+        {
+          "value": 2000
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 1,
+            "coloredTotal": 2000
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 1000
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "custom-color-over-request-clamped",
+      "title": "Custom colouring clamps an over-request",
+      "description": "The payload asks for more than either token holds. Each request is clamped to the output value and then to the remaining balance, so no inflation is possible.",
+      "upstreamTest": "test_custom_colored_ft_overflow",
+      "era": "current",
+      "options": {
+        "operation": "custom",
+        "payload": {
+          "TOKENA": {
+            "0": 1200
+          },
+          "TOKENB": {
+            "1": 600,
+            "2": 600
+          }
+        }
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1000
+        },
+        {
+          "atomicalId": "TOKENB",
+          "txinIndex": 0,
+          "atomicalValue": 1000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 1200
+        },
+        {
+          "value": 600
+        },
+        {
+          "value": 600
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 1000
+          },
+          {
+            "index": 1,
+            "coloredTotal": 600
+          },
+          {
+            "index": 2,
+            "coloredTotal": 400
+          }
+        ],
+        "burned": [],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    },
+    {
+      "id": "custom-color-unassigned-value-burns",
+      "title": "Custom colouring burns what the payload does not place",
+      "description": "The payload directs 400 units at output 0 and says nothing about the rest, so the remaining 600 units are destroyed. Custom colouring places value explicitly; it does not carry a remainder forward.",
+      "era": "current",
+      "options": {
+        "operation": "custom",
+        "payload": {
+          "TOKENA": {
+            "0": 400
+          }
+        }
+      },
+      "inputs": [
+        {
+          "atomicalId": "TOKENA",
+          "txinIndex": 0,
+          "atomicalValue": 1000
+        }
+      ],
+      "outputs": [
+        {
+          "value": 1000
+        },
+        {
+          "value": 500
+        }
+      ],
+      "expected": {
+        "outputs": [
+          {
+            "index": 0,
+            "coloredTotal": 400
+          }
+        ],
+        "burned": [
+          {
+            "atomicalId": "TOKENA",
+            "value": 600
+          }
+        ],
+        "cleanlyAssigned": false,
+        "inflationRejected": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+---
+/**
+ * Renders conformance vectors from the committed vector set and executes them
+ * with the same engine the tests use. The prose can never drift from the vectors,
+ * because the numbers on the page are computed at build time.
+ */
+import vectors from '../../../conformance/vectors/arc20-allocation.json'
+import { allocate } from '../../../conformance/allocation.mjs'
+
+interface Props {
+  /** Restrict to specific case ids, in order. Defaults to every case. */
+  only?: string[]
+}
+const { only } = Astro.props
+const cases = only
+  ? only.flatMap((id) => {
+      const found = vectors.cases.find((entry) => entry.id === id)
+      return found ? [found] : []
+    })
+  : vectors.cases
+
+const rows = cases.map((testCase) => {
+  const result = allocate(testCase.outputs, testCase.inputs, testCase.options)
+  return {
+    id: testCase.id,
+    title: testCase.title,
+    description: testCase.description,
+    inputs: testCase.inputs
+      .map((input) => `${input.atomicalValue} units at input ${input.txinIndex}`)
+      .join(', '),
+    outputs: result.outputs
+      .map(
+        (output: { index: number; value: number; unspendable?: boolean; coloredTotal: number }) =>
+          `out ${output.index}: ${output.value} sats${output.unspendable ? ' (unspendable)' : ''} to ${output.coloredTotal} units`,
+      )
+      .join('; '),
+    burned: result.burned.length
+      ? result.burned.map((entry) => `${entry.value} units of ${entry.atomicalId}`).join(', ')
+      : 'none',
+    clean: result.cleanlyAssigned,
+  }
+})
+---
+
+<div class="bu-matrix">
+  <table>
+    <caption class="sr-only">
+      Executed ARC-20 allocation vectors from conformance/vectors/arc20-allocation.json
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Case</th>
+        <th scope="col">Coloured inputs</th>
+        <th scope="col">Result per output</th>
+        <th scope="col">Burned</th>
+        <th scope="col">Clean</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr id={`vector-${row.id}`}>
+            <th scope="row">
+              {row.title}
+              <br />
+              <code>{row.id}</code>
+            </th>
+            <td>{row.inputs}</td>
+            <td>{row.outputs}</td>
+            <td>
+              {row.burned === 'none' ? (
+                <span class="bu-chip" data-tone="ok">none</span>
+              ) : (
+                <span class="bu-chip" data-tone="risk">{row.burned}</span>
+              )}
+            </td>
+            <td>{row.clean ? 'yes' : 'no'}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

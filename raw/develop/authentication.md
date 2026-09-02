@@ -1,0 +1,77 @@
+# Authentication
+
+What each Universe Atomicals surface requires, which credentials are public and which are internal, and what never appears in a browser.
+
+Page ID: develop/authentication
+Applicability: universe-implementation
+Authority: universe-implementation
+Networks: mainnet
+Verified: 2026-08-31
+Locale: en
+URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/develop/authentication/
+
+---
+Every token, secret, and key named on this page is a name, not a value. Values are provisioned out
+of band. Never place one in browser-delivered code, a query string, or a public repository.
+
+## The scheme per surface
+
+| Surface | Scheme |
+| --- | --- |
+| Liveness, readiness, version | None |
+| ARC-20 feed | Bearer token |
+| Operator poll and refresh | An admin token header |
+| NFT and Realm read routes | None on the routes themselves |
+| NFT and Realm refresh and rollback | An admin token header |
+| Token explorer pages | Per-protocol authorisation |
+| Marketplace reads | Bearer token |
+| Marketplace public mutations | Bearer token plus a replay-resistant request signature |
+| Marketplace owner actions | A short lived owner session, issued after a BIP-322 proof |
+| Marketplace internal routes | A separate internal bearer and a separate internal signature |
+
+## The Marketplace request signature
+
+Public mutations use a lowercase hex HMAC-SHA256 over a fixed string:
+
+```text
+v1\n{timestamp}\n{nonce}\n{method}\n{path}\n{sha256(exact_body_bytes)}
+```
+
+Headers: `X-Marketplace-Key-Id`, `X-Marketplace-Timestamp`, `X-Marketplace-Nonce`, and
+`X-Marketplace-Signature`. Mutations also require `Idempotency-Key`.
+
+Three properties follow:
+
+- The signature covers the exact body bytes, so re-serialising the body invalidates it.
+- The timestamp and nonce make replay detectable.
+- The path is covered, so a signature cannot be moved between routes.
+
+## Owner sessions
+
+An owner session is issued only after a BIP-322 simple proof for P2WPKH or key-path P2TR. It
+proves control of the address without moving anything, and it is short lived by design.
+
+An owner session is not a signature on a settlement transaction. Those are separate steps.
+
+## Separation of secrets
+
+The services use distinct secrets for distinct jobs: a source bearer, an admin token, a cursor
+signing secret, a request HMAC secret, an internal execution bearer, and an internal execution
+HMAC secret. The two HMAC secrets must be distinct.
+
+Reusing one secret across two jobs collapses two independent controls into one.
+
+## What must never happen
+
+- A bearer token in browser-delivered code.
+- A credential in a query string or a URL fragment.
+- An internal route exposed to the public internet.
+- A production credential in an API explorer.
+- A secret in a repository, a build artefact, or a log line.
+
+The [API explorer](/tools/api-explorer/) in this documentation defaults to schema and copy-only
+examples for exactly this reason.
+
+## Source
+
+[Marketplace v1](/reference/api/marketplace-v1/) and [errors](/develop/errors/).

@@ -1,0 +1,60 @@
+---
+import Figure from '../Figure.astro'
+---
+
+<Figure
+  id="fig-container-dmint"
+  title="Container, sealed manifest, and verified items"
+  summary="A Container is a named Atomical that anchors a collection. Its owner builds a manifest describing every allowed item, attaches it, and then seals it so it can never be edited. Claimants mint items against the sealed manifest, and a validator checks each claim against it. Verification is only meaningful because the manifest was sealed before minting opened. An item that merely claims membership in its metadata proves nothing."
+>
+  <svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="cd-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--d-line)" />
+      </marker>
+    </defs>
+    <g font-family="var(--bu-font-sans)" font-size="12.5">
+      <rect x="8" y="18" width="200" height="70" rx="9" fill="var(--d-accent-fill)" stroke="var(--d-accent)" stroke-width="1.5" />
+      <text x="26" y="42" font-size="11" letter-spacing="1.2" fill="var(--d-accent)">CONTAINER</text>
+      <text x="26" y="64" font-weight="640" fill="var(--d-ink)">named Atomical</text>
+      <text x="26" y="81" fill="var(--d-soft)">the collection identity</text>
+
+      <line x1="216" y1="53" x2="266" y2="53" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#cd-arrow)" />
+
+      <rect x="274" y="18" width="200" height="70" rx="9" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" />
+      <text x="292" y="42" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">MANIFEST</text>
+      <text x="292" y="64" font-weight="640" fill="var(--d-ink)">item rules and digests</text>
+      <text x="292" y="81" fill="var(--d-soft)">editable until sealed</text>
+
+      <line x1="482" y1="53" x2="532" y2="53" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#cd-arrow)" />
+
+      <rect x="540" y="18" width="172" height="70" rx="9" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="2" />
+      <text x="558" y="42" font-size="11" letter-spacing="1.2" fill="var(--d-ok)">SEAL</text>
+      <text x="558" y="64" font-weight="640" fill="var(--d-ink)">permanent</text>
+      <text x="558" y="81" fill="var(--d-soft)">no unseal</text>
+
+      <line x1="626" y1="88" x2="626" y2="112" stroke="var(--d-line)" stroke-width="1.5" marker-end="url(#cd-arrow)" />
+      <text x="8" y="132" font-size="11" letter-spacing="1.2" fill="var(--d-soft)">MINTING OPENS ONLY AFTER THE SEAL</text>
+
+      <rect x="8" y="144" width="160" height="60" rx="8" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="1.5" />
+      <text x="24" y="168" font-weight="640" fill="var(--d-ink)">item 001</text>
+      <text x="24" y="188" fill="var(--d-ok)">digest matches, verified</text>
+
+      <rect x="178" y="144" width="160" height="60" rx="8" fill="var(--d-ok-fill)" stroke="var(--d-ok)" stroke-width="1.5" />
+      <text x="194" y="168" font-weight="640" fill="var(--d-ink)">item 002</text>
+      <text x="194" y="188" fill="var(--d-ok)">rules satisfied, verified</text>
+
+      <rect x="348" y="144" width="160" height="60" rx="8" fill="var(--d-risk-fill)" stroke="var(--d-risk)" stroke-width="1.5" />
+      <text x="364" y="168" font-weight="640" fill="var(--d-ink)">item 003</text>
+      <text x="364" y="188" fill="var(--d-risk)">digest mismatch, invalid</text>
+
+      <rect x="518" y="144" width="194" height="60" rx="8" fill="var(--d-fill)" stroke="var(--d-line)" stroke-width="1.5" stroke-dasharray="5 4" />
+      <text x="534" y="168" font-weight="640" fill="var(--d-soft)">an NFT that just says</text>
+      <text x="534" y="188" fill="var(--d-soft)">it belongs: unverified</text>
+
+      <text x="8" y="238" fill="var(--d-soft)">Verification means the claim matched a manifest entry that could no longer be edited.</text>
+      <text x="8" y="260" fill="var(--d-soft)">A metadata field naming a collection is a claim anyone can make about anything.</text>
+      <text x="8" y="282" fill="var(--d-risk)">Minting against an unsealed manifest produces items whose rules can still be rewritten.</text>
+    </g>
+  </svg>
+</Figure>

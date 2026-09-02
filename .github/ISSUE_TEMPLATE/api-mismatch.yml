@@ -1,0 +1,36 @@
+name: API mismatch
+description: A documented route, field, or status that does not match the running service.
+labels: [api-mismatch]
+body:
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Which API
+      options:
+        - ARC-20 index and feed
+        - NFT and Realm index
+        - Marketplace v1
+        - Ordex contract
+    validations:
+      required: true
+  - type: input
+    id: operation
+    attributes:
+      label: Operation ID or route
+      placeholder: getAsset, or GET /v1/atomicals/assets/{atomicalId}
+    validations:
+      required: true
+  - type: textarea
+    id: documented
+    attributes:
+      label: What the documentation says
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: What the service actually did
+      description: Include the request identifier from the response and the service version from GET /version. Never include a credential.
+    validations:
+      required: true
+

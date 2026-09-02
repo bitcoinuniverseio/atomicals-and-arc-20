@@ -1,0 +1,28 @@
+name: New or updated AIP
+description: An Atomicals Improvement Proposal to add to the register, or a status that changed.
+labels: [new-aip]
+body:
+  - type: input
+    id: number
+    attributes:
+      label: AIP number
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      options: [Idea, Draft, Review, Last Call, Final, Stagnant, Withdrawn, Living]
+    validations:
+      required: true
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation evidence, if any
+      description: |
+        An AIP is never marked implemented because it exists. To claim proven conformance,
+        name the implementation, the exact revision, and the test or runtime check that
+        establishes it. Leave this empty if there is none.
+    validations:
+      required: false
+
