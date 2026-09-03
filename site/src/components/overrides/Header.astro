@@ -21,12 +21,12 @@ const shouldRenderSearch =
 
 const route = Astro.locals.starlightRoute
 const locale = route?.locale
-const currentSlug = route?.slug ?? 'index'
+const currentSlug = String(route?.slug ?? 'index')
 
 const globalNav = (siteMeta.globalNav ?? []).map((item) => {
   const label =
     locale && item.translations && locale in item.translations
-      ? item.translations[locale]
+      ? ((item.translations as Record<string, string>)[locale] ?? item.label)
       : item.label
   const href = docHref(item.href, locale)
   const targetSlug = item.href.replace(/^\//, '').replace(/\/$/, '') || 'index'
