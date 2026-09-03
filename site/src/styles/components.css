@@ -281,33 +281,45 @@ a.bu-card:hover {
 
 .bu-facts {
   display: grid;
-  gap: 1px;
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-  background: var(--bu-line);
-  border: 1px solid var(--bu-line);
-  border-radius: var(--bu-radius-m);
-  overflow: hidden;
+  gap: var(--bu-space-3);
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  background: transparent;
+  border: none;
+  overflow: visible;
   margin: var(--bu-space-5) 0;
 }
 
 .bu-fact {
   background: var(--bu-surface);
-  padding: 0.9rem 1rem;
+  border: 1px solid var(--bu-line);
+  border-radius: var(--bu-radius-m);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--bu-shadow-1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bu-fact:hover {
+  border-color: var(--bu-line-control);
+  box-shadow: var(--bu-shadow-2);
 }
 
 .bu-fact dt {
   font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--bu-ink-muted);
   font-weight: 700;
-  margin: 0 0 0.2rem;
+  margin: 0 0 0.4rem;
 }
 
 .bu-fact dd {
   margin: 0;
-  font-size: var(--bu-step-1);
-  font-weight: 640;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
   color: var(--bu-ink);
   overflow-wrap: anywhere;
 }
