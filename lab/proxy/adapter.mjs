@@ -20,7 +20,8 @@ const FEED_FILE = process.env.LAB_FEED_FILE ?? '/fixtures/feed.json'
 
 let rpcId = 0
 function coreRpc(method, params = []) {
-  const [url, auth] = CORE_RPC.replace('http://', '').split('@')
+  // user:password@host:port; the credentials come first.
+  const [auth, url] = CORE_RPC.replace('http://', '').split('@')
   const [user, password] = (auth ?? 'lab:lab').split(':')
   return fetch(`http://${url}`, {
     method: 'POST',
@@ -130,6 +131,7 @@ const server = createServer(async (request, response) => {
   }
 })
 
-server.listen(PORT, '127.0.0.1', () => {
-  process.stdout.write(`lab adapter on 127.0.0.1:${PORT}\n`)
+// Bind every container interface; compose publishes the port on the host loopback only.
+server.listen(PORT, '0.0.0.0', () => {
+  process.stdout.write(`lab adapter on 0.0.0.0:${PORT}\n`)
 })
