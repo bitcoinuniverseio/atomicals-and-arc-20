@@ -24,13 +24,22 @@ const ROOT = resolve(here, '..')
 const LAB = resolve(ROOT, 'lab')
 const envFile = resolve(LAB, '.env')
 
-function compose(args, { capture = false } = {}) {
+function compose(args, { capture = false, logsOnFailure = false } = {}) {
   const result = spawnSync('docker', ['compose', ...args], {
     cwd: LAB,
     stdio: capture ? 'pipe' : 'inherit',
     shell: process.platform === 'win32',
     encoding: 'utf8',
   })
+  if (result.status !== 0 && logsOnFailure) {
+    // The stack did not come up: show why before exiting, the compose
+    // summary alone only names the unhealthy service.
+    spawnSync('docker', ['compose', 'logs', '--tail', '80'], {
+      cwd: LAB,
+      stdio: 'inherit',
+      shell: process.platform === 'win32',
+    })
+  }
   if (result.status !== 0) {
     process.stderr.write(result.stderr ?? '')
     process.exit(result.status ?? 1)
@@ -102,7 +111,7 @@ const command = process.argv[2] ?? ''
 switch (command) {
   case 'up': {
     ensureCredentials()
-    compose(['up', '-d', '--wait'])
+    compose(['up', '-d', '--wait'], { logsOnFailure: true })
     await healthCheck()
     break
   }
@@ -130,7 +139,7 @@ switch (command) {
   case 'reset': {
     credentials()
     compose(['down', '-v'])
-    compose(['up', '-d', '--wait'])
+    compose(['up', '-d', '--wait'], { logsOnFailure: true })
     await healthCheck()
     spawnSync('node', [resolve(LAB, 'seed.mjs')], { stdio: 'inherit', env: hostEnv() })
     break

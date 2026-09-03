@@ -29,7 +29,7 @@ services:
     volumes:
       - core-data:/root/.bitcoin
     healthcheck:
-      test: ["CMD", "bitcoin-cli", "-regtest", "getblockcount"]
+      test: ["CMD", "bitcoin-cli", "-regtest", "-rpcuser=lab", "-rpcpassword=${LAB_RPC_PASSWORD}", "getblockcount"]
       interval: 5s
       timeout: 5s
       retries: 60
