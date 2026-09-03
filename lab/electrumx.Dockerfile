@@ -16,7 +16,7 @@ WORKDIR /srv/electrumx
 # Unbuffered so the log survives a fast exit.
 ENV PYTHONUNBUFFERED=1
 # The server refuses to run as root; the data volume is owned by the same user.
-RUN useradd --system --home /srv/electrumx --shell /usr/sbin/nologin electrumx \n    && mkdir -p /data && chown electrumx:electrumx /data /srv/electrumx
+RUN useradd --system --home /srv/electrumx --shell /usr/sbin/nologin electrumx && mkdir -p /data && chown electrumx:electrumx /data /srv/electrumx
 USER electrumx
 EXPOSE 51001
 CMD ["python", "electrumx_server"]
