@@ -5,10 +5,10 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.native
     volumes:
-      - ../../out:/out
+      - ../out:/out
   wasm-build:
     build:
       context: ..
       dockerfile: docker/Dockerfile.wasm
     volumes:
-      - ../../out:/out
+      - ../out:/out
