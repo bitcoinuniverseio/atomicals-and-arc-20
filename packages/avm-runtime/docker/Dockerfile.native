@@ -1,14 +1,16 @@
 # Deterministic native build of the pinned AVM interpreter.
 # Base image pinned by digest; the interpreter source comes from the
 # checksum-verified tarball, never from a moving ref.
-FROM debian:bookworm-20240904-slim@sha256:112613c60573f5b90e31686260fb8b7b9f24a809d105c2cd00ee81c1bbeba812
+FROM debian:bookworm-20240904-slim@sha256:a629e796d77a7b2ff82186ed15d01a493801c020eed5ce6adaa2704356f15a1c
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake libboost-all-dev libevent-dev libgmp-dev python3 \
+    build-essential cmake git libboost-all-dev libevent-dev libgmp-dev libssl-dev python3 \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /build
 COPY vendor/avm-interpreter-c185e62.tar.gz .
 COPY source-checksum.json .
 RUN tar -xzf avm-interpreter-c185e62.tar.gz \
-    && cmake -S avm-interpreter-c185e62 -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_AVM_CLI=ON \
+    && cmake -S avm-interpreter-c185e6216a3ea2cb2e011e508033ca535ece3472 -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_AVM_CLI=ON \
     && cmake --build build --target avm-cli -j "$(nproc)" \
-    && install -m 0755 build/src/avm-cli /out/avm-cli
+    && mkdir -p /dist && install -m 0755 build/src/avm-cli /dist/avm-cli
+# The output volume is mounted at run time, so the image keeps the binary in /dist.
+CMD ["cp", "/dist/avm-cli", "/out/avm-cli"]
