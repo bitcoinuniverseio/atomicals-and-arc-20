@@ -89,66 +89,115 @@ const payload = JSON.stringify({
     </p>
   </noscript>
 
-  <p class="bu-tool-note">
-    {data.records.length} records, last verified {data.lastVerified}. {data.policy.noEndorsement}
-    Reachability and capability are verified separately: a reachable homepage is not evidence
-    that a specific workflow works. A network failure is recorded as unreachable, never as
-    closed or deprecated.
-  </p>
+  <header class="bu-center-header">
+    <div class="bu-center-meta">
+      <span class="bu-chip" data-tone="ok">{data.records.length} records verified</span>
+      <span class="bu-center-date">Last checked {data.lastVerified}</span>
+    </div>
+    <p class="bu-center-note">
+      {data.policy.noEndorsement} Reachability and capability are verified separately: a reachable homepage is not evidence
+      that a specific workflow works. A network failure is recorded as unreachable, never as closed or deprecated.
+    </p>
+  </header>
 
   <div class="bu-center-controls">
-    <label>
-      <span>Search</span>
-      <input type="search" data-search placeholder="Filter by name, operator, capability" />
-    </label>
-    <label><span>Category</span>
-      <select data-filter="category"><option value="">All</option>
-        {categories.map((category) => <option value={category}>{categoryLabels[category] ?? category}</option>)}
-      </select>
-    </label>
-    <label><span>Network</span>
-      <select data-filter="network"><option value="">All</option>
-        {networks.map((network) => <option value={network}>{network}</option>)}
-      </select>
-    </label>
-    <label><span>Custody</span>
-      <select data-filter="custody"><option value="">All</option>
-        {custodies.map((custody) => <option value={custody}>{custody}</option>)}
-      </select>
-    </label>
-    <label><span>Workflow</span>
-      <select data-filter="workflow"><option value="">All</option>
-        {workflowIds.map((workflowId) => <option value={workflowId}>{workflowId}</option>)}
-      </select>
-    </label>
-    <label><span>Operator</span>
-      <select data-filter="official">
-        <option value="">All</option>
-        <option value="official">Official</option>
-        <option value="third">Third party</option>
-      </select>
-    </label>
-    <label><span>Availability</span>
-      <select data-filter="availability"><option value="">All</option>
-        {Object.keys((registry as unknown as { availabilityStates: Record<string, string> }).availabilityStates).map((state) => (
-          <option value={state}>{state}</option>
-        ))}
-      </select>
-    </label>
+    <div class="bu-search-field">
+      <label for="bu-center-search">Search</label>
+      <div class="bu-search-wrap">
+        <span class="bu-search-icon" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </span>
+        <input
+          id="bu-center-search"
+          type="search"
+          data-search
+          placeholder="Search by product name, operator, workflow, or capability..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+    </div>
+
+    <div class="bu-filters-grid">
+      <label>
+        <span>Category</span>
+        <select data-filter="category">
+          <option value="">All categories</option>
+          {categories.map((category) => <option value={category}>{categoryLabels[category] ?? category}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Network</span>
+        <select data-filter="network">
+          <option value="">All networks</option>
+          {networks.map((network) => <option value={network}>{network}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Custody</span>
+        <select data-filter="custody">
+          <option value="">All custody models</option>
+          {custodies.map((custody) => <option value={custody}>{custody}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Workflow</span>
+        <select data-filter="workflow">
+          <option value="">All workflows</option>
+          {workflowIds.map((workflowId) => <option value={workflowId}>{workflowId}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Operator</span>
+        <select data-filter="official">
+          <option value="">All operators</option>
+          <option value="official">Official only</option>
+          <option value="third">Third party only</option>
+        </select>
+      </label>
+      <label>
+        <span>Availability</span>
+        <select data-filter="availability">
+          <option value="">All availability</option>
+          {Object.keys((registry as unknown as { availabilityStates: Record<string, string> }).availabilityStates).map((state) => (
+            <option value={state}>{state}</option>
+          ))}
+        </select>
+      </label>
+    </div>
   </div>
 
   <div class="bu-center-actions">
-    <button type="button" class="bu-btn" data-mode="table" aria-pressed="true">Table</button>
-    <button type="button" class="bu-btn" data-mode="cards" aria-pressed="false">Cards</button>
-    <button type="button" class="bu-btn" data-export="csv">CSV</button>
-    <button type="button" class="bu-btn" data-export="json">JSON</button>
-    <a class="bu-btn" data-suggest href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/issues/new?template=new-aip.yml">Suggest an update</a>
+    <div class="bu-mode-toggle" role="group" aria-label="View mode">
+      <button type="button" class="bu-mode-btn" data-mode="table" aria-pressed="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+        Table
+      </button>
+      <button type="button" class="bu-mode-btn" data-mode="cards" aria-pressed="false">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+        Cards
+      </button>
+    </div>
+
+    <div class="bu-export-actions">
+      <span class="bu-export-hint">Export:</span>
+      <button type="button" class="bu-btn bu-btn-sm" data-export="csv">CSV</button>
+      <button type="button" class="bu-btn bu-btn-sm" data-export="json">JSON</button>
+    </div>
+
+    <a class="bu-btn bu-btn-sm bu-suggest-action" data-suggest href="https://github.com/bitcoinuniverseio/atomicals-and-arc-20/issues/new?template=new-aip.yml" target="_blank" rel="noopener noreferrer">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      Suggest an update
+    </a>
   </div>
-  <p class="bu-tool-note" data-count role="status"></p>
+
+  <div class="bu-results-bar">
+    <p class="bu-count-badge" data-count role="status" aria-live="polite"></p>
+  </div>
 
   <div class="bu-matrix bu-scroll" data-table-view>
     <table>
-      <caption>Compatibility records with evidence and verification dates</caption>
+      <caption class="sr-only">Compatibility records with evidence and verification dates</caption>
       <thead>
         <tr>
           <th scope="col">Product</th>
@@ -156,7 +205,7 @@ const payload = JSON.stringify({
           <th scope="col">Workflows</th>
           <th scope="col">Surface</th>
           <th scope="col">Evidence</th>
-          <th scope="col">Detail</th>
+          <th scope="col">Details</th>
         </tr>
       </thead>
       <tbody data-rows></tbody>
@@ -276,13 +325,13 @@ const payload = JSON.stringify({
         .map(
           (record) => `<tr>
             <th scope="row">${escapeHtml(record.name)}
-              <br /><span style="color:var(--bu-ink-muted)">${escapeHtml(record.operator)}</span></th>
+              <br /><span style="color:var(--bu-ink-muted);font-weight:400;font-size:0.78rem">${escapeHtml(record.operator)}</span></th>
             <td><span class="bu-chip" data-tone="${TONE[record.availability] ?? 'idle'}">${record.availability}</span>
-              <br /><span style="color:var(--bu-ink-muted)">checked ${record.lastVerified}</span></td>
-            <td>${record.workflows.length ? record.workflows.map((workflow) => `<code>${workflow}</code>`).join(', ') : 'none declared'}</td>
-            <td>${record.readOnly ? 'read-only' : 'mutation'}${record.publicApi ? ', public API' : ''}${record.sdkAvailable ? ', SDK' : ''}</td>
-            <td>${escapeHtml(record.evidence)}</td>
-            <td><button type="button" class="bu-btn" data-detail="${record.id}">Evidence</button></td>
+              <br /><span style="color:var(--bu-ink-muted);font-size:0.75rem">checked ${record.lastVerified}</span></td>
+            <td>${record.workflows.length ? record.workflows.map((workflow) => `<code style="font-size:0.78rem">${workflow}</code>`).join(', ') : '<span style="color:var(--bu-ink-muted);font-size:0.8rem">none declared</span>'}</td>
+            <td><span class="bu-surface-tag">${record.readOnly ? 'read-only' : 'mutation'}</span>${record.publicApi ? '<br /><span class="bu-subtag">public API</span>' : ''}${record.sdkAvailable ? '<br /><span class="bu-subtag">SDK</span>' : ''}</td>
+            <td class="bu-evidence-cell">${escapeHtml(record.evidence)}</td>
+            <td class="bu-detail-cell"><button type="button" class="bu-btn bu-btn-sm" data-detail="${record.id}">Evidence</button></td>
           </tr>`,
         )
         .join('')
@@ -350,25 +399,42 @@ const payload = JSON.stringify({
     for (const button of root.querySelectorAll<HTMLButtonElement>('[data-export]')) {
       button.addEventListener('click', () => {
         const visible = records.filter(matches)
-        let payloadOut: string
-        if (button.dataset.export === 'json') {
-          payloadOut = JSON.stringify({ exported: visible, policy: { noEndorsement: true } }, null, 2)
-        } else {
-          const lines = [['id', 'name', 'availability', 'workflows', 'verified'].join(',')]
-          for (const record of visible) {
-            lines.push([record.id, record.name, record.availability, record.workflows.join('|'), record.lastVerified].map((value) => `"${String(value).replaceAll('"', '""')}"`).join(','))
-          }
-          payloadOut = lines.join('\n')
+        const type = button.dataset.export
+        if (type === 'json') {
+          download('ecosystem-filtered.json', 'application/json', JSON.stringify(visible, null, 2))
+        } else if (type === 'csv') {
+          const headers = ['id', 'name', 'operator', 'category', 'availability', 'custody', 'networks', 'workflows', 'lastVerified']
+          const lines = [
+            headers.join(','),
+            ...visible.map((r) =>
+              [
+                r.id,
+                JSON.stringify(r.name),
+                JSON.stringify(r.operator),
+                r.category,
+                r.availability,
+                r.custody,
+                JSON.stringify(r.networks.join(';')),
+                JSON.stringify(r.workflows.join(';')),
+                r.lastVerified,
+              ].join(','),
+            ),
+          ]
+          download('ecosystem-filtered.csv', 'text/csv', lines.join('\n'))
         }
-        const blob = new Blob([payloadOut], { type: 'application/json;charset=utf-8' })
-        const url = URL.createObjectURL(blob)
-        const anchor = document.createElement('a')
-        anchor.href = url
-        anchor.download = `compatibility.${button.dataset.export}`
-        anchor.click()
-        URL.revokeObjectURL(url)
       })
     }
+
+    function download(filename: string, mime: string, content: string) {
+      const blob = new Blob([content], { type: mime })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      a.click()
+      URL.revokeObjectURL(url)
+    }
+
     // Suggest an update: a prefilled issue, never a direct registry write.
     for (const link of root.querySelectorAll<HTMLAnchorElement>('[data-suggest]')) {
       link.addEventListener('click', () => {
@@ -394,59 +460,315 @@ const payload = JSON.stringify({
 </script>
 
 <style>
-  .bu-center-controls {
-    display: grid;
-    gap: var(--bu-space-2);
-    margin-block: var(--bu-space-3);
+  .bu-center {
+    background: var(--bu-surface);
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-l);
+    box-shadow: var(--bu-shadow-1);
+    padding: 1.5rem;
+    margin-block: 2rem;
+    overflow: hidden;
   }
 
-  @media (min-width: 48rem) {
-    .bu-center-controls {
-      grid-template-columns: repeat(4, 1fr);
+  .bu-center-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--bu-line);
+  }
+
+  .bu-center-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .bu-center-date {
+    font-size: 0.8rem;
+    color: var(--bu-ink-muted);
+    font-weight: 500;
+  }
+
+  .bu-center-note {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--bu-ink-muted);
+  }
+
+  .bu-center-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .bu-search-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .bu-search-field label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bu-ink-muted);
+  }
+
+  .bu-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .bu-search-icon {
+    position: absolute;
+    left: 0.85rem;
+    display: flex;
+    color: var(--bu-ink-muted);
+    pointer-events: none;
+  }
+
+  .bu-search-wrap input {
+    width: 100%;
+    min-height: 2.6rem;
+    padding: 0.55rem 1rem 0.55rem 2.4rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface);
+    color: var(--bu-ink);
+    box-shadow: var(--bu-shadow-0, 0 1px 2px rgba(0, 0, 0, 0.03));
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .bu-search-wrap input:focus {
+    outline: none;
+    border-color: var(--bu-accent);
+    box-shadow: 0 0 0 3px var(--bu-accent-quiet, rgba(235, 94, 40, 0.15));
+  }
+
+  .bu-filters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 52rem) {
+    .bu-filters-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
-  .bu-center-controls label {
+  .bu-filters-grid label {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bu-ink-muted);
   }
 
-  .bu-center-controls input,
-  .bu-center-controls select {
-    min-height: var(--bu-touch);
-    padding: 0.4rem 0.7rem;
+  .bu-filters-grid select {
+    width: 100%;
+    min-height: 2.4rem;
+    padding: 0.45rem 2rem 0.45rem 0.75rem;
     border: 1px solid var(--bu-line-control);
-    border-radius: var(--bu-radius-s);
-    background: var(--bu-surface);
+    border-radius: var(--bu-radius-m);
+    background-color: var(--bu-surface);
     color: var(--bu-ink);
     font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.75rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .bu-filters-grid select:focus {
+    outline: none;
+    border-color: var(--bu-accent);
+    box-shadow: 0 0 0 3px var(--bu-accent-quiet, rgba(235, 94, 40, 0.15));
   }
 
   .bu-center-actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--bu-space-2);
     align-items: center;
-    margin-block-end: var(--bu-space-2);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--bu-line);
   }
 
-  .bu-center-actions a {
-    text-decoration: none;
+  .bu-mode-toggle {
+    display: inline-flex;
+    background: var(--bu-surface-sunken);
+    border: 1px solid var(--bu-line-control);
+    border-radius: var(--bu-radius-m);
+    padding: 2px;
+    gap: 2px;
+  }
+
+  .bu-mode-btn {
     display: inline-flex;
     align-items: center;
+    gap: 0.35rem;
+    padding: 0.32rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: none;
+    border-radius: calc(var(--bu-radius-m) - 2px);
+    background: transparent;
+    color: var(--bu-ink-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .bu-mode-btn[aria-pressed='true'] {
+    background: var(--bu-surface);
+    color: var(--bu-ink);
+    box-shadow: var(--bu-shadow-1);
+  }
+
+  .bu-export-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .bu-export-hint {
+    font-size: 0.78rem;
+    color: var(--bu-ink-muted);
+    font-weight: 600;
+    margin-inline-start: 0.25rem;
+  }
+
+  .bu-btn-sm {
+    min-height: auto;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: var(--bu-radius-s);
+  }
+
+  .bu-suggest-action {
+    margin-inline-start: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: var(--bu-accent);
+    border-color: var(--bu-accent);
+  }
+
+  .bu-suggest-action:hover {
+    background: var(--bu-accent);
+    color: var(--bu-paper);
+  }
+
+  .bu-results-bar {
+    margin-block: 0.6rem 0.75rem;
+  }
+
+  .bu-count-badge {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--bu-ink-muted);
+  }
+
+  .bu-matrix {
+    margin: 0;
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    overflow-x: auto;
+    background: var(--bu-surface);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bu-matrix table {
+    width: 100%;
+    min-width: 48rem;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+  }
+
+  .bu-matrix thead th {
+    padding: 0.65rem 0.85rem;
+    background: var(--bu-surface-sunken);
+    color: var(--bu-ink);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--bu-line);
+    white-space: nowrap;
+  }
+
+  .bu-matrix tbody th,
+  .bu-matrix tbody td {
+    padding: 0.75rem 0.85rem;
+    vertical-align: top;
+    border-bottom: 1px solid var(--bu-line);
+    line-height: 1.45;
+  }
+
+  .bu-matrix tbody tr:last-child th,
+  .bu-matrix tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .bu-matrix tbody tr:hover {
+    background: var(--bu-surface-hover, rgba(0, 0, 0, 0.015));
+  }
+
+  :global(.bu-evidence-cell) {
+    max-width: 22rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--bu-ink-soft, var(--bu-ink));
+  }
+
+  :global(.bu-detail-cell) {
+    white-space: nowrap;
+    width: 6rem;
+    text-align: center;
+  }
+
+  :global(.bu-surface-tag) {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  :global(.bu-subtag) {
+    font-size: 0.75rem;
+    color: var(--bu-ink-muted);
   }
 
   .bu-center-cards .bu-decision-card {
     border: 1px solid var(--bu-line);
     border-radius: var(--bu-radius-m);
     background: var(--bu-surface);
-    padding: var(--bu-space-3);
-    margin-block: var(--bu-space-2);
+    padding: 1rem 1.25rem;
+    margin-block: 0.75rem;
+    box-shadow: var(--bu-shadow-1);
+    transition: border-color 0.15s ease;
+  }
+
+  .bu-center-cards .bu-decision-card:hover {
+    border-color: var(--bu-line-control);
   }
 
   .bu-drawer-body {
-    padding: var(--bu-space-4) var(--bu-space-5) var(--bu-space-5);
+    padding: 1rem 1.5rem 1.5rem;
     font-size: var(--bu-step--1);
   }
 </style>

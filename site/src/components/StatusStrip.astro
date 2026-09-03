@@ -45,6 +45,20 @@ facts.push({
 
 <style>
   .bu-status-strip {
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-block: 1.5rem;
+  }
+
+  @media (min-width: 34rem) {
+    .bu-status-strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .bu-status-strip {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 </style>
