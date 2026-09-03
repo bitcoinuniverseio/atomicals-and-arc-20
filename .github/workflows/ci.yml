@@ -150,13 +150,6 @@ jobs:
         working-directory: site
         run: npx astro check --minimumSeverity error
 
-      - name: Show where the toolchain resolved Starlight
-        run: |
-          pwd; node -v; npm -v
-          ls -d node_modules/@astrojs/starlight ../node_modules/@astrojs/starlight 2>&1 || true
-          npm ls @astrojs/starlight astro 2>&1 | head -8
-          node -e "console.log(require.resolve('@astrojs/starlight/package.json'))"
-
       - name: Build the site and publish it to the repository root
         run: node scripts/build.mjs
 
