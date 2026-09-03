@@ -134,6 +134,8 @@ jobs:
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, linux, x64, universe, gcp, universe-gcp-medium]
     timeout-minutes: 45
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -153,14 +155,25 @@ jobs:
       - name: Build the site and publish it to the repository root
         run: node scripts/build.mjs
 
-      - name: Prove the build leaves the repository clean
-        shell: pwsh
+      - name: Publish the site output the runner built
+        # Astro scopes component styles by file path, and for files outside
+        # site/ (Starlight, hoisted to the workspace root) the path is
+        # absolute, so the output only reproduces on this runner platform.
+        # The push to develop therefore publishes what the runner built; a
+        # pull request only has to build.
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        env:
+          PUSH_TOKEN: ${{ github.token }}
         run: |
-          $ErrorActionPreference = 'Stop'
-          git diff --exit-code
-          if ($LASTEXITCODE -ne 0) {
-            throw 'The committed site output is out of date. Run `npm run build` and commit the result.'
-          }
+          if git diff --quiet; then
+            echo "committed site output is current"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "build(site): publish the site output built on the CI runner [skip ci]"
+          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:develop
 
       - name: Check links, anchors, compatibility routes, and generated artefacts
         run: node --test tests/links.test.mjs
