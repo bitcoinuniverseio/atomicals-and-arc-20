@@ -20,7 +20,8 @@ const FEED_FILE = process.env.LAB_FEED_FILE ?? '/fixtures/feed.json'
 
 let rpcId = 0
 function coreRpc(method, params = []) {
-  const [url, auth] = CORE_RPC.replace('http://', '').split('@')
+  // user:password@host:port; the credentials come first.
+  const [auth, url] = CORE_RPC.replace('http://', '').split('@')
   const [user, password] = (auth ?? 'lab:lab').split(':')
   return fetch(`http://${url}`, {
     method: 'POST',
