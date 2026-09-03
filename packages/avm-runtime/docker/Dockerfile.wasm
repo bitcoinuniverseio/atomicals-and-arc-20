@@ -1,5 +1,5 @@
 # Deterministic WebAssembly build of the pinned AVM interpreter.
-FROM emscripten/emsdk:3.1.65@sha256:5b06db5b049de4a4b8a93a6c62d78c1f98a9f9f1c33f98a47a6f6f8e2f3f3f5f
+FROM emscripten/emsdk:3.1.65@sha256:f62da65f81994c85293222ea5f9d26203ffc34008194c329bfaaefcbb97d960b
 WORKDIR /build
 COPY vendor/avm-interpreter-c185e62.tar.gz .
 RUN tar -xzf avm-interpreter-c185e62.tar.gz
