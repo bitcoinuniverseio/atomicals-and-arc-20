@@ -20,6 +20,7 @@
     "@astrojs/mdx": "8.0.0",
     "@astrojs/starlight": "0.41.10",
     "astro": "7.2.10",
+    "satteri": "0.10.5",
     "sharp": "0.35.4",
     "typescript": "5.9.3"
   },
