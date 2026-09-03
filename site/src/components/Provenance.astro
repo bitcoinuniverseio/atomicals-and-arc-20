@@ -94,7 +94,12 @@ const resolved = provenance.sources.map((ref) => {
         <span class="bu-chip" data-tone={stale ? 'warn' : 'ok'}>
           {stale ? `Re-check due (verified ${provenance.verified})` : `Verified ${provenance.verified}`}
         </span>
-        <span class="sr-only">Source and applicability details</span>
+        <span class="bu-provenance-meta">
+          <span>Metadata & Sources</span>
+          <svg class="bu-provenance-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </span>
       </summary>
       <div class="bu-provenance-body">
         <p style="margin:0">{applicability.meaning}</p>
@@ -205,6 +210,24 @@ const resolved = provenance.sources.map((ref) => {
 
   .bu-provenance summary:hover {
     background: var(--bu-surface-sunken);
+  }
+
+  .bu-provenance-meta {
+    margin-inline-start: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--bu-ink-muted);
+  }
+
+  .bu-provenance-chevron {
+    transition: transform 0.2s ease;
+  }
+
+  .bu-provenance[open] .bu-provenance-chevron {
+    transform: rotate(180deg);
   }
 
   .bu-provenance-body {

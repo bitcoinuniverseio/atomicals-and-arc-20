@@ -632,10 +632,10 @@ dialog.bu-palette::backdrop {
   align-items: center;
 }
 
-/* ---------- Copy page control ---------- */
+/* ---------- Copy page / Markdown actions ---------- */
 
 .bu-page-actions {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin: 0 0 var(--bu-space-4);
@@ -643,25 +643,49 @@ dialog.bu-palette::backdrop {
 
 .bu-page-actions button,
 .bu-page-actions a {
-  min-height: 2.25rem;
+  min-height: 2rem;
   padding: 0.25rem 0.65rem;
-  border: 1px solid var(--bu-line-control);
+  border: 1px solid var(--bu-line);
   border-radius: var(--bu-radius-s);
   background: var(--bu-surface);
   color: var(--bu-ink-soft);
   font-size: var(--bu-step--1);
-  font-weight: 600;
+  font-weight: 550;
   text-decoration: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .bu-page-actions button:hover,
 .bu-page-actions a:hover {
-  border-color: var(--bu-accent-edge);
+  border-color: var(--bu-accent);
   color: var(--bu-accent-strong);
+  background: var(--bu-surface-sunken);
+}
+
+.bu-action-bar {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--bu-line);
+  border-radius: 8px;
+  background: var(--bu-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  height: 2rem;
+  padding: 0;
+}
+
+.bu-action-bar button,
+.bu-action-bar a {
+  min-height: unset !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 /* ---------- Registry / matrix tables ---------- */
@@ -1682,4 +1706,90 @@ starlight-toc a[aria-current='true'] {
   font-size: 1rem;
   font-weight: 600;
   color: var(--bu-ink);
+}
+
+/* Mobile search trigger collapse */
+@media (max-width: 49.99rem) {
+  .bu-search-trigger-text,
+  .bu-search-trigger-kbd {
+    display: none;
+  }
+  .bu-search-trigger {
+    padding: 0.45rem;
+    border-radius: 50%;
+  }
+}
+
+/* Card grids and elevated cards */
+.bu-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.bu-card,
+.card {
+  border: 1px solid var(--bu-line);
+  border-radius: var(--bu-radius-m);
+  background: var(--bu-surface);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all 0.15s ease;
+}
+
+.bu-card:hover,
+.card:hover {
+  border-color: var(--bu-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--bu-shadow-2);
+}
+
+/* Markdown tables */
+.sl-markdown-content table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--bu-line);
+  border-radius: var(--bu-radius-m);
+  overflow: hidden;
+  margin: 1.5rem 0;
+  font-size: 0.88rem;
+}
+
+.sl-markdown-content th {
+  background: var(--bu-surface-sunken);
+  color: var(--bu-ink);
+  font-weight: 650;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--bu-line);
+  text-align: left;
+}
+
+.sl-markdown-content td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--bu-line);
+  color: var(--bu-ink-soft);
+}
+
+.sl-markdown-content tr:last-child td {
+  border-bottom: none;
+}
+
+.sl-markdown-content tr:hover td {
+  background: color-mix(in srgb, var(--bu-surface-sunken) 40%, transparent);
+}
+
+/* Markdown blockquotes */
+.sl-markdown-content blockquote {
+  border-inline-start: 3.5px solid var(--bu-accent);
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+  background: color-mix(in srgb, var(--bu-accent-quiet) 50%, var(--bu-paper));
+  border-radius: 0 var(--bu-radius-m) var(--bu-radius-m) 0;
+  color: var(--bu-ink-soft);
+  font-style: italic;
 }
