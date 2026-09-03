@@ -65,9 +65,9 @@ export default defineConfig({
       titleDelimiter: '|',
       favicon: '/favicon.svg',
       logo: {
-        light: './src/assets/mark-light.svg',
-        dark: './src/assets/mark-dark.svg',
-        alt: 'Atomicals and ARC-20 documentation',
+        light: './src/assets/atomicals-protocol-mark.jpg',
+        dark: './src/assets/atomicals-protocol-mark.jpg',
+        alt: 'Atomicals Protocol',
         replacesTitle: false,
       },
       editLink: {
