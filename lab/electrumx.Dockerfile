@@ -13,5 +13,7 @@ RUN git clone https://github.com/atomicals/atomicals-electrumx /srv/electrumx \
 RUN pip install --no-cache-dir -r /srv/electrumx/requirements.txt
 
 WORKDIR /srv/electrumx
+# Unbuffered so the log survives a fast exit.
+ENV PYTHONUNBUFFERED=1
 EXPOSE 51001
 CMD ["python", "electrumx_server"]

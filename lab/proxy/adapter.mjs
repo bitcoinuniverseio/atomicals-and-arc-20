@@ -130,6 +130,7 @@ const server = createServer(async (request, response) => {
   }
 })
 
-server.listen(PORT, '127.0.0.1', () => {
-  process.stdout.write(`lab adapter on 127.0.0.1:${PORT}\n`)
+// Bind every container interface; compose publishes the port on the host loopback only.
+server.listen(PORT, '0.0.0.0', () => {
+  process.stdout.write(`lab adapter on 0.0.0.0:${PORT}\n`)
 })
