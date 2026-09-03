@@ -49,7 +49,8 @@ services:
       # protocol fixtures, and the runner asserts that derivation.
       NET: regtest
       DAEMON_URL: http://lab:${LAB_RPC_PASSWORD}@bitcoin-core:18443
-      COIN: BitcoinRegtest
+      # Coin NAME plus NET selects the BitcoinRegtest class in the pinned source.
+      COIN: Bitcoin
       PEER_DISCOVERY: "off"
       PEER_ANNOUNCE: "off"
       SERVICES: tcp://0.0.0.0:51001
