@@ -103,7 +103,7 @@ const revision = 'c185e6216a3ea2cb2e011e508033ca535ece3472'
       // The release pipeline publishes the module under the artifacts tree.
       // When it is absent the backend refuses and the interface says exactly
       // why instead of faking a result.
-      backend = await createWasmBackend(async (limits) => {
+      backend = await createWasmBackend(async (limits: unknown) => {
         // Runtime URL, resolved against the base path. The module exists only
         // where the release pipeline published it; Vite must not try to
         // bundle it, hence the @vite-ignore marker.
@@ -121,11 +121,12 @@ const revision = 'c185e6216a3ea2cb2e011e508033ca535ece3472'
         const instance = await ensureBackend()
         backendView.textContent = instance.kind === 'wasm' ? (instance.available ? 'pinned WASM build' : 'WASM build not present in this deployment') : instance.kind
         const result = await instance.run(program)
+        const output = (result as { output?: string }).output
         outcome.hidden = false
         timeView.textContent = `${Math.round(performance.now() - started)} ms (budget ${LIMITS.wallClockMs} ms)`
-        outSizeView.textContent = result.output ? `${result.output.length} bytes (cap ${LIMITS.outputBytes})` : 'none'
+        outSizeView.textContent = output ? `${output.length} bytes (cap ${LIMITS.outputBytes})` : 'none'
         if (result.ok) {
-          outputView.textContent = result.output ?? '(no output)'
+          outputView.textContent = output ?? '(no output)'
           status.textContent = 'Execution finished inside the resource limits.'
         } else {
           outputView.textContent = `Refused: ${result.error ?? result.status}`

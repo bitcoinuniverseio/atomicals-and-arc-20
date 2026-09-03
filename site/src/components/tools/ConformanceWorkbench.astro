@@ -32,7 +32,7 @@ const contractResponses = JSON.stringify(
         .filter(([method]) => method === 'get')
         .map(([method, operation]) => [
           `arc20:${method.toUpperCase()} ${path}`,
-          { responses: operation.responses, parameters: operation.parameters ?? [] },
+          { responses: operation.responses, parameters: (operation as { parameters?: unknown[] }).parameters ?? [] },
         ]),
     ),
   ),
@@ -148,7 +148,7 @@ const contractResponses = JSON.stringify(
     const sendTimes: number[] = []
     function rateAllowsSend(): boolean {
       const now = Date.now()
-      while (sendTimes.length && now - sendTimes[0] > 1000) sendTimes.shift()
+      while (sendTimes.length && now - (sendTimes[0] ?? now) > 1000) sendTimes.shift()
       if (sendTimes.length >= MAX_CONCURRENT_REQUESTS + 3) return false
       return true
     }
@@ -186,6 +186,10 @@ const contractResponses = JSON.stringify(
         return
       }
       const operation = operations[Number(operationSelect.value)]
+      if (!operation) {
+        statusLine.textContent = 'Choose an operation first.'
+        return
+      }
       const gate = isSendableOperation({ 'x-read-only': true }, 'GET')
       if (!gate.sendable) {
         statusLine.textContent = gate.reason
@@ -197,7 +201,7 @@ const contractResponses = JSON.stringify(
       sendTimes.push(Date.now())
       const started = performance.now()
       statusLine.textContent = `Sending GET ${operation.path}...`
-      let response: Awaited<ReturnType<typeof guardedFetch>>
+      let response: Awaited<ReturnType<typeof guardedFetch>> | undefined
       let timedOut = false
       let networkError: string | undefined
       const timeout = setTimeout(() => controller?.abort(), DEFAULT_TIMEOUT_MS)
@@ -233,7 +237,7 @@ const contractResponses = JSON.stringify(
         (entry: { key: string }) => entry.key === `arc20:GET ${operation.path}:${response.status}`,
       )
       if (validatorEntry) {
-        const validate = validators['validator' + validators.validatorRegistry.indexOf(validatorEntry)]
+        const validate = (validators as unknown as Record<string, ((body: unknown) => boolean) & { errors?: unknown[] }>)['validator' + validators.validatorRegistry.indexOf(validatorEntry)]!
         const valid = validate(response.body)
         evaluation.checks.push({
           name: 'schema validates',
