@@ -20,7 +20,7 @@ const staleTranslation = provenance ? await isStaleTranslation(route.id, provena
  */
 const isSplash = data.template === 'splash'
 
-const slug = route?.slug ?? ''
+const slug = String(route?.slug ?? '')
 const getSectionEyebrow = (s: string) => {
   if (s.startsWith('protocol/arc20')) return 'Protocol / ARC-20'
   if (s.startsWith('protocol/avm')) return 'Protocol / AVM'

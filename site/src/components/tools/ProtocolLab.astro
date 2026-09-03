@@ -332,7 +332,7 @@ const encodedRules = JSON.stringify(rules)
     const match = location.hash.match(/scenario=([^&]+)/)
     if (match) {
       try {
-        current = JSON.parse(decodeURIComponent(match[1]))
+        current = JSON.parse(decodeURIComponent(match[1] ?? ''))
         editor.value = JSON.stringify(current, null, 2)
         if (!worker) worker = startWorker()
         run()

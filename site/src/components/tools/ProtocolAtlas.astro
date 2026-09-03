@@ -13,6 +13,7 @@ import atlasData from '../../../../contracts/protocol-atlas/atlas.json'
 const data = atlasData as {
   atlasVersion: string
   lastVerified: string
+  statusVocabulary: string[]
   attributes: { id: string; label: string; group: string; description?: string }[]
   protocols: {
     id: string
@@ -215,6 +216,7 @@ const decisionQuestions: { id: string; question: string; attribute: string; want
               </th>
               {defaultColumns.map((id) => {
                 const evidence = protocol.attributes[id]
+                if (!evidence) return null
                 return (
                   <td data-cell={id} data-label={data.attributes.find((a) => a.id === id)?.label}>
                     <span class="bu-atlas-value">{evidence.value}</span>
@@ -530,7 +532,9 @@ const decisionQuestions: { id: string; question: string; attribute: string; want
       }
       const head = matrix.tHead!
       const body = matrix.tBodies[0]
-      head.rows[0].innerHTML =
+      const headRow = head.rows[0]
+      if (!headRow || !body) return
+      headRow.innerHTML =
         '<th scope="col">Protocol</th>' +
         state.columns
           .map((id) => `<th scope="col">${escapeHtml(label(id))}</th>`)
@@ -543,7 +547,7 @@ const decisionQuestions: { id: string; question: string; attribute: string; want
           state.columns
             .map((id) => {
               const evidence = protocol.attributes[id]
-              return `<td data-cell="${id}" data-label="${escapeHtml(label(id))}">${evidenceCell(evidence, state.mode === 'detailed')}</td>`
+              return `<td data-cell="${id}" data-label="${escapeHtml(label(id))}">${evidence ? evidenceCell(evidence, state.mode === 'detailed') : ''}</td>`
             })
             .join('')
       }
@@ -558,7 +562,7 @@ const decisionQuestions: { id: string; question: string; attribute: string; want
     function applyFilters() {
       if (!matrix) return
       const needle = state.search.trim().toLowerCase()
-      for (const row of [...matrix.tBodies[0].rows]) {
+      for (const row of [...(matrix.tBodies[0]?.rows ?? [])]) {
         const protocol = data.protocols.find((p) => p.id === row.dataset.row)
         if (!protocol) continue
         const matchesSearch =
@@ -624,7 +628,7 @@ const decisionQuestions: { id: string; question: string; attribute: string; want
           lines.push(
             [protocol.name, ...columns.map((id) => {
               const evidence = protocol.attributes[id]
-              return `${evidence.value} [${evidence.status}]`
+              return evidence ? `${evidence.value} [${evidence.status}]` : ''
             })].map(escape).join(','),
           )
         }
@@ -667,6 +671,10 @@ const decisionQuestions: { id: string; question: string; attribute: string; want
         for (const [questionId, answer] of asked) {
           const question = DECISION_QUESTIONS.find((entry) => entry.id === questionId)!
           const evidence = protocol.attributes[question.attribute]
+          if (!evidence) {
+            missed.push(`${question.question} <strong>${answer}</strong> &mdash; no evidence recorded`)
+            continue
+          }
           const line = `${question.question} <strong>${answer}</strong> &rarr; ${escapeHtml(evidence.value)} <em>(${evidence.status})</em>`
           if (evidence.status === 'unknown' || evidence.status === 'conflicting') {
             missed.push(`${line} &mdash; evidence unknown, not counted as a match`)
