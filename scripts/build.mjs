@@ -90,13 +90,15 @@ function walk(dir) {
 
 /**
  * Directories the build copies into `dist` for the preview and the MCP package, but does
- * not publish to the root, because the source files already live at exactly those paths
- * and are served from there.
+ * not publish to the root. Source files already live at most of these paths. Pagefind is
+ * retained from the last verified publication because Pagefind 1.5 produces random chunk
+ * names for unchanged content.
  */
 const ALREADY_AT_ROOT = new Set([
   'contracts',
   'conformance',
   'theme.css',
+  'pagefind',
   'assets',
   'LICENSE',
 ])
@@ -187,6 +189,7 @@ const publishedSet = new Set(published)
 let removed = 0
 for (const file of previous) {
   if (publishedSet.has(file)) continue
+  if (ALREADY_AT_ROOT.has(file.split('/')[0])) continue
   const target = resolve(root, file)
   if (existsSync(target)) {
     rmSync(target, { force: true })
