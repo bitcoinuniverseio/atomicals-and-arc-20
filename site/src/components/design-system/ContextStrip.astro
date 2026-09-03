@@ -9,6 +9,7 @@ import {
   daysSince,
   STALE_AFTER_DAYS,
 } from '../../lib/sources'
+import { docHref } from '../../lib/href'
 
 type Props = {
   truthLayer?: { label: string; tone: string; meaning: string }
@@ -46,53 +47,134 @@ const drawerId = `bu-sources-${(route?.entry?.id ?? 'index').replace(/[^a-z0-9]+
 
 {verified || truthLayer ? (
     <div class="bu-context-strip">
-      <ul class="bu-context-items" role="list" tabindex="0" aria-label={strings.region}>
-        <li>
-          <span class="bu-context-label">{strings.set}</span>
-          <span class="bu-context-value bu-mono">{sourceSet}</span>
-        </li>
-        {baselineEntry && (
+      <div class="bu-strip-container">
+        <ul class="bu-strip-start" role="list" aria-label={strings.region}>
+          {baselineEntry && (
+            <li>
+              <a
+                href={docHref('/releases/versions/', locale)}
+                class="bu-strip-chip bu-chip-link"
+                title={`${strings.baseline}: ${baselineEntry.name}`}
+              >
+                <svg class="bu-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                  <circle cx="12" cy="12" r="3"/><path d="M3 12h6m6 0h6"/>
+                </svg>
+                <span class="bu-chip-label">{strings.baseline}</span>
+                <span class="bu-chip-val bu-mono">{shortRevision(baselineEntry)}</span>
+              </a>
+            </li>
+          )}
+
+          <li class="bu-strip-sep" aria-hidden="true"></li>
+
           <li>
-            <span class="bu-context-label">{strings.baseline}</span>
-            <span class="bu-context-value bu-mono">{shortRevision(baselineEntry)}</span>
+            <a
+              href={docHref('/releases/', locale)}
+              class="bu-strip-chip bu-chip-link"
+              title={`${strings.set}: ${sourceSet}`}
+            >
+              <svg class="bu-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+              </svg>
+              <span class="bu-chip-label">{strings.set}</span>
+              <span class="bu-chip-val bu-mono">{sourceSet}</span>
+            </a>
           </li>
-        )}
-        {networks.length > 0 && (
-          <li>
-            <span class="bu-context-label">{strings.network}</span>
-            <span class="bu-context-value">{networks.join(', ')}</span>
-          </li>
-        )}
-        {verified && (
-          <li data-stale={isStale ? 'true' : undefined}>
-            <span class="bu-context-label">{strings.verified}</span>
-            <span class="bu-context-value">
-              <span class="bu-context-date">{verified}</span>
-              {isStale && <strong class="bu-context-stale">{strings.stale}</strong>}
-            </span>
-          </li>
-        )}
-        {truthLayer && (
-          <li>
-            <span class="bu-chip" data-tone={truthLayer.tone}>{truthLayer.label}</span>
-          </li>
-        )}
-        {driftCount > 0 && (
-          <li>
-            <span class="bu-chip" data-tone="warn">{strings.drift}</span>
-          </li>
-        )}
-      </ul>
-      {hasSources && (
-        <button
-          class="bu-context-sources"
-          type="button"
-          aria-haspopup="dialog"
-          data-open-drawer={drawerId}
-        >
-          {strings.sources}
-        </button>
-      )}
+
+          {networks.length > 0 && (
+            <>
+              <li class="bu-strip-sep" aria-hidden="true"></li>
+              <li>
+                <span class="bu-strip-chip" title={`${strings.network}: ${networks.join(', ')}`}>
+                  <span class="bu-live-dot" aria-hidden="true"></span>
+                  <span class="bu-chip-label">{strings.network}</span>
+                  <span class="bu-chip-val">{networks.join(', ')}</span>
+                </span>
+              </li>
+            </>
+          )}
+
+          {verified && (
+            <>
+              <li class="bu-strip-sep" aria-hidden="true"></li>
+              <li data-stale={isStale ? 'true' : undefined}>
+                <span class="bu-strip-chip" title={`${strings.verified} ${verified}`}>
+                  <svg class="bu-chip-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                  <span class="bu-chip-label">{strings.verified}</span>
+                  <span class="bu-chip-val">{verified}</span>
+                  {isStale && <strong class="bu-stale-badge">{strings.stale}</strong>}
+                </span>
+              </li>
+            </>
+          )}
+
+          {truthLayer && (
+            <>
+              <li class="bu-strip-sep" aria-hidden="true"></li>
+              <li>
+                <span class="bu-truth-chip" data-tone={truthLayer.tone} title={truthLayer.meaning}>
+                  <span class="bu-truth-dot" aria-hidden="true"></span>
+                  <span>{truthLayer.label}</span>
+                </span>
+              </li>
+            </>
+          )}
+
+          {driftCount > 0 && (
+            <>
+              <li class="bu-strip-sep" aria-hidden="true"></li>
+              <li>
+                <a href={docHref('/releases/', locale)} class="bu-drift-chip" title={strings.drift}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  <span>Drift Pinned</span>
+                </a>
+              </li>
+            </>
+          )}
+        </ul>
+
+        <div class="bu-strip-end">
+          {hasSources ? (
+            <button
+              class="bu-sources-pill"
+              type="button"
+              aria-haspopup="dialog"
+              data-open-drawer={drawerId}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-0.5-5.02"/><path d="M6 6h10M6 10h7"/>
+              </svg>
+              <span>{strings.sources}</span>
+              <span class="bu-sources-badge">{pageSources.length}</span>
+            </button>
+          ) : (
+            <div class="bu-strip-shortcuts">
+              <a href={docHref('/contracts/source-manifest.json')} class="bu-shortcut-link" target="_blank" rel="noopener noreferrer">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                  <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                </svg>
+                <span>Manifest</span>
+              </a>
+              <a href={docHref('/protocol-atlas/', locale)} class="bu-shortcut-link">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                  <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
+                </svg>
+                <span>Atlas</span>
+              </a>
+              <a href={docHref('/reference/conformance/', locale)} class="bu-shortcut-link">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span>Conformance</span>
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   ) : (
     <div class="bu-context-strip" data-empty="true"></div>

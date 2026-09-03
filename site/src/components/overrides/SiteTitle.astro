@@ -3,30 +3,61 @@ import Default from '@astrojs/starlight/components/SiteTitle.astro'
 import CommandPalette from '../CommandPalette.astro'
 ---
 
-<Default><slot /></Default>
+<div class="bu-title-wrapper">
+  <Default><slot /></Default>
+  <span class="bu-title-badge" aria-hidden="true">Docs</span>
+</div>
 <CommandPalette />
 
 <style>
-  /*
-   * The custom header has two rows (--bu-header-main-h = 3.5rem and --bu-header-strip-h = 2.5rem),
-   * setting --sl-nav-height to 6rem. Starlight calculates the logo image height as:
-   *   calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y)) = 4.5rem (72px)
-   * which is larger than the 3.5rem main bar and overflows into the context strip.
-   * Constrain the mark to 2rem (32px, matching its viewBox).
-   */
+  .bu-title-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+  }
+
+  :global(.site-title a) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -0.015em;
+    color: var(--bu-ink);
+    transition: opacity 0.15s ease;
+  }
+
+  :global(.site-title a:hover) {
+    opacity: 0.85;
+  }
+
   :global(.site-title :is(img, svg)) {
     height: 2rem;
     width: 2rem;
     max-height: 2rem;
     object-fit: contain;
     flex-shrink: 0;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   }
 
-  /*
-   * Keep the palette component in the DOM so its keyboard shortcut (Ctrl+K) and dialog
-   * remain functional, but hide the trigger button completely. It duplicates the
-   * header search control on the right and causes layout collisions with the site title.
-   */
+  .bu-title-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 9999px;
+    background: var(--bu-surface-sunken);
+    color: var(--bu-ink-muted);
+    border: 1px solid var(--bu-line);
+    line-height: 1.2;
+  }
+
   :global(bu-command-palette) {
     display: contents;
   }
@@ -35,20 +66,12 @@ import CommandPalette from '../CommandPalette.astro'
     display: none !important;
   }
 
-  /*
-   * Starlight clips the site title with `overflow: hidden; text-overflow: clip`.
-   * At 375px the name needs about 180px and gets about 165px, so it rendered as
-   * "Atomicals and ARC-2". A silently truncated name is not a cosmetic problem:
-   * it shows the reader a name that is not ours, and the missing character is a
-   * digit that belongs to the protocol.
-   *
-   * Scaling the title down on narrow viewports keeps the whole name visible.
-   * Clamped so it never drops below a readable size, and only applied where the
-   * clipping actually happens.
-   */
   @media (max-width: 30rem) {
     :global(.site-title) {
       font-size: clamp(0.82rem, 3.6vw, var(--sl-text-h4));
+    }
+    .bu-title-badge {
+      display: none;
     }
   }
 </style>
