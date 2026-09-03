@@ -793,7 +793,8 @@ dialog.bu-palette::backdrop {
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: var(--bu-header-strip-h, 2.4rem);
+  flex: 0 0 var(--bu-header-strip-h, 3rem);
+  min-height: var(--bu-header-strip-h, 3rem);
   border-top: 1px solid var(--bu-line);
   background: color-mix(in srgb, var(--bu-surface-sunken) 50%, var(--bu-paper));
   font-size: 0.76rem;
