@@ -286,6 +286,14 @@ jobs:
       - name: Build the native interpreter in the pinned container
         run: docker compose -f packages/avm-runtime/docker/compose.yaml run --rm native-build
 
+      - name: Show what the host will execute
+        # The binary runs on the runner, outside its build container, so it
+        # must be self-contained. This prints the linkage and a smoke run.
+        run: |
+          file packages/avm-runtime/out/avm-cli
+          ldd packages/avm-runtime/out/avm-cli || true
+          echo "OP_1 OP_1 OP_ADD" | packages/avm-runtime/out/avm-cli --max-instructions=1000 || echo "exit $?"
+
       - name: Build the WASM module in the pinned container
         # docker/wasm-wrapper.c is the adaptation layer the WASM build compiles.
         # It has not been written yet; until it exists the build cannot run and
