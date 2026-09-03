@@ -10,6 +10,7 @@ COPY vendor/avm-interpreter-c185e62.tar.gz .
 COPY source-checksum.json .
 RUN tar -xzf avm-interpreter-c185e62.tar.gz \
     && cmake -S avm-interpreter-c185e6216a3ea2cb2e011e508033ca535ece3472 -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_AVM_CLI=ON \
+       -DBoost_USE_STATIC_LIBS=ON -DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_EXE_LINKER_FLAGS=-static \
     && cmake --build build --target avm-cli -j "$(nproc)" \
     && mkdir -p /dist && install -m 0755 build/src/avm-cli /dist/avm-cli
 # The output volume is mounted at run time, so the image keeps the binary in /dist.
