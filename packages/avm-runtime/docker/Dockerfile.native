@@ -1,7 +1,7 @@
 # Deterministic native build of the pinned AVM interpreter.
 # Base image pinned by digest; the interpreter source comes from the
 # checksum-verified tarball, never from a moving ref.
-FROM debian:bookworm-20240904-slim@sha256:112613c60573f5b90e31686260fb8b7b9f24a809d105c2cd00ee81c1bbeba812
+FROM debian:bookworm-20240904-slim@sha256:a629e796d77a7b2ff82186ed15d01a493801c020eed5ce6adaa2704356f15a1c
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake libboost-all-dev libevent-dev libgmp-dev python3 \
     && rm -rf /var/lib/apt/lists/*

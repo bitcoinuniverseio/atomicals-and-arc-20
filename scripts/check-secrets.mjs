@@ -28,7 +28,7 @@ const PATTERNS = [
   { name: 'HMAC secret assignment', pattern: /HMAC_SECRET\s*[:=]\s*['"]?\S{8,}/ },
   { name: 'Admin token assignment', pattern: /ADMIN_TOKEN\s*[:=]\s*['"]?[A-Za-z0-9._-]{12,}/ },
   { name: 'Cursor secret assignment', pattern: /CURSOR_SECRET\s*[:=]\s*['"]?\S{8,}/ },
-  { name: 'Password assignment', pattern: /\bpassword\s*[:=]\s*['"]?[^\s'"<>{}$]{8,}/i },
+  { name: 'Password assignment', pattern: /\bpassword\s*[:=]\s*['"][^\s'"<>{}$]{8,}['"]/i },
   { name: 'Infrastructure hostname', pattern: /\bsrv\d{6}\.hstgr\.cloud\b/ },
   { name: 'Hostinger hostname', pattern: /\bhstgr\.cloud\b/ },
   { name: 'SSH invocation with a key file', pattern: /\bssh\s+(?:-p\s+\d+\s+)?-i\s+\S/ },

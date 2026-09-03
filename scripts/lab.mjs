@@ -21,11 +21,12 @@ import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(here, '..')
-const envFile = resolve(here, '.env')
+const LAB = resolve(ROOT, 'lab')
+const envFile = resolve(LAB, '.env')
 
 function compose(args, { capture = false } = {}) {
   const result = spawnSync('docker', ['compose', ...args], {
-    cwd: here,
+    cwd: LAB,
     stdio: capture ? 'pipe' : 'inherit',
     shell: process.platform === 'win32',
     encoding: 'utf8',
@@ -100,7 +101,7 @@ switch (command) {
   }
   case 'seed': {
     credentials()
-    spawnSync('node', [resolve(here, 'seed.mjs')], { stdio: 'inherit' })
+    spawnSync('node', [resolve(LAB, 'seed.mjs')], { stdio: 'inherit' })
     break
   }
   case 'status': {
@@ -116,7 +117,7 @@ switch (command) {
   }
   case 'test': {
     credentials()
-    spawnSync('node', [resolve(here, 'run.mjs')], { stdio: 'inherit' })
+    spawnSync('node', [resolve(LAB, 'run.mjs')], { stdio: 'inherit' })
     break
   }
   case 'reset': {
@@ -124,7 +125,7 @@ switch (command) {
     compose(['down', '-v'])
     compose(['up', '-d', '--wait'])
     await healthCheck()
-    spawnSync('node', [resolve(here, 'seed.mjs')], { stdio: 'inherit' })
+    spawnSync('node', [resolve(LAB, 'seed.mjs')], { stdio: 'inherit' })
     break
   }
   case 'down': {
