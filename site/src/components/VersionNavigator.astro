@@ -35,6 +35,7 @@ const data = versionManifest as {
 
 const sets = data.sets
 const current = sets.find((set) => set.status === 'current') ?? sets[0]
+if (!current) throw new Error('version data declares no documentation sets')
 const single = sets.length === 1
 const driftFindings = (driftStatus as { findings: unknown[] }).findings.length
 

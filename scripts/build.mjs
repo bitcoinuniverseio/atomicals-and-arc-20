@@ -111,7 +111,47 @@ const ALREADY_AT_ROOT = new Set([
 function normalizePagefindEntry() {
   const entryPath = resolve(distDir, 'pagefind/pagefind-entry.json')
   if (!existsSync(entryPath)) return
-  const entry = JSON.parse(readFileSync(entryPath, 'utf8'))
+  let entry
+  const entryText = readFileSync(entryPath, 'utf8').trim()
+  if (entryText) {
+    entry = JSON.parse(entryText)
+  } else {
+    const priorEntryPath = resolve(root, 'pagefind/pagefind-entry.json')
+    if (!existsSync(priorEntryPath)) {
+      throw new Error('Pagefind produced an empty entry without a prior published entry to verify against')
+    }
+
+    const priorEntry = JSON.parse(readFileSync(priorEntryPath, 'utf8'))
+    const generatedEntries = Object.fromEntries(
+      readdirSync(resolve(distDir, 'pagefind'), { withFileTypes: true })
+        .filter((file) => file.isFile() && /^pagefind\.[a-z-]+_[a-z0-9]+\.pf_meta$/.test(file.name))
+        .map((file) => {
+          const [, language] = /^pagefind\.([a-z-]+_[a-z0-9]+)\.pf_meta$/.exec(file.name)
+          const separator = language.indexOf('_')
+          return [language.slice(0, separator), language]
+        }),
+    )
+    const priorLanguages = priorEntry.languages ?? {}
+    const generatedLanguages = Object.keys(generatedEntries).sort()
+    const expectedLanguages = Object.keys(priorLanguages).sort()
+    if (
+      generatedLanguages.length === 0 ||
+      generatedLanguages.length !== expectedLanguages.length ||
+      generatedLanguages.some((language, index) => language !== expectedLanguages[index])
+    ) {
+      throw new Error('Pagefind produced an empty entry with a language set that does not match the prior published entry')
+    }
+
+    entry = {
+      ...priorEntry,
+      languages: Object.fromEntries(
+        expectedLanguages.map((language) => [
+          language,
+          { ...priorLanguages[language], hash: generatedEntries[language] },
+        ]),
+      ),
+    }
+  }
   if (entry.languages) {
     entry.languages = Object.fromEntries(
       Object.entries(entry.languages).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),

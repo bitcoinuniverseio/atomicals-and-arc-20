@@ -3,13 +3,17 @@
 # checksum-verified tarball, never from a moving ref.
 FROM debian:bookworm-20240904-slim@sha256:a629e796d77a7b2ff82186ed15d01a493801c020eed5ce6adaa2704356f15a1c
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake git libboost-all-dev libevent-dev libgmp-dev libssl-dev python3 \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential cmake git pkg-config libboost-all-dev libevent-dev libgmp-dev libssl-dev python3 \
+    && rm -rf /var/lib/apt/lists/* \
+    # Only the unversioned .so links go: CMake then resolves the static archives
+    # for the fully static avm-cli while the versioned runtime libraries stay.
+    && rm -f /usr/lib/x86_64-linux-gnu/libevent*.so /usr/lib/x86_64-linux-gnu/libgmp.so /usr/lib/x86_64-linux-gnu/libgmpxx.so
 WORKDIR /build
 COPY vendor/avm-interpreter-c185e62.tar.gz .
 COPY source-checksum.json .
 RUN tar -xzf avm-interpreter-c185e62.tar.gz \
     && cmake -S avm-interpreter-c185e6216a3ea2cb2e011e508033ca535ece3472 -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_AVM_CLI=ON \
+       -DBoost_USE_STATIC_LIBS=ON -DOPENSSL_USE_STATIC_LIBS=ON -DCMAKE_EXE_LINKER_FLAGS=-static \
     && cmake --build build --target avm-cli -j "$(nproc)" \
     && mkdir -p /dist && install -m 0755 build/src/avm-cli /dist/avm-cli
 # The output volume is mounted at run time, so the image keeps the binary in /dist.
