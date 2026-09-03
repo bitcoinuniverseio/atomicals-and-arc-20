@@ -108,7 +108,8 @@
         .sort((a, b) => b.score - a.score)
         .slice(0, 5)
 
-      if (ranked.length < 2 || ranked[0].score < 0.06) {
+      const top = ranked[0]
+      if (ranked.length < 2 || !top || top.score < 0.06) {
         results.hidden = true
         emptyView.hidden = false
         lastContext = null
@@ -116,7 +117,7 @@
       }
       emptyView.hidden = true
       results.hidden = false
-      answerView.textContent = ranked[0].entry.s
+      answerView.textContent = top.entry.s
       passagesView.innerHTML = ranked
         .map(
           ({ entry }) => `<li>

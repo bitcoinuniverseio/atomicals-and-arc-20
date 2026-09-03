@@ -28,6 +28,12 @@
       window.addEventListener('online', updateStatus)
       window.addEventListener('offline', updateStatus)
       updateStatus()
+
+      registration.addEventListener('updatefound', () => {
+        message.textContent = 'A newer documentation build is available. Reload to update, or remove offline data below.'
+        removeButton.hidden = false
+        bar.hidden = false
+      })
     })
 
     function updateStatus() {
@@ -43,12 +49,6 @@
         message.textContent = 'Offline browsing is ready. Pages you visit are kept for offline reading.'
         bar.hidden = false
       }
-    })
-
-    registration.addEventListener('updatefound', () => {
-      message.textContent = 'A newer documentation build is available. Reload to update, or remove offline data below.'
-      removeButton.hidden = false
-      bar.hidden = false
     })
 
     removeButton.addEventListener('click', async () => {

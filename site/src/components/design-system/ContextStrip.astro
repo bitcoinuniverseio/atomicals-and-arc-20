@@ -24,7 +24,7 @@ const data = route?.entry?.data as
 const provenance = data?.provenance
 
 const strings =
-  (locale && locale in siteMeta.contextStrip ? siteMeta.contextStrip[locale] : undefined) ??
+  (locale && locale in siteMeta.contextStrip ? (siteMeta.contextStrip as Record<string, typeof siteMeta.contextStrip.en>)[locale] : undefined) ??
   siteMeta.contextStrip.en
 
 const sourceSet = siteMeta.docsVersion
@@ -236,7 +236,7 @@ const drawerId = `bu-sources-${(route?.entry?.id ?? 'index').replace(/[^a-z0-9]+
       })
     }
     // Clicking the backdrop closes; a click inside the panel must not.
-    for (const drawer of document.querySelectorAll('dialog.bu-source-drawer')) {
+    for (const drawer of document.querySelectorAll<HTMLDialogElement>('dialog.bu-source-drawer')) {
       if (drawer.dataset.drawerWired === 'true') continue
       drawer.dataset.drawerWired = 'true'
       drawer.addEventListener('click', (event) => {

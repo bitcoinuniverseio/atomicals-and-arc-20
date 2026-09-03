@@ -10,7 +10,7 @@ import registry from '../../../contracts/ecosystem.json'
 import { docHref } from '../lib/href'
 import workflowCatalog from '../generated/workflows.json'
 
-type Record = {
+type RegistryRecord = {
   id: string
   name: string
   category: string
@@ -36,11 +36,13 @@ type Record = {
   deprecationEvidence: string | null
 }
 
+const availabilityStates = Object.keys((registry as unknown as { availabilityStates: Record<string, string> }).availabilityStates)
+
 const data = registry as unknown as {
   registryVersion: string
   lastVerified: string
   policy: { noEndorsement: string }
-  records: Record[]
+  records: RegistryRecord[]
 }
 
 const TONE: Record<string, string> = {
@@ -159,7 +161,7 @@ const payload = JSON.stringify({
         <span>Availability</span>
         <select data-filter="availability">
           <option value="">All availability</option>
-          {Object.keys((registry as unknown as { availabilityStates: Record<string, string> }).availabilityStates).map((state) => (
+          {availabilityStates.map((state) => (
             <option value={state}>{state}</option>
           ))}
         </select>

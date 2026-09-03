@@ -184,7 +184,7 @@ const sample = JSON.stringify(
             <td class="bu-num">${utxo.value}</td>
             <td><span class="bu-chip" data-tone="${classified.classification === 'plain' ? 'ok' : classified.classification === 'unknown' ? 'warn' : 'universe'}">${classified.classification}</span></td>
             <td>${classified.confidence}</td>
-            <td>${classified.evidence.map((entry) => escapeHtml(entry.summary)).join(' ')}</td>
+            <td>${(classified.evidence as { summary: string }[]).map((entry) => escapeHtml(entry.summary)).join(' ')}</td>
           </tr>`
         })
         .join('')
@@ -256,6 +256,7 @@ const sample = JSON.stringify(
           payload = JSON.stringify({ plans, note: 'Unsigned intent only. This planner never signs or broadcasts.' }, null, 2)
         } else if (button.dataset.export === 'scenario') {
           const first = plans.find((plan) => plan.inputs.length > 0) ?? plans[0]
+          if (!first) return
           payload = JSON.stringify(
             {
               scenarioVersion: '1.0.0',
@@ -273,6 +274,7 @@ const sample = JSON.stringify(
           )
         } else {
           const first = plans.find((plan) => plan.inputs.length > 0) ?? plans[0]
+          if (!first) return
           payload = [
             '# Replace the placeholders with values from your own protocol-aware wallet.',
             ...first.inputs.map((input) => `# confirm ${input} is classified before spending it`),

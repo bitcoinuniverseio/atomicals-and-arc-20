@@ -133,6 +133,8 @@ function collectRequiredHeaders(operation) {
  * Derive the endpoint verdict. A network failure is "unreachable", never
  * "deprecated" or "closed"; the workbench does not narrate failures it did
  * not observe.
+ *
+ * @param {{ sent: boolean, timedOut?: boolean, networkError?: string, response?: unknown, evaluation?: { checks: { name: string, passed: boolean, detail: string }[], allPassed: boolean } | null, identity?: Record<string, unknown> | null, expectedNetwork?: string }} input
  */
 export function deriveVerdict({ sent, timedOut, networkError, response, evaluation, identity, expectedNetwork }) {
   if (!sent) return { verdict: 'unknown', detail: 'nothing was sent yet' }
@@ -162,6 +164,8 @@ export function deriveVerdict({ sent, timedOut, networkError, response, evaluati
 /**
  * Build the scrubbed report. Credentials, headers containing auth, and the
  * endpoint origin are removed: a report is safe to share or file.
+ *
+ * @param {{ endpointLabel?: string, operationId: string, verdict: { verdict: string, detail: string }, evaluation?: unknown, identity?: Record<string, unknown>, timing?: { totalMs: number } }} input
  */
 export function scrubReport({ endpointLabel, operationId, verdict, evaluation, identity, timing }) {
   return {
