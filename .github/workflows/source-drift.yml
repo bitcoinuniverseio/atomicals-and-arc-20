@@ -29,7 +29,7 @@ jobs:
     name: Compare against private sources
     # Trusted events only. A pull_request event can never reach this job.
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: [self-hosted, universe-ci, linux-ultra]
+    runs-on: [self-hosted, linux, x64, universe, gcp, universe-gcp-large]
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

@@ -25,5 +25,10 @@
   },
   "allowScripts": {
     "esbuild@0.28.2": true
+  },
+  "optionalDependencies": {
+    "@bruits/satteri-linux-x64-gnu": "^0.10.5",
+    "@rolldown/binding-linux-x64-gnu": "1.2.6",
+    "@rolldown/binding-win32-x64-msvc": "1.2.6"
   }
 }

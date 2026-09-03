@@ -60,7 +60,9 @@
      (scroll margins, sidebars, the mobile table of contents) hangs off
      --sl-nav-height, so the total is declared once here. */
   --bu-header-main-h: 3.5rem;
-  --bu-header-strip-h: 2.5rem;
+  /* The context row can contain a full control row. Reserve its rendered
+     height so page content never scrolls underneath the fixed header. */
+  --bu-header-strip-h: 3rem;
   --sl-nav-height: calc(var(--bu-header-main-h) + var(--bu-header-strip-h));
   --sl-line-height: 1.7;
 }
@@ -68,7 +70,7 @@
 @media (max-width: 50rem) {
   :root {
     --bu-header-main-h: 3.5rem;
-    --bu-header-strip-h: 2.4rem;
+    --bu-header-strip-h: 3rem;
   }
 }
 

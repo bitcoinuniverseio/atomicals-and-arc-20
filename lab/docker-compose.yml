@@ -18,18 +18,19 @@ services:
       -server=1
       -txindex=1
       -listen=0
-      -rpcbind=127.0.0.1
+      -rpcbind=0.0.0.0
       -rpcallowip=10.0.0.0/8
       -rpcallowip=172.16.0.0/12
       -rpcallowip=192.168.0.0/16
-      -rpcauth=${LAB_RPC_AUTH}
+      -rpcuser=lab
+      -rpcpassword=${LAB_RPC_PASSWORD}
       -fallbackfee=0.0002
     ports:
       - "127.0.0.1:18443:18443"
     volumes:
-      - core-data:/root/.bitcoin
+      - core-data:/home/bitcoin/.bitcoin
     healthcheck:
-      test: ["CMD", "bitcoin-cli", "-regtest", "-rpcauth=${LAB_RPC_AUTH}", "getblockcount"]
+      test: ["CMD", "bitcoin-cli", "-regtest", "-rpcuser=lab", "-rpcpassword=${LAB_RPC_PASSWORD}", "getblockcount"]
       interval: 5s
       timeout: 5s
       retries: 60
@@ -48,7 +49,8 @@ services:
       # protocol fixtures, and the runner asserts that derivation.
       NET: regtest
       DAEMON_URL: http://lab:${LAB_RPC_PASSWORD}@bitcoin-core:18443
-      COIN: BitcoinRegtest
+      # Coin NAME plus NET selects the BitcoinRegtest class in the pinned source.
+      COIN: Bitcoin
       PEER_DISCOVERY: "off"
       PEER_ANNOUNCE: "off"
       SERVICES: tcp://0.0.0.0:51001
