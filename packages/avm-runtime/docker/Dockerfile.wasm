@@ -6,8 +6,8 @@ RUN tar -xzf avm-interpreter-c185e62.tar.gz
 # The adaptation wrapper compiles the interpreter's script engine into a
 # narrow interface: avm_alloc, avm_run, avm_output, avm_output_length, memory.
 # It meters instructions and caps memory; it never changes execution semantics.
-COPY docker/wasm-wrapper.c avm-interpreter-c185e62/wasm-wrapper.c
+COPY docker/wasm-wrapper.c avm-interpreter-c185e6216a3ea2cb2e011e508033ca535ece3472/wasm-wrapper.c
 RUN emcc -O2 -sMODULARIZE=1 -sEXPORT_ES6=1 -sALLOW_MEMORY_GROWTH=1 \
     -sINITIAL_MEMORY=33554432 -sMAXIMUM_MEMORY=67108864 \
     -sEXPORTED_FUNCTIONS=_avm_alloc,_avm_run,_avm_output,_avm_output_length,_memory \
-    avm-interpreter-c185e62/wasm-wrapper.c -o /out/avm-interpreter.mjs
+    avm-interpreter-c185e6216a3ea2cb2e011e508033ca535ece3472/wasm-wrapper.c -o /out/avm-interpreter.mjs

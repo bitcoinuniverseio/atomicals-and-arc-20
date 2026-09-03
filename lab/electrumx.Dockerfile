@@ -4,7 +4,7 @@ FROM python:3.11.9-slim-bookworm
 
 ARG ELECTRUMX_REVISION
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git build-essential liblibleveldb-dev libleveldb1d \
+    && apt-get install -y --no-install-recommends git build-essential libleveldb-dev libleveldb1d \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/atomicals/atomicals-electrumx /srv/electrumx \

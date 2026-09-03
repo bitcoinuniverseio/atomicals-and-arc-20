@@ -9,6 +9,6 @@ WORKDIR /build
 COPY vendor/avm-interpreter-c185e62.tar.gz .
 COPY source-checksum.json .
 RUN tar -xzf avm-interpreter-c185e62.tar.gz \
-    && cmake -S avm-interpreter-c185e62 -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_AVM_CLI=ON \
+    && cmake -S avm-interpreter-c185e6216a3ea2cb2e011e508033ca535ece3472 -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_AVM_CLI=ON \
     && cmake --build build --target avm-cli -j "$(nproc)" \
     && install -m 0755 build/src/avm-cli /out/avm-cli
