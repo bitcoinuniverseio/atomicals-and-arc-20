@@ -16,6 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  COMPOSE_PROJECT_NAME: atomicals-${{ github.run_id }}-${{ github.run_attempt }}
   # Every job re-asserts these, so a runner with a different toolchain fails
   # loudly rather than producing a build nobody can reproduce.
   EXPECTED_NODE: v24.19.0
