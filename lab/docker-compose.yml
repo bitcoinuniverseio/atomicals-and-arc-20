@@ -22,12 +22,13 @@ services:
       -rpcallowip=10.0.0.0/8
       -rpcallowip=172.16.0.0/12
       -rpcallowip=192.168.0.0/16
-      -rpcauth=${LAB_RPC_AUTH}
+      -rpcuser=lab
+      -rpcpassword=${LAB_RPC_PASSWORD}
       -fallbackfee=0.0002
     ports:
       - "127.0.0.1:18443:18443"
     volumes:
-      - core-data:/root/.bitcoin
+      - core-data:/home/bitcoin/.bitcoin
     healthcheck:
       test: ["CMD", "bitcoin-cli", "-regtest", "-rpcuser=lab", "-rpcpassword=${LAB_RPC_PASSWORD}", "getblockcount"]
       interval: 5s
