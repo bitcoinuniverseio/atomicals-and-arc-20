@@ -11,11 +11,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 const rawHref = `${base}/raw/${routeId.replace(/\/$/, '') || 'index'}.md`
 ---
 
-<div class="bu-page-actions">
+<div class="bu-page-actions print:hidden">
   <bu-copy-markdown data-src={rawHref}>
-    <button type="button" data-copy>Copy page as Markdown</button>
+    <button type="button" class="bu-action-btn" data-copy>
+      <svg class="bu-action-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+      </svg>
+      <span class="bu-action-text">Copy Markdown</span>
+    </button>
   </bu-copy-markdown>
-  <a href={rawHref}>View raw Markdown</a>
+  <span class="bu-actions-sep" aria-hidden="true"></span>
+  <a href={rawHref} class="bu-action-link" target="_blank" rel="noopener noreferrer">
+    <svg class="bu-action-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+      <polyline points="14 2 14 8 20 8"/>
+    </svg>
+    <span>Raw</span>
+  </a>
 </div>
 
 <script>
@@ -45,3 +58,55 @@ const rawHref = `${base}/raw/${routeId.replace(/\/$/, '') || 'index'}.md`
   }
   customElements.define('bu-copy-markdown', BuCopyMarkdown)
 </script>
+
+<style>
+  .bu-page-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0.5rem 0 1.25rem;
+    padding: 2px 4px;
+    background: color-mix(in srgb, var(--bu-surface-sunken) 70%, transparent);
+    border: 1px solid var(--bu-line);
+    border-radius: 9999px;
+  }
+
+  .bu-action-btn,
+  .bu-action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 560;
+    color: var(--bu-ink-soft);
+    background: transparent;
+    border: 0;
+    border-radius: 9999px;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1.2;
+    transition: all 0.15s ease;
+  }
+
+  .bu-action-btn:hover,
+  .bu-action-link:hover {
+    color: var(--bu-ink);
+    background: var(--bu-surface);
+    box-shadow: var(--bu-shadow-1);
+  }
+
+  .bu-action-icon {
+    color: var(--bu-ink-muted);
+    flex-shrink: 0;
+  }
+
+  .bu-actions-sep {
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--bu-line-control);
+    opacity: 0.6;
+  }
+</style>

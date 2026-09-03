@@ -19,6 +19,26 @@ const staleTranslation = provenance ? await isStaleTranslation(route.id, provena
  * accessibility defect, and tests/links.test.mjs fails the build on it.
  */
 const isSplash = data.template === 'splash'
+
+const slug = route?.slug ?? ''
+const getSectionEyebrow = (s: string) => {
+  if (s.startsWith('protocol/arc20')) return 'Protocol / ARC-20'
+  if (s.startsWith('protocol/avm')) return 'Protocol / AVM'
+  if (s.startsWith('protocol/realms')) return 'Protocol / Realms'
+  if (s.startsWith('protocol/containers')) return 'Protocol / Containers'
+  if (s.startsWith('protocol/nft')) return 'Protocol / Digital Objects'
+  if (s.startsWith('protocol/')) return 'Protocol Specification'
+  if (s.startsWith('start/')) return 'Getting Started'
+  if (s.startsWith('guides/')) return 'Developer Guides'
+  if (s.startsWith('reference/')) return 'API & Reference'
+  if (s.startsWith('tools/')) return 'Interactive Tools'
+  if (s.startsWith('ecosystem/')) return 'Ecosystem Registry'
+  if (s.startsWith('develop/')) return 'Architecture & Integration'
+  if (s.startsWith('releases/')) return 'Releases & Deprecations'
+  if (s.startsWith('contribute/')) return 'Contribution'
+  return undefined
+}
+const eyebrow = getSectionEyebrow(slug)
 ---
 
 {
@@ -26,6 +46,7 @@ const isSplash = data.template === 'splash'
     <div id={PAGE_TITLE_ID} class="bu-splash-anchor" />
   ) : (
     <>
+      {eyebrow && <div class="bu-page-eyebrow">{eyebrow}</div>}
       <h1 id={PAGE_TITLE_ID}>{data.title}</h1>
       {data.description && <p class="bu-page-lede">{data.description}</p>}
       <PageActions routeId={route.entry.id} />
@@ -35,23 +56,33 @@ const isSplash = data.template === 'splash'
 }
 
 <style>
+  .bu-page-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bu-accent);
+    margin-top: 1.25rem;
+    margin-bottom: -0.35rem;
+  }
+
   h1 {
-    margin-top: 1rem;
-    margin-bottom: 0.35rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
     font-size: var(--sl-text-h1);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    font-weight: 640;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    font-weight: 700;
     color: var(--bu-ink);
     overflow-wrap: break-word;
   }
 
   .bu-page-lede {
-    margin: 0 0 1rem;
-    font-size: var(--bu-step-1);
-    line-height: 1.5;
+    margin: 0 0 0.85rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
     color: var(--bu-ink-soft);
-    max-width: 58ch;
+    max-width: 62ch;
   }
 
   .bu-splash-anchor {

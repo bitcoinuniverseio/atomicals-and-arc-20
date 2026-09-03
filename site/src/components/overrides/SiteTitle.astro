@@ -1,13 +1,11 @@
 ---
 import Default from '@astrojs/starlight/components/SiteTitle.astro'
-import CommandPalette from '../CommandPalette.astro'
 ---
 
 <div class="bu-title-wrapper">
   <Default><slot /></Default>
   <span class="bu-title-badge" aria-hidden="true">Docs</span>
 </div>
-<CommandPalette />
 
 <style>
   .bu-title-wrapper {
@@ -58,13 +56,6 @@ import CommandPalette from '../CommandPalette.astro'
     line-height: 1.2;
   }
 
-  :global(bu-command-palette) {
-    display: contents;
-  }
-
-  :global(.bu-palette-trigger) {
-    display: none !important;
-  }
 
   @media (max-width: 30rem) {
     :global(.site-title) {

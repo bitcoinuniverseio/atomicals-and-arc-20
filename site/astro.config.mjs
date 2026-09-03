@@ -91,6 +91,7 @@ export default defineConfig({
         PageTitle: './src/components/overrides/PageTitle.astro',
         Footer: './src/components/overrides/Footer.astro',
         SiteTitle: './src/components/overrides/SiteTitle.astro',
+        Search: './src/components/overrides/Search.astro',
       },
       expressiveCode: {
         themes: ['github-light', 'github-dark'],

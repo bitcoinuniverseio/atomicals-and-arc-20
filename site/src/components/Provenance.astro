@@ -170,3 +170,80 @@ const resolved = provenance.sources.map((ref) => {
     </details>
   )
 }
+
+<style>
+  .bu-stale {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    border-radius: var(--bu-radius-m);
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: var(--bu-ink);
+    font-size: 0.85rem;
+  }
+
+  .bu-provenance {
+    margin: 0.75rem 0 1.5rem;
+    border: 1px solid var(--bu-line);
+    border-radius: var(--bu-radius-m);
+    background: var(--bu-surface);
+    overflow: hidden;
+    transition: all 0.15s ease;
+  }
+
+  .bu-provenance summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    background: color-mix(in srgb, var(--bu-surface-sunken) 50%, transparent);
+    user-select: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .bu-provenance summary:hover {
+    background: var(--bu-surface-sunken);
+  }
+
+  .bu-provenance-body {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--bu-line);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--bu-ink-soft);
+  }
+
+  .bu-provenance-body dl {
+    display: grid;
+    grid-template-columns: minmax(10rem, 14rem) 1fr;
+    gap: 0.5rem 1rem;
+    margin: 0.85rem 0 0;
+  }
+
+  .bu-provenance-body dt {
+    font-weight: 600;
+    color: var(--bu-ink-muted);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .bu-provenance-body dd {
+    margin: 0;
+    color: var(--bu-ink);
+  }
+
+  .bu-provenance-body ul {
+    margin: 0;
+    padding-inline-start: 1.25rem;
+  }
+
+  @media (max-width: 40rem) {
+    .bu-provenance-body dl {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
+</style>

@@ -72,10 +72,23 @@
   }
 }
 
-/* The mobile menu button lives in the main bar, not centred across both rows. */
-@media (max-width: 50rem) {
+/* On desktop, the mobile menu button MUST be completely hidden so it never floats over header elements. */
+@media (min-width: 50rem) {
+  starlight-menu-button,
   starlight-menu-button button {
+    display: none !important;
+  }
+}
+
+/* On mobile, the menu button lives cleanly centered in the top header row, never overlapping the context strip. */
+@media (max-width: 49.99rem) {
+  starlight-menu-button button {
+    position: fixed;
     top: calc((var(--bu-header-main-h) - var(--sl-menu-button-size)) / 2);
+    inset-inline-end: var(--sl-nav-pad-x);
+    z-index: calc(var(--sl-z-index-navbar) + 10);
+    min-height: var(--bu-touch);
+    min-width: var(--bu-touch);
   }
 }
 
@@ -127,7 +140,6 @@
 /* Every interactive control in the shell reaches the minimum target size. */
 .sidebar-content a,
 .right-sidebar a,
-starlight-menu-button button,
 mobile-starlight-toc a {
   min-height: var(--bu-touch);
   display: flex;
