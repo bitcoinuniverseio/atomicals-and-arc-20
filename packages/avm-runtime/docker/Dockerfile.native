@@ -3,7 +3,7 @@
 # checksum-verified tarball, never from a moving ref.
 FROM debian:bookworm-20240904-slim@sha256:a629e796d77a7b2ff82186ed15d01a493801c020eed5ce6adaa2704356f15a1c
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake libboost-all-dev libevent-dev libgmp-dev python3 \
+    build-essential cmake git libboost-all-dev libevent-dev libgmp-dev libssl-dev python3 \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /build
 COPY vendor/avm-interpreter-c185e62.tar.gz .

@@ -18,7 +18,7 @@ services:
       -server=1
       -txindex=1
       -listen=0
-      -rpcbind=127.0.0.1
+      -rpcbind=0.0.0.0
       -rpcallowip=10.0.0.0/8
       -rpcallowip=172.16.0.0/12
       -rpcallowip=192.168.0.0/16
@@ -29,7 +29,7 @@ services:
     volumes:
       - core-data:/root/.bitcoin
     healthcheck:
-      test: ["CMD", "bitcoin-cli", "-regtest", "-rpcauth=${LAB_RPC_AUTH}", "getblockcount"]
+      test: ["CMD", "bitcoin-cli", "-regtest", "getblockcount"]
       interval: 5s
       timeout: 5s
       retries: 60
