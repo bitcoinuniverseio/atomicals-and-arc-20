@@ -77,7 +77,7 @@ test('get_protocol_status separates applicability from authority', () => {
     pageId: 'protocol/avm/status-and-limitations',
   })
   assert.equal(status.applicability, 'experimental')
-  assert.deepEqual(status.networks, ['none'])
+  assert.deepEqual(status.networks, ['testnet'])
   assert.ok(status.limitations.length > 0)
 })
 
