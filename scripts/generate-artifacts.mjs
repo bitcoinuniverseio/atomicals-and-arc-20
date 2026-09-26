@@ -344,7 +344,8 @@ ${vectors.cases
   coloured UTXOs: available as read views, not as proof of settlement.
 - Universe declared ARC-20 coverage: partial, for pending activity only.
 - Universe Container and DMINT read projection: not exposed.
-- Universe AVM execution: not exposed.
+- Universe AVM execution: experimental, validated on Bitcoin Testnet4 only. Mainnet AVM writes are
+  not enabled in production.
 
 See ${absoluteUrlFor('start/status-and-limitations')}.
 

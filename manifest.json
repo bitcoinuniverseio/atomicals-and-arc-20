@@ -940,16 +940,17 @@
       "sources": [
         "universe-index-atomicals",
         "universe-index-atomicals-nfts-and-realms",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "Esta pagina refleja la fecha de verificacion indicada arriba. Consulta el panel de fuentes antes de confiar en cualquier fila."
       ],
       "deprecated": null,
-      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
-      "contentHash": "c8ef96ee1e7076f896d139f1dfdbb2abf9350b9bd704c3d0927c5a84328bd439",
+      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
+      "contentHash": "efbb9ea8c061423e40893e218b58677ba382b4d923fd667b2034d11ebcbe60cb",
       "href": "/atomicals-and-arc-20/es/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/es/start/status-and-limitations.md"
     },
@@ -1273,16 +1274,17 @@
       "sources": [
         "universe-index-atomicals",
         "universe-index-atomicals-nfts-and-realms",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "Cette page reflete la date de verification ci-dessus. Consultez le panneau des sources avant de vous fier a une ligne."
       ],
       "deprecated": null,
-      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
-      "contentHash": "173c59ce8aa44f5fff7db0300a570d5b16b5c7ac2e250967a8a6802de7613953",
+      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
+      "contentHash": "2e1ef1e8d5811a5181d9d339d392bf318cb4aa436e3b593a7435325be655e738",
       "href": "/atomicals-and-arc-20/fr/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/fr/start/status-and-limitations.md"
     },
@@ -2560,16 +2562,17 @@
       "sources": [
         "universe-index-atomicals",
         "universe-index-atomicals-nfts-and-realms",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "このページは上記の検証日時点の内容です。いずれかの行に依拠する前にソースパネルを確認してください。"
       ],
       "deprecated": null,
-      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
-      "contentHash": "75427d21c071141b471ac639e137d5e24d29b30d4bbc4abd4a544ff6edc09eb5",
+      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
+      "contentHash": "83907e88781ed893906b19a3fd1fbf37d87e48abfb3059e9a9ed0d853295562b",
       "href": "/atomicals-and-arc-20/ja/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/ja/start/status-and-limitations.md"
     },
@@ -3272,17 +3275,21 @@
       ],
       "sources": [
         "atomicals-avm-interpreter",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-index-atomicals",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
-        "No Universe service executes AVM contracts. No Universe attestation of AVM behavior has been published.",
+        "AVM contract transactions are being validated on Bitcoin Testnet4 only, from activation height 27000. Nothing here is a mainnet claim.",
+        "Mainnet AVM writes are not enabled in production.",
+        "The indexer readiness report is not a published conformance statement.",
         "Upstream test annotations describe the interpreter's own test suite, not production deployment."
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "c43a2bd1f54754aa418c3896fc9332fd49da5e7f283e243d6b40c6f637b67df2",
+      "contentHash": "2ebcd9c82c077b538263bd2847a4534b35b848861286406a0f797ea345b0ef8a",
       "href": "/atomicals-and-arc-20/protocol/avm/overview/",
       "raw": "/atomicals-and-arc-20/raw/protocol/avm/overview.md"
     },
@@ -4583,16 +4590,17 @@
       "sources": [
         "universe-index-atomicals",
         "universe-index-atomicals-nfts-and-realms",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "Esta pagina reflete a data de verificacao acima. Consulte o painel de fontes antes de confiar em qualquer linha."
       ],
       "deprecated": null,
-      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
-      "contentHash": "722d1d1046f958f2420f252a2e4a8e5daf6ae313a288ea917772d9c8102b3d3d",
+      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
+      "contentHash": "d8859d4ec9947afed60c81e308ff114cfe1007e4d13204f2b693b8969a926f00",
       "href": "/atomicals-and-arc-20/pt/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/pt/start/status-and-limitations.md"
     },
@@ -5433,16 +5441,17 @@
       "sources": [
         "universe-index-atomicals",
         "universe-index-atomicals-nfts-and-realms",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "Эта страница отражает указанную выше дату проверки. Прежде чем полагаться на любую строку, посмотрите панель источников."
       ],
       "deprecated": null,
-      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
-      "contentHash": "41187ebddc03c928c9dec80b62aa48ce3770e4b8616298dd94ef8b99ba66ba3d",
+      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
+      "contentHash": "164742197e3c6c414c2fd3a718072f5527b5f9ef6b24cb21315bd2e72c693fa2",
       "href": "/atomicals-and-arc-20/ru/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/ru/start/status-and-limitations.md"
     },
@@ -5645,16 +5654,17 @@
       ],
       "sources": [
         "atomicals-electrumx-1.5.2.0",
-        "atomicals-js-cli"
+        "atomicals-js-cli",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "Support columns describe Universe product exposure at the verified date, not protocol capability."
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "6bd8ea0f7c88c63fcc27aac1290a5549900da3975a1143e91a5f66e33d62a59d",
+      "contentHash": "649b51b1813b575bd3804d947bd3af57c76229e3c47672dd793f6a6075c61fd5",
       "href": "/atomicals-and-arc-20/start/protocol-family-map/",
       "raw": "/atomicals-and-arc-20/raw/start/protocol-family-map.md"
     },
@@ -5710,16 +5720,17 @@
       "sources": [
         "universe-index-atomicals",
         "universe-index-atomicals-nfts-and-realms",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "This page reflects the verified date above. Check the source panel before relying on any row."
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
+      "contentHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
       "href": "/atomicals-and-arc-20/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/start/status-and-limitations.md"
     },
@@ -6431,16 +6442,17 @@
       "sources": [
         "universe-index-atomicals",
         "universe-index-atomicals-nfts-and-realms",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "本页反映的是上方的验证日期。在依赖任何一行之前，请查看来源面板。"
       ],
       "deprecated": null,
-      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
-      "contentHash": "13d03f710ba0cf9182a5e43c9ea4d4b6a38ad316f45742cf0af5817b19631c0c",
+      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
+      "contentHash": "d62d67bd2794349de8413a92040f35e3018d66f139540740a0d8f28707de8fff",
       "href": "/atomicals-and-arc-20/zh-cn/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/zh-cn/start/status-and-limitations.md"
     },
@@ -6764,16 +6776,17 @@
       "sources": [
         "universe-index-atomicals",
         "universe-index-atomicals-nfts-and-realms",
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
         "本頁反映的是上方的驗證日期。在依賴任何一列之前，請查看來源面板。"
       ],
       "deprecated": null,
-      "translationSourceHash": "19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0",
-      "contentHash": "8dcf595f2ec4525dd07fe6445602bf64e906e21955c40c24bab6927b57d1d5dd",
+      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
+      "contentHash": "96f0c502e61ceef81808b98c028e54d2a31788cd98af74f902fbddab7d66d41d",
       "href": "/atomicals-and-arc-20/zh-tw/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/zh-tw/start/status-and-limitations.md"
     },

@@ -6,7 +6,7 @@ Page ID: start/status-and-limitations
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: en
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/status-and-limitations/
 
@@ -57,8 +57,13 @@ requirements.
 | --- | --- |
 | Architectural whitepaper concepts | Proposed |
 | Official beta interpreter | Experimental or beta |
-| Universe runtime integration | Not exposed |
-| Universe runtime attestation | None published |
+| Universe runtime integration | Experimental, Bitcoin Testnet4 validation only |
+| Universe runtime attestation | Readiness report only |
+
+Inscribe exposes AVM Studio at `/avm-studio` and the `/avm/*` API. The Universe Atomicals indexer
+serves the `blockchain.atomicals.avm.*` RPCs and a readiness report. AVM is being validated on
+Bitcoin Testnet4 only, from activation height 27000. Signet cannot carry AVM with the pinned
+indexer. Mainnet AVM writes are not enabled in production.
 
 Nothing about the AVM on this site should be read as production mainnet support. See
 [AVM status and limitations](/protocol/avm/status-and-limitations/).
@@ -69,8 +74,9 @@ Nothing about the AVM on this site should be read as production mainnet support.
 2. Containers and DMINT are documented as protocol behavior. No Universe read projection exposes
    them today.
 3. Direct FT issuance is protocol behavior with no Universe product surface.
-4. AVM is beta upstream and unexposed here. Any implementation claim would need an attestation we
-   have not published.
+4. AVM is beta upstream and validated here on Bitcoin Testnet4 only. Mainnet AVM writes are not
+   enabled in production, and the indexer readiness report is not a published conformance
+   statement.
 5. Some Atomicals ecosystem services listed in the [registry](/ecosystem/) could not be
    verified from a reachable source. Those rows say `unknown` rather than guessing.
 6. Rate limiting is documented only where it is actually implemented. Where a service has none,

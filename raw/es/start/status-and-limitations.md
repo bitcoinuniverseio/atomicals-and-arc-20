@@ -6,7 +6,7 @@ Page ID: start/status-and-limitations
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: es
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/es/start/status-and-limitations/
 
@@ -57,8 +57,13 @@ el escaneo confirmado ni los requisitos de prueba de tenedores.
 | --- | --- |
 | Conceptos arquitectonicos del documento tecnico | Propuesto |
 | Interprete beta oficial | Experimental o beta |
-| Integracion en el runtime Universe | No expuesta |
-| Atestacion del runtime Universe | Ninguna publicada |
+| Integracion en el runtime Universe | Experimental, solo validacion en Bitcoin Testnet4 |
+| Atestacion del runtime Universe | Solo informe de preparacion |
+
+Inscribe expone AVM Studio en `/avm-studio` y la API `/avm/*`. El indexador Atomicals de Universe
+sirve las RPC `blockchain.atomicals.avm.*` y un informe de preparacion. El AVM se esta validando solo
+en Bitcoin Testnet4, desde la altura de activacion 27000. Signet no puede transportar el AVM con el
+indexador fijado. Las escrituras AVM en mainnet no estan habilitadas en produccion.
 
 Nada sobre el AVM en este sitio debe leerse como soporte de produccion en mainnet. Ver
 [estado y limitaciones del AVM](/protocol/avm/status-and-limitations/).
@@ -69,8 +74,9 @@ Nada sobre el AVM en este sitio debe leerse como soporte de produccion en mainne
 2. Containers y DMINT estan documentados como comportamiento de protocolo. Ninguna proyeccion de
    lectura Universe los expone hoy.
 3. La emision directa de FT es comportamiento de protocolo sin superficie de producto Universe.
-4. El AVM esta en beta aguas arriba y no esta expuesto aqui. Cualquier afirmacion de implementacion
-   requeriria una atestacion que no hemos publicado.
+4. El AVM esta en beta aguas arriba y aqui se valida solo en Bitcoin Testnet4. Las escrituras AVM en
+   mainnet no estan habilitadas en produccion, y el informe de preparacion del indexador no es una
+   declaracion de conformidad publicada.
 5. Algunos servicios del ecosistema Atomicals listados en el [registro](/ecosystem/) no pudieron
    verificarse desde una fuente alcanzable. Esas filas dicen `unknown` en lugar de adivinar.
 6. Los limites de tasa se documentan solo donde existen de verdad. Donde un servicio no tiene
