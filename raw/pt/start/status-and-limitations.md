@@ -6,7 +6,7 @@ Page ID: start/status-and-limitations
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: pt
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/pt/start/status-and-limitations/
 
@@ -57,8 +57,12 @@ confirmada nem os requisitos de prova de detentores.
 | --- | --- |
 | Conceitos arquiteturais do white paper | Proposto |
 | Interpretador beta oficial | Experimental ou beta |
-| Integracao no runtime Universe | Nao exposta |
-| Atestacao do runtime Universe | Nenhuma publicada |
+| Integracao no runtime Universe | Apenas Testnet4 |
+| Atestacao do runtime Universe | Apenas prontidao |
+
+O AVM Studio (`/avm-studio`), a API `/avm/*` e as RPC `blockchain.atomicals.avm.*` do indexador sao
+validados apenas em Bitcoin Testnet4, a partir da altura 27000. A Signet nao consegue transportar o
+AVM com o indexador fixado. As escritas AVM em mainnet nao estao ativadas em producao.
 
 Nada sobre o AVM neste site deve ser lido como suporte de producao em mainnet. Veja
 [estado e limitacoes do AVM](/protocol/avm/status-and-limitations/).
@@ -69,8 +73,9 @@ Nada sobre o AVM neste site deve ser lido como suporte de producao em mainnet. V
 2. Containers e DMINT estao documentados como comportamento de protocolo. Nenhuma projecao de
    leitura Universe os expoe hoje.
 3. A emissao direta de FT e comportamento de protocolo sem superficie de produto Universe.
-4. O AVM esta em beta a montante e nao esta exposto aqui. Qualquer alegacao de implementacao
-   exigiria uma atestacao que nao publicamos.
+4. O AVM esta em beta a montante e aqui so esta a ser validado em Bitcoin Testnet4. As escritas AVM
+   em mainnet nao estao ativadas em producao, e o relatorio de prontidao do indexador nao e uma
+   declaracao de conformidade publicada.
 5. Alguns servicos do ecossistema Atomicals listados no [registo](/ecosystem/) nao puderam ser
    verificados a partir de uma fonte alcancavel. Essas linhas dizem `unknown` em vez de adivinhar.
 6. Limites de taxa sao documentados apenas onde existem de facto. Onde um servico nao tem nenhum, a

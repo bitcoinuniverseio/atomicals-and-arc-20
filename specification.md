@@ -297,7 +297,8 @@ output scripts for clarity, because neither changes the allocation result.
   coloured UTXOs: available as read views, not as proof of settlement.
 - Universe declared ARC-20 coverage: partial, for pending activity only.
 - Universe Container and DMINT read projection: not exposed.
-- Universe AVM execution: not exposed.
+- Universe AVM execution: experimental, validated on Bitcoin Testnet4 only. Mainnet AVM writes are
+  not enabled in production.
 
 See https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/status-and-limitations/.
 

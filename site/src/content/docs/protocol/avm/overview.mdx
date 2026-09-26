@@ -18,10 +18,16 @@ provenance:
       path: readme
     - id: atomicals-avm-interpreter
       path: whitepaper
-  verified: '2026-08-31'
+    - id: universe-index-atomicals
+      note: AVM RPCs and readiness report
+    - id: universe-inscribe
+      note: AVM Studio and the /avm/ API
+  verified: '2026-09-26'
   tags: [avm, status]
   limitations:
-    - No Universe service executes AVM contracts. No Universe attestation of AVM behavior has been published.
+    - AVM contract transactions are being validated on Bitcoin Testnet4 only, from activation height 27000. Nothing here is a mainnet claim.
+    - Mainnet AVM writes are not enabled in production.
+    - The indexer readiness report is not a published conformance statement.
     - Upstream test annotations describe the interpreter's own test suite, not production deployment.
 ---
 
@@ -41,8 +47,8 @@ as production mainnet support would be wrong.
 | --- | --- | --- |
 | Architectural whitepaper concepts | Proposed | A design document describing a system |
 | Official beta interpreter | Experimental or beta | Working code with its own test suite |
-| Universe runtime integration | Not exposed | No Universe service executes AVM contracts |
-| Universe runtime attestation | None published | No statement about behavior we verified |
+| Universe runtime integration | Testnet4 only | AVM Studio at `/avm-studio`, the `/avm/*` API, and the `blockchain.atomicals.avm.*` RPCs. No mainnet writes |
+| Universe runtime attestation | Readiness only | An indexer readiness report. No published conformance statement |
 
 ## What the interpreter is
 
@@ -72,10 +78,13 @@ Key differences from Bitcoin script, as described upstream:
 ## What this documentation will not do
 
 It will not describe AVM behavior as available, supported, or production ready. It will not
-document a Universe AVM API, because none exists. It will not present whitepaper concepts as
+describe Testnet4 validation as mainnet support. It will not present whitepaper concepts as
 implemented behavior.
 
-If that changes, it will change because a pinned revision, a network, activation conditions, and
-executed conformance vectors exist to support it. See
+The Universe AVM surfaces exist for validation on Bitcoin Testnet4, from activation height 27000.
+Signet cannot carry AVM with the pinned indexer. Mainnet AVM writes are not enabled in production.
+A network becomes supported only when a pinned revision, activation conditions, and executed
+conformance vectors exist for it. See
+[AVM status and limitations](/protocol/avm/status-and-limitations/) and
 [status and known limitations](/start/status-and-limitations/).
 

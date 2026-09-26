@@ -6,7 +6,7 @@ Page ID: start/status-and-limitations
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: zh-cn
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/zh-cn/start/status-and-limitations/
 
@@ -55,8 +55,12 @@ ARC-20 数据源以明确理由报告 `partial` 覆盖：已确认的权威历�
 | --- | --- |
 | 白皮书中的架构概念 | 提案 |
 | 官方测试版解释器 | 实验或测试 |
-| Universe 运行时集成 | 未开放 |
-| Universe 运行时证明 | 未发布 |
+| Universe 运行时集成 | 仅 Testnet4 |
+| Universe 运行时证明 | 仅就绪报告 |
+
+AVM Studio（`/avm-studio`）、`/avm/*` API 和索引器的 `blockchain.atomicals.avm.*` RPC 仅在
+Bitcoin Testnet4 上验证，从高度 27000 开始。在固定版本的索引器下，Signet 无法承载 AVM。生产环境未启用
+主网 AVM 写入。
 
 本站关于 AVM 的任何内容都不应被理解为主网生产支持。参见
 [AVM 状态与限制](/protocol/avm/status-and-limitations/)。
@@ -66,7 +70,8 @@ ARC-20 数据源以明确理由报告 `partial` 覆盖：已确认的权威历�
 1. 待处理的 ARC-20 活动没有完备覆盖。已确认的历史有。
 2. Container 与 DMINT 以协议行为的形式记录。目前没有任何 Universe 只读投影提供它们。
 3. 直接 FT 发行属于协议行为，没有对应的 Universe 产品界面。
-4. AVM 在上游处于测试阶段，本处未开放。任何实现声明都需要我们尚未发布的证明。
+4. AVM 在上游处于测试阶段，本处仅在 Bitcoin Testnet4 上验证。生产环境未启用主网 AVM 写入，索引器的
+   就绪报告也不是已发布的一致性声明。
 5. [注册表](/ecosystem/)中列出的部分 Atomicals 生态服务无法通过可访问来源核实。这些条目标注为
    `unknown`，而不是猜测。
 6. 速率限制只在确实存在的地方记录。若某服务没有速率限制，页面会如实说明，而不是编造一套策略。
