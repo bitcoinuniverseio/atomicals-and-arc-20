@@ -181,6 +181,13 @@ mobile-starlight-toc a {
   -webkit-overflow-scrolling: touch;
 }
 
+/* A table box ignores overflow, so on narrow screens it becomes a block that scrolls. */
+@media (max-width: 49.99rem) {
+  .sl-markdown-content > table {
+    display: block;
+  }
+}
+
 /* Long identifiers such as txids and Atomical IDs must not push the page sideways. */
 .sl-markdown-content :not(pre) > code {
   overflow-wrap: anywhere;

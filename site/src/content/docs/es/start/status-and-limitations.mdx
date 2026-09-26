@@ -17,9 +17,11 @@ provenance:
       path: provenance
     - id: atomicals-avm-interpreter
       path: readme
-  verified: '2026-08-31'
+    - id: universe-inscribe
+      note: AVM Studio and the /avm/ API
+  verified: '2026-09-26'
   tags: [status, limitations]
-  translationSourceHash: 19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0
+  translationSourceHash: 74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0
   limitations:
     - Esta pagina refleja la fecha de verificacion indicada arriba. Consulta el panel de fuentes antes de confiar en cualquier fila.
 ---
@@ -77,8 +79,12 @@ el escaneo confirmado ni los requisitos de prueba de tenedores.
 | --- | --- |
 | Conceptos arquitectonicos del documento tecnico | Propuesto |
 | Interprete beta oficial | Experimental o beta |
-| Integracion en el runtime Universe | No expuesta |
-| Atestacion del runtime Universe | Ninguna publicada |
+| Integracion en el runtime Universe | Solo Testnet4 |
+| Atestacion del runtime Universe | Solo preparacion |
+
+AVM Studio (`/avm-studio`), la API `/avm/*` y las RPC `blockchain.atomicals.avm.*` del indexador se
+validan solo en Bitcoin Testnet4, desde la altura 27000. Signet no puede transportar el AVM con el
+indexador fijado. Las escrituras AVM en mainnet no estan habilitadas en produccion.
 
 Nada sobre el AVM en este sitio debe leerse como soporte de produccion en mainnet. Ver
 [estado y limitaciones del AVM](/protocol/avm/status-and-limitations/).
@@ -89,8 +95,9 @@ Nada sobre el AVM en este sitio debe leerse como soporte de produccion en mainne
 2. Containers y DMINT estan documentados como comportamiento de protocolo. Ninguna proyeccion de
    lectura Universe los expone hoy.
 3. La emision directa de FT es comportamiento de protocolo sin superficie de producto Universe.
-4. El AVM esta en beta aguas arriba y no esta expuesto aqui. Cualquier afirmacion de implementacion
-   requeriria una atestacion que no hemos publicado.
+4. El AVM esta en beta aguas arriba y aqui se valida solo en Bitcoin Testnet4. Las escrituras AVM en
+   mainnet no estan habilitadas en produccion, y el informe de preparacion del indexador no es una
+   declaracion de conformidad publicada.
 5. Algunos servicios del ecosistema Atomicals listados en el [registro](/ecosystem/) no pudieron
    verificarse desde una fuente alcanzable. Esas filas dicen `unknown` en lugar de adivinar.
 6. Los limites de tasa se documentan solo donde existen de verdad. Donde un servicio no tiene
