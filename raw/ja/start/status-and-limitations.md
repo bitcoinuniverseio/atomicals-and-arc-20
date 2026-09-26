@@ -6,7 +6,7 @@ Page ID: start/status-and-limitations
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: ja
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ja/start/status-and-limitations/
 
@@ -56,8 +56,12 @@ ARC-20 ソースは `partial` のカバレッジを、明示的な理由とと�
 | --- | --- |
 | ホワイトペーパーの設計概念 | 提案 |
 | 公式ベータインタプリタ | 実験的またはベータ |
-| Universe ランタイムへの統合 | 非公開 |
-| Universe ランタイムの証明 | 公開なし |
+| Universe ランタイムへの統合 | Testnet4 のみ |
+| Universe ランタイムの証明 | 準備状況のみ |
+
+AVM Studio (`/avm-studio`)、`/avm/*` API、インデクサの `blockchain.atomicals.avm.*` RPC は、
+Bitcoin Testnet4 でのみ、高さ 27000 から検証中です。固定されたインデクサでは、Signet で AVM を
+扱えません。mainnet での AVM 書き込みは本番環境で有効になっていません。
 
 このサイトの AVM に関する記述を、mainnet の本番サポートと読むべきではありません。
 [AVM の状態と制限](/protocol/avm/status-and-limitations/) を参照してください。
@@ -68,8 +72,9 @@ ARC-20 ソースは `partial` のカバレッジを、明示的な理由とと�
 2. Container と DMINT はプロトコルの挙動として文書化されています。現在それらを公開する Universe の
    読み取り投影はありません。
 3. 直接 FT 発行はプロトコルの挙動であり、Universe の製品提供面はありません。
-4. AVM は上流でベータであり、ここでは公開していません。実装の主張には、公開していない証明が必要に
-   なります。
+4. AVM は上流でベータであり、ここでは Bitcoin Testnet4 でのみ検証しています。mainnet での AVM
+   書き込みは本番環境で有効になっておらず、インデクサの準備状況レポートは公開された適合性の声明では
+   ありません。
 5. [レジストリ](/ecosystem/) に掲載された一部の Atomicals エコシステムのサービスは、到達可能な情報源
    から検証できませんでした。それらの行は推測せず `unknown` と記載しています。
 6. レート制限は実際に存在する場合にのみ記載しています。存在しないサービスについては、方針を捏造せず

@@ -17,9 +17,11 @@ provenance:
       path: provenance
     - id: atomicals-avm-interpreter
       path: readme
-  verified: '2026-08-31'
+    - id: universe-inscribe
+      note: AVM Studio and the /avm/ API
+  verified: '2026-09-26'
   tags: [status, limitations]
-  translationSourceHash: 19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0
+  translationSourceHash: 74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0
   limitations:
     - 本頁反映的是上方的驗證日期。在依賴任何一列之前，請查看來源面板。
 ---
@@ -75,8 +77,12 @@ ARC-20 資料來源以明確理由回報 `partial` 涵蓋範圍：已確認的�
 | --- | --- |
 | 白皮書中的架構概念 | 提案 |
 | 官方測試版直譯器 | 實驗或測試 |
-| Universe 執行環境整合 | 未開放 |
-| Universe 執行環境證明 | 未發布 |
+| Universe 執行環境整合 | 僅 Testnet4 |
+| Universe 執行環境證明 | 僅就緒報告 |
+
+AVM Studio（`/avm-studio`）、`/avm/*` API 與索引器的 `blockchain.atomicals.avm.*` RPC 僅在
+Bitcoin Testnet4 上驗證，從高度 27000 開始。在固定版本的索引器下，Signet 無法承載 AVM。正式環境未啟用
+主網 AVM 寫入。
 
 本站關於 AVM 的任何內容，都不應被理解為主網正式環境支援。參見
 [AVM 狀態與限制](/protocol/avm/status-and-limitations/)。
@@ -86,7 +92,8 @@ ARC-20 資料來源以明確理由回報 `partial` 涵蓋範圍：已確認的�
 1. 待處理的 ARC-20 活動沒有完整涵蓋，已確認的歷程則有。
 2. Container 與 DMINT 以協定行為的形式記錄。目前沒有任何 Universe 唯讀投影提供它們。
 3. 直接 FT 發行屬於協定行為，沒有對應的 Universe 產品介面。
-4. AVM 在上游處於測試階段，此處未開放。任何實作宣稱都需要我們尚未發布的證明。
+4. AVM 在上游處於測試階段，此處僅在 Bitcoin Testnet4 上驗證。正式環境未啟用主網 AVM 寫入，索引器的
+   就緒報告也不是已發布的一致性聲明。
 5. [登錄檔](/ecosystem/)中列出的部分 Atomicals 生態服務，無法透過可存取的來源查證。這些項目標示
    為 `unknown`，而不是猜測。
 6. 速率限制只在確實存在之處記載。若某服務沒有速率限制，頁面會據實說明，而不是編造一套政策。

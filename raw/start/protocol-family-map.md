@@ -6,7 +6,7 @@ Page ID: start/protocol-family-map
 Applicability: protocol-behavior
 Authority: reference-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: en
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/start/protocol-family-map/
 
@@ -55,7 +55,7 @@ not what the protocol allows.
 | Marketplace v1 for ARC-20, NFTs, Realms, Subrealms | Available, gated per action | [Marketplace v1](/reference/api/marketplace-v1/) |
 | Direct `mint-ft` issuance from a Universe product | Not exposed | [Direct issuance](/protocol/arc20/direct-issuance/) |
 | Container and DMINT read model | Not in the NFT and Realm projection | [Containers](/protocol/containers/overview/) |
-| AVM execution | Not exposed | [AVM status](/protocol/avm/status-and-limitations/) |
+| AVM execution | Testnet4 only. No mainnet writes | [AVM status](/protocol/avm/status-and-limitations/) |
 
 The Universe NFT and Realm index deliberately projects plain NFTs, Realms, and Subrealms only.
 Fungible tokens, Containers, and DMINT items are excluded from that projection and served by the
