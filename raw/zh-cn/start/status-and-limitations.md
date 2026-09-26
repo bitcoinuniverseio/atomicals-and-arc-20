@@ -55,12 +55,12 @@ ARC-20 数据源以明确理由报告 `partial` 覆盖：已确认的权威历�
 | --- | --- |
 | 白皮书中的架构概念 | 提案 |
 | 官方测试版解释器 | 实验或测试 |
-| Universe 运行时集成 | 实验性，仅在 Bitcoin Testnet4 上验证 |
-| Universe 运行时证明 | 仅有就绪报告 |
+| Universe 运行时集成 | 仅 Testnet4 |
+| Universe 运行时证明 | 仅就绪报告 |
 
-Inscribe 在 `/avm-studio` 提供 AVM Studio，并提供 `/avm/*` API。Universe 的 Atomicals 索引器提供
-`blockchain.atomicals.avm.*` RPC 和一份就绪报告。AVM 仅在 Bitcoin Testnet4 上验证，从激活高度 27000
-开始。在固定版本的索引器下，Signet 无法承载 AVM。生产环境未启用主网 AVM 写入。
+AVM Studio（`/avm-studio`）、`/avm/*` API 和索引器的 `blockchain.atomicals.avm.*` RPC 仅在
+Bitcoin Testnet4 上验证，从高度 27000 开始。在固定版本的索引器下，Signet 无法承载 AVM。生产环境未启用
+主网 AVM 写入。
 
 本站关于 AVM 的任何内容都不应被理解为主网生产支持。参见
 [AVM 状态与限制](/protocol/avm/status-and-limitations/)。

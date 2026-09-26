@@ -21,7 +21,7 @@ provenance:
       note: AVM Studio and the /avm/ API
   verified: '2026-09-26'
   tags: [status, limitations]
-  translationSourceHash: 6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9
+  translationSourceHash: 74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0
   limitations:
     - Эта страница отражает указанную выше дату проверки. Прежде чем полагаться на любую строку, посмотрите панель источников.
 ---
@@ -79,12 +79,11 @@ import { Aside } from '@astrojs/starlight/components'
 | --- | --- |
 | Архитектурные концепции из технического документа | Предложение |
 | Официальный бета-интерпретатор | Экспериментальный или бета |
-| Интеграция в среду выполнения Universe | Экспериментальная, только проверка в Bitcoin Testnet4 |
-| Аттестация среды выполнения Universe | Только отчет о готовности |
+| Интеграция в среду выполнения Universe | Только Testnet4 |
+| Аттестация среды выполнения Universe | Только готовность |
 
-Inscribe предоставляет AVM Studio по адресу `/avm-studio` и API `/avm/*`. Индексатор Atomicals от
-Universe обслуживает RPC `blockchain.atomicals.avm.*` и отчет о готовности. AVM проверяется только в
-Bitcoin Testnet4, начиная с высоты активации 27000. Signet не может нести AVM с закрепленной версией
+AVM Studio (`/avm-studio`), API `/avm/*` и RPC индексатора `blockchain.atomicals.avm.*` проверяются
+только в Bitcoin Testnet4, начиная с высоты 27000. Signet не может нести AVM с закрепленной версией
 индексатора. Запись AVM в mainnet в продакшене не включена.
 
 Ничто об AVM на этом сайте не следует читать как продакшн-поддержку в mainnet. См.

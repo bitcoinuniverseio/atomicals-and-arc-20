@@ -56,13 +56,12 @@ ARC-20 ソースは `partial` のカバレッジを、明示的な理由とと�
 | --- | --- |
 | ホワイトペーパーの設計概念 | 提案 |
 | 公式ベータインタプリタ | 実験的またはベータ |
-| Universe ランタイムへの統合 | 実験的、Bitcoin Testnet4 での検証のみ |
-| Universe ランタイムの証明 | 準備状況レポートのみ |
+| Universe ランタイムへの統合 | Testnet4 のみ |
+| Universe ランタイムの証明 | 準備状況のみ |
 
-Inscribe は `/avm-studio` で AVM Studio を公開し、`/avm/*` API も公開しています。Universe の
-Atomicals インデクサは `blockchain.atomicals.avm.*` RPC と準備状況レポートを提供します。AVM は
-Bitcoin Testnet4 でのみ、アクティベーション高 27000 から検証中です。固定されたインデクサでは、
-Signet で AVM を扱えません。mainnet での AVM 書き込みは本番環境で有効になっていません。
+AVM Studio (`/avm-studio`)、`/avm/*` API、インデクサの `blockchain.atomicals.avm.*` RPC は、
+Bitcoin Testnet4 でのみ、高さ 27000 から検証中です。固定されたインデクサでは、Signet で AVM を
+扱えません。mainnet での AVM 書き込みは本番環境で有効になっていません。
 
 このサイトの AVM に関する記述を、mainnet の本番サポートと読むべきではありません。
 [AVM の状態と制限](/protocol/avm/status-and-limitations/) を参照してください。

@@ -57,12 +57,11 @@ el escaneo confirmado ni los requisitos de prueba de tenedores.
 | --- | --- |
 | Conceptos arquitectonicos del documento tecnico | Propuesto |
 | Interprete beta oficial | Experimental o beta |
-| Integracion en el runtime Universe | Experimental, solo validacion en Bitcoin Testnet4 |
-| Atestacion del runtime Universe | Solo informe de preparacion |
+| Integracion en el runtime Universe | Solo Testnet4 |
+| Atestacion del runtime Universe | Solo preparacion |
 
-Inscribe expone AVM Studio en `/avm-studio` y la API `/avm/*`. El indexador Atomicals de Universe
-sirve las RPC `blockchain.atomicals.avm.*` y un informe de preparacion. El AVM se esta validando solo
-en Bitcoin Testnet4, desde la altura de activacion 27000. Signet no puede transportar el AVM con el
+AVM Studio (`/avm-studio`), la API `/avm/*` y las RPC `blockchain.atomicals.avm.*` del indexador se
+validan solo en Bitcoin Testnet4, desde la altura 27000. Signet no puede transportar el AVM con el
 indexador fijado. Las escrituras AVM en mainnet no estan habilitadas en produccion.
 
 Nada sobre el AVM en este sitio debe leerse como soporte de produccion en mainnet. Ver
