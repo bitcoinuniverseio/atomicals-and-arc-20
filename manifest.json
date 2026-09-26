@@ -28,7 +28,7 @@
     "guides/transfer-arc20",
     "guides/avoid-burns"
   ],
-  "pageCount": 225,
+  "pageCount": 226,
   "pages": [
     {
       "pageId": "home",
@@ -859,6 +859,31 @@
       "contentHash": "6a9c6f822d46a5d29445a154c4f50d1525602570929dd9a2b3ff1e306599af7e",
       "href": "/atomicals-and-arc-20/es/protocol/arc20/unit-model/",
       "raw": "/atomicals-and-arc-20/raw/es/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/choose-your-path",
+      "routeId": "es/start/choose-your-path",
+      "locale": "es",
+      "title": "Elige tu camino",
+      "description": "Cuatro rutas cortas por esta documentación, una para cada cosa que las personas realmente vienen a hacer.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "50e509f4459f0be74bbf2b320fb715418ff39e6c637fa0e6b431fab13c9aa2bf",
+      "contentHash": "af174f9a81062c446fdd55e73cdadd0bce3080063adfae2efbb16b3725ae821f",
+      "href": "/atomicals-and-arc-20/es/start/choose-your-path/",
+      "raw": "/atomicals-and-arc-20/raw/es/start/choose-your-path.md"
     },
     {
       "pageId": "start/glossary",
