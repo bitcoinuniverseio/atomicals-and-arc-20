@@ -6,7 +6,7 @@ Page ID: protocol/avm/overview
 Applicability: experimental
 Authority: reference-implementation
 Networks: none
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: en
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/avm/overview/
 
@@ -20,8 +20,8 @@ as production mainnet support would be wrong.
 | --- | --- | --- |
 | Architectural whitepaper concepts | Proposed | A design document describing a system |
 | Official beta interpreter | Experimental or beta | Working code with its own test suite |
-| Universe runtime integration | Not exposed | No Universe service executes AVM contracts |
-| Universe runtime attestation | None published | No statement about behavior we verified |
+| Universe runtime integration | Experimental | Inscribe exposes AVM Studio at `/avm-studio` and the `/avm/*` API. The Universe Atomicals indexer serves the `blockchain.atomicals.avm.*` RPCs. Validated on Bitcoin Testnet4 only. Mainnet AVM writes are not enabled in production |
+| Universe runtime attestation | Readiness report only | The indexer reports activation, the tip, the interpreter, the indexer revision, and a canary state hash. No conformance statement is published |
 
 ## What the interpreter is
 
@@ -51,9 +51,12 @@ Key differences from Bitcoin script, as described upstream:
 ## What this documentation will not do
 
 It will not describe AVM behavior as available, supported, or production ready. It will not
-document a Universe AVM API, because none exists. It will not present whitepaper concepts as
+describe Testnet4 validation as mainnet support. It will not present whitepaper concepts as
 implemented behavior.
 
-If that changes, it will change because a pinned revision, a network, activation conditions, and
-executed conformance vectors exist to support it. See
+The Universe AVM surfaces exist for validation on Bitcoin Testnet4, from activation height 27000.
+Signet cannot carry AVM with the pinned indexer. Mainnet AVM writes are not enabled in production.
+A network becomes supported only when a pinned revision, activation conditions, and executed
+conformance vectors exist for it. See
+[AVM status and limitations](/protocol/avm/status-and-limitations/) and
 [status and known limitations](/start/status-and-limitations/).

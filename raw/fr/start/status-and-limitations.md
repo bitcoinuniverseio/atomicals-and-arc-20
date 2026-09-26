@@ -6,7 +6,7 @@ Page ID: start/status-and-limitations
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: fr
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/fr/start/status-and-limitations/
 
@@ -57,8 +57,13 @@ n affaiblit ni le balayage confirme ni les exigences de preuve des detenteurs.
 | --- | --- |
 | Concepts architecturaux du livre blanc | Propose |
 | Interpreteur beta officiel | Experimental ou beta |
-| Integration au runtime Universe | Non exposee |
-| Attestation du runtime Universe | Aucune publiee |
+| Integration au runtime Universe | Experimentale, validation sur Bitcoin Testnet4 uniquement |
+| Attestation du runtime Universe | Rapport de disponibilite uniquement |
+
+Inscribe expose AVM Studio a `/avm-studio` et l API `/avm/*`. L indexeur Atomicals de Universe sert
+les RPC `blockchain.atomicals.avm.*` et un rapport de disponibilite. L AVM est en cours de validation
+sur Bitcoin Testnet4 uniquement, a partir de la hauteur d activation 27000. Signet ne peut pas porter
+l AVM avec l indexeur epingle. Les ecritures AVM sur mainnet ne sont pas activees en production.
 
 Rien sur l AVM sur ce site ne doit etre lu comme un support de production sur mainnet. Voir
 [etat et limitations de l AVM](/protocol/avm/status-and-limitations/).
@@ -69,8 +74,9 @@ Rien sur l AVM sur ce site ne doit etre lu comme un support de production sur ma
 2. Containers et DMINT sont documentes comme comportement de protocole. Aucune projection de lecture
    Universe ne les expose aujourd hui.
 3. L emission directe de FT est un comportement de protocole sans surface de produit Universe.
-4. L AVM est en beta en amont et n est pas expose ici. Toute affirmation d implementation exigerait
-   une attestation que nous n avons pas publiee.
+4. L AVM est en beta en amont, et sa validation ici se fait uniquement sur Bitcoin Testnet4. Les
+   ecritures AVM sur mainnet ne sont pas activees en production, et le rapport de disponibilite de
+   l indexeur n est pas une declaration de conformite publiee.
 5. Certains services de l ecosysteme Atomicals listes dans le [registre](/ecosystem/) n ont pas pu
    etre verifies depuis une source accessible. Ces lignes indiquent `unknown` plutot que de deviner.
 6. Les limites de debit ne sont documentees que la ou elles existent reellement. La ou un service n

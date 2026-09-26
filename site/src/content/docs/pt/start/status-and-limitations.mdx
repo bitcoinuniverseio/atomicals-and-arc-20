@@ -17,9 +17,11 @@ provenance:
       path: provenance
     - id: atomicals-avm-interpreter
       path: readme
-  verified: '2026-08-31'
+    - id: universe-inscribe
+      note: AVM Studio and the /avm/ API
+  verified: '2026-09-26'
   tags: [status, limitations]
-  translationSourceHash: 19fe065f5ebed7580884f0b42435ac97b521a3fd1e8eeb951728890261581ab0
+  translationSourceHash: 6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9
   limitations:
     - Esta pagina reflete a data de verificacao acima. Consulte o painel de fontes antes de confiar em qualquer linha.
 ---
@@ -77,8 +79,13 @@ confirmada nem os requisitos de prova de detentores.
 | --- | --- |
 | Conceitos arquiteturais do white paper | Proposto |
 | Interpretador beta oficial | Experimental ou beta |
-| Integracao no runtime Universe | Nao exposta |
-| Atestacao do runtime Universe | Nenhuma publicada |
+| Integracao no runtime Universe | Experimental, apenas validacao em Bitcoin Testnet4 |
+| Atestacao do runtime Universe | Apenas relatorio de prontidao |
+
+O Inscribe expoe o AVM Studio em `/avm-studio` e a API `/avm/*`. O indexador Atomicals da Universe
+serve as RPC `blockchain.atomicals.avm.*` e um relatorio de prontidao. O AVM esta a ser validado
+apenas em Bitcoin Testnet4, a partir da altura de ativacao 27000. A Signet nao consegue transportar o
+AVM com o indexador fixado. As escritas AVM em mainnet nao estao ativadas em producao.
 
 Nada sobre o AVM neste site deve ser lido como suporte de producao em mainnet. Veja
 [estado e limitacoes do AVM](/protocol/avm/status-and-limitations/).
@@ -89,8 +96,9 @@ Nada sobre o AVM neste site deve ser lido como suporte de producao em mainnet. V
 2. Containers e DMINT estao documentados como comportamento de protocolo. Nenhuma projecao de
    leitura Universe os expoe hoje.
 3. A emissao direta de FT e comportamento de protocolo sem superficie de produto Universe.
-4. O AVM esta em beta a montante e nao esta exposto aqui. Qualquer alegacao de implementacao
-   exigiria uma atestacao que nao publicamos.
+4. O AVM esta em beta a montante e aqui so esta a ser validado em Bitcoin Testnet4. As escritas AVM
+   em mainnet nao estao ativadas em producao, e o relatorio de prontidao do indexador nao e uma
+   declaracao de conformidade publicada.
 5. Alguns servicos do ecossistema Atomicals listados no [registo](/ecosystem/) nao puderam ser
    verificados a partir de uma fonte alcancavel. Essas linhas dizem `unknown` em vez de adivinhar.
 6. Limites de taxa sao documentados apenas onde existem de facto. Onde um servico nao tem nenhum, a
