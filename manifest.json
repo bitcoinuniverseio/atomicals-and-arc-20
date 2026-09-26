@@ -3331,19 +3331,24 @@
       "applicability": "experimental",
       "authority": "reference-implementation",
       "networks": [
-        "none"
+        "testnet"
       ],
       "sources": [
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-index-atomicals",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
-        "No Universe service executes AVM contracts, publishes an AVM API, or attests to AVM behavior."
+        "AVM contract transactions are being validated on Bitcoin Testnet4 only. Nothing here is a mainnet claim.",
+        "Mainnet AVM writes are not enabled in production.",
+        "Signet cannot carry AVM with the pinned indexer, because its Signet network inherits the testnet3 activation heights.",
+        "The indexer readiness report attests the interpreter, the indexer revision, and a canary state hash. It is not a published conformance statement."
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "3e20aa2b95cfdc7f3f7d9019b180b57f4af73cd9ffd101b9696bd5b487c2a97b",
+      "contentHash": "46451541d824c12c5ff8d415512712026d3dcdb03bbb92a18460f7634c6c6907",
       "href": "/atomicals-and-arc-20/protocol/avm/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/protocol/avm/status-and-limitations.md"
     },

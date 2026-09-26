@@ -149,10 +149,11 @@ test('no page presents a proposal or a beta as live behavior', () => {
       'experimental',
       `${page.routeId} must be labelled experimental`,
     )
-    assert.deepEqual(
-      page.provenance.networks,
-      ['none'],
-      `${page.routeId} must declare no supported networks`,
+    // Testnet4 validation is the only AVM network a page may name. Mainnet and
+    // Signet are never declared.
+    assert.ok(
+      page.provenance.networks.every((network) => ['none', 'testnet'].includes(network)),
+      `${page.routeId} must declare no network other than testnet`,
     )
   }
 })

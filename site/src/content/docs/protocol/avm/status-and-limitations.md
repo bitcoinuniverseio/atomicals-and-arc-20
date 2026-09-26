@@ -9,14 +9,22 @@ provenance:
   audience: [everyone, developer, operator]
   applicability: experimental
   authority: reference-implementation
-  networks: [none]
+  networks: [testnet]
   sources:
     - id: atomicals-avm-interpreter
       path: readme
-  verified: '2026-08-31'
+    - id: universe-index-atomicals
+      note: AVM RPCs and readiness report
+    - id: universe-inscribe
+      note: AVM Studio and the /avm/ API
+  activation: Bitcoin Testnet4 height 27000
+  verified: '2026-09-26'
   tags: [avm, status, security]
   limitations:
-    - No Universe service executes AVM contracts, publishes an AVM API, or attests to AVM behavior.
+    - AVM contract transactions are being validated on Bitcoin Testnet4 only. Nothing here is a mainnet claim.
+    - Mainnet AVM writes are not enabled in production.
+    - Signet cannot carry AVM with the pinned indexer, because its Signet network inherits the testnet3 activation heights.
+    - The indexer readiness report attests the interpreter, the indexer revision, and a canary state hash. It is not a published conformance statement.
 ---
 
 import { Aside } from '@astrojs/starlight/components'
@@ -28,14 +36,24 @@ import { Aside } from '@astrojs/starlight/components'
 | Whitepaper concepts | Proposed | A design document exists |
 | Beta interpreter | Experimental | Source at a pinned revision with its own test annotations |
 | Opcode set | Experimental | Generated from the pinned source. See [opcodes](/protocol/avm/opcodes/) |
-| Universe integration | Not exposed | No service, no route, no configuration |
-| Universe attestation | None | Nothing published |
-| Supported networks | None | The interpreter is not deployed by Universe on any network |
+| Universe indexer | Experimental | The Universe Atomicals indexer serves dedicated AVM RPCs: `blockchain.atomicals.avm.capabilities`, `status`, `get_state`, `get_state_history`, `get_state_hash`, and `get_execution` |
+| Universe integration | Experimental | Inscribe exposes AVM Studio at `/avm-studio` and the `/avm/*` API |
+| Universe attestation | Readiness report only | The indexer reports activation, the exact tip, schema 2, the attested native interpreter, the attested indexer revision, and a canary state hash. No conformance statement is published |
+| Supported networks | Bitcoin Testnet4, validation only | AVM contract transactions are being validated on Testnet4 from activation height 27000. Signet cannot carry AVM with the pinned indexer. Mainnet AVM writes are not enabled in production |
 
 <Aside type="danger" title="What must never be said">
-That the AVM is live on mainnet. That Universe supports AVM contracts. That a whitepaper concept
-is implemented. That an opcode marked tested upstream is production verified.
+That the AVM is live on mainnet. That Universe supports AVM contracts on mainnet. That Testnet4
+validation is production support. That a whitepaper concept is implemented. That an opcode marked
+tested upstream is production verified.
 </Aside>
+
+## Indexer fix that made AVM creates visible
+
+The pinned indexer inherited an upstream guard in `create_or_delete_atomical` that accepted only
+NFT and FT creates. It silently dropped every PROTOCOL (`def`) and CONTRACT (`new`) create from
+blocks, so no AVM protocol or contract was ever indexed. The Universe fix admits both once AVM is
+activated at the block height, and ignores them before activation, as before. The fix is in review
+and not yet released.
 
 ## Threat model for anyone considering it
 
@@ -68,7 +86,7 @@ without independent validation is trusting the contract it just ran.
 6. Rejection rather than truncation when any limit is hit.
 7. Deterministic behavior at every limit, so all evaluators agree on the failure.
 
-## What would have to exist before this documentation changes
+## What would have to exist before a network is supported
 
 1. A pinned interpreter revision deployed on a named network.
 2. Activation conditions, if any.
@@ -77,4 +95,6 @@ without independent validation is trusting the contract it just ran.
 5. A Universe service revision that exposes it, or an explicit statement that none does.
 6. A resource limit policy, published.
 
-Until all six exist, every AVM page here stays labelled experimental with no supported networks.
+Testnet4 now has items 1, 2, and 5, and is still in validation. Mainnet has none of them in
+production. Until all six exist for a network, every AVM page here stays labelled experimental and
+that network is not supported.
