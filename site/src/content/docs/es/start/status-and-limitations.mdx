@@ -21,7 +21,7 @@ provenance:
       note: AVM Studio and the /avm/ API
   verified: '2026-09-26'
   tags: [status, limitations]
-  translationSourceHash: 6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9
+  translationSourceHash: 74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0
   limitations:
     - Esta pagina refleja la fecha de verificacion indicada arriba. Consulta el panel de fuentes antes de confiar en cualquier fila.
 ---
@@ -79,12 +79,11 @@ el escaneo confirmado ni los requisitos de prueba de tenedores.
 | --- | --- |
 | Conceptos arquitectonicos del documento tecnico | Propuesto |
 | Interprete beta oficial | Experimental o beta |
-| Integracion en el runtime Universe | Experimental, solo validacion en Bitcoin Testnet4 |
-| Atestacion del runtime Universe | Solo informe de preparacion |
+| Integracion en el runtime Universe | Solo Testnet4 |
+| Atestacion del runtime Universe | Solo preparacion |
 
-Inscribe expone AVM Studio en `/avm-studio` y la API `/avm/*`. El indexador Atomicals de Universe
-sirve las RPC `blockchain.atomicals.avm.*` y un informe de preparacion. El AVM se esta validando solo
-en Bitcoin Testnet4, desde la altura de activacion 27000. Signet no puede transportar el AVM con el
+AVM Studio (`/avm-studio`), la API `/avm/*` y las RPC `blockchain.atomicals.avm.*` del indexador se
+validan solo en Bitcoin Testnet4, desde la altura 27000. Signet no puede transportar el AVM con el
 indexador fijado. Las escrituras AVM en mainnet no estan habilitadas en produccion.
 
 Nada sobre el AVM en este sitio debe leerse como soporte de produccion en mainnet. Ver

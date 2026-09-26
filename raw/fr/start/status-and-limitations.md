@@ -57,13 +57,12 @@ n affaiblit ni le balayage confirme ni les exigences de preuve des detenteurs.
 | --- | --- |
 | Concepts architecturaux du livre blanc | Propose |
 | Interpreteur beta officiel | Experimental ou beta |
-| Integration au runtime Universe | Experimentale, validation sur Bitcoin Testnet4 uniquement |
-| Attestation du runtime Universe | Rapport de disponibilite uniquement |
+| Integration au runtime Universe | Testnet4 uniquement |
+| Attestation du runtime Universe | Disponibilite uniquement |
 
-Inscribe expose AVM Studio a `/avm-studio` et l API `/avm/*`. L indexeur Atomicals de Universe sert
-les RPC `blockchain.atomicals.avm.*` et un rapport de disponibilite. L AVM est en cours de validation
-sur Bitcoin Testnet4 uniquement, a partir de la hauteur d activation 27000. Signet ne peut pas porter
-l AVM avec l indexeur epingle. Les ecritures AVM sur mainnet ne sont pas activees en production.
+AVM Studio (`/avm-studio`), l API `/avm/*` et les RPC `blockchain.atomicals.avm.*` de l indexeur sont
+en validation sur Bitcoin Testnet4 uniquement, a partir de la hauteur 27000. Signet ne peut pas
+porter l AVM avec l indexeur epingle. Les ecritures AVM sur mainnet ne sont pas activees en production.
 
 Rien sur l AVM sur ce site ne doit etre lu comme un support de production sur mainnet. Voir
 [etat et limitations de l AVM](/protocol/avm/status-and-limitations/).

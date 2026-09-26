@@ -57,12 +57,11 @@ requirements.
 | --- | --- |
 | Architectural whitepaper concepts | Proposed |
 | Official beta interpreter | Experimental or beta |
-| Universe runtime integration | Experimental, Bitcoin Testnet4 validation only |
-| Universe runtime attestation | Readiness report only |
+| Universe runtime integration | Testnet4 only |
+| Universe runtime attestation | Readiness only |
 
-Inscribe exposes AVM Studio at `/avm-studio` and the `/avm/*` API. The Universe Atomicals indexer
-serves the `blockchain.atomicals.avm.*` RPCs and a readiness report. AVM is being validated on
-Bitcoin Testnet4 only, from activation height 27000. Signet cannot carry AVM with the pinned
+AVM Studio (`/avm-studio`), the `/avm/*` API, and the indexer `blockchain.atomicals.avm.*` RPCs are
+validated on Bitcoin Testnet4 only, from height 27000. Signet cannot carry AVM with the pinned
 indexer. Mainnet AVM writes are not enabled in production.
 
 Nothing about the AVM on this site should be read as production mainnet support. See

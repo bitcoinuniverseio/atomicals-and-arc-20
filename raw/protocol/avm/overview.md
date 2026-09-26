@@ -20,8 +20,8 @@ as production mainnet support would be wrong.
 | --- | --- | --- |
 | Architectural whitepaper concepts | Proposed | A design document describing a system |
 | Official beta interpreter | Experimental or beta | Working code with its own test suite |
-| Universe runtime integration | Experimental | Inscribe exposes AVM Studio at `/avm-studio` and the `/avm/*` API. The Universe Atomicals indexer serves the `blockchain.atomicals.avm.*` RPCs. Validated on Bitcoin Testnet4 only. Mainnet AVM writes are not enabled in production |
-| Universe runtime attestation | Readiness report only | The indexer reports activation, the tip, the interpreter, the indexer revision, and a canary state hash. No conformance statement is published |
+| Universe runtime integration | Testnet4 only | AVM Studio at `/avm-studio`, the `/avm/*` API, and the `blockchain.atomicals.avm.*` RPCs. No mainnet writes |
+| Universe runtime attestation | Readiness only | An indexer readiness report. No published conformance statement |
 
 ## What the interpreter is
 

@@ -949,8 +949,8 @@
         "Esta pagina refleja la fecha de verificacion indicada arriba. Consulta el panel de fuentes antes de confiar en cualquier fila."
       ],
       "deprecated": null,
-      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
-      "contentHash": "efbb9ea8c061423e40893e218b58677ba382b4d923fd667b2034d11ebcbe60cb",
+      "translationSourceHash": "74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0",
+      "contentHash": "3244c280abae5cc9bb310a62bf7547637838ba850bc27e9f361ea8ffcd4a27f7",
       "href": "/atomicals-and-arc-20/es/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/es/start/status-and-limitations.md"
     },
@@ -1283,8 +1283,8 @@
         "Cette page reflete la date de verification ci-dessus. Consultez le panneau des sources avant de vous fier a une ligne."
       ],
       "deprecated": null,
-      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
-      "contentHash": "2e1ef1e8d5811a5181d9d339d392bf318cb4aa436e3b593a7435325be655e738",
+      "translationSourceHash": "74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0",
+      "contentHash": "7bef8add28919cc4a513eaf661ab8032eac0ac87719a46b72866d8b6a60780fe",
       "href": "/atomicals-and-arc-20/fr/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/fr/start/status-and-limitations.md"
     },
@@ -2571,8 +2571,8 @@
         "このページは上記の検証日時点の内容です。いずれかの行に依拠する前にソースパネルを確認してください。"
       ],
       "deprecated": null,
-      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
-      "contentHash": "83907e88781ed893906b19a3fd1fbf37d87e48abfb3059e9a9ed0d853295562b",
+      "translationSourceHash": "74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0",
+      "contentHash": "a30af7dfc61a30ec222cffedec6eeb3067be094a5c0160d79d10eb212c783311",
       "href": "/atomicals-and-arc-20/ja/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/ja/start/status-and-limitations.md"
     },
@@ -3289,7 +3289,7 @@
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "2ebcd9c82c077b538263bd2847a4534b35b848861286406a0f797ea345b0ef8a",
+      "contentHash": "15f954f1c69fdbd3bc5426263f4673dc845c0554d4dd222b1c45b9a15704c4b1",
       "href": "/atomicals-and-arc-20/protocol/avm/overview/",
       "raw": "/atomicals-and-arc-20/raw/protocol/avm/overview.md"
     },
@@ -4599,8 +4599,8 @@
         "Esta pagina reflete a data de verificacao acima. Consulte o painel de fontes antes de confiar em qualquer linha."
       ],
       "deprecated": null,
-      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
-      "contentHash": "d8859d4ec9947afed60c81e308ff114cfe1007e4d13204f2b693b8969a926f00",
+      "translationSourceHash": "74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0",
+      "contentHash": "4f023118cb8ac5b2416ad01e2fb901853a8de7d9659c78f8837a0e52a3edd5f9",
       "href": "/atomicals-and-arc-20/pt/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/pt/start/status-and-limitations.md"
     },
@@ -5450,8 +5450,8 @@
         "Эта страница отражает указанную выше дату проверки. Прежде чем полагаться на любую строку, посмотрите панель источников."
       ],
       "deprecated": null,
-      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
-      "contentHash": "164742197e3c6c414c2fd3a718072f5527b5f9ef6b24cb21315bd2e72c693fa2",
+      "translationSourceHash": "74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0",
+      "contentHash": "ff1a14704c1c10fd2044d9e648466ddace104a2194820cd8f7d9686a158b3705",
       "href": "/atomicals-and-arc-20/ru/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/ru/start/status-and-limitations.md"
     },
@@ -5664,7 +5664,7 @@
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "649b51b1813b575bd3804d947bd3af57c76229e3c47672dd793f6a6075c61fd5",
+      "contentHash": "6166cbff8726498cbc2368cfddcb6e1a1505fee4e4fd4cc40c5a754463085d80",
       "href": "/atomicals-and-arc-20/start/protocol-family-map/",
       "raw": "/atomicals-and-arc-20/raw/start/protocol-family-map.md"
     },
@@ -5730,7 +5730,7 @@
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
+      "contentHash": "74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0",
       "href": "/atomicals-and-arc-20/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/start/status-and-limitations.md"
     },
@@ -6451,8 +6451,8 @@
         "本页反映的是上方的验证日期。在依赖任何一行之前，请查看来源面板。"
       ],
       "deprecated": null,
-      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
-      "contentHash": "d62d67bd2794349de8413a92040f35e3018d66f139540740a0d8f28707de8fff",
+      "translationSourceHash": "74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0",
+      "contentHash": "f9dadd302ab3443f237b365abbf322848d10280f6de1005c9c2ce433a5553f75",
       "href": "/atomicals-and-arc-20/zh-cn/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/zh-cn/start/status-and-limitations.md"
     },
@@ -6785,8 +6785,8 @@
         "本頁反映的是上方的驗證日期。在依賴任何一列之前，請查看來源面板。"
       ],
       "deprecated": null,
-      "translationSourceHash": "6a40018f21ada1d027ef8a4b1009522167431fe9d32fdc1cd3be95d951ca5ff9",
-      "contentHash": "96f0c502e61ceef81808b98c028e54d2a31788cd98af74f902fbddab7d66d41d",
+      "translationSourceHash": "74ece4c60a39cf7a4a20f11d02854a1742c400d0f25d423bad8c75d9a87240f0",
+      "contentHash": "7d118b0e335bf018f5246b4a4545cf0f351cf74103b8decea036f100526e0185",
       "href": "/atomicals-and-arc-20/zh-tw/start/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/zh-tw/start/status-and-limitations.md"
     },
