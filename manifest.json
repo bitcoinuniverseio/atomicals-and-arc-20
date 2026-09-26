@@ -28,7 +28,7 @@
     "guides/transfer-arc20",
     "guides/avoid-burns"
   ],
-  "pageCount": 225,
+  "pageCount": 226,
   "pages": [
     {
       "pageId": "home",
@@ -859,6 +859,31 @@
       "contentHash": "6a9c6f822d46a5d29445a154c4f50d1525602570929dd9a2b3ff1e306599af7e",
       "href": "/atomicals-and-arc-20/es/protocol/arc20/unit-model/",
       "raw": "/atomicals-and-arc-20/raw/es/protocol/arc20/unit-model.md"
+    },
+    {
+      "pageId": "start/choose-your-path",
+      "routeId": "es/start/choose-your-path",
+      "locale": "es",
+      "title": "Elige tu camino",
+      "description": "Cuatro rutas cortas por esta documentación, una para cada cosa que las personas realmente vienen a hacer.",
+      "area": "start",
+      "audience": [
+        "everyone"
+      ],
+      "applicability": "editorial",
+      "authority": "none",
+      "networks": [
+        "mainnet"
+      ],
+      "sources": [],
+      "docsVersion": "2026.08",
+      "verified": "2026-08-31",
+      "limitations": [],
+      "deprecated": null,
+      "translationSourceHash": "50e509f4459f0be74bbf2b320fb715418ff39e6c637fa0e6b431fab13c9aa2bf",
+      "contentHash": "af174f9a81062c446fdd55e73cdadd0bce3080063adfae2efbb16b3725ae821f",
+      "href": "/atomicals-and-arc-20/es/start/choose-your-path/",
+      "raw": "/atomicals-and-arc-20/raw/es/start/choose-your-path.md"
     },
     {
       "pageId": "start/glossary",
@@ -3338,19 +3363,24 @@
       "applicability": "experimental",
       "authority": "reference-implementation",
       "networks": [
-        "none"
+        "testnet"
       ],
       "sources": [
-        "atomicals-avm-interpreter"
+        "atomicals-avm-interpreter",
+        "universe-index-atomicals",
+        "universe-inscribe"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-09-26",
       "limitations": [
-        "No Universe service executes AVM contracts, publishes an AVM API, or attests to AVM behavior."
+        "AVM contract transactions are being validated on Bitcoin Testnet4 only. Nothing here is a mainnet claim.",
+        "Mainnet AVM writes are not enabled in production.",
+        "Signet cannot carry AVM with the pinned indexer, because its Signet network inherits the testnet3 activation heights.",
+        "The indexer readiness report attests the interpreter, the indexer revision, and a canary state hash. It is not a published conformance statement."
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "3e20aa2b95cfdc7f3f7d9019b180b57f4af73cd9ffd101b9696bd5b487c2a97b",
+      "contentHash": "1f84123f9032807cffe8b1c862ae8073a6394f78a91087167aca2dd8744269a4",
       "href": "/atomicals-and-arc-20/protocol/avm/status-and-limitations/",
       "raw": "/atomicals-and-arc-20/raw/protocol/avm/status-and-limitations.md"
     },
