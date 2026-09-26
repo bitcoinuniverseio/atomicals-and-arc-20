@@ -6,7 +6,7 @@ Page ID: start/status-and-limitations
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-09-26
 Locale: ru
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/start/status-and-limitations/
 
@@ -57,8 +57,12 @@ URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/start/status-an
 | --- | --- |
 | Архитектурные концепции из технического документа | Предложение |
 | Официальный бета-интерпретатор | Экспериментальный или бета |
-| Интеграция в среду выполнения Universe | Не предоставляется |
-| Аттестация среды выполнения Universe | Не опубликована |
+| Интеграция в среду выполнения Universe | Только Testnet4 |
+| Аттестация среды выполнения Universe | Только готовность |
+
+AVM Studio (`/avm-studio`), API `/avm/*` и RPC индексатора `blockchain.atomicals.avm.*` проверяются
+только в Bitcoin Testnet4, начиная с высоты 27000. Signet не может нести AVM с закрепленной версией
+индексатора. Запись AVM в mainnet в продакшене не включена.
 
 Ничто об AVM на этом сайте не следует читать как продакшн-поддержку в mainnet. См.
 [состояние и ограничения AVM](/protocol/avm/status-and-limitations/).
@@ -69,8 +73,9 @@ URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/ru/start/status-an
 2. Containers и DMINT задокументированы как поведение протокола. Ни одна проекция чтения Universe
    их сегодня не предоставляет.
 3. Прямой выпуск FT это поведение протокола без продуктовой поверхности Universe.
-4. AVM находится в бета-версии выше по цепочке и здесь не предоставляется. Любое заявление о
-   реализации потребовало бы аттестации, которую мы не публиковали.
+4. AVM находится в бета-версии выше по цепочке и здесь проверяется только в Bitcoin Testnet4. Запись
+   AVM в mainnet в продакшене не включена, а отчет индексатора о готовности не является
+   опубликованным заявлением о соответствии.
 5. Некоторые сервисы экосистемы Atomicals, перечисленные в [реестре](/ecosystem/), не удалось
    проверить по доступному источнику. Такие строки указывают `unknown`, а не догадку.
 6. Ограничения частоты документируются только там, где они действительно реализованы. Где сервис не

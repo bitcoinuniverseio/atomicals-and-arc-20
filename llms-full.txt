@@ -5137,10 +5137,12 @@ Page ID: protocol/avm/overview
 Applicability: experimental
 Authority: reference-implementation
 Networks: none
-Sources: atomicals-avm-interpreter, atomicals-avm-interpreter
-Verified: 2026-08-31
+Sources: atomicals-avm-interpreter, atomicals-avm-interpreter, universe-index-atomicals, universe-inscribe
+Verified: 2026-09-26
 Limitations:
-- No Universe service executes AVM contracts. No Universe attestation of AVM behavior has been published.
+- AVM contract transactions are being validated on Bitcoin Testnet4 only, from activation height 27000. Nothing here is a mainnet claim.
+- Mainnet AVM writes are not enabled in production.
+- The indexer readiness report is not a published conformance statement.
 - Upstream test annotations describe the interpreter's own test suite, not production deployment.
 
 Four separate things are called "the AVM". They have four different statuses. Treating any of them
@@ -5152,8 +5154,8 @@ as production mainnet support would be wrong.
 | --- | --- | --- |
 | Architectural whitepaper concepts | Proposed | A design document describing a system |
 | Official beta interpreter | Experimental or beta | Working code with its own test suite |
-| Universe runtime integration | Not exposed | No Universe service executes AVM contracts |
-| Universe runtime attestation | None published | No statement about behavior we verified |
+| Universe runtime integration | Testnet4 only | AVM Studio at `/avm-studio`, the `/avm/*` API, and the `blockchain.atomicals.avm.*` RPCs. No mainnet writes |
+| Universe runtime attestation | Readiness only | An indexer readiness report. No published conformance statement |
 
 ## What the interpreter is
 
@@ -5183,11 +5185,14 @@ Key differences from Bitcoin script, as described upstream:
 ## What this documentation will not do
 
 It will not describe AVM behavior as available, supported, or production ready. It will not
-document a Universe AVM API, because none exists. It will not present whitepaper concepts as
+describe Testnet4 validation as mainnet support. It will not present whitepaper concepts as
 implemented behavior.
 
-If that changes, it will change because a pinned revision, a network, activation conditions, and
-executed conformance vectors exist to support it. See
+The Universe AVM surfaces exist for validation on Bitcoin Testnet4, from activation height 27000.
+Signet cannot carry AVM with the pinned indexer. Mainnet AVM writes are not enabled in production.
+A network becomes supported only when a pinned revision, activation conditions, and executed
+conformance vectors exist for it. See
+[AVM status and limitations](/protocol/avm/status-and-limitations/) and
 [status and known limitations](/start/status-and-limitations/).
 
 ---
@@ -5267,11 +5272,15 @@ URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/protocol/avm/statu
 Page ID: protocol/avm/status-and-limitations
 Applicability: experimental
 Authority: reference-implementation
-Networks: none
-Sources: atomicals-avm-interpreter
-Verified: 2026-08-31
+Networks: testnet
+Sources: atomicals-avm-interpreter, universe-index-atomicals, universe-inscribe
+Activation: Bitcoin Testnet4 height 27000
+Verified: 2026-09-26
 Limitations:
-- No Universe service executes AVM contracts, publishes an AVM API, or attests to AVM behavior.
+- AVM contract transactions are being validated on Bitcoin Testnet4 only. Nothing here is a mainnet claim.
+- Mainnet AVM writes are not enabled in production.
+- Signet cannot carry AVM with the pinned indexer, because its Signet network inherits the testnet3 activation heights.
+- The indexer readiness report attests the interpreter, the indexer revision, and a canary state hash. It is not a published conformance statement.
 
 ## Status, layer by layer
 
@@ -5280,12 +5289,34 @@ Limitations:
 | Whitepaper concepts | Proposed | A design document exists |
 | Beta interpreter | Experimental | Source at a pinned revision with its own test annotations |
 | Opcode set | Experimental | Generated from the pinned source. See [opcodes](/protocol/avm/opcodes/) |
-| Universe integration | Not exposed | No service, no route, no configuration |
-| Universe attestation | None | Nothing published |
-| Supported networks | None | The interpreter is not deployed by Universe on any network |
+| Universe indexer | Experimental | Six AVM RPCs, [listed below](#indexer) |
+| Universe integration | Experimental | Inscribe AVM Studio and the `/avm/*` API |
+| Universe attestation | Readiness report | No conformance statement |
+| Supported networks | Testnet4 only | From height 27000. No Signet. No mainnet writes |
 
-That the AVM is live on mainnet. That Universe supports AVM contracts. That a whitepaper concept
-is implemented. That an opcode marked tested upstream is production verified.
+:::danger[What must never be said]
+That the AVM is live on mainnet. That Universe supports AVM contracts on mainnet. That Testnet4
+validation is production support. That a whitepaper concept is implemented. That an opcode marked
+tested upstream is production verified.
+:::
+
+## Indexer
+
+RPCs, each prefixed `blockchain.atomicals.avm.`:
+
+- `capabilities`
+- `status`
+- `get_state`
+- `get_state_history`
+- `get_state_hash`
+- `get_execution`
+
+The readiness report shows activation, the exact tip, schema 2, the attested native interpreter,
+the attested indexer revision, and a canary state hash.
+
+An inherited guard in `create_or_delete_atomical` dropped every PROTOCOL (`def`) and CONTRACT
+(`new`) create, so no AVM protocol or contract was indexed. The fix admits both after activation.
+It is in review and not yet released.
 
 ## Threat model for anyone considering it
 
@@ -5318,7 +5349,7 @@ without independent validation is trusting the contract it just ran.
 6. Rejection rather than truncation when any limit is hit.
 7. Deterministic behavior at every limit, so all evaluators agree on the failure.
 
-## What would have to exist before this documentation changes
+## What would have to exist before a network is supported
 
 1. A pinned interpreter revision deployed on a named network.
 2. Activation conditions, if any.
@@ -5327,7 +5358,8 @@ without independent validation is trusting the contract it just ran.
 5. A Universe service revision that exposes it, or an explicit statement that none does.
 6. A resource limit policy, published.
 
-Until all six exist, every AVM page here stays labelled experimental with no supported networks.
+Testnet4 has items 1, 2, and 5 and is still in validation. Mainnet has none in production. A
+network is supported only when all six exist.
 
 ---
 
@@ -9037,8 +9069,8 @@ Page ID: start/protocol-family-map
 Applicability: protocol-behavior
 Authority: reference-implementation
 Networks: mainnet
-Sources: atomicals-electrumx-1.5.2.0, atomicals-js-cli
-Verified: 2026-08-31
+Sources: atomicals-electrumx-1.5.2.0, atomicals-js-cli, universe-inscribe
+Verified: 2026-09-26
 Limitations:
 - Support columns describe Universe product exposure at the verified date, not protocol capability.
 
@@ -9086,7 +9118,7 @@ not what the protocol allows.
 | Marketplace v1 for ARC-20, NFTs, Realms, Subrealms | Available, gated per action | [Marketplace v1](/reference/api/marketplace-v1/) |
 | Direct `mint-ft` issuance from a Universe product | Not exposed | [Direct issuance](/protocol/arc20/direct-issuance/) |
 | Container and DMINT read model | Not in the NFT and Realm projection | [Containers](/protocol/containers/overview/) |
-| AVM execution | Not exposed | [AVM status](/protocol/avm/status-and-limitations/) |
+| AVM execution | Testnet4 only. No mainnet writes | [AVM status](/protocol/avm/status-and-limitations/) |
 
 The Universe NFT and Realm index deliberately projects plain NFTs, Realms, and Subrealms only.
 Fungible tokens, Containers, and DMINT items are excluded from that projection and served by the
@@ -9181,8 +9213,8 @@ Page ID: start/status-and-limitations
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Sources: universe-index-atomicals, universe-index-atomicals-nfts-and-realms, atomicals-avm-interpreter
-Verified: 2026-08-31
+Sources: universe-index-atomicals, universe-index-atomicals-nfts-and-realms, atomicals-avm-interpreter, universe-inscribe
+Verified: 2026-09-26
 Limitations:
 - This page reflects the verified date above. Check the source panel before relying on any row.
 
@@ -9232,8 +9264,12 @@ requirements.
 | --- | --- |
 | Architectural whitepaper concepts | Proposed |
 | Official beta interpreter | Experimental or beta |
-| Universe runtime integration | Not exposed |
-| Universe runtime attestation | None published |
+| Universe runtime integration | Testnet4 only |
+| Universe runtime attestation | Readiness only |
+
+AVM Studio (`/avm-studio`), the `/avm/*` API, and the indexer `blockchain.atomicals.avm.*` RPCs are
+validated on Bitcoin Testnet4 only, from height 27000. Signet cannot carry AVM with the pinned
+indexer. Mainnet AVM writes are not enabled in production.
 
 Nothing about the AVM on this site should be read as production mainnet support. See
 [AVM status and limitations](/protocol/avm/status-and-limitations/).
@@ -9244,8 +9280,9 @@ Nothing about the AVM on this site should be read as production mainnet support.
 2. Containers and DMINT are documented as protocol behavior. No Universe read projection exposes
    them today.
 3. Direct FT issuance is protocol behavior with no Universe product surface.
-4. AVM is beta upstream and unexposed here. Any implementation claim would need an attestation we
-   have not published.
+4. AVM is beta upstream and validated here on Bitcoin Testnet4 only. Mainnet AVM writes are not
+   enabled in production, and the indexer readiness report is not a published conformance
+   statement.
 5. Some Atomicals ecosystem services listed in the [registry](/ecosystem/) could not be
    verified from a reachable source. Those rows say `unknown` rather than guessing.
 6. Rate limiting is documented only where it is actually implemented. Where a service has none,
