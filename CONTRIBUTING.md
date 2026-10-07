@@ -77,3 +77,7 @@ For a security problem, use a
 [private advisory](https://github.com/bitcoinuniverseio/atomicals-and-arc-20/security/advisories/new)
 rather than a public issue.
 
+
+## Build and publication boundaries
+
+Checks and publication must use Universe-owned runners. Publication packages the verified committed site and its immutable compatibility assets without rebuilding unchanged sources. The strict generation and build-clean checks remain enabled. Preserve the generator's HTML separator whitespace; authored files and generated exports use LF line endings.
