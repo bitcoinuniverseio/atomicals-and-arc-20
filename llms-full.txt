@@ -3551,7 +3551,6 @@ Verified: 2026-10-07
 A zero on a screen is a statement about a service, not about the chain. Before concluding anything
 is missing, find out which of the states below you are actually in.
 
-
 ## The states, and what each means
 
 | State | What it means | What to do |
