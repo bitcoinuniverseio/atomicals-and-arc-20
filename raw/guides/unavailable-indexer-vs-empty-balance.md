@@ -14,7 +14,6 @@ URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/unavailable
 A zero on a screen is a statement about a service, not about the chain. Before concluding anything
 is missing, find out which of the states below you are actually in.
 
-
 ## The states, and what each means
 
 | State | What it means | What to do |
