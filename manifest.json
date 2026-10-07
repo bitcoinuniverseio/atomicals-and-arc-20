@@ -2201,11 +2201,11 @@
         "universe-index-atomicals"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-10-07",
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "36e835b41248cfefe58a2a18a300c1c81d372bb32938e74160592a48d1db0129",
+      "contentHash": "4ef717351f039b50ab0f12977f22168a4590f22561b95c2ff84e3f24b2c9bcc1",
       "href": "/atomicals-and-arc-20/guides/unavailable-indexer-vs-empty-balance/",
       "raw": "/atomicals-and-arc-20/raw/guides/unavailable-indexer-vs-empty-balance.md"
     },
