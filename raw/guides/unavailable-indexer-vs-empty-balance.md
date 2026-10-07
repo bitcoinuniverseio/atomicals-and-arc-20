@@ -6,13 +6,14 @@ Page ID: guides/unavailable-indexer-vs-empty-balance
 Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
-Verified: 2026-08-31
+Verified: 2026-10-07
 Locale: en
 URL: https://bitcoinuniverseio.github.io/atomicals-and-arc-20/guides/unavailable-indexer-vs-empty-balance/
 
 ---
 A zero on a screen is a statement about a service, not about the chain. Before concluding anything
 is missing, find out which of the states below you are actually in.
+
 
 ## The states, and what each means
 
@@ -37,6 +38,14 @@ Every Universe read service exposes readiness separately from liveness:
 
 Read `/ready` before concluding anything from an empty result. It reports the generation
 identifier, the indexed height, whether the view is stale, and whether the tip is mixed.
+
+## While an index is recovering
+
+A restored database still needs integrity checks, a successful application start, and synchronization before its answers can be treated as current. Download completion and a running process are separate from readiness.
+
+If a service is restoring or catching up, show that state and its indexed height. Do not show an unavailable response as an empty balance, treat an older height as the chain tip, or substitute an external blockchain provider. Recovery reuses the existing Universe-operated indexer and its protected runtime; it does not change asset ownership or protocol rules.
+
+Wait for the service's readiness and freshness checks before using recovered results for a transaction or market decision. A recovery in progress is not a statement that an asset is missing.
 
 ## Projection coverage
 
