@@ -54,7 +54,47 @@ DMINT items by declaration.
 
 Asking it about a Container returns nothing, correctly.
 
+{/*
+IMPLEMENTATION-HANDOFF [ARC20-WP05] annotation ARC20-D07
+Status: ANNOTATED only. No fix, acceptance or production release is claimed.
+Coverage: ARC20-COV-DOCS, ARC20-COV-INVENTORY, ARC20-COV-COUNT, ARC20-COV-RECOVERY.
+Defects: ARC20-DEF-F01, ARC20-DEF-F04.
+Prerequisites: ARC20-WP01, ARC20-WP02, ARC20-WP04.
+1. After acceptance, add the ARC-20 balance-summary versus current-output
+inventory distinction. A visible balance or a missing count defaulted to one
+does not prove an output is currently available; unknown must not become zero
+tokens, no holdings, or a measured UTXO count.
+2. Explain retry for an unavailable inventory while earlier rows remain,
+without treating retained data as current transaction evidence. Restore,
+catch-up and process liveness remain separate from fresh protocol readiness.
+3. Keep Universe implementation claims separate from protocol behavior.
+Use only owned blockchain sources; no external fallback or network-switch
+workaround. Isolated Testnet4 evidence must not imply mainnet availability.
+4. Pin and verify the accepted source before changing visible text, verified
+dates, applicability or network declarations. Update translations/exports
+through the maintained generators, never by editing generated raw pages.
+Verify later: npm run generate, npm run check, npm test and npm run build;
+retain the generation/build-clean gates on the owned runner fleet.
+Rollback: restore prose and generated exports from the same verified source;
+do not alter the current recovery guide's visible claims in this prep stage.
+END IMPLEMENTATION-HANDOFF ARC20-D07
+*/}
+
 ## For product builders
+
+The Core ARC-20 repair candidate prepared on 9 October 2026 separates balance
+summary, current output inventory and seller-book reads. A missing UTXO count
+stays unknown. A readable summary cannot authorize listing while inventory is
+unavailable; retained rows are display evidence until fresh checks succeed.
+The candidate offers independent lot and seller-book retries. Read retry does
+not sign again and is separate from resolving an earlier mutation's unknown
+outcome under its original request key.
+
+Component coverage is not a current mainnet readiness receipt. Funded wallet
+flows, consumer source qualification, private Signet challenge, rules,
+interpreter and isolated database attestation and publisher gates remain
+outstanding. Do not use another network or a public data provider as an outage
+workaround. The existing verified dates and recovery history remain unchanged.
 
 Never render an unavailable service as a zero balance. Render the state:
 
