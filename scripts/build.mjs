@@ -91,14 +91,12 @@ function walk(dir) {
 /**
  * Directories the build copies into `dist` for the preview and the MCP package, but does
  * not publish to the root. Source files already live at most of these paths. Pagefind is
- * retained from the last verified publication because Pagefind 1.5 produces random chunk
- * names for unchanged content.
+ * published with the current content so search cannot retain an older index.
  */
 const ALREADY_AT_ROOT = new Set([
   'contracts',
   'conformance',
   'theme.css',
-  'pagefind',
   'assets',
   'LICENSE',
 ])
@@ -183,6 +181,16 @@ for (const file of published) {
 const previous = existsSync(manifestPath)
   ? (JSON.parse(readFileSync(manifestPath, 'utf8')).files ?? [])
   : []
+
+// A publication receipt may only own generated files inside this repository.
+for (const file of [...previous, ...published]) {
+  const target = resolve(root, file)
+  const ownedPath = relative(root, target)
+  const top = file.split('/')[0]
+  if (!ownedPath || ownedPath.startsWith('..') || /[\\:]/.test(file) || PRESERVED.has(top)) {
+    throw new Error(`Unsafe publication path: ${file}`)
+  }
+}
 
 // Remove files published by a previous build that this build no longer produces.
 const publishedSet = new Set(published)
