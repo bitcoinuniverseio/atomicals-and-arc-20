@@ -36,6 +36,31 @@ provenance:
 4. **Sign.** Sign what the prepare step returned, with the exact scope it specifies.
 5. **Finalise.** Submit the signed material. The listing becomes active.
 
+<!--
+IMPLEMENTATION-HANDOFF [ARC20-WP05] annotation ARC20-D08
+Status: ANNOTATED only. No fix, acceptance or production release is claimed.
+Coverage: ARC20-COV-DOCS, ARC20-COV-QUANTITY, ARC20-COV-LIST.
+Defects: ARC20-DEF-F06.
+Prerequisites: ARC20-WP02, ARC20-WP03, ARC20-WP04.
+1. State the accepted product's whole-output sale and exact token quantity
+separately from its Bitcoin output value. Confirm which partial allocations
+the product accepts or refuses; a protocol-valid allocation alone does not
+establish this marketplace's eligibility policy.
+2. Document unit price using token units and preserve the exact Bitcoin
+value in output/signature checks. A summary balance or unreadable inventory
+must not replace a current verified owner outpoint or pass as empty holdings.
+3. Recheck the accepted authority's prepare, signed-finalize and read-back
+contract before changing the existing full-output requirement. Keep this
+Universe implementation guide separate from the pinned protocol unit model.
+4. Add isolated Testnet4 qualification only with explicit source and wallet
+evidence; do not imply mainnet activation or Signet support from a test run.
+Verify later: quantity/allocation conformance plus accepted marketplace
+lifecycle tests; npm run generate, npm run check, npm test and npm run build.
+Rollback: publish prose and generated artifacts from one verified revision;
+preserve closed unsupported actions and the original protocol history.
+END IMPLEMENTATION-HANDOFF ARC20-D08
+-->
+
 ## What the authority checks before accepting your lot
 
 - The ticker resolves to its verified Atomical FT winner.
