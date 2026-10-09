@@ -1311,6 +1311,10 @@ site-search {
   backdrop-filter: blur(12px) saturate(180%);
 }
 
+.bu-search-modal button {
+  min-height: 44px;
+}
+
 .bu-search-frame {
   display: flex;
   flex-direction: column;
@@ -1320,18 +1324,22 @@ site-search {
 
 .bu-search-header {
   position: relative;
-  display: flex;
-  align-items: center;
+  display: block;
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--bu-line);
   background: var(--bu-surface);
 }
 
 .bu-search-header .search-container {
-  flex: 1;
+  min-width: 0;
 }
 
 .bu-search-close {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-end: 1rem;
+  min-width: 44px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
@@ -1355,13 +1363,13 @@ site-search {
 /* Pagefind UI inside search header */
 #starlight__search .pagefind-ui__form {
   position: relative;
-  display: flex;
-  align-items: center;
+  display: block;
 }
 
 #starlight__search .pagefind-ui__search-input {
   width: 100%;
-  padding: 0.65rem 2.2rem 0.65rem 2.2rem;
+  min-height: 44px;
+  padding: 0.65rem 7rem 0.65rem 2.2rem;
   font-size: 0.95rem;
   font-family: inherit;
   font-weight: 500;
@@ -1377,10 +1385,15 @@ site-search {
   font-weight: 400;
 }
 
+#starlight__search .pagefind-ui__search-input:focus-visible {
+  box-shadow: inset 0 -2px var(--bu-accent);
+}
+
 #starlight__search .pagefind-ui__form::before {
   content: '';
   position: absolute;
   left: 0.5rem;
+  top: 0.85rem;
   width: 1rem;
   height: 1rem;
   background-color: var(--bu-ink-muted);
@@ -1391,7 +1404,10 @@ site-search {
 
 #starlight__search .pagefind-ui__search-clear {
   position: absolute;
-  right: 0.5rem;
+  top: 0;
+  right: 3.5rem;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0.2rem 0.5rem;
   font-size: 0.72rem;
   font-weight: 600;
@@ -1405,6 +1421,12 @@ site-search {
   max-height: calc(100vh - 16rem);
   overflow-y: auto;
   padding: 0.75rem 1rem;
+}
+
+#starlight__search .pagefind-ui__results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 #starlight__search .pagefind-ui__result {
@@ -1736,8 +1758,28 @@ starlight-toc a[aria-current='true'] {
     display: none;
   }
   .bu-search-trigger {
+    min-width: 44px;
+    min-height: 44px;
     padding: 0.45rem;
     border-radius: 50%;
+  }
+  .bu-action-bar {
+    height: auto;
+  }
+  .bu-action-bar button,
+  .bu-action-bar a {
+    min-height: 44px !important;
+  }
+  .bu-sources-pill,
+  .bu-chip-link,
+  .bu-drawer-close {
+    min-height: 44px;
+  }
+  #starlight__on-this-page--mobile {
+    min-height: 44px;
+  }
+  .bu-search-footer {
+    display: none;
   }
 }
 
