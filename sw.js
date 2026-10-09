@@ -11,7 +11,9 @@
  * lab. This worker only ever handles same-origin GET requests for static
  * assets.
  */
-let CACHE = 'atomicals-docs-bootstrapping'
+const BUILD_ID = 'a2fdf2a69ed31fa6'
+const CACHE = `atomicals-docs-${BUILD_ID}`
+const OFFLINE_URL = new URL('offline/', self.registration.scope).href
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -21,9 +23,9 @@ self.addEventListener('install', (event) => {
       const registry = await fetch(new URL('sw-version.json', self.registration.scope), {
         cache: 'no-store',
       }).then((response) => response.json())
-      CACHE = `atomicals-docs-${registry.buildId}`
+      if (registry.buildId !== BUILD_ID) throw new Error('Documentation build changed during installation')
       const cache = await caches.open(CACHE)
-      await cache.addAll(['/offline/', ...(registry.precache ?? [])])
+      await cache.addAll([OFFLINE_URL, ...(registry.precache ?? []).map((path) => new URL(path, self.registration.scope).href)])
       await self.skipWaiting()
     })(),
   )
@@ -45,7 +47,9 @@ self.addEventListener('activate', (event) => {
 // Inform the page when a new documentation build replaces this worker.
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'precache-docs') {
-    event.source?.postMessage?.({ type: 'precache-complete', cache: CACHE })
+    event.waitUntil(caches.open(CACHE).then((cache) => cache.match(OFFLINE_URL)).then((hit) => {
+      event.source?.postMessage?.({ type: hit ? 'precache-complete' : 'precache-unavailable', cache: CACHE })
+    }))
   }
   if (event.data?.type === 'remove-all') {
     event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith('atomicals-docs-')).map((key) => caches.delete(key)))))
@@ -87,6 +91,6 @@ self.addEventListener('fetch', (event) => {
         }
         return response
       })
-      .catch(async () => (await caches.match(request)) ?? (await caches.match('/offline/')) ?? Response.error()),
+      .catch(async () => (await caches.match(request)) ?? (await caches.match(OFFLINE_URL)) ?? Response.error()),
   )
 })
