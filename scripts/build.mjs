@@ -187,7 +187,7 @@ for (const file of [...previous, ...published]) {
   const target = resolve(root, file)
   const ownedPath = relative(root, target)
   const top = file.split('/')[0]
-  if (!ownedPath || ownedPath.startsWith('..') || /[\\:]/.test(file) || PRESERVED.has(top)) {
+  if (!ownedPath || ownedPath.startsWith('..') || ownedPath.split('\\').join('/') !== file || /[\\:]/.test(file) || PRESERVED.has(top)) {
     throw new Error(`Unsafe publication path: ${file}`)
   }
 }
@@ -221,9 +221,14 @@ for (const file of previous) {
 }
 
 let copied = 0
+let reused = 0
 for (const file of published) {
   const source = resolve(distDir, file)
   const target = resolve(root, file)
+  if (existsSync(target) && readFileSync(source).equals(readFileSync(target))) {
+    reused += 1
+    continue
+  }
   mkdirSync(dirname(target), { recursive: true })
   copyFileSync(source, target)
   copied += 1
@@ -244,4 +249,4 @@ writeFileSync(
   'utf8',
 )
 
-process.stdout.write(`\npublished ${copied} files to the repository root, removed ${removed}\n`)
+process.stdout.write(`\npublished ${copied} files to the repository root, reused ${reused}, removed ${removed}\n`)
