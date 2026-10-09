@@ -1882,7 +1882,7 @@
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "54001f13470a4f3d6da939294dc3c85d3fb4f8190f0da0ed606877533717820b",
+      "contentHash": "6a08fdf2fa9f0b7dd384bfb66bd463f433dac2b83ae0d620714e9b402d9acba9",
       "href": "/atomicals-and-arc-20/guides/list-an-arc20-lot/",
       "raw": "/atomicals-and-arc-20/raw/guides/list-an-arc20-lot.md"
     },
@@ -2201,11 +2201,11 @@
         "universe-index-atomicals"
       ],
       "docsVersion": "2026.08",
-      "verified": "2026-08-31",
+      "verified": "2026-10-07",
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "36e835b41248cfefe58a2a18a300c1c81d372bb32938e74160592a48d1db0129",
+      "contentHash": "3272bc2f1d71d0ae59924434b76bf86f1a032a5463841a9e2a6468623b195668",
       "href": "/atomicals-and-arc-20/guides/unavailable-indexer-vs-empty-balance/",
       "raw": "/atomicals-and-arc-20/raw/guides/unavailable-indexer-vs-empty-balance.md"
     },

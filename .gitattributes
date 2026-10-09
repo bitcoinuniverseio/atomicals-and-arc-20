@@ -11,3 +11,6 @@
 *.woff2 binary
 *.ico binary
 *.pdf binary
+
+# Astro-generated HTML contains intentional inter-element separator whitespace.
+*.html whitespace=-blank-at-eol
