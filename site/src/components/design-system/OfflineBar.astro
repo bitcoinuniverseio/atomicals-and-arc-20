@@ -20,33 +20,46 @@
   function initOffline(bar: HTMLElement) {
     const message = bar.querySelector<HTMLElement>('[data-offline-message]')!
     const removeButton = bar.querySelector<HTMLButtonElement>('[data-remove-offline]')!
-    const scope = new URL(document.baseURI).pathname
+    const scope = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`
+    let wasOffline = false
 
     navigator.serviceWorker.register(`${scope}sw.js`).then(async (registration) => {
       // Ask the worker to precache the documentation shell for offline use.
-      registration.active?.postMessage({ type: 'precache-docs' })
+      const ready = await navigator.serviceWorker.ready
+      ready.active?.postMessage({ type: 'precache-docs' })
       window.addEventListener('online', updateStatus)
       window.addEventListener('offline', updateStatus)
       updateStatus()
 
       registration.addEventListener('updatefound', () => {
-        message.textContent = 'A newer documentation build is available. Reload to update, or remove offline data below.'
+        if (!navigator.serviceWorker.controller) return
+        message.textContent = 'New documentation available. Reload to update.'
         removeButton.hidden = false
         bar.hidden = false
       })
+    }).catch(() => {
+      if (!navigator.onLine) {
+        message.textContent = 'You are offline. Offline reading is unavailable.'
+        bar.hidden = false
+      }
     })
 
     function updateStatus() {
       if (!navigator.onLine) {
+        wasOffline = true
         message.textContent = 'You are offline. Pages you visited and offline search still work.'
         bar.hidden = false
+      } else if (wasOffline) {
+        wasOffline = false
+        bar.hidden = true
       }
     }
 
     navigator.serviceWorker.addEventListener('message', (event) => {
       const data = event.data as { type?: string }
       if (data?.type === 'precache-complete') {
-        message.textContent = 'Offline browsing is ready. Pages you visit are kept for offline reading.'
+        message.textContent = 'Offline reading ready.'
+        removeButton.hidden = false
         bar.hidden = false
       }
     })

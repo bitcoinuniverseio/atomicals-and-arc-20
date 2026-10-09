@@ -2782,13 +2782,56 @@ Limitations:
 4. **Sign.** Sign what the prepare step returned, with the exact scope it specifies.
 5. **Finalise.** Submit the signed material. The listing becomes active.
 
+<!--
+IMPLEMENTATION-HANDOFF [ARC20-WP05] annotation ARC20-D08
+Status: ANNOTATED only. No fix, acceptance or production release is claimed.
+Coverage: ARC20-COV-DOCS, ARC20-COV-QUANTITY, ARC20-COV-LIST.
+Defects: ARC20-DEF-F06.
+Prerequisites: ARC20-WP02, ARC20-WP03, ARC20-WP04.
+1. State the accepted product's whole-output sale and exact token quantity
+separately from its Bitcoin output value. Confirm which partial allocations
+the product accepts or refuses; a protocol-valid allocation alone does not
+establish this marketplace's eligibility policy.
+2. Document unit price using token units and preserve the exact Bitcoin
+value in output/signature checks. A summary balance or unreadable inventory
+must not replace a current verified owner outpoint or pass as empty holdings.
+3. Recheck the accepted authority's prepare, signed-finalize and read-back
+contract before changing the existing full-output requirement. Keep this
+Universe implementation guide separate from the pinned protocol unit model.
+4. Add isolated Testnet4 qualification only with explicit source and wallet
+evidence; do not imply mainnet activation or Signet support from a test run.
+Verify later: quantity/allocation conformance plus accepted marketplace
+lifecycle tests; npm run generate, npm run check, npm test and npm run build.
+Rollback: publish prose and generated artifacts from one verified revision;
+preserve closed unsupported actions and the original protocol history.
+END IMPLEMENTATION-HANDOFF ARC20-D08
+-->
+
 ## What the authority checks before accepting your lot
+
+The 9 October 2026 source repair is awaiting functional qualification and
+release. The sale consumes the whole selected Bitcoin output; exact token
+quantity is recorded separately from its Bitcoin value. A verified single-FT
+allocation smaller than collateral remains eligible; missing quantities and
+mixed or ambiguous allocations do not. Protocol validity alone does not bypass
+the marketplace's ownership, confirmation, checkpoint and signature checks.
+
+Marketplace v1 accepts `priceAtomic` per token and calculates the lot total as
+`priceAtomic` times `quantityAtomic`. Core Portfolio's signed-offer lane instead
+accepts a whole-lot `priceSats` total. For 600 tokens on 1,000 sats collateral,
+a 1,200-sat total means 2 sats per token. Bitcoin output and payout checks retain
+their exact satoshi values.
+
+The candidate does not establish mainnet activation or a completed test-network
+journey. Private Signet requires challenge, rule profile, interpreter artifact
+and isolated database attestation. Funded real-wallet flows and publisher gates
+remain outstanding; listing gates stay closed where qualification is missing.
 
 - The ticker resolves to its verified Atomical FT winner.
 - Bitcoin Core reports a confirmed, live output with the exact value and owner script.
 - The Atomicals provider reports exactly that location, script, value, and one authoritative FT.
-- The script hash view reports exactly one active row whose coloured balance is the full output
-  value.
+- The script hash view reports exactly one active row with the exact positive
+  token amount for that Atomical; Bitcoin collateral is checked independently.
 - Heights and hashes on both sides stay unchanged across the verification bracket.
 
 Any disagreement, or any movement mid-check, fails the request closed.
@@ -3546,7 +3589,7 @@ Applicability: universe-implementation
 Authority: universe-implementation
 Networks: mainnet
 Sources: universe-index-atomicals-nfts-and-realms, universe-index-atomicals
-Verified: 2026-08-31
+Verified: 2026-10-07
 
 A zero on a screen is a statement about a service, not about the chain. Before concluding anything
 is missing, find out which of the states below you are actually in.
@@ -3575,6 +3618,14 @@ Every Universe read service exposes readiness separately from liveness:
 Read `/ready` before concluding anything from an empty result. It reports the generation
 identifier, the indexed height, whether the view is stale, and whether the tip is mixed.
 
+## While an index is recovering
+
+A restored database still needs integrity checks, a successful application start, and synchronization before its answers can be treated as current. Download completion and a running process are separate from readiness.
+
+If a service is restoring or catching up, show that state and its indexed height. Do not show an unavailable response as an empty balance, treat an older height as the chain tip, or substitute an external blockchain provider. Recovery reuses the existing Universe-operated indexer and its protected runtime; it does not change asset ownership or protocol rules.
+
+Wait for the service's readiness and freshness checks before using recovered results for a transaction or market decision. A recovery in progress is not a statement that an asset is missing.
+
 ## Projection coverage
 
 An empty answer can simply mean the asset type is out of scope. The Universe NFT and Realm read
@@ -3583,7 +3634,47 @@ DMINT items by declaration.
 
 Asking it about a Container returns nothing, correctly.
 
+{/*
+IMPLEMENTATION-HANDOFF [ARC20-WP05] annotation ARC20-D07
+Status: ANNOTATED only. No fix, acceptance or production release is claimed.
+Coverage: ARC20-COV-DOCS, ARC20-COV-INVENTORY, ARC20-COV-COUNT, ARC20-COV-RECOVERY.
+Defects: ARC20-DEF-F01, ARC20-DEF-F04.
+Prerequisites: ARC20-WP01, ARC20-WP02, ARC20-WP04.
+1. After acceptance, add the ARC-20 balance-summary versus current-output
+inventory distinction. A visible balance or a missing count defaulted to one
+does not prove an output is currently available; unknown must not become zero
+tokens, no holdings, or a measured UTXO count.
+2. Explain retry for an unavailable inventory while earlier rows remain,
+without treating retained data as current transaction evidence. Restore,
+catch-up and process liveness remain separate from fresh protocol readiness.
+3. Keep Universe implementation claims separate from protocol behavior.
+Use only owned blockchain sources; no external fallback or network-switch
+workaround. Isolated Testnet4 evidence must not imply mainnet availability.
+4. Pin and verify the accepted source before changing visible text, verified
+dates, applicability or network declarations. Update translations/exports
+through the maintained generators, never by editing generated raw pages.
+Verify later: npm run generate, npm run check, npm test and npm run build;
+retain the generation/build-clean gates on the owned runner fleet.
+Rollback: restore prose and generated exports from the same verified source;
+do not alter the current recovery guide's visible claims in this prep stage.
+END IMPLEMENTATION-HANDOFF ARC20-D07
+*/}
+
 ## For product builders
+
+The Core ARC-20 repair candidate prepared on 9 October 2026 separates balance
+summary, current output inventory and seller-book reads. A missing UTXO count
+stays unknown. A readable summary cannot authorize listing while inventory is
+unavailable; retained rows are display evidence until fresh checks succeed.
+The candidate offers independent lot and seller-book retries. Read retry does
+not sign again and is separate from resolving an earlier mutation's unknown
+outcome under its original request key.
+
+Component coverage is not a current mainnet readiness receipt. Funded wallet
+flows, consumer source qualification, private Signet challenge, rules,
+interpreter and isolated database attestation and publisher gates remain
+outstanding. Do not use another network or a public data provider as an outage
+workaround. The existing verified dates and recovery history remain unchanged.
 
 Never render an unavailable service as a zero balance. Render the state:
 

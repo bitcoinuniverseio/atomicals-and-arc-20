@@ -36,13 +36,56 @@ provenance:
 4. **Sign.** Sign what the prepare step returned, with the exact scope it specifies.
 5. **Finalise.** Submit the signed material. The listing becomes active.
 
+<!--
+IMPLEMENTATION-HANDOFF [ARC20-WP05] annotation ARC20-D08
+Status: ANNOTATED only. No fix, acceptance or production release is claimed.
+Coverage: ARC20-COV-DOCS, ARC20-COV-QUANTITY, ARC20-COV-LIST.
+Defects: ARC20-DEF-F06.
+Prerequisites: ARC20-WP02, ARC20-WP03, ARC20-WP04.
+1. State the accepted product's whole-output sale and exact token quantity
+separately from its Bitcoin output value. Confirm which partial allocations
+the product accepts or refuses; a protocol-valid allocation alone does not
+establish this marketplace's eligibility policy.
+2. Document unit price using token units and preserve the exact Bitcoin
+value in output/signature checks. A summary balance or unreadable inventory
+must not replace a current verified owner outpoint or pass as empty holdings.
+3. Recheck the accepted authority's prepare, signed-finalize and read-back
+contract before changing the existing full-output requirement. Keep this
+Universe implementation guide separate from the pinned protocol unit model.
+4. Add isolated Testnet4 qualification only with explicit source and wallet
+evidence; do not imply mainnet activation or Signet support from a test run.
+Verify later: quantity/allocation conformance plus accepted marketplace
+lifecycle tests; npm run generate, npm run check, npm test and npm run build.
+Rollback: publish prose and generated artifacts from one verified revision;
+preserve closed unsupported actions and the original protocol history.
+END IMPLEMENTATION-HANDOFF ARC20-D08
+-->
+
 ## What the authority checks before accepting your lot
+
+The 9 October 2026 source repair is awaiting functional qualification and
+release. The sale consumes the whole selected Bitcoin output; exact token
+quantity is recorded separately from its Bitcoin value. A verified single-FT
+allocation smaller than collateral remains eligible; missing quantities and
+mixed or ambiguous allocations do not. Protocol validity alone does not bypass
+the marketplace's ownership, confirmation, checkpoint and signature checks.
+
+Marketplace v1 accepts `priceAtomic` per token and calculates the lot total as
+`priceAtomic` times `quantityAtomic`. Core Portfolio's signed-offer lane instead
+accepts a whole-lot `priceSats` total. For 600 tokens on 1,000 sats collateral,
+a 1,200-sat total means 2 sats per token. Bitcoin output and payout checks retain
+their exact satoshi values.
+
+The candidate does not establish mainnet activation or a completed test-network
+journey. Private Signet requires challenge, rule profile, interpreter artifact
+and isolated database attestation. Funded real-wallet flows and publisher gates
+remain outstanding; listing gates stay closed where qualification is missing.
 
 - The ticker resolves to its verified Atomical FT winner.
 - Bitcoin Core reports a confirmed, live output with the exact value and owner script.
 - The Atomicals provider reports exactly that location, script, value, and one authoritative FT.
-- The script hash view reports exactly one active row whose coloured balance is the full output
-  value.
+- The script hash view reports exactly one active row with the exact positive
+  token amount for that Atomical; Bitcoin collateral is checked independently.
 - Heights and hashes on both sides stay unchanged across the verification bracket.
 
 Any disagreement, or any movement mid-check, fails the request closed.
@@ -77,4 +120,3 @@ control until a settlement transaction is signed and broadcast.
 
 [Marketplace v1](/reference/api/marketplace-v1/) and
 [transfers and swaps](/protocol/arc20/transfers-and-swaps/).
-
