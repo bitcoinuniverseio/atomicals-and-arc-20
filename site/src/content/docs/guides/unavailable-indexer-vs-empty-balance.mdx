@@ -94,6 +94,20 @@ END IMPLEMENTATION-HANDOFF ARC20-D07
 
 ## For product builders
 
+The Core ARC-20 repair candidate prepared on 9 October 2026 separates balance
+summary, current output inventory and seller-book reads. A missing UTXO count
+stays unknown. A readable summary cannot authorize listing while inventory is
+unavailable; retained rows are display evidence until fresh checks succeed.
+The candidate offers independent lot and seller-book retries. Read retry does
+not sign again and is separate from resolving an earlier mutation's unknown
+outcome under its original request key.
+
+Component coverage is not a current mainnet readiness receipt. Funded wallet
+flows, consumer source qualification, private Signet challenge, rules,
+interpreter and isolated database attestation and publisher gates remain
+outstanding. Do not use another network or a public data provider as an outage
+workaround. The existing verified dates and recovery history remain unchanged.
+
 Never render an unavailable service as a zero balance. Render the state:
 
 - "We cannot reach the index right now" for unavailable.

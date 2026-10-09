@@ -63,11 +63,29 @@ END IMPLEMENTATION-HANDOFF ARC20-D08
 
 ## What the authority checks before accepting your lot
 
+The 9 October 2026 source repair is awaiting functional qualification and
+release. The sale consumes the whole selected Bitcoin output; exact token
+quantity is recorded separately from its Bitcoin value. A verified single-FT
+allocation smaller than collateral remains eligible; missing quantities and
+mixed or ambiguous allocations do not. Protocol validity alone does not bypass
+the marketplace's ownership, confirmation, checkpoint and signature checks.
+
+Marketplace v1 accepts `priceAtomic` per token and calculates the lot total as
+`priceAtomic` times `quantityAtomic`. Core Portfolio's signed-offer lane instead
+accepts a whole-lot `priceSats` total. For 600 tokens on 1,000 sats collateral,
+a 1,200-sat total means 2 sats per token. Bitcoin output and payout checks retain
+their exact satoshi values.
+
+The candidate does not establish mainnet activation or a completed test-network
+journey. Private Signet requires challenge, rule profile, interpreter artifact
+and isolated database attestation. Funded real-wallet flows and publisher gates
+remain outstanding; listing gates stay closed where qualification is missing.
+
 - The ticker resolves to its verified Atomical FT winner.
 - Bitcoin Core reports a confirmed, live output with the exact value and owner script.
 - The Atomicals provider reports exactly that location, script, value, and one authoritative FT.
-- The script hash view reports exactly one active row whose coloured balance is the full output
-  value.
+- The script hash view reports exactly one active row with the exact positive
+  token amount for that Atomical; Bitcoin collateral is checked independently.
 - Heights and hashes on both sides stay unchanged across the verification bracket.
 
 Any disagreement, or any movement mid-check, fails the request closed.
@@ -102,4 +120,3 @@ control until a settlement transaction is signed and broadcast.
 
 [Marketplace v1](/reference/api/marketplace-v1/) and
 [transfers and swaps](/protocol/arc20/transfers-and-swaps/).
-
