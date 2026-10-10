@@ -22,7 +22,7 @@
     "@pagefind/default-ui": "1.5.2",
     "astro": "7.2.10",
     "satteri": "0.10.5",
-    "sharp": "0.35.4",
+    "sharp": "0.35.5",
     "typescript": "5.9.3"
   },
   "allowScripts": {
