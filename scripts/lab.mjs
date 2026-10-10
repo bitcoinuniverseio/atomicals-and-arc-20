@@ -23,6 +23,11 @@ const here = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(here, '..')
 const LAB = resolve(ROOT, 'lab')
 const envFile = resolve(LAB, '.env')
+// Host ports default to the documented ones. CI shares one host between many
+// jobs, so it moves them with LAB_CORE_PORT, LAB_ELECTRUMX_PORT, LAB_ADAPTER_PORT.
+const CORE_PORT = process.env.LAB_CORE_PORT || '18443'
+const ELECTRUMX_PORT = process.env.LAB_ELECTRUMX_PORT || '51001'
+const ADAPTER = `http://127.0.0.1:${process.env.LAB_ADAPTER_PORT || '3043'}`
 
 function compose(args, { capture = false, logsOnFailure = false } = {}) {
   const result = spawnSync('docker', ['compose', ...args], {
@@ -68,7 +73,11 @@ function credentials() {
 /** Environment for the host-side scripts: the generated RPC password. */
 function hostEnv() {
   const values = readEnv(credentials())
-  return { ...process.env, LAB_CORE_RPC: `http://lab:${values.LAB_RPC_PASSWORD}@127.0.0.1:18443` }
+  return {
+    ...process.env,
+    LAB_CORE_RPC: `http://lab:${values.LAB_RPC_PASSWORD}@127.0.0.1:${CORE_PORT}`,
+    LAB_ADAPTER: ADAPTER,
+  }
 }
 
 function readEnv(contents) {
@@ -83,12 +92,12 @@ function readEnv(contents) {
 async function healthCheck() {
   for (let attempt = 0; attempt < 60; attempt += 1) {
     try {
-      const response = await fetch('http://127.0.0.1:3043/live')
+      const response = await fetch(`${ADAPTER}/live`)
       if (response.ok) {
         process.stdout.write('\nThe lab is up. Endpoints:\n')
-        process.stdout.write('  Bitcoin Core RPC (regtest): http://127.0.0.1:18443 (user lab, password in lab/.env)\n')
-        process.stdout.write('  ElectrumX (electrum):       tcp://127.0.0.1:51001\n')
-        process.stdout.write('  Read-only ARC-20 adapter:   http://127.0.0.1:3043\n')
+        process.stdout.write(`  Bitcoin Core RPC (regtest): http://127.0.0.1:${CORE_PORT} (user lab, password in lab/.env)\n`)
+        process.stdout.write(`  ElectrumX (electrum):       tcp://127.0.0.1:${ELECTRUMX_PORT}\n`)
+        process.stdout.write(`  Read-only ARC-20 adapter:   ${ADAPTER}\n`)
         process.stdout.write('  Next step: npm run lab:seed\n')
         return
       }
@@ -119,7 +128,7 @@ switch (command) {
     credentials()
     compose(['ps'])
     try {
-      const response = await fetch('http://127.0.0.1:3043/token-explorer/status')
+      const response = await fetch(`${ADAPTER}/token-explorer/status`)
       process.stdout.write(`${JSON.stringify(await response.json(), null, 2)}\n`)
     } catch {
       process.stdout.write('adapter is not reachable; is the lab up?\n')

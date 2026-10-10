@@ -270,6 +270,20 @@ jobs:
       - name: Prove Docker exists before anything else runs
         run: docker version
 
+      - name: Reserve free host ports for the lab
+        # Many jobs share this host, so the documented fixed ports collide
+        # with another job's lab ("port is already allocated").
+        run: |
+          node -e '
+            const net = require("node:net")
+            const names = ["LAB_CORE_PORT", "LAB_ELECTRUMX_PORT", "LAB_ADAPTER_PORT"]
+            const servers = names.map(() => net.createServer().listen(0, "127.0.0.1"))
+            Promise.all(servers.map((s) => new Promise((r) => s.on("listening", r)))).then(() => {
+              names.forEach((name, i) => console.log(`${name}=${servers[i].address().port}`))
+              servers.forEach((s) => s.close())
+            })
+          ' >> "$GITHUB_ENV"
+
       - name: Boot the minimal profile with ephemeral credentials
         run: npm run lab:up
 
