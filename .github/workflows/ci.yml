@@ -161,6 +161,7 @@ jobs:
         run: node scripts/build.mjs
 
       - name: Prove the build leaves the repository clean
+        id: clean
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -168,6 +169,23 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             throw 'The committed site output is out of date. Run `npm run build` and commit the result.'
           }
+
+      - name: Capture the expected site output as a patch
+        # The published output must be built on this Linux toolchain. When the
+        # committed copy differs, keep the exact rebuilt bytes so they can be
+        # applied with `git apply --binary` instead of guessed at locally.
+        if: failure() && steps.clean.outcome == 'failure'
+        run: |
+          git add -A
+          git diff --cached --binary > "$RUNNER_TEMP/site-output.patch"
+
+      - name: Upload the expected site output patch
+        if: failure() && steps.clean.outcome == 'failure'
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: site-output-patch-${{ github.sha }}
+          path: ${{ runner.temp }}/site-output.patch
+          retention-days: 7
 
       - name: Check links, anchors, compatibility routes, and generated artefacts
         run: node --test tests/links.test.mjs
