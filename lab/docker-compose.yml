@@ -3,7 +3,8 @@
 # Ephemeral, deterministic, loopback-only. Images are pinned by digest or built
 # from an exact pinned source revision; "latest" appears nowhere. Every port
 # binds to 127.0.0.1. Credentials are generated per run by the seeder and are
-# regtest-only.
+# regtest-only. Host ports default to the documented ones; LAB_CORE_PORT,
+# LAB_ELECTRUMX_PORT and LAB_ADAPTER_PORT move them (CI shares one host).
 #
 # Profiles:
 #   (default)      bitcoin core, electrumx, read-only adapter
@@ -26,7 +27,7 @@ services:
       -rpcpassword=${LAB_RPC_PASSWORD}
       -fallbackfee=0.0002
     ports:
-      - "127.0.0.1:18443:18443"
+      - "127.0.0.1:${LAB_CORE_PORT:-18443}:18443"
     volumes:
       - core-data:/home/bitcoin/.bitcoin
     healthcheck:
@@ -60,7 +61,7 @@ services:
       bitcoin-core:
         condition: service_healthy
     ports:
-      - "127.0.0.1:51001:51001"
+      - "127.0.0.1:${LAB_ELECTRUMX_PORT:-51001}:51001"
     volumes:
       - electrumx-data:/data
 
@@ -77,7 +78,7 @@ services:
       bitcoin-core:
         condition: service_healthy
     ports:
-      - "127.0.0.1:3043:3043"
+      - "127.0.0.1:${LAB_ADAPTER_PORT:-3043}:3043"
     volumes:
       - ./fixtures:/fixtures:ro
 
