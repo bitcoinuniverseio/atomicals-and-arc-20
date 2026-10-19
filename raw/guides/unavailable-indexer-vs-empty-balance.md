@@ -40,6 +40,8 @@ identifier, the indexed height, whether the view is stale, and whether the tip i
 
 ## While an index is recovering
 
+As of 19 October 2026, internal Testnet3 recovery checks have verified selected Atomicals read methods against the existing indexer. This does not announce a new public endpoint or full service readiness. Consumer routing, protocol negotiation, memory stability and restart recovery still need qualification. A completed input copy or an advancing indexed height alone does not satisfy those checks.
+
 A restored database still needs integrity checks, a successful application start, and synchronization before its answers can be treated as current. Download completion and a running process are separate from readiness.
 
 If a service is restoring or catching up, show that state and its indexed height. Do not show an unavailable response as an empty balance, treat an older height as the chain tip, or substitute an external blockchain provider. Recovery reuses the existing Universe-operated indexer and its protected runtime; it does not change asset ownership or protocol rules.
