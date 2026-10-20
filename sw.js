@@ -11,7 +11,7 @@
  * lab. This worker only ever handles same-origin GET requests for static
  * assets.
  */
-const BUILD_ID = '3d93fa3a41e4781c'
+const BUILD_ID = '1721d5e407281dfd'
 const CACHE = `atomicals-docs-${BUILD_ID}`
 const OFFLINE_URL = new URL('offline/', self.registration.scope).href
 

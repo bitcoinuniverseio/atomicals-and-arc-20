@@ -82,10 +82,12 @@ Render the state, never a misleading zero:
 
 ## Production resilience
 
-### Read-service isolation repair: rollout pending
+### Read-service isolation and freshness
 
-The 20 October 2026 repair separates the HTTP read role from refresh ownership. Its implementation
-contract is described here; production rollout and live readiness have not yet been verified.
+The 20 October 2026 repair separates the HTTP read role from refresh ownership. The deployed read
+service and its existing consumer route have been verified: liveness, health, and versioned status
+respond successfully. Projection readiness still returns `503` while the projection is stale.
+Successful transport does not establish fresh or complete indexed data.
 
 The API role opens the existing projection for reads without initializing or migrating the database
 and without scheduling indexing work. A bounded pool of read-only workers handles database queries.

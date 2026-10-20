@@ -34,7 +34,7 @@ service. Do not read the absence of a limit as permission to hammer it.
 
 ## The bounded work that does exist
 
-### NFT and Realm read-service repair: rollout pending
+### NFT and Realm read-service isolation
 
 The 20 October 2026 repair introduces a bounded read-only query pool and a bounded admission queue.
 Exhausted admission or a query that exceeds its HTTP response budget returns a retryable `503`; this is
@@ -45,8 +45,9 @@ A native SQLite statement can continue in its bounded worker slot after the HTTP
 out. That timeout does not create a replacement worker or make room for unlimited concurrent work.
 
 Control responses are served from an age-checked snapshot. Stale control state makes readiness
-return `503` rather than reusing a previous ready result. These are the repair's implementation
-guarantees, not a claim that production rollout or current readiness has been verified.
+return `503` rather than reusing a previous ready result. The read service and existing consumer
+route were verified after deployment on 20 October 2026. Projection readiness remains `503` while
+the projection is stale; successful API transport does not make the indexed data fresh.
 
 The ARC-20 feed copies at most a configured number of rows per cursor-free request while building
 an immutable generation, and returns a retryable unavailable response until the generation is
