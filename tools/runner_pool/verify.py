@@ -1,6 +1,13 @@
 """Nondeploying, attributable runner checks. No dependency installation or image pull."""
-import argparse,datetime,json,os,pathlib,platform,subprocess
+import argparse,datetime,json,os,pathlib,platform,subprocess,pwd,re
 ALLOCATION={'mig-runners-1':64,'mig-runners-2':4}
+
+def proof_directory():
+    repository=os.environ.get('GITHUB_REPOSITORY','')
+    run=os.environ.get('GITHUB_RUN_ID','');attempt=os.environ.get('GITHUB_RUN_ATTEMPT','')
+    if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repository) or not run.isdigit() or not attempt.isdigit():
+        raise ValueError('explicit output directory or valid workflow provenance required')
+    return pathlib.Path(pwd.getpwuid(os.getuid()).pw_dir,'.local/state/runner-pool-proof',repository.replace('/','--'),run+'-'+attempt)
 def targets(host='all'):
     if host not in ['all',*ALLOCATION]:raise ValueError('unknown host')
     return [{'name':f'1-{i}' if h=='mig-runners-1' else f'{h}-{i:02d}',
@@ -69,6 +76,8 @@ def coverage(records,host='all'):
     wanted={t['name'] for t in targets(host)};seen={};errors=[]
     for r in records:
         name=r.get('runner_name')
+        if any(os.environ.get(env) and str(r.get(field))!=os.environ[env] for env,field in [('GITHUB_REPOSITORY','repository'),('GITHUB_SHA','revision'),('GITHUB_RUN_ID','run_id'),('GITHUB_RUN_ATTEMPT','attempt')]):
+            errors.append('proof provenance mismatch');continue
         if name not in wanted or r.get('expected_name')!=name or name in seen:errors.append('unexpected or duplicate runner identity')
         else:seen[name]=r
     missing=sorted(wanted-seen.keys());passed=sum(r.get('state')=='PASS' for r in seen.values())
@@ -79,13 +88,14 @@ def coverage(records,host='all'):
 def main():
     parser=argparse.ArgumentParser();sub=parser.add_subparsers(dest='command',required=True)
     p=sub.add_parser('matrix');p.add_argument('--host',default='all',choices=['all',*ALLOCATION])
-    p=sub.add_parser('probe');p.add_argument('--name',required=True);p.add_argument('--host',required=True,choices=ALLOCATION);p.add_argument('--output',required=True)
-    p=sub.add_parser('coverage');p.add_argument('directory');p.add_argument('--host',default='all',choices=['all',*ALLOCATION])
+    p=sub.add_parser('probe');p.add_argument('--name',required=True);p.add_argument('--host',required=True,choices=ALLOCATION);p.add_argument('--output')
+    p=sub.add_parser('coverage');p.add_argument('directory',nargs='?');p.add_argument('--host',default='all',choices=['all',*ALLOCATION])
     args=parser.parse_args()
     if args.command=='matrix':print(json.dumps({'include':targets(args.host)}));return
     if args.command=='probe':
-        result=probe(args.name,args.host);path=pathlib.Path(args.output);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(result,indent=2))
-    else:result=coverage([json.loads(p.read_text()) for p in pathlib.Path(args.directory).rglob('runner-*.json')],args.host)
+        result=probe(args.name,args.host);path=pathlib.Path(args.output) if args.output else proof_directory()/('runner-'+args.name+'.json');path.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
+        temporary=path.with_suffix('.new');temporary.write_text(json.dumps(result,indent=2));temporary.replace(path)
+    else:result=coverage([json.loads(p.read_text()) for p in (pathlib.Path(args.directory) if args.directory else proof_directory()).rglob('runner-*.json')],args.host)
     print(json.dumps(result,indent=2))
     if result['state']!='PASS':raise SystemExit(1)
 if __name__=='__main__':main()
