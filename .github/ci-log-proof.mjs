@@ -45,13 +45,62 @@ export function quotaAnnotationsOnly(annotations) {
   const failures = annotations.filter(item => item.annotation_level === 'failure');
   return failures.length === 1 && /^Failed to CreateArtifact: Artifact storage quota has been hit\. Unable to upload any new artifacts\. Usage is recalculated every 6-12 hours\.\s*(?:More info on storage limits: https:\/\/docs\.github\.com\/[^\s]+)?\s*$/.test(failures[0].message);
 }
+
+const UPLOAD_PREFIX = 'UNIVERSE_CI_UPLOAD_V1 ';
+const UPLOAD_ROLES = ['site-built-evidence'];
+export function encodeUploadOutcome(bytes, jobId, role, outcome, identity) {
+  requireThat(UPLOAD_ROLES.includes(role) && ['success', 'failure'].includes(outcome)
+    && Number.isSafeInteger(jobId) && jobId > 0, 'UPLOAD_OUTCOME');
+  // The same strict source identity and size rules apply to the report and its upload receipt.
+  encodeProof(bytes, identity);
+  return UPLOAD_PREFIX + JSON.stringify({...identity, jobId, role, outcome, reportSha256: sha(bytes)});
+}
+export function decodeUploadOutcomes(log, bytes, job, identity) {
+  const records = log.split(/\r?\n/).filter(line => line.includes(UPLOAD_PREFIX)).map(line => {
+    const match = line.match(/^(?:[0-9TZ:.+-]+ )?UNIVERSE_CI_UPLOAD_V1 (\{.*\})$/);
+    requireThat(match, 'UPLOAD_RECORD'); return JSON.parse(match[1]);
+  });
+  requireThat(records.length === UPLOAD_ROLES.length, 'EXACT_UPLOAD_RECEIPTS');
+  for (const role of UPLOAD_ROLES) {
+    const matching = records.filter(record => record.role === role);
+    requireThat(matching.length === 1, 'EXACT_UPLOAD_ROLE'); const record = matching[0];
+    for (const [key, value] of Object.entries(identity)) {
+      if (key !== 'role') requireThat(record[key] === value, 'UPLOAD_IDENTITY');
+    }
+    requireThat(record.jobId === job.id && record.reportSha256 === sha(bytes)
+      && ['success', 'failure'].includes(record.outcome), 'UPLOAD_BINDING');
+  }
+  return { mandatoryFailed: records.find(record => record.role === UPLOAD_ROLES[0]).outcome === 'failure',
+    failedUploads: records.filter(record => record.outcome === 'failure').length };
+}
+export async function verifyUploadResults(load, result, pause) {
+  // Ordinary report retention preserves the existing optional binary soft gate.
+  // Only report fallback requires strict accounting for every failed upload.
+  if (result.mandatoryFailed) await verifyUploadAnnotations(load, result.failedUploads, pause);
+}
+export async function verifyUploadAnnotations(load, expectedFailures, pause = ms => new Promise(resolve => setTimeout(resolve, ms))) {
+  requireThat(Number.isSafeInteger(expectedFailures) && expectedFailures >= 0
+    && expectedFailures <= UPLOAD_ROLES.length, 'UPLOAD_FAILURE_COUNT');
+  // Completed checks can still take a short time to publish their final annotations.
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const annotations = await load();
+    requireThat(Array.isArray(annotations) && annotations.length < 100, 'BOUNDED_ANNOTATIONS');
+    const failures = annotations.filter(item => item.annotation_level === 'failure');
+    requireThat(failures.length <= expectedFailures && failures.every(item => quotaAnnotationsOnly([item])), 'ONLY_QUOTA_FAILURE_ALLOWED');
+    if (failures.length === expectedFailures) return;
+    if (attempt < 9) await pause(2000);
+  }
+  throw new Error('COMPLETED_QUOTA_ANNOTATIONS_REQUIRED');
+}
+
 export function verifyCompletedJob(job, env) {
     requireThat(job.status === 'completed' && job.conclusion === 'success' && job.head_sha === env.PROOF_HEAD_SHA
       && String(job.run_id) === env.GITHUB_RUN_ID && String(job.run_attempt) === env.GITHUB_RUN_ATTEMPT, 'COMPLETED_EXACT_PRODUCER');
     for (const name of ['Type check the site', 'Build the site and publish it to the repository root',
       'Prove the build leaves the repository clean', 'Check links, anchors, compatibility routes, and generated artefacts',
       'Test the documentation MCP server against the built artefacts', 'Check accessibility invariants in the built HTML',
-      'Check performance budgets against the built assets', 'Preserve site evidence in authenticated job logs']) {
+      'Check performance budgets against the built assets', 'Preserve site evidence in authenticated job logs',
+      'Prove search reproducibility across fresh processes and input orders', 'Record site evidence upload outcome']) {
       const steps = job.steps.filter(step => step.name === name);
       requireThat(steps.length === 1 && steps[0].conclusion === 'success', 'COMPLETED_PRODUCER_CHECKS');
     }
@@ -90,21 +139,13 @@ async function main() {
     requireThat(sourceSha === env.GITHUB_SHA, 'EXACT_CHECKOUT_REQUIRED');
     console.log(encodeProof(bytes, { repository: env.GITHUB_REPOSITORY, job: env.GITHUB_JOB, role: 'site-built-evidence',
       sourceSha, runId: env.GITHUB_RUN_ID, attempt: env.GITHUB_RUN_ATTEMPT }));
-  } else if (command === 'quota-only') {
+  } else if (command === 'upload-outcome') {
     const job = await currentJob();
-    for (const name of ['Prove the build leaves the repository clean', 'Check performance budgets against the built assets', 'Preserve site evidence in authenticated job logs']) {
-      const steps = job.steps.filter(step => step.name === name);
-      requireThat(steps.length === 1 && steps[0].conclusion === 'success', 'SUCCESSFUL_PRODUCER_STEPS_REQUIRED');
-    }
-    const check = job.check_run_url?.match(/^https:\/\/api\.github\.com\/(repos\/bitcoinuniverseio\/atomicals-and-arc-20\/check-runs\/[0-9]+)$/);
-    requireThat(check, 'BOUND_CHECK_RUN_REQUIRED');
-    const annotations = await api(check[1] + '/annotations?per_page=100');
-    requireThat(annotations.length < 100 && quotaAnnotationsOnly(annotations), 'ONLY_QUOTA_FAILURE_ALLOWED');
-    // Round-trip the exact local receipt before allowing downstream mandatory checks to proceed.
-    const bytes = readFileSync(file); const identity = { repository: env.GITHUB_REPOSITORY, job: env.GITHUB_JOB,
-      role: 'site-built-evidence', sourceSha: env.GITHUB_SHA, runId: env.GITHUB_RUN_ID, attempt: env.GITHUB_RUN_ATTEMPT };
+    const bytes = readFileSync(file);
+    const identity = { repository: env.GITHUB_REPOSITORY, job: env.GITHUB_JOB, role: 'site-built-evidence',
+      sourceSha: env.GITHUB_SHA, runId: env.GITHUB_RUN_ID, attempt: env.GITHUB_RUN_ATTEMPT };
     requireThat(decodeProof(encodeProof(bytes, identity), identity).equals(bytes), 'PROOF_ROUNDTRIP');
-    console.log('Artifact quota independently confirmed; bounded site manifest retained in this authenticated job log.');
+    console.log(encodeUploadOutcome(bytes, job.id, process.argv[4], process.argv[5], identity));
   } else if (command === 'verify-completed') {
     requireThat(env.GITHUB_REPOSITORY === 'bitcoinuniverseio/atomicals-and-arc-20'
       && /^[1-9][0-9]*$/.test(env.GITHUB_RUN_ID) && /^[1-9][0-9]*$/.test(env.GITHUB_RUN_ATTEMPT)
@@ -131,6 +172,12 @@ async function main() {
     const log = new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks));
     const bytes = decodeProof(log, { repository: env.GITHUB_REPOSITORY, job: 'site', role: 'site-built-evidence',
       sourceSha: env.GITHUB_SHA, runId: env.GITHUB_RUN_ID, attempt: env.GITHUB_RUN_ATTEMPT });
+    const identity = { repository: env.GITHUB_REPOSITORY, job: 'site', role: 'site-built-evidence',
+      sourceSha: env.GITHUB_SHA, runId: env.GITHUB_RUN_ID, attempt: env.GITHUB_RUN_ATTEMPT };
+    const uploadResults = decodeUploadOutcomes(log, bytes, job, identity);
+    const check = job.check_run_url?.match(/^https:\/\/api\.github\.com\/(repos\/bitcoinuniverseio\/atomicals-and-arc-20\/check-runs\/[0-9]+)$/);
+    requireThat(check, 'BOUND_CHECK_RUN_REQUIRED');
+    await verifyUploadResults(() => api(check[1] + '/annotations?per_page=100'), uploadResults);
     const report = JSON.parse(bytes);
     requireThat(report.schemaVersion === 'committed-site-build-evidence-v1' && report.sourceSha === env.GITHUB_SHA
       && Array.isArray(report.files) && report.files.length > 0 && report.files.length <= 5000, 'VERIFIED_SITE_REPORT');
