@@ -74,6 +74,8 @@ jobs:
           if-no-files-found: warn
 
   runner-cache:
+    permissions:
+      contents: read
     if: github.event_name == 'workflow_dispatch' && inputs.runner_identity
     runs-on:
       group: Universe Netcup 1
@@ -89,6 +91,8 @@ jobs:
             docker tag "$image" alpine:3.20
           fi
   runner-identity:
+    permissions:
+      contents: read
     name: runner 1-${{ matrix.index }}
     needs: runner-cache
     runs-on:
@@ -111,6 +115,8 @@ jobs:
           EXPECTED: 1-${{ matrix.index }}
         run: python3 runner-diagnostic/tools/runner_pool/verify.py probe --name "$EXPECTED" --host mig-runners-1
   runner-coverage:
+    permissions:
+      contents: read
     needs: runner-identity
     if: always() && inputs.runner_identity
     runs-on:
@@ -126,6 +132,8 @@ jobs:
           sparse-checkout-cone-mode: true
       - run: python3 runner-diagnostic/tools/runner_pool/verify.py coverage --host mig-runners-1
   container-compatibility:
+    permissions:
+      contents: read
     if: github.event_name == 'workflow_dispatch' && inputs.runner_compatibility
     runs-on:
       group: Universe Netcup 1
