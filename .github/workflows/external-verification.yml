@@ -100,15 +100,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+          path: runner-diagnostic
+          sparse-checkout: tools/runner_pool
+          sparse-checkout-cone-mode: true
       - env:
           EXPECTED: 1-${{ matrix.index }}
-        run: python3 tools/runner_pool/verify.py probe --name "$EXPECTED" --host mig-runners-1 --output "evidence/runner-$EXPECTED.json"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: always()
-        with:
-          name: runner-1-${{ matrix.index }}
-          path: evidence/runner-*.json
-          retention-days: 14
+        run: python3 runner-diagnostic/tools/runner_pool/verify.py probe --name "$EXPECTED" --host mig-runners-1
   runner-coverage:
     needs: runner-identity
     if: always() && inputs.runner_identity
@@ -120,8 +117,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          pattern: runner-*
-          path: evidence
-      - run: python3 tools/runner_pool/verify.py coverage evidence --host mig-runners-1
+          path: runner-diagnostic
+          sparse-checkout: tools/runner_pool
+          sparse-checkout-cone-mode: true
+      - run: python3 runner-diagnostic/tools/runner_pool/verify.py coverage --host mig-runners-1
