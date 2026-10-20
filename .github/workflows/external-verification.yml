@@ -11,6 +11,11 @@ on:
     # Weekly, on Monday, outside the busy window for the shared runner fleet.
     - cron: '41 5 * * 1'
   workflow_dispatch:
+    inputs:
+      runner_identity:
+        description: Run nondeploying host-one identity checks instead of external-link work
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -23,7 +28,7 @@ concurrency:
 jobs:
   verify:
     name: External links and ecosystem records
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && !inputs.runner_identity
     runs-on: [self-hosted, universe-runners-1]
     timeout-minutes: 30
     steps:
@@ -63,3 +68,60 @@ jobs:
             ecosystem-report.json
           retention-days: 30
           if-no-files-found: warn
+
+  runner-cache:
+    if: github.event_name == 'workflow_dispatch' && inputs.runner_identity
+    runs-on:
+      group: Universe Netcup 1
+      labels: [self-hosted, universe-runners-1]
+    timeout-minutes: 5
+    steps:
+      - shell: bash
+        run: |
+          set -euo pipefail
+          image=alpine@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+          if ! docker image inspect alpine:3.20 >/dev/null 2>&1; then
+            docker pull "$image"
+            docker tag "$image" alpine:3.20
+          fi
+  runner-identity:
+    name: runner 1-${{ matrix.index }}
+    needs: runner-cache
+    runs-on:
+      group: Universe Netcup 1
+      labels: [self-hosted, universe-runners-1, "pool-1-${{ matrix.index }}"]
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - env:
+          EXPECTED: 1-${{ matrix.index }}
+        run: python3 tools/runner_pool/verify.py probe --name "$EXPECTED" --host mig-runners-1 --output "evidence/runner-$EXPECTED.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: runner-1-${{ matrix.index }}
+          path: evidence/runner-*.json
+          retention-days: 14
+  runner-coverage:
+    needs: runner-identity
+    if: always() && inputs.runner_identity
+    runs-on:
+      group: Universe Netcup 1
+      labels: [self-hosted, universe-runners-1]
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: runner-*
+          path: evidence
+      - run: python3 tools/runner_pool/verify.py coverage evidence --host mig-runners-1
