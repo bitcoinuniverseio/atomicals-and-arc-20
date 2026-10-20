@@ -77,10 +77,10 @@ function run(command, commandArgs, cwd) {
 
 if (!skipAstro) {
   run('npx', ['astro', 'build'], siteDir)
+  run('node', [resolve(root, 'scripts/index-search.mjs')], root)
 }
 
 run('node', [resolve(root, 'scripts/generate-artifacts.mjs'), '--out', distDir], root)
-run('node', [resolve(root, 'scripts/generate-sw-version.mjs')], root)
 
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
@@ -161,6 +161,9 @@ function normalizePagefindEntry() {
 }
 
 normalizePagefindEntry()
+
+// The service-worker identity must hash the exact normalized bytes published below.
+run('node', [resolve(root, 'scripts/generate-sw-version.mjs')], root)
 
 const built = walk(distDir)
   .map((file) => relative(distDir, file).split('\\').join('/'))
