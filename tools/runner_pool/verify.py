@@ -1,8 +1,9 @@
 """Nondeploying, attributable runner checks. No dependency installation or image pull."""
-import argparse,datetime,json,os,pathlib,platform,subprocess,pwd,re
+import argparse,datetime,json,os,pathlib,platform,subprocess,re
 ALLOCATION={'mig-runners-1':64,'mig-runners-2':4}
 
 def proof_directory():
+    import pwd
     repository=os.environ.get('GITHUB_REPOSITORY','')
     run=os.environ.get('GITHUB_RUN_ID','');attempt=os.environ.get('GITHUB_RUN_ATTEMPT','')
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repository) or not run.isdigit() or not attempt.isdigit():
