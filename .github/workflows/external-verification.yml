@@ -12,6 +12,10 @@ on:
     - cron: '41 5 * * 1'
   workflow_dispatch:
     inputs:
+      runner_compatibility:
+        description: Run a nondeploying container and service-container check
+        type: boolean
+        default: false
       runner_identity:
         description: Run nondeploying host-one identity checks instead of external-link work
         type: boolean
@@ -28,7 +32,7 @@ concurrency:
 jobs:
   verify:
     name: External links and ecosystem records
-    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && !inputs.runner_identity
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && !inputs.runner_identity && !inputs.runner_compatibility
     runs-on: [self-hosted, universe-runners-1]
     timeout-minutes: 30
     steps:
@@ -121,3 +125,29 @@ jobs:
           sparse-checkout: tools/runner_pool
           sparse-checkout-cone-mode: true
       - run: python3 runner-diagnostic/tools/runner_pool/verify.py coverage --host mig-runners-1
+  container-compatibility:
+    if: github.event_name == 'workflow_dispatch' && inputs.runner_compatibility
+    runs-on:
+      group: Universe Netcup 1
+      labels: [self-hosted, Linux, X64, universe-runners-1]
+    timeout-minutes: 5
+    container:
+      image: alpine@sha256:d9e853e87e55526f6b2917df91a2115c36dd7c696a35be12163d44e6e2a4b6bc
+    services:
+      cache:
+        image: redis@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 1s
+          --health-timeout 1s
+          --health-retries 30
+    steps:
+      - name: Verify container root and service DNS/networking
+        shell: sh
+        run: |
+          set -eu
+          test "$(id -u)" = 0
+          uname -sm
+          cat /proc/self/uid_map
+          printf '*1\r\n$4\r\nPING\r\n' | nc -w 5 cache 6379 | grep PONG
+          sleep 5
