@@ -192,6 +192,9 @@ jobs:
           path: ${{ runner.temp }}/site-output.patch
           retention-days: 7
 
+      - name: Prove search reproducibility across fresh processes and input orders
+        run: node --test tests/search-index.test.mjs
+
       - name: Check links, anchors, compatibility routes, and generated artefacts
         run: node --test tests/links.test.mjs
 

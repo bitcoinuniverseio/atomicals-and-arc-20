@@ -77,6 +77,7 @@ function run(command, commandArgs, cwd) {
 
 if (!skipAstro) {
   run('npx', ['astro', 'build'], siteDir)
+  run('node', [resolve(root, 'scripts/index-search.mjs')], root)
 }
 
 run('node', [resolve(root, 'scripts/generate-artifacts.mjs'), '--out', distDir], root)
