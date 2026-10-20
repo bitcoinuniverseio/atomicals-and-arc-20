@@ -222,11 +222,10 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
-      - name: Confirm only quota prevented site review storage
-        if: steps.site-evidence-upload.outcome == 'failure'
+      - name: Record site evidence upload outcome
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: node .github/ci-log-proof.mjs quota-only "$RUNNER_TEMP/site-built-evidence.json"
+        run: node .github/ci-log-proof.mjs upload-outcome "$RUNNER_TEMP/site-built-evidence.json" site-built-evidence "${{ steps.site-evidence-upload.outcome }}"
 
   # ---------------------------------------------------------------------------
   # Gate 4. Security. Separate so a dependency finding is never hidden behind a
