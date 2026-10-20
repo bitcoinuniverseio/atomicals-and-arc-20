@@ -21,6 +21,18 @@ def probe(expected,host):
     check('physical host',platform.node() in allowed[host],platform.node())
     group=pathlib.Path('/proc/self/cgroup').read_text().strip()
     check('shared resource membership',group.startswith('0::/github.slice/github-runners.slice/'),group)
+    boundary=pathlib.Path('/sys/fs/cgroup/github.slice/github-runners.slice')
+    total=next(int(l.split()[1])*1024 for l in pathlib.Path('/proc/meminfo').read_text().splitlines() if l.startswith('MemTotal:'))
+    quota,period=(boundary/'cpu.max').read_text().split()
+    maximum=int((boundary/'memory.max').read_text())
+    check('shared CPU boundary',quota!='max' and int(quota)/int(period)<=(os.cpu_count() or 1)*.95,(boundary/'cpu.max').read_text().strip())
+    check('shared RAM boundary',maximum<=total*.95,maximum)
+    if host=='mig-runners-1':
+        high=int((boundary/'memory.high').read_text());tasks=(boundary/'pids.max').read_text().strip()
+        check('early pressure and process limits',0<high<maximum and tasks!='max',{'memory_high':high,'pids_max':tasks,'swap_max':(boundary/'memory.swap.max').read_text().strip()})
+    filesystem=os.statvfs('/')
+    reserve=(filesystem.f_bfree-filesystem.f_bavail)/filesystem.f_blocks
+    check('reserved filesystem blocks',reserve>=.05,reserve)
     for name,args,wanted in [('Node.js',['node','--version'],'v24.19.0'),('npm',['npm','--version'],'11.17.0'),('Docker Engine',['docker','version','--format','{{.Server.Version}}'],'29.7.2')]:
         code,value=invoke(args);check(name,code==0 and value==wanted,value)
     check('workspace permissions',os.access(os.getcwd(),os.W_OK),os.getcwd())
@@ -29,6 +41,22 @@ def probe(expected,host):
     if code==0 and image.startswith('sha256:'):
         status,_=invoke(['docker','run','--rm','--pull=never','--network=none','--read-only','--cap-drop=ALL','--pids-limit=32','--memory=32m','--cpus=.25','--user=65534:65534',image,'/bin/true'])
         check('cached container execution',status==0,image)
+        status,container=invoke(['docker','run','--detach','--rm','--pull=never','--network=none','--read-only','--cap-drop=ALL','--user=65534:65534',image,'sleep','10'])
+        if status==0:
+            try:
+                if host=='mig-runners-1':
+                    path=boundary/f'user@{os.getuid()}.service/app.slice'/container
+                    member=(path/'cgroup.procs').read_text().strip()!=''
+                    observed=str(path).removeprefix('/sys/fs/cgroup')
+                else:
+                    code,pid=invoke(['docker','inspect','--format','{{.State.Pid}}',container])
+                    observed=pathlib.Path('/proc',pid,'cgroup').read_text().strip()
+                    member=observed.startswith('0::/github.slice/github-runners.slice/')
+                check('container shared resource membership',member,observed)
+            except OSError as error:
+                check('container shared resource membership',False,type(error).__name__)
+            finally:invoke(['docker','rm','--force',container])
+        else:check('container shared resource membership',False,'container did not start')
     else:checks.append({'name':'cached container execution','state':'BLOCKED','observed':'alpine:3.20 not cached; no image pulled'})
     checks.extend([{'name':'Docker Desktop','state':'NOT APPLICABLE','observed':'headless Linux runner'},
                    {'name':'MySQL 8.4.11','state':'NOT APPLICABLE','observed':'Clone CI uses PostgreSQL; MySQL workloads need fixed-image evidence'}])
