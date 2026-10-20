@@ -1373,6 +1373,20 @@ service. Do not read the absence of a limit as permission to hammer it.
 
 ## The bounded work that does exist
 
+### NFT and Realm read-service repair: rollout pending
+
+The 20 October 2026 repair introduces a bounded read-only query pool and a bounded admission queue.
+Exhausted admission or a query that exceeds its HTTP response budget returns a retryable `503`; this is
+capacity protection, not a requests-per-second rate limit. Apply bounded concurrency, backoff, and
+jitter. Do not immediately repeat the same expensive request.
+
+A native SQLite statement can continue in its bounded worker slot after the HTTP response times
+out. That timeout does not create a replacement worker or make room for unlimited concurrent work.
+
+Control responses are served from an age-checked snapshot. Stale control state makes readiness
+return `503` rather than reusing a previous ready result. These are the repair's implementation
+guarantees, not a claim that production rollout or current readiness has been verified.
+
 The ARC-20 feed copies at most a configured number of rows per cursor-free request while building
 an immutable generation, and returns a retryable unavailable response until the generation is
 ready. That bounds writer time and prevents repeated requests from duplicating complete histories.
@@ -1473,6 +1487,23 @@ Render the state, never a misleading zero:
 - "No assets found" only when ready and genuinely empty.
 
 ## Production resilience
+
+### Read-service isolation repair: rollout pending
+
+The 20 October 2026 repair separates the HTTP read role from refresh ownership. Its implementation
+contract is described here; production rollout and live readiness have not yet been verified.
+
+The API role opens the existing projection for reads without initializing or migrating the database
+and without scheduling indexing work. A bounded pool of read-only workers handles database queries.
+Control endpoints use a cached control snapshot whose age is checked; a snapshot older than the
+allowed freshness window makes readiness return `503`. A responsive process or a cached successful
+response does not establish that the current projection is ready.
+
+Authenticated administrative refresh and rollback remain available through a separate child
+process. They do not turn the HTTP read role into a database writer. A refresh request returns
+`409` while the exact existing refresh actor is alive, even when its recorded database lease has
+expired. Operators must preserve that actor and the currently active generation rather than start
+a competing refresh or interpret lease expiry as permission to take over.
 
 The production read service runs on the dedicated Universe indexer host and binds only to its
 local interface. A supervised private compatibility tunnel keeps existing application routes

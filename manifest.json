@@ -556,7 +556,7 @@
       ],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "e368b08caff1b09d3a80a863790c659190f79388d3eb5484991f623582113540",
+      "contentHash": "f2c848f0e7fc64627d201811c8370b5d0e189a248aec9f4c73fb58dfc58e092b",
       "href": "/atomicals-and-arc-20/develop/rate-limits/",
       "raw": "/atomicals-and-arc-20/raw/develop/rate-limits.md"
     },
@@ -586,7 +586,7 @@
       "limitations": [],
       "deprecated": null,
       "translationSourceHash": null,
-      "contentHash": "5ff74e07094fbd6b8e2f1ea9fc7892f1e3e3a78ea6b0cec2106b7564cc265546",
+      "contentHash": "a5569afcb4509b3e1d2d361ae057106ec990ea84cd180f63b7815d90d98086ae",
       "href": "/atomicals-and-arc-20/develop/readiness-and-freshness/",
       "raw": "/atomicals-and-arc-20/raw/develop/readiness-and-freshness.md"
     },

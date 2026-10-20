@@ -82,6 +82,23 @@ Render the state, never a misleading zero:
 
 ## Production resilience
 
+### Read-service isolation repair: rollout pending
+
+The 20 October 2026 repair separates the HTTP read role from refresh ownership. Its implementation
+contract is described here; production rollout and live readiness have not yet been verified.
+
+The API role opens the existing projection for reads without initializing or migrating the database
+and without scheduling indexing work. A bounded pool of read-only workers handles database queries.
+Control endpoints use a cached control snapshot whose age is checked; a snapshot older than the
+allowed freshness window makes readiness return `503`. A responsive process or a cached successful
+response does not establish that the current projection is ready.
+
+Authenticated administrative refresh and rollback remain available through a separate child
+process. They do not turn the HTTP read role into a database writer. A refresh request returns
+`409` while the exact existing refresh actor is alive, even when its recorded database lease has
+expired. Operators must preserve that actor and the currently active generation rather than start
+a competing refresh or interpret lease expiry as permission to take over.
+
 The production read service runs on the dedicated Universe indexer host and binds only to its
 local interface. A supervised private compatibility tunnel keeps existing application routes
 available during infrastructure changes, while automatic restart and health checks restore both
