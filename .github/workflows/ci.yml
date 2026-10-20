@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  actions: read
+  checks: read
 
 concurrency:
   # One lane per commit, never cancelling in progress. A release certification
@@ -62,6 +64,9 @@ jobs:
 
       - name: Install from the lockfile
         run: npm ci
+
+      - name: Test bounded CI log evidence transport
+        run: node --test .github/ci-log-proof.test.mjs
 
       - name: Validate the OpenAPI documents, schemas, and route inventories
         run: node --test tests/contracts.test.mjs
@@ -201,13 +206,24 @@ jobs:
       - name: Check performance budgets against the built assets
         run: node --test tests/performance.test.mjs
 
+      - name: Preserve site evidence in authenticated job logs
+        run: node .github/ci-log-proof.mjs emit "$RUNNER_TEMP/site-built-evidence.json"
+
       - name: Upload the built site for review
+        id: site-evidence-upload
+        continue-on-error: true
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: site-${{ github.sha }}
           path: site/dist
           retention-days: 7
           if-no-files-found: error
+
+      - name: Confirm only quota prevented site review storage
+        if: steps.site-evidence-upload.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node .github/ci-log-proof.mjs quota-only "$RUNNER_TEMP/site-built-evidence.json"
 
   # ---------------------------------------------------------------------------
   # Gate 4. Security. Separate so a dependency finding is never hidden behind a
@@ -366,3 +382,19 @@ jobs:
         with:
           name: avm-interpreter-wasm
           path: packages/avm-runtime/out/avm-interpreter.mjs
+
+  site-evidence-proof:
+    name: Verify completed site evidence proof
+    needs: site
+    if: ${{ !cancelled() && needs.site.result == 'success' }}
+    runs-on: [self-hosted, universe-runners-1]
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify completed producer logs against committed rendered site
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PROOF_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node .github/ci-log-proof.mjs verify-completed
