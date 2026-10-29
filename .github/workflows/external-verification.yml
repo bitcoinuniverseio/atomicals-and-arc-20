@@ -70,7 +70,7 @@ jobs:
           path: |
             external-links.json
             ecosystem-report.json
-          retention-days: 30
+          retention-days: 3
           if-no-files-found: warn
 
   runner-cache:

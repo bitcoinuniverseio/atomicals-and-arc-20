@@ -190,7 +190,7 @@ jobs:
         with:
           name: site-output-patch-${{ github.sha }}
           path: ${{ runner.temp }}/site-output.patch
-          retention-days: 7
+          retention-days: 3
 
       - name: Prove search reproducibility across fresh processes and input orders
         run: node --test tests/search-index.test.mjs
@@ -219,7 +219,7 @@ jobs:
         with:
           name: site-${{ github.sha }}
           path: site/dist
-          retention-days: 7
+          retention-days: 3
           if-no-files-found: error
 
       - name: Record site evidence upload outcome
@@ -382,6 +382,7 @@ jobs:
         if: hashFiles('packages/avm-runtime/out/avm-interpreter.mjs') != ''
         uses: actions/upload-artifact@v4
         with:
+          retention-days: 3
           name: avm-interpreter-wasm
           path: packages/avm-runtime/out/avm-interpreter.mjs
 
