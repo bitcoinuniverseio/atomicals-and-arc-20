@@ -113,15 +113,15 @@ if (failures.length > 0) {
   process.exit(1)
 }
 
-mkdirSync(resolve(ROOT, 'site/src/generated'), { recursive: true })
-writeFileSync(
-  resolve(ROOT, 'contracts/generated/workflows.json'),
-  `${JSON.stringify({ generatedBy: 'scripts/generate-workflows.mjs', workflows: generated }, null, 2)}\n`,
-)
+const output = `${JSON.stringify({ generatedBy: 'scripts/generate-workflows.mjs', workflows: generated }, null, 2)}\n`
+for (const directory of ['contracts/generated', 'site/src/generated']) {
+  mkdirSync(resolve(ROOT, directory), { recursive: true })
+  writeFileSync(resolve(ROOT, directory, 'workflows.json'), output)
+}
 
 const summary = {
   workflows: generated.length,
   files: files.length,
-  note: 'Generated from contracts/workflows. Do not edit site/src/generated/workflows.json by hand.',
+  note: 'Generated from contracts/workflows. Do not edit the generated summaries by hand.',
 }
 process.stdout.write(`validated ${summary.files} Arazzo document(s), ${summary.workflows} workflow(s); artefacts generated\n`)

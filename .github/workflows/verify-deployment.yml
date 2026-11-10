@@ -45,11 +45,13 @@ jobs:
       - name: Verify the deployed site
         run: node scripts/verify-deployment.mjs
 
-      - name: Upload the verification report
+      # Keep diagnostics available even when the repository's artifact quota
+      # is exhausted. The verifier's exit status remains the job's signal.
+      - name: Print the verification report
         if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
-        with:
-          name: deployment-verification-${{ github.run_id }}
-          path: deployment-verification.json
-          retention-days: 30
-          if-no-files-found: warn
+        run: |
+          if [ -f deployment-verification.json ]; then
+            cat deployment-verification.json
+          else
+            echo 'No verification report was produced.'
+          fi
