@@ -36,7 +36,7 @@ jobs:
     if: >-
       github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, universe-runners-1]
+    runs-on: [self-hosted, Linux, X64, universe]
     timeout-minutes: 20
     steps:
       - name: Provide universe host tools
@@ -92,7 +92,7 @@ jobs:
     if: >-
       github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, universe-runners-1]
+    runs-on: [self-hosted, Linux, X64, universe]
     timeout-minutes: 20
     steps:
       - name: Provide universe host tools
@@ -137,7 +137,7 @@ jobs:
     if: >-
       github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, universe-runners-1]
+    runs-on: [self-hosted, Linux, X64, universe]
     timeout-minutes: 45
     steps:
       - name: Provide universe host tools
@@ -200,7 +200,7 @@ jobs:
     if: >-
       github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, universe-runners-1]
+    runs-on: [self-hosted, Linux, X64, universe]
     timeout-minutes: 20
     steps:
       - name: Provide universe host tools
@@ -240,7 +240,7 @@ jobs:
       !cancelled() &&
       (github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name == github.repository)
-    runs-on: [self-hosted, universe-runners-1]
+    runs-on: [self-hosted, Linux, X64, universe]
     timeout-minutes: 45
     steps:
       - name: Provide universe host tools
@@ -284,7 +284,7 @@ jobs:
       !cancelled() &&
       (github.event_name != 'pull_request' ||
       github.event.pull_request.head.repo.full_name == github.repository)
-    runs-on: [self-hosted, universe-runners-1]
+    runs-on: [self-hosted, Linux, X64, universe]
     timeout-minutes: 60
     steps:
       - name: Provide universe host tools
