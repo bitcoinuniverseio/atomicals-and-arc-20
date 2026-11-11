@@ -47,6 +47,8 @@ jobs:
 
       - name: Upload the verification report
         if: always()
+        # Report-only upload: keep the job green when the shared artifact storage quota is full.
+        continue-on-error: true
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: deployment-verification-${{ github.run_id }}
