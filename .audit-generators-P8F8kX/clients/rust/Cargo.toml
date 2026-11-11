@@ -1,0 +1,11 @@
+[package]
+name = "atomicals-client"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+description = "Generated read-only client for the Atomicals and ARC-20 contracts"
+
+[dependencies]
+reqwest = { version = "0.12.23", default-features = false, features = ["json", "rustls-tls"] }
+serde_json = "1.0.145"
+tokio = { version = "1.47.1", features = ["macros", "rt-multi-thread"] }

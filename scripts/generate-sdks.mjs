@@ -334,9 +334,7 @@ for (const [relative, contents] of outputs) {
 }
 
 // A contract-coverage manifest the tests hold against the live contracts.
-writeFileSync(
-  resolve(ROOT, 'site/src/generated/sdk-coverage.json'),
-  `${JSON.stringify(
+const coverage = `${JSON.stringify(
     {
       generatedBy: 'scripts/generate-sdks.mjs',
       operationCount: operations.length,
@@ -345,6 +343,9 @@ writeFileSync(
     },
     null,
     2,
-  )}\n`,
-)
+  )}\n`
+for (const directory of ['contracts/generated', 'site/src/generated']) {
+  mkdirSync(resolve(ROOT, directory), { recursive: true })
+  writeFileSync(resolve(ROOT, directory, 'sdk-coverage.json'), coverage)
+}
 process.stdout.write(`generated python, go, and rust clients covering ${operations.length} read-only operations\n`)
